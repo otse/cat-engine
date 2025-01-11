@@ -1,6 +1,7 @@
 import { hooks } from "./lib/hooks.js";
 import pts from "./lib/pts.js";
 import rome from "./rome.js";
+import pipeline from "./game/pipeline.js";
 
 namespace app {
 	window['App'] = app;
@@ -18,6 +19,7 @@ namespace app {
 		STILL
 	};
 	export var error;
+	export var feed = 'abc';
 	var keys = {};
 	var buttons = {};
 	var pos: vec2 = [0, 0];
@@ -124,6 +126,7 @@ namespace app {
 			document.onmouseup = onmouseup;
 			document.onwheel = onwheel;
 		}
+		await pipeline.init();
 		await rome.init();
 		loop(0);
 	}
@@ -154,6 +157,7 @@ namespace app {
 		last = current;
 		rome.step();
 		hooks.emit('animationFrame', false);
+		pipeline.render();
 		wheel = 0;
 		process_keys();
 		process_mouse_buttons();

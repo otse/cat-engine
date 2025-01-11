@@ -1,6 +1,6 @@
 import aabb2 from "./aabb2.js";
 
-// this is a not-in-place utility for working on simple points
+// this is a utility for working on two dimensional arrays
 
 export interface Pt { x: number; y: number };
 
@@ -17,7 +17,7 @@ class pts {
 		return [n, m];
 	}
 
-	static to_string(a: vec2, p) {
+	static to_string(a: vec2, p = 1) {
 		const e = (i) => a[i].toFixed(p);
 		return `${e(0)}, ${e(1)}`
 	}
