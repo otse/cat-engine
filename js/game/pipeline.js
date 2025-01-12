@@ -50,7 +50,6 @@ var pipeline;
 (function (pipeline) {
     pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
     pipeline.dotsPerInch = 1;
-    pipeline.delta = 0;
     let groups;
     (function (groups) {
     })(groups = pipeline.groups || (pipeline.groups = {}));
@@ -67,12 +66,11 @@ var pipeline;
         pipeline.renderer.render(pipeline.scene, pipeline.camera);
         pipeline.renderer.setRenderTarget(null);
         pipeline.renderer.clear();
-        pipeline.renderer.render(pipeline.scenePost, pipeline.camera2);
+        pipeline.renderer.render(pipeline.sceneShader, pipeline.camera2);
     }
     pipeline.render = render;
     function init() {
         console.log('pipeline init');
-        pipeline.clock = new THREE.Clock();
         THREE.ColorManagement.enabled = false;
         THREE.Object3D.DefaultMatrixAutoUpdate = false;
         groups.major = new THREE.Group;
@@ -83,9 +81,9 @@ var pipeline;
         pipeline.scene.frustumCulled = false;
         pipeline.scene.add(groups.major);
         pipeline.scene.background = new THREE.Color('purple');
-        pipeline.scenePost = new THREE.Scene();
-        pipeline.scenePost.frustumCulled = false;
-        pipeline.scenePost.background = new THREE.Color('red');
+        pipeline.sceneShader = new THREE.Scene();
+        pipeline.sceneShader.frustumCulled = false;
+        pipeline.sceneShader.background = new THREE.Color('red');
         pipeline.sceneMask = new THREE.Scene();
         pipeline.sceneMask.add(new THREE.AmbientLight(0xffffff, 1));
         pipeline.ambientLight = new THREE.AmbientLight(0xffffff, 1);
@@ -119,7 +117,7 @@ var pipeline;
         });
         onWindowResize();
         pipeline.quadPost = new THREE.Mesh(pipeline.plane, pipeline.materialPost);
-        pipeline.scenePost.add(pipeline.quadPost);
+        pipeline.sceneShader.add(pipeline.quadPost);
         window.pipeline = pipeline;
     }
     pipeline.init = init;

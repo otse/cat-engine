@@ -56,15 +56,12 @@ namespace pipeline {
 	export const DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
 
 	export var dotsPerInch = 1;
-	export var delta = 0;
-
-	export var clock
 
 	export namespace groups {
 		export var major
 	}
 	export var scene
-	export var scenePost
+	export var sceneShader
 	export var sceneMask
 
 	export var camera
@@ -100,15 +97,13 @@ namespace pipeline {
 
 		renderer.setRenderTarget(null);
 		renderer.clear();
-		renderer.render(scenePost, camera2);
+		renderer.render(sceneShader, camera2);
 	}
 
 	export var plane
 
 	export function init() {
 		console.log('pipeline init')
-
-		clock = new THREE.Clock();
 
 		THREE.ColorManagement.enabled = false;
 		THREE.Object3D.DefaultMatrixAutoUpdate = false;
@@ -122,9 +117,9 @@ namespace pipeline {
 		scene.frustumCulled = false;
 		scene.add(groups.major);
 		scene.background = new THREE.Color('purple');
-		scenePost = new THREE.Scene();
-		scenePost.frustumCulled = false;
-		scenePost.background = new THREE.Color('red');
+		sceneShader = new THREE.Scene();
+		sceneShader.frustumCulled = false;
+		sceneShader.background = new THREE.Color('red');
 
 		sceneMask = new THREE.Scene();
 		sceneMask.add(new THREE.AmbientLight(0xffffff, 1));
@@ -166,7 +161,7 @@ namespace pipeline {
 		});
 		onWindowResize();
 		quadPost = new THREE.Mesh(plane, materialPost);
-		scenePost.add(quadPost);
+		sceneShader.add(quadPost);
 		(window as any).pipeline = pipeline;
 	}
 

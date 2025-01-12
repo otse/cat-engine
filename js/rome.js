@@ -1,7 +1,9 @@
 import app from "./app.js";
+import sprite from "./game/sprite.js";
 import { hooks } from "./lib/hooks.js";
 var rome;
 (function (rome) {
+    rome.size = 8;
     function sample(a) {
         return a[Math.floor(Math.random() * a.length)];
     }
@@ -13,6 +15,7 @@ var rome;
     function init() {
         console.log(' init ');
         app;
+        new sprite({ size: [12, 8] });
     }
     rome.init = init;
     function step() {
