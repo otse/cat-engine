@@ -1,6 +1,7 @@
 import app from "./app.js";
-import sprite from "./game/sprite.js";
 import { hooks } from "./lib/hooks.js";
+import sprite from "./game/sprite.js";
+import zoom from "./game/components/zoom.js";
 var rome;
 (function (rome) {
     rome.size = 8;
@@ -15,6 +16,7 @@ var rome;
     function init() {
         console.log(' init ');
         app;
+        zoom.register();
         new sprite({ size: [12, 8] });
     }
     rome.init = init;

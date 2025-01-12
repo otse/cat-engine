@@ -143,7 +143,7 @@ namespace pipeline {
 		renderer.setSize(100, 100);
 		renderer.setClearColor(0xffffff, 0);
 		renderer.autoClear = true;
-		renderer.outputColorSpace = THREE.RGBColorSpace;
+		// renderer.outputColorSpace = THREE.NoColorSpace;
 		//renderer.setClearAlpha(1.0);
 
 		document.body.appendChild(renderer.domElement);

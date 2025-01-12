@@ -102,7 +102,7 @@ var pipeline;
         pipeline.renderer.setSize(100, 100);
         pipeline.renderer.setClearColor(0xffffff, 0);
         pipeline.renderer.autoClear = true;
-        pipeline.renderer.outputColorSpace = THREE.RGBColorSpace;
+        // renderer.outputColorSpace = THREE.NoColorSpace;
         //renderer.setClearAlpha(1.0);
         document.body.appendChild(pipeline.renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);

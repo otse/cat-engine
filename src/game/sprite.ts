@@ -32,7 +32,7 @@ export class sprite {
 			myUvTransform: this.uvTransform,
 			masked: false,
 			maskColor: new THREE.Vector3(1, 1, 1),
-			fogOfWar: true
+			bool: true
 		}, defines);
 		this.geometry = new THREE.PlaneGeometry(this.data.size[0], this.data.size[1], 1, 1)
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -48,9 +48,9 @@ export function SpriteMaterial(parameters, uniforms: any, defines: any = {}) {
 	material.name = "romespritemat";
 	material.defines = defines;
 	material.onBeforeCompile = function (shader) {
-		material.shader = shader; // hack
+		// material.shader = shader; // Hack
 		shader.uniforms.myUvTransform = { value: uniforms.myUvTransform }
-		shader.uniforms.fogOfWar = { value: uniforms.fogOfWar }
+		shader.uniforms.bool = { value: uniforms.bool }
 		if (uniforms.masked) {
 			shader.uniforms.tMask = { value: pipeline.targetMask.texture }
 			shader.uniforms.maskColor = { value: uniforms.maskColor }
@@ -84,7 +84,7 @@ export function SpriteMaterial(parameters, uniforms: any, defines: any = {}) {
 			varying vec2 myPosition;
 			uniform sampler2D tMask;
 			uniform vec3 maskColor;
-			uniform bool fogOfWar;
+			uniform bool uniball;
 			`
 		);
 		shader.fragmentShader = shader.fragmentShader.replace(
