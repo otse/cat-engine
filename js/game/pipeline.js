@@ -126,7 +126,7 @@ var pipeline;
     function onWindowResize() {
         pipeline.screenSize = [window.innerWidth, window.innerHeight];
         pipeline.screenSize = pts.floor(pipeline.screenSize);
-        pipeline.targetSize = pts.clone(pipeline.screenSize);
+        pipeline.targetSize = pts.copy(pipeline.screenSize);
         if (pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
             pipeline.targetSize = pts.mult(pipeline.screenSize, pipeline.dotsPerInch);
             pipeline.targetSize = pts.floor(pipeline.targetSize);

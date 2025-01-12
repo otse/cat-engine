@@ -1,8 +1,8 @@
-import aabb2 from "../lib/aabb2";
-import pts from "../lib/pts";
-import rome from "../rome";
-import { hooks } from "../lib/hooks";
-import pipeline from "./pipeline";
+import aabb2 from "../lib/aabb2.js";
+import pts from "../lib/pts.js";
+import rome from "../rome.js";
+import { hooks } from "../lib/hooks.js";
+import pipeline from "./pipeline.js";
 export var numbers;
 (function (numbers) {
     numbers.sectors = [0, 0];
@@ -39,7 +39,7 @@ var lod;
     const fog_of_war = false;
     const grid_crawl_makes_sectors = true;
     const size = 8;
-    lod.SectorSpan = 2;
+    lod.SectorSpan = 4;
     lod.stamp = 0; // used only by server slod
     function register() {
         // hooks.create('sectorCreate')
@@ -270,17 +270,12 @@ var lod;
         id = -1;
         type = 'an obj';
         networked = false;
+        sector;
         solid = false;
         wpos = [0, 0];
         rpos = [0, 0];
         size = [100, 100];
-        //subsize: vec2 = [0, 0]
-        shape;
-        sector;
-        ro = 0;
-        z = 0; // z is only used by tiles
-        calcz = 0;
-        height = 0;
+        z = 0;
         bound;
         expand = .5;
         constructor(counts = numbers.objs) {
@@ -298,15 +293,11 @@ var lod;
             this.counts[0]++;
             this.create();
             this.obj_manual_update();
-            this.shape?.show();
         }
         hide() {
             if (this.off())
                 return;
             this.counts[0]--;
-            //this.delete();
-            this.shape?.hide();
-            // console.log(' obj.hide ');
         }
         rebound() {
             this.bound = new aabb2([-this.expand, -this.expand], [this.expand, this.expand]);
@@ -317,68 +308,36 @@ var lod;
         }
         rtospos() {
             this.wtorpos();
-            return pts.clone(this.rpos);
+            return pts.copy(this.rpos);
         }
         tick() {
             // implement me
         }
         create() {
-            // implement me
-            // typically used to create a sprite
-            console.warn(' (lod) obj.create ');
+            this._create();
         }
-        // delete is never used
         delete() {
-            // implement me
-            // console.warn(' (lod) obj.delete ');
+            this._delete();
+        }
+        step() {
+            this.wtorpos();
+            this.rebound();
+            this._step();
+        }
+        _create() {
+        }
+        _delete() {
+        }
+        _step() {
         }
         obj_manual_update() {
             // implement me
             this.wtorpos();
-            this.shape?.shape_manual_update();
         }
         is_type(types) {
             return types.indexOf(this.type) != -1;
         }
     }
     lod.obj = obj;
-    ;
-    class shape extends toggle {
-        bindObj;
-        counts;
-        constructor(bindObj, counts) {
-            super();
-            this.bindObj = bindObj;
-            this.counts = counts;
-            this.bindObj.shape = this;
-            this.counts[1]++;
-        }
-        shape_manual_update() {
-        }
-        create() {
-        }
-        dispose() {
-        }
-        finalize() {
-            // this.hide();
-            this.counts[1]--;
-            this.bindObj.shape = null;
-            //console.warn('finalize!');
-        }
-        show() {
-            if (this.on())
-                return;
-            this.create();
-            this.counts[0]++;
-        }
-        hide() {
-            if (this.off())
-                return;
-            this.dispose();
-            this.finalize();
-            this.counts[0]--;
-        }
-    }
-    lod.shape = shape;
 })(lod || (lod = {}));
 export default lod;

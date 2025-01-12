@@ -1,6 +1,6 @@
 import app from "./app.js";
 import { hooks } from "./lib/hooks.js";
-import sprite from "./game/sprite.js";
+import tile from "./game/objects/tile.js";
 import zoom from "./game/components/zoom.js";
 var rome;
 (function (rome) {
@@ -17,7 +17,10 @@ var rome;
         console.log(' init ');
         app;
         zoom.register();
-        new sprite({ size: [12, 8] });
+        new tile({ _type: 'direct', _wpos: [0, 0, 0] });
+        new tile({ _type: 'direct', _wpos: [1, 0, 0] });
+        new tile({ _type: 'direct', _wpos: [1, 1, 0] });
+        //new sprite({ size: [12, 8] });
     }
     rome.init = init;
     function step() {

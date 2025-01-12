@@ -3,18 +3,28 @@ class pts {
     static pt(a) {
         return { x: a[0], y: a[1] };
     }
-    static clone(zx) {
-        return [zx[0], zx[1]];
+    static area_every(aabb, callback) {
+        let y = aabb.min[1];
+        for (; y <= aabb.max[1]; y++) {
+            let x = aabb.max[0];
+            for (; x >= aabb.min[0]; x--) {
+                callback([x, y]);
+            }
+        }
+    }
+    static copy(a) {
+        return [a[0], a[1]];
     }
     static make(n, m) {
         return [n, m];
     }
-    static to_string(a, p = 1) {
-        const e = (i) => a[i].toFixed(p);
-        return `${e(0)}, ${e(1)}`;
+    static to_string(a) {
+        const pr = (b) => b != undefined ? `, ${b}` : '';
+        return `${a[0]}, ${a[1]}` + pr(a[2]) + pr(a[3]);
     }
-    static fixed(a) {
-        return [a[0]];
+    static to_string_fixed(a) {
+        const pr = (b) => b != undefined ? `, ${b}` : '';
+        return `${a[0].toFixed(1)}, ${a[1].toFixed(1)}` + pr(a[2]) + pr(a[3]);
     }
     static func(bb, callback) {
         let y = bb.min[1];
@@ -37,10 +47,13 @@ class pts {
     //static range(a: vec2, b: vec2): boolean {
     //	return true 
     //}
-    static clamp(a, min, max) {
-        const clamp = (val, min, max) => val > max ? max : val < min ? min : val;
+    /*
+    static clamp(a: vec2, min: vec2, max: vec2): vec2 {
+        const clamp = (val, min, max) =>
+            val > max ? max : val < min ? min : val;
         return [clamp(a[0], min[0], max[0]), clamp(a[1], min[1], max[1])];
     }
+    */
     static floor(a) {
         return [Math.floor(a[0]), Math.floor(a[1])];
     }
@@ -56,17 +69,11 @@ class pts {
     static mult(a, n, m) {
         return [a[0] * n, a[1] * (m || n)];
     }
-    static multv(a, b) {
-        return [a[0] * b[0], a[1] * b[1]];
-    }
     static mults(a, b) {
         return [a[0] * b[0], a[1] * b[1]];
     }
     static divide(a, n, m) {
         return [a[0] / n, a[1] / (m || n)];
-    }
-    static dividev(a, b) {
-        return [a[0] / b[0], a[1] / b[1]];
     }
     static divides(a, b) {
         return [a[0] / b[0], a[1] / b[1]];
@@ -89,15 +96,14 @@ class pts {
     static max(a, b) {
         return [Math.max(a[0], b[0]), Math.max(a[1], b[1])];
     }
+    static _32(a) {
+        return [a[0], a[1]];
+    }
     static together(zx) {
         return zx[0] + zx[1];
     }
-    static length_(a) {
-        return a[0] * a[0] + a[1] * a[1];
-    }
-    // todo even and uneven are useless freak functions
     static uneven(a, n = -1) {
-        let b = pts.clone(a);
+        let b = pts.copy(a);
         if (b[0] % 2 != 1) {
             b[0] += n;
         }
@@ -107,7 +113,7 @@ class pts {
         return b;
     }
     static even(a, n = -1) {
-        let b = pts.clone(a);
+        let b = pts.copy(a);
         if (b[0] % 2 != 0) {
             b[0] += n;
         }
@@ -117,10 +123,7 @@ class pts {
         return b;
     }
     static angle(a, b) {
-        return Math.atan2(a[0] - b[0], a[1] - b[1]);
-    }
-    static towards(angle, speed) {
-        return [speed * Math.sin(angle), speed * Math.cos(angle)];
+        return -Math.atan2(a[0] - b[0], a[1] - b[1]);
     }
     // https://vorg.github.io/pex/docs/pex-geom/Vec2.html
     static dist(a, b) {

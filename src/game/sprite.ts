@@ -1,6 +1,10 @@
+import pts from "../lib/pts.js";
+import bobj from "./objects/bobj.js";
+import lod from "./lod.js";
 import pipeline from "./pipeline.js";
 
 interface sprite_literal {
+	bound: bobj,
 	size: vec2;
 	data?: number;
 };
@@ -12,6 +16,7 @@ export namespace sprite {
 const doWireFrames = false;
 
 export class sprite {
+	bound: bobj
 	uvTransform
 	mesh
 	geometry
@@ -19,6 +24,8 @@ export class sprite {
 	constructor(
 		public readonly data: sprite_literal
 	) {
+		(this.data.bound as any).sprite = this;
+		this.bound = this.data.bound;
 		this.uvTransform = new THREE.Matrix3;
 		this.uvTransform.setUvTransform(0, 0, 1, 1, 0, 0, 1);
 		let defines = {} as any;
@@ -36,6 +43,8 @@ export class sprite {
 		}, defines);
 		this.geometry = new THREE.PlaneGeometry(this.data.size[0], this.data.size[1], 1, 1)
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
+		let pos = pts.add(this.bound.rpos, [0, 0]);
+		this.mesh.position.fromArray([...pos, this.bound.z]);
 		pipeline.groups.major.add(this.mesh);
 	}
 };

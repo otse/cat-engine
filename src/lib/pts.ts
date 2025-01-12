@@ -1,29 +1,42 @@
 import aabb2 from "./aabb2.js";
 
-// this is a utility for working on two dimensional arrays
-
 export interface Pt { x: number; y: number };
+
+type both = vec2 | vec3;
 
 class pts {
 	static pt(a: vec2): Pt {
 		return { x: a[0], y: a[1] };
 	}
 
-	static clone(zx: vec2): vec2 {
-		return [zx[0], zx[1]];
+	static area_every(aabb: aabb2, callback: (pos: vec2) => any) {
+		let y = aabb.min[1];
+		for (; y <= aabb.max[1]; y++) {
+			let x = aabb.max[0];
+			for (; x >= aabb.min[0]; x--) {
+				callback([x, y]);
+			}
+		}
+	}
+
+	static copy(a: both): vec2 {
+		return [a[0], a[1]];
 	}
 
 	static make(n: number, m: number): vec2 {
 		return [n, m];
 	}
 
-	static to_string(a: vec2, p = 1) {
-		const e = (i) => a[i].toFixed(p);
-		return `${e(0)}, ${e(1)}`
+	static to_string(a: vec2 | vec3 | vec4) {
+		const pr = (b) => b != undefined ? `, ${b}` : '';
+
+		return `${a[0]}, ${a[1]}` + pr(a[2]) + pr(a[3]);
 	}
 
-	static fixed(a: vec2) {
-		return [a[0]]
+	static to_string_fixed(a: vec2 | vec3 | vec4) {
+		const pr = (b) => b != undefined ? `, ${b}` : '';
+
+		return `${a[0].toFixed(1)}, ${a[1].toFixed(1)}` + pr(a[2]) + pr(a[3]);
 	}
 
 	static func(bb: aabb2, callback: (pos: vec2) => any) {
@@ -39,7 +52,7 @@ class pts {
 	static project(a: vec2): vec2 { // dimetric
 		return [a[0] / 2 + a[1] / 2, a[1] / 4 - a[0] / 4];
 	}
-
+	
 	static unproject(a: vec2): vec2 { // dimetric
 		return [a[0] - a[1] * 2, a[1] * 2 + a[0]];
 	}
@@ -51,14 +64,14 @@ class pts {
 	//static range(a: vec2, b: vec2): boolean {
 	//	return true 
 	//}
-	
+	/*
 	static clamp(a: vec2, min: vec2, max: vec2): vec2 {
 		const clamp = (val, min, max) =>
 			val > max ? max : val < min ? min : val;
 		return [clamp(a[0], min[0], max[0]), clamp(a[1], min[1], max[1])];
 	}
+	*/
 	
-
 	static floor(a: vec2): vec2 {
 		return [Math.floor(a[0]), Math.floor(a[1])];
 	}
@@ -79,20 +92,12 @@ class pts {
 		return [a[0] * n, a[1] * (m || n)];
 	}
 
-	static multv(a: vec2, b: vec2): vec2 {
-		return [a[0] * b[0], a[1] * b[1]];
-	}
-
 	static mults(a: vec2, b: vec2): vec2 {
 		return [a[0] * b[0], a[1] * b[1]];
 	}
 
-	static divide(a: vec2, n: number, m?: number): vec2 {
+	static divide(a: both, n: number, m?: number): vec2 {
 		return [a[0] / n, a[1] / (m || n)];
-	}
-
-	static dividev(a: vec2, b: vec2): vec2 {
-		return [a[0] / b[0], a[1] / b[1]];
 	}
 
 	static divides(a: vec2, b: vec2): vec2 {
@@ -115,25 +120,24 @@ class pts {
 		return [Math.abs(a[0]), Math.abs(a[1])];
 	}
 
-	static min(a: vec2, b: vec2): vec2 {
+	static min(a: both, b: both): vec2 {
 		return [Math.min(a[0], b[0]), Math.min(a[1], b[1])];
 	}
 
-	static max(a: vec2, b: vec2): vec2 {
+	static max(a: both, b: both): vec2 {
 		return [Math.max(a[0], b[0]), Math.max(a[1], b[1])];
+	}
+
+	static _32(a: vec3): vec2 {
+		return [a[0], a[1]];
 	}
 
 	static together(zx: vec2): number {
 		return zx[0] + zx[1];
 	}
 
-	static length_(a: vec2) {
-		return a[0] * a[0] + a[1] * a[1];
-	}
-
-	// todo even and uneven are useless freak functions
 	static uneven(a: vec2, n: number = -1): vec2 {
-		let b = pts.clone(a);
+		let b = pts.copy(a);
 		if (b[0] % 2 != 1) {
 			b[0] += n;
 		}
@@ -142,9 +146,8 @@ class pts {
 		}
 		return b;
 	}
-
 	static even(a: vec2, n: number = -1): vec2 {
-		let b = pts.clone(a);
+		let b = pts.copy(a);
 		if (b[0] % 2 != 0) {
 			b[0] += n;
 		}
@@ -153,15 +156,11 @@ class pts {
 		}
 		return b;
 	}
-
+	
 	static angle(a: vec2, b: vec2) {
-		return Math.atan2(
+		return -Math.atan2(
 			a[0] - b[0],
-			a[1] - b[1]);
-	}
-
-	static towards(angle: number, speed: number): vec2 {
-		return [speed * Math.sin(angle), speed * Math.cos(angle)];
+			a[1] - b[1])
 	}
 
 	// https://vorg.github.io/pex/docs/pex-geom/Vec2.html

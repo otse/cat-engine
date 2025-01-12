@@ -171,7 +171,7 @@ namespace pipeline {
 	function onWindowResize() {
 		screenSize = [window.innerWidth, window.innerHeight];
 		screenSize = pts.floor(screenSize);
-		targetSize = pts.clone(screenSize);
+		targetSize = pts.copy(screenSize);
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
 			targetSize = pts.mult(screenSize, dotsPerInch);
 			targetSize = pts.floor(targetSize);
