@@ -4,14 +4,14 @@ declare type vec2 = [number, number];
 
 declare var THREE: any;
 
-type typez = 'dud' | 'direct' | 'tile' | 'wall' | 'ply'
+type typez = '' | 'tile' | 'bettertile' | 'wall' | 'ply'
 
-interface bobj_literal {
-	_type: typez
+interface gobj_literal {
+	_type?: typez
 	_wpos: vec3,
 	_r?: number,
 	name?: string,
 	extra?: any
 }
 
-declare class bobj {z; constructor(literal)}
+declare class gobj {z; constructor(literal)}

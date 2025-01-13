@@ -5,14 +5,14 @@ import lod from "../lod.js";
 type oproptype =
 	'Car' | 'Ped' | 'Ply' | 'Block' | 'Floor';
 
-export namespace baseobj {
+export namespace gobj {
 
 }
 
-export class bobj extends lod.obj {
+export class gobj extends lod.obj {
 	r = 0 // rotation
 	z = 0 // third axis
-	constructor(public data: bobj_literal) {
+	constructor(public data: gobj_literal) {
 		super(undefined);
 		this.wpos = pts.copy(data._wpos);
 		this.z = data._wpos[2];
@@ -29,4 +29,4 @@ export class bobj extends lod.obj {
 	}
 }
 
-export default bobj;
+export default gobj;

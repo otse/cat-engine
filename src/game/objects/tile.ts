@@ -1,16 +1,17 @@
 import lod from "../lod.js";
-import bobj from "./bobj.js";
+import gobj from "./gobj.js";
 import sprite from "../sprite.js";
 
-export class tile extends bobj {
-	constructor(data: bobj_literal) {
+export class tile extends gobj {
+	constructor(data: gobj_literal) {
 		super({
 			name: 'a tile',
 			...data,
-			_type: 'tile',
+			// _type: 'tile' // Won't work
 		});
+		this.data._type = 'tile';
 		new sprite({ bound: this, size: [12, 8] });
-
+		console.log('tile', this.data);
 	}
 }
 

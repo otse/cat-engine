@@ -1,10 +1,10 @@
 import pts from "../lib/pts.js";
-import bobj from "./objects/bobj.js";
+import gobj from "./objects/gobj.js";
 import lod from "./lod.js";
 import pipeline from "./pipeline.js";
 
 interface sprite_literal {
-	bound: bobj,
+	bound: gobj,
 	size: vec2;
 	data?: number;
 };
@@ -16,7 +16,7 @@ export namespace sprite {
 const doWireFrames = false;
 
 export class sprite {
-	bound: bobj
+	bound: gobj
 	uvTransform
 	mesh
 	geometry
