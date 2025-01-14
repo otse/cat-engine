@@ -5,21 +5,22 @@ import pipeline from "./pipeline.js";
 const doWireFrames = false;
 export class sprite {
     data;
-    bound;
+    gobj;
     uvTransform;
     mesh;
     geometry;
     material;
     constructor(data) {
         this.data = data;
-        this.data.bound.sprite = this;
-        this.bound = this.data.bound;
+        this.data.gobj.sprite = this;
+        this.gobj = this.data.gobj;
         this.uvTransform = new THREE.Matrix3;
         this.uvTransform.setUvTransform(0, 0, 1, 1, 0, 0, 1);
         let defines = {};
         // defines.MASKED = 1;
         this.material = SpriteMaterial({
             map: pipeline.load_texture(`img/hex/tile.png`, 0),
+            // color: 'white',
             transparent: true,
             depthWrite: false,
             depthTest: false,
@@ -29,10 +30,11 @@ export class sprite {
             maskColor: new THREE.Vector3(1, 1, 1),
             bool: true
         }, defines);
+        // const size = { this.data }; // Error
         this.geometry = new THREE.PlaneGeometry(this.data.size[0], this.data.size[1], 1, 1);
         this.mesh = new THREE.Mesh(this.geometry, this.material);
-        let pos = pts.add(this.bound.rpos, [0, 0]);
-        this.mesh.position.fromArray([...pos, this.bound.z]);
+        let pos = pts.add(this.gobj.rpos, [0, 0]);
+        this.mesh.position.fromArray([...pos, this.gobj.z]);
         pipeline.groups.major.add(this.mesh);
     }
 }
@@ -67,20 +69,20 @@ export function SpriteMaterial(parameters, uniforms, defines = {}) {
 			`);
         shader.fragmentShader = shader.fragmentShader.replace(`#include <map_pars_fragment>`, `
 			#include <map_pars_fragment>
-			varying vec2 myPosition;
+			/*varying vec2 myPosition;
 			uniform sampler2D tMask;
 			uniform vec3 maskColor;
-			uniform bool uniball;
+			uniform bool uniball;*/
 			`);
         shader.fragmentShader = shader.fragmentShader.replace(`#include <map_fragment>`, `
 			#include <map_fragment>
 
-			#ifdef MASKED
+			/*#ifdef MASKEDx
 				vec4 texelColor = texture2D( tMask, myPosition );
 				texelColor.rgb = mix(texelColor.rgb, maskColor, 0.7);
 				if (texelColor.a > 0.5)
 				diffuseColor.rgb = texelColor.rgb;
-			#endif
+			#endif*/
 			`);
     };
     return material;

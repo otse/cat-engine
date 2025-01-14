@@ -19,7 +19,7 @@ export namespace numbers {
 };
 
 namespace lod {
-	export const size = 12;
+	export const size = 9;
 
 	const chunk_coloration = false;
 
@@ -43,7 +43,7 @@ namespace lod {
 	}
 
 	export function project(unit: vec2): vec2 {
-		return pts.mult(pts.project(unit), size);
+		return pts.mult(pts.project(unit), 1);
 	}
 
 	export function unproject(pixel: vec2): vec2 {

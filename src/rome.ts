@@ -25,8 +25,11 @@ namespace rome {
 		zoom.register();
 		new tile({ _wpos: [0, 0, 0] });
 		new bettertile({ name: 'ass', _wpos: [1, 0, 0] });
+		new bettertile({ _type: 'direct', _wpos: [0, 1, 0] });
 		new bettertile({ _type: 'direct', _wpos: [1, 1, 0] });
-		//new sprite({ size: [12, 8] });
+		new bettertile({ _type: 'direct', _wpos: [0, 2, 0] });
+		new bettertile({ _type: 'direct', _wpos: [0, 3, 0] });
+		// new sprite({ size: [12, 8] });
 	}
 
 	export function step() {

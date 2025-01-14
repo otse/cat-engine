@@ -14,7 +14,7 @@ export var numbers;
 ;
 var lod;
 (function (lod) {
-    lod.size = 12;
+    lod.size = 9;
     const chunk_coloration = false;
     const fog_of_war = false;
     const grid_crawl_makes_chunks = true;
@@ -28,7 +28,7 @@ var lod;
     }
     lod.register = register;
     function project(unit) {
-        return pts.mult(pts.project(unit), lod.size);
+        return pts.mult(pts.project(unit), 1);
     }
     lod.project = project;
     function unproject(pixel) {

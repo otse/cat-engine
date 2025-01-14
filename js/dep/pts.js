@@ -36,7 +36,14 @@ class pts {
         }
     }
     static project(a) {
-        return [a[0] / 2 + a[1] / 2, a[1] / 4 - a[0] / 4];
+        const x = a[0];
+        const y = a[1];
+        const width = 26;
+        const height = 16;
+        return [
+            (x - y) * (-width / 2),
+            (x + y) * (height / 2) / 2 // Vertical axis
+        ];
     }
     static unproject(a) {
         return [a[0] - a[1] * 2, a[1] * 2 + a[0]];

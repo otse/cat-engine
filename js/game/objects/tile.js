@@ -13,7 +13,10 @@ export class tile extends gobj {
         this._create();
     }
     _create() {
-        new sprite({ bound: this, size: [12, 8] });
+        new sprite({
+            gobj: this,
+            size: [17, 9]
+        });
     }
 }
 export default tile;
