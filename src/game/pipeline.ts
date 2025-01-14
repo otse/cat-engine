@@ -146,19 +146,19 @@ varying vec2 vUv;
 uniform sampler2D tDiffuse;
 void main() {
 	vec4 clr = texture2D( tDiffuse, vUv );
-	//clr.rgb = mix(clr.rgb, vec3(1.5), 0.0);
+	// clr.rgb = mix(clr.rgb, vec3(1.0, 0, 0), 0.5);
 	
 	if (compression == 1) {
-		//mainImage(clr, vUv, clr);
+		mainImage(clr, vUv, clr);
 	}
 
-	//vec3 original_color = clr.rgb;
-	//vec3 lumaWeights = vec3(.25,.50,.25);
-	//vec3 grey = vec3(dot(lumaWeights,original_color));
-	//clr = vec4(grey + saturation * (original_color - grey), 1.0);
+	/*vec3 original_color = clr.rgb;
+	vec3 lumaWeights = vec3(.25,.50,.25);
+	vec3 grey = vec3(dot(lumaWeights,original_color));
+	clr = vec4(grey + saturation * (original_color - grey), 1.0);*/
 	
 	gl_FragColor = clr;
-	//gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
+	// gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
 
 }`
 
@@ -207,7 +207,7 @@ namespace pipeline {
 		renderer.clear();
 		renderer.render(sceneMask, camera);
 
-		renderer.setRenderTarget(target);
+		renderer.setRenderTarget(target); // target
 		renderer.clear();
 		renderer.render(scene, camera);
 
@@ -236,13 +236,13 @@ namespace pipeline {
 
 		sceneShader = new THREE.Scene();
 		sceneShader.frustumCulled = false;
-		//sceneShader.background = new THREE.Color('purple');
-		sceneShader.add(new THREE.AmbientLight('white', 1));
+		sceneShader.background = new THREE.Color('purple');
+		sceneShader.add(new THREE.AmbientLight('white', Math.PI/1));
 
 		sceneMask = new THREE.Scene();
-		sceneMask.add(new THREE.AmbientLight('white', 1));
+		sceneMask.add(new THREE.AmbientLight('white', Math.PI/1));
 
-		ambientLight = new THREE.AmbientLight('white', 1);
+		ambientLight = new THREE.AmbientLight('white', Math.PI/1);
 		scene.add(ambientLight);
 
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
@@ -252,16 +252,22 @@ namespace pipeline {
 		target = new THREE.WebGLRenderTarget(1024, 1024, {
 			minFilter: THREE.NearestFilter,
 			magFilter: THREE.NearestFilter,
-			format: THREE.RGBAFormat
+			format: THREE.RGBAFormat,
+			colorSpace: THREE.NoColorSpace,
+			generateMipmaps: false,
 		});
 		targetMask = target.clone();
 
-		renderer = new THREE.WebGLRenderer({ antialias: false });
+		renderer = new THREE.WebGLRenderer({
+			antialias: false,
+			// premultipliedAlpha: false
+		});
 		renderer.setPixelRatio(dotsPerInch);
 		renderer.setSize(100, 100);
 		renderer.setClearColor(0xffffff, 0);
 		renderer.autoClear = true;
-		// renderer.outputColorSpace = THREE.NoColorSpace;
+		renderer.toneMapping = THREE.NoToneMapping;
+		//renderer.outputColorSpace = THREE.SRGBColorSpace;
 		//renderer.setClearAlpha(1.0);
 
 		document.body.appendChild(renderer.domElement);
@@ -271,10 +277,11 @@ namespace pipeline {
 		materialPost = new THREE.ShaderMaterial({
 			uniforms: {
 				tDiffuse: { value: target.texture },
-				compression: { value: 1 }
+				compression: { value: 0 }
 			},
 			vertexShader: vertexScreen,
 			fragmentShader: fragmentPost,
+			depthTest: false,
 			depthWrite: false
 		});
 		onWindowResize();
@@ -297,7 +304,7 @@ namespace pipeline {
 			targetSize = pts.even(targetSize, -1);
 		}
 		renderer.setSize(screenSize[0], screenSize[1]);
-		
+
 		console.log(`
 		window inner ${pts.to_string(screenSize)}\n
 		      new is ${pts.to_string(targetSize)}`);

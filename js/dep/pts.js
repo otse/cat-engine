@@ -42,7 +42,7 @@ class pts {
         const height = 16;
         return [
             (x - y) * (-width / 2),
-            (x + y) * (height / 2) / 2 // Vertical axis
+            (x + y) * (height / 2) / 2
         ];
     }
     static unproject(a) {

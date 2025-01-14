@@ -144,19 +144,19 @@ varying vec2 vUv;
 uniform sampler2D tDiffuse;
 void main() {
 	vec4 clr = texture2D( tDiffuse, vUv );
-	//clr.rgb = mix(clr.rgb, vec3(1.5), 0.0);
+	// clr.rgb = mix(clr.rgb, vec3(1.0, 0, 0), 0.5);
 	
 	if (compression == 1) {
-		//mainImage(clr, vUv, clr);
+		mainImage(clr, vUv, clr);
 	}
 
-	//vec3 original_color = clr.rgb;
-	//vec3 lumaWeights = vec3(.25,.50,.25);
-	//vec3 grey = vec3(dot(lumaWeights,original_color));
-	//clr = vec4(grey + saturation * (original_color - grey), 1.0);
+	/*vec3 original_color = clr.rgb;
+	vec3 lumaWeights = vec3(.25,.50,.25);
+	vec3 grey = vec3(dot(lumaWeights,original_color));
+	clr = vec4(grey + saturation * (original_color - grey), 1.0);*/
 	
 	gl_FragColor = clr;
-	//gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
+	// gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
 
 }`;
 const vertexScreen = `
@@ -178,7 +178,7 @@ var pipeline;
         pipeline.renderer.setRenderTarget(pipeline.targetMask);
         pipeline.renderer.clear();
         pipeline.renderer.render(pipeline.sceneMask, pipeline.camera);
-        pipeline.renderer.setRenderTarget(pipeline.target);
+        pipeline.renderer.setRenderTarget(pipeline.target); // target
         pipeline.renderer.clear();
         pipeline.renderer.render(pipeline.scene, pipeline.camera);
         pipeline.renderer.setRenderTarget(null);
@@ -200,11 +200,11 @@ var pipeline;
         pipeline.scene.background = new THREE.Color('grey');
         pipeline.sceneShader = new THREE.Scene();
         pipeline.sceneShader.frustumCulled = false;
-        //sceneShader.background = new THREE.Color('purple');
-        pipeline.sceneShader.add(new THREE.AmbientLight('white', 1));
+        pipeline.sceneShader.background = new THREE.Color('purple');
+        pipeline.sceneShader.add(new THREE.AmbientLight('white', Math.PI / 1));
         pipeline.sceneMask = new THREE.Scene();
-        pipeline.sceneMask.add(new THREE.AmbientLight('white', 1));
-        pipeline.ambientLight = new THREE.AmbientLight('white', 1);
+        pipeline.sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
+        pipeline.ambientLight = new THREE.AmbientLight('white', Math.PI / 1);
         pipeline.scene.add(pipeline.ambientLight);
         if (pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
             pipeline.dotsPerInch = window.devicePixelRatio;
@@ -212,25 +212,32 @@ var pipeline;
         pipeline.target = new THREE.WebGLRenderTarget(1024, 1024, {
             minFilter: THREE.NearestFilter,
             magFilter: THREE.NearestFilter,
-            format: THREE.RGBAFormat
+            format: THREE.RGBAFormat,
+            colorSpace: THREE.NoColorSpace,
+            generateMipmaps: false,
         });
         pipeline.targetMask = pipeline.target.clone();
-        pipeline.renderer = new THREE.WebGLRenderer({ antialias: false });
+        pipeline.renderer = new THREE.WebGLRenderer({
+            antialias: false,
+            // premultipliedAlpha: false
+        });
         pipeline.renderer.setPixelRatio(pipeline.dotsPerInch);
         pipeline.renderer.setSize(100, 100);
         pipeline.renderer.setClearColor(0xffffff, 0);
         pipeline.renderer.autoClear = true;
-        // renderer.outputColorSpace = THREE.NoColorSpace;
+        pipeline.renderer.toneMapping = THREE.NoToneMapping;
+        //renderer.outputColorSpace = THREE.SRGBColorSpace;
         //renderer.setClearAlpha(1.0);
         document.body.appendChild(pipeline.renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);
         pipeline.materialPost = new THREE.ShaderMaterial({
             uniforms: {
                 tDiffuse: { value: pipeline.target.texture },
-                compression: { value: 1 }
+                compression: { value: 0 }
             },
             vertexShader: vertexScreen,
             fragmentShader: fragmentPost,
+            depthTest: false,
             depthWrite: false
         });
         onWindowResize();

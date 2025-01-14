@@ -55,8 +55,8 @@ class pts {
 		const width = 26;
 		const height = 16;
 		return [
-			(x - y) * (-width / 2),        // Horizontal axis
-			(x + y) * (height / 2) / 2   // Vertical axis
+			(x - y) * (-width / 2),
+			(x + y) * (height / 2) / 2
 		];
 	}
 
