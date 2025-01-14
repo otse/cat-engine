@@ -18,9 +18,14 @@ var rome;
         console.log(' init ');
         app;
         zoom.register();
-        new tile({ _wpos: [0, 0, 0] });
-        new bettertile({ name: 'ass', _wpos: [1, 0, 0] });
-        new bettertile({ _type: 'direct', _wpos: [0, 1, 0] });
+        new bettertile({ _type: 'direct', color: 'pink', _wpos: [-1, 0, 0] });
+        new bettertile({ _type: 'direct', color: 'salmon', _wpos: [-1, -1, 0] });
+        new bettertile({ _type: 'direct', color: 'cyan', _wpos: [0, -1, 0] });
+        new bettertile({ _type: 'direct', color: 'yellow', _wpos: [-1, 1, 0] });
+        new bettertile({ _type: 'direct', color: 'orange', _wpos: [1, -1, 0] });
+        new tile({ color: 'red', _wpos: [0, 0, 0] });
+        new bettertile({ name: 'ass', color: 'pink', _wpos: [1, 0, 0] });
+        new bettertile({ _type: 'direct', color: 'blue', _wpos: [0, 1, 0] });
         new bettertile({ _type: 'direct', _wpos: [1, 1, 0] });
         new bettertile({ _type: 'direct', _wpos: [0, 2, 0] });
         new bettertile({ _type: 'direct', _wpos: [1, 0, 0] });
@@ -31,6 +36,7 @@ var rome;
     }
     rome.init = init;
     function step() {
+        hooks.emit('romeComponents', 0);
         hooks.emit('romeStep', 0);
     }
     rome.step = step;

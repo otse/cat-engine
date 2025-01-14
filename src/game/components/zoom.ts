@@ -7,7 +7,7 @@ namespace zoom {
     let zoom = 0;
     
     export function register() {
-        hooks.addListener('romeStep', step);
+        hooks.addListener('romeComponents', step);
     }
 
     async function step() {

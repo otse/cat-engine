@@ -5,7 +5,7 @@ var zoom;
 (function (zoom_1) {
     let zoom = 0;
     function register() {
-        hooks.addListener('romeStep', step);
+        hooks.addListener('romeComponents', step);
     }
     zoom_1.register = register;
     async function step() {

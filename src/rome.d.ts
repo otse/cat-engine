@@ -10,6 +10,7 @@ interface gobj_literal {
 	_type?: typez
 	_wpos: vec3,
 	_r?: number,
+	color?: string,
 	name?: string,
 	extra?: any
 }
