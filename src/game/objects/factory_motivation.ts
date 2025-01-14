@@ -8,6 +8,10 @@ import tile from "./tile.js";
 export function gobjfactory(data: gobj_literal): gobj | undefined {
     let obj: gobj | undefined;
     switch (data._type) {
+        case 'dud':
+        case 'direct':
+            console.warn(' unset type passed to factory ');
+            break;
         case 'tile':
             obj = new tile(data);
             break;

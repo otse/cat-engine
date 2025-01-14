@@ -1,5 +1,5 @@
 import app from '../app.js';
-import pts from '../lib/pts.js';
+import pts from '../dep/pts.js';
 
 const fragmentBackdrop = `
 varying vec2 vUv;

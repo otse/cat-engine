@@ -1,9 +1,6 @@
 
-import pts from "../../lib/pts.js";
+import pts from "../../dep/pts.js";
 import lod from "../lod.js";
-
-type oproptype =
-	'Car' | 'Ped' | 'Ply' | 'Block' | 'Floor';
 
 export namespace gobj {
 

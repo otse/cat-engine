@@ -1,54 +1,36 @@
-import aabb2 from "../lib/aabb2.js";
-import pts from "../lib/pts.js";
+import aabb2 from "../dep/aabb2.js";
+import pts from "../dep/pts.js";
+import hooks from "../dep/hooks.js";
+
+import ren from "./pipeline.js";
+import gtasmr from "../rome.js";
+import toggle from "../dep/toggle.js";
 import rome from "../rome.js";
-import { hooks } from "../lib/hooks.js";
-import pipeline from "./pipeline.js";
 
 export namespace numbers {
 	export type tally = [active: number, total: number]
 
-	export var sectors: tally = [0, 0]
-	export var sprites: tally = [0, 0]
+	export var chunks: tally = [0, 0]
 	export var objs: tally = [0, 0]
+
+	export var sprites: tally = [0, 0]
+	export var tiles: tally = [0, 0]
+	export var walls: tally = [0, 0]
 };
 
-class toggle {
-	protected active = false;
-	isActive() { return this.active };
-	on() {
-		if (this.active) {
-			// console.warn(' (toggle) already on ');
-			return true;
-			// it was on before
-		}
-		this.active = true;
-		return false;
-		// it wasn't on before
-	}
-	off() {
-		if (!this.active) {
-			// console.warn(' (toggle) already off ');
-			return true;
-		}
-		this.active = false;
-		return false;
-	}
-}
-
 namespace lod {
+	export const size = 12;
 
 	const chunk_coloration = false;
 
 	const fog_of_war = false;
 
-	const grid_crawl_makes_sectors = true;
-
-	const size = 8;
+	const grid_crawl_makes_chunks = true;
 
 	export var gworld: world;
 	export var ggrid: grid;
 
-	export var SectorSpan = 4;
+	export var SectorSpan = 2;
 
 	export var stamp = 0; // used only by server slod
 
@@ -61,24 +43,26 @@ namespace lod {
 	}
 
 	export function project(unit: vec2): vec2 {
-		return pts.mult(pts.project(unit), rome.size);
+		return pts.mult(pts.project(unit), size);
 	}
 
 	export function unproject(pixel: vec2): vec2 {
-		return pts.divide(pts.unproject(pixel), rome.size);
+		return pts.divide(pts.unproject(pixel), size);
 	}
 
-	export function add(obj: obj) {
-		let sector = gworld.at(lod.world.big(obj.wpos));
-		sector.add(obj);
+	export function add(obj: obj | undefined) {
+		if (!obj)
+			return;
+		let chunk = gworld.atwpos(obj.wpos);
+		chunk.add(obj);
 	}
 
 	export function remove(obj: obj) {
-		obj.sector?.remove(obj);
+		obj.chunk?.remove(obj);
 	}
 
 	export class world {
-		readonly arrays: sector[][] = []
+		readonly arrays: chunk[][] = []
 		constructor(span) {
 			gworld = this;
 			new grid(2, 2);
@@ -88,29 +72,34 @@ namespace lod {
 			ggrid.ons();
 			ggrid.offs();
 		}
-		lookup(big: vec2): sector | undefined {
+		lookup(big: vec2): chunk | undefined {
 			if (this.arrays[big[1]] == undefined)
 				this.arrays[big[1]] = [];
 			return this.arrays[big[1]][big[0]];
 		}
-		at(big: vec2): sector {
+		at(big: vec2): chunk {
 			return this.lookup(big) || this.make(big);
 		}
-		protected make(big): sector {
+		atwpos(wpos: vec2 | vec3): chunk {
+			return this.at(world.big(wpos));
+		}
+		protected make(big): chunk {
 			let s = this.lookup(big);
 			if (s)
 				return s;
-			s = this.arrays[big[1]][big[0]] = new sector(big, this);
+			s = this.arrays[big[1]][big[0]] = new chunk(big, this);
 			return s;
 		}
-		static big(units: vec2): vec2 {
+		static big(units: vec2 | vec3): vec2 {
 			return pts.floor(pts.divide(units, SectorSpan));
 		}
+		// todo add(obj) {}
+		// todo remove(obj) {}
 	}
 
-	export class sector extends toggle {
-		group;
-		color?;
+	export class chunk extends toggle {
+		group
+		color?
 		fog_of_war = false
 		readonly small: aabb2;
 		readonly objs: obj[] = [];
@@ -127,7 +116,7 @@ namespace lod {
 			this.group = new THREE.Group;
 			this.group.frustumCulled = false;
 			this.group.matrixAutoUpdate = false;
-			numbers.sectors[1]++;
+			numbers.chunks[1]++;
 			world.arrays[this.big[1]][this.big[0]] = this;
 			//console.log('sector');
 
@@ -135,12 +124,18 @@ namespace lod {
 
 		}
 		add(obj: obj) {
-			let i = this.objs.indexOf(obj);
-			if (i == -1) {
+			if (!this.objs.includes(obj)) {
 				this.objs.push(obj);
-				obj.sector = this;
-				if (this.isActive() && !obj.isActive())
+				obj.chunk = this;
+				if (this.active)
 					obj.show();
+			}
+		}
+		remove(obj: obj): boolean | undefined {
+			let i = this.objs.indexOf(obj);
+			if (i > -1) {
+				obj.chunk = null;
+				return !!this.objs.splice(i, 1).length;
 			}
 		}
 		stacked(wpos: vec2) {
@@ -150,21 +145,16 @@ namespace lod {
 					stack.push(obj);
 			return stack;
 		}
-		remove(obj: obj): boolean | undefined {
-			let i = this.objs.indexOf(obj);
-			if (i > -1) {
-				obj.sector = null;
-				return !!this.objs.splice(i, 1).length;
-			}
-		}
+		
 		static swap(obj: obj) {
 			// Call me whenever you move
-			let oldSector = obj.sector!;
-			let newSector = oldSector.world.at(lod.world.big(pts.round(obj.wpos)));
-			if (oldSector != newSector) {
-				oldSector.remove(obj);
-				newSector.add(obj);
-				if (!newSector.isActive())
+			let oldChunk = obj.chunk!;
+			let newChunk = oldChunk.world.atwpos(/*pts.round(*/obj.wpos/*)*/);
+			// the pts.round causes an impossible to find bug
+			if (oldChunk != newChunk) {
+				oldChunk.remove(obj);
+				newChunk.add(obj);
+				if (!newChunk.active)
 					obj.hide();
 			}
 		}
@@ -176,19 +166,19 @@ namespace lod {
 		show() {
 			if (this.on())
 				return;
-			numbers.sectors[0]++;
-			for (let obj of this.objs)
+			numbers.chunks[0]++;
+			for (const obj of this.objs)
 				obj.show();
-			pipeline.scene.add(this.group);
+			ren.scene.add(this.group);
 			hooks.call('sectorShow', this);
 		}
 		hide() {
 			if (this.off())
 				return;
-			numbers.sectors[0]--;
+			numbers.chunks[0]--;
 			for (let obj of this.objs)
 				obj.hide();
-			pipeline.scene.remove(this.group);
+			ren.scene.remove(this.group);
 			hooks.call('sectorHide', this);
 		}
 		dist() {
@@ -201,7 +191,7 @@ namespace lod {
 
 	export class grid {
 		big: vec2 = [0, 0];
-		public shown: sector[] = [];
+		public shown: chunk[] = [];
 		visibleObjs: obj[] = []
 		constructor(
 			public spread: number,
@@ -221,7 +211,7 @@ namespace lod {
 			this.spread--;
 			this.outside--;
 		}
-		visible(sector: sector) {
+		visible(sector: chunk) {
 			return sector.dist() < this.spread;
 		}
 		ons() {
@@ -229,14 +219,16 @@ namespace lod {
 			for (let y = -this.spread; y < this.spread + 1; y++) {
 				for (let x = -this.spread; x < this.spread + 1; x++) {
 					let pos = pts.add(this.big, [x, y]);
-					let sector = grid_crawl_makes_sectors ? gworld.at(pos) : gworld.lookup(pos);
-					if (!sector)
+					let chunk = grid_crawl_makes_chunks ? gworld.at(pos) : gworld.lookup(pos);
+					if (!chunk)
 						continue;
-					if (!sector.isActive()) {
-						this.shown.push(sector);
-						sector.show();
-						for (let obj of sector.objs)
-							obj.tick();
+					if (!chunk.active) {
+						this.shown.push(chunk);//
+						chunk.show();
+						// console.log(' show ');
+						// todo why
+						// for (let obj of sector.objs)
+						// obj.step();
 					}
 				}
 			}
@@ -246,34 +238,34 @@ namespace lod {
 			this.visibleObjs = [];
 			let i = this.shown.length;
 			while (i--) {
-				let sector: sector;
-				sector = this.shown[i];
-				if (sector.dist() > this.outside) {
-					sector.hide();
+				let chunk: chunk;
+				chunk = this.shown[i];
+				if (chunk.dist() > this.outside) {
+					chunk.hide();
 					this.shown.splice(i, 1);
 				}
 				else {
-					sector.tick();
-					this.visibleObjs = this.visibleObjs.concat(sector.objs);
+					chunk.tick();
+					this.visibleObjs = this.visibleObjs.concat(chunk.objs);
 				}
 
 				if (fog_of_war) {
-					if (sector.dist() == this.outside) {
+					if (chunk.dist() == this.outside) {
 						//console.log('brim-chunk');
-						sector.fog_of_war = true;
+						chunk.fog_of_war = true;
 						//sector.color = '#555555';
 					}
 					else {
-						sector.fog_of_war = false;
+						chunk.fog_of_war = false;
 						//sector.color = '#ffffff';
 					}
 				}
 			}
 		}
 		ticks() {
-			for (let sector of this.shown)
-				for (let obj of sector.objs)
-					obj.tick();
+			for (const chunk of this.shown) 
+				for (const obj of chunk.objs)
+					obj.step();
 		}
 	}
 
@@ -282,21 +274,19 @@ namespace lod {
 	};
 
 	export class obj extends toggle {
+		static ids = 0
 		id = -1
-		type = 'an obj'
-		networked = false
-		sector: sector | null
-		solid = false
 		wpos: vec2 = [0, 0]
 		rpos: vec2 = [0, 0]
-		size: vec2 = [100, 100]
-		z = 0
+		size: vec2 = [64, 64]
+		chunk: chunk | null
 		bound: aabb2
 		expand = .5
 		constructor(
 			public readonly counts: numbers.tally = numbers.objs) {
 			super();
 			this.counts[1]++;
+			this.id = obj.ids++;
 		}
 		finalize() {
 			// this.hide();
@@ -307,12 +297,16 @@ namespace lod {
 				return;
 			this.counts[0]++;
 			this.create();
-			this.obj_manual_update();
+			this.step(); // Cursor fixed the bug
+			//this.shape?.show();
 		}
 		hide() {
 			if (this.off())
 				return;
 			this.counts[0]--;
+			this.delete();
+			//this.shape?.hide();
+			// console.log(' obj.hide ');
 		}
 		rebound() {
 			this.bound = new aabb2([-this.expand, -this.expand], [this.expand, this.expand]);
@@ -325,9 +319,6 @@ namespace lod {
 			this.wtorpos();
 			return pts.copy(this.rpos);
 		}
-		tick() {
-			// implement me
-		}
 		create() {
 			this._create();
 		}
@@ -335,24 +326,19 @@ namespace lod {
 			this._delete();
 		}
 		step() {
-			this.wtorpos();
-			this.rebound();
 			this._step();
 		}
 		protected _create() {
+			console.warn('obj.create');
 		}
 		protected _delete() {
 		}
 		protected _step() {
-		}
-		obj_manual_update() {
-			// implement me
 			this.wtorpos();
-		}
-		is_type(types: string[]) {
-			return types.indexOf(this.type) != -1;
+			this.rebound();
 		}
 	}
+
 }
 
 export default lod;

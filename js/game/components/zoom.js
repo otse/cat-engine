@@ -1,5 +1,5 @@
 import app from "../../app.js";
-import { hooks } from "../../lib/hooks.js";
+import { hooks } from "../../dep/hooks.js";
 import pipeline from "../pipeline.js";
 var zoom;
 (function (zoom_1) {

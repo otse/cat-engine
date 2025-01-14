@@ -4,7 +4,7 @@ declare type vec2 = [number, number];
 
 declare var THREE: any;
 
-type typez = '' | 'tile' | 'bettertile' | 'wall' | 'ply'
+type typez = 'dud' | 'direct' | 'tile' | 'bettertile' | 'wall' | 'ply'
 
 interface gobj_literal {
 	_type?: typez

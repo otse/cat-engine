@@ -5,11 +5,15 @@ export class tile extends gobj {
         super({
             name: 'a tile',
             ...data,
-            // _type: 'tile' // Won't work
+            // _type: 'tile'
+            // Oops will overwrite subclass 'bettertile'
         });
         this.data._type = 'tile';
-        new sprite({ bound: this, size: [12, 8] });
         console.log('tile', this.data);
+        this._create();
+    }
+    _create() {
+        new sprite({ bound: this, size: [12, 8] });
     }
 }
 export default tile;

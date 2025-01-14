@@ -1,5 +1,5 @@
-import { hooks } from "./lib/hooks.js";
-import pts from "./lib/pts.js";
+import { hooks } from "./dep/hooks.js";
+import pts from "./dep/pts.js";
 import rome from "./rome.js";
 import pipeline from "./game/pipeline.js";
 var app;

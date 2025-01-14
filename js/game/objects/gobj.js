@@ -1,4 +1,4 @@
-import pts from "../../lib/pts.js";
+import pts from "../../dep/pts.js";
 import lod from "../lod.js";
 export class gobj extends lod.obj {
     data;

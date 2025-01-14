@@ -1,4 +1,4 @@
-import pts from "../lib/pts.js";
+import pts from "../dep/pts.js";
 import gobj from "./objects/gobj.js";
 import lod from "./lod.js";
 import pipeline from "./pipeline.js";
