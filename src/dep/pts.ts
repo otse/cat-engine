@@ -51,12 +51,12 @@ class pts {
 
 	static project(a: vec2): vec2 { // dimetric
 		const x = a[0];
-		const y = a[1];
+		const y = -a[1];
 		const width = 26;
 		const height = 16;
 		return [
-			(x - y) * (-width / 2),
-			(x + y) * (height / 2) / 2
+			(x - y) * (width / 2),
+			(x + y) * (-height / 2) / 2
 		];
 	}
 

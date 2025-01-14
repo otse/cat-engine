@@ -23,7 +23,10 @@ var rome;
         new bettertile({ _type: 'direct', _wpos: [0, 1, 0] });
         new bettertile({ _type: 'direct', _wpos: [1, 1, 0] });
         new bettertile({ _type: 'direct', _wpos: [0, 2, 0] });
-        new bettertile({ _type: 'direct', _wpos: [0, 3, 0] });
+        new bettertile({ _type: 'direct', _wpos: [1, 0, 0] });
+        new bettertile({ _type: 'direct', _wpos: [2, 0, 0] });
+        new bettertile({ _type: 'direct', _wpos: [3, 0, 0] });
+        new bettertile({ _type: 'direct', _wpos: [4, 0, 0] });
         // new sprite({ size: [12, 8] });
     }
     rome.init = init;
