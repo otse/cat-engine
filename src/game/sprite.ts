@@ -15,11 +15,11 @@ export namespace sprite {
 	export type params = sprite['data'];
 };
 
-const doWireFrames = false;
+// A sprite uses a per-material UV transform
 
 export class sprite {
 	gobj: gobj
-	uvTransform
+	matrix
 	mesh
 	geometry
 	material
@@ -32,22 +32,24 @@ export class sprite {
 			color: 'white',
 			...data
 		};
-		(this.data.gobj as any).sprite = this;
 		this.gobj = this.data.gobj;
-		this.uvTransform = new THREE.Matrix3;
-		this.uvTransform.setUvTransform(0, 0, 1, 1, 0, 0, 1);
+		this.data.gobj.sprite = this;
+		this.matrix = new THREE.Matrix3;
+		this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
+		this.boosh();
+	}
+	boosh() {
 		let defines = {} as any;
 		// defines.MASKED = 1;
 		this.material = SpriteMaterial({
 			map: pipeline.load_texture(`img/` + this.data.name, 0),
 			color: this.gobj.data.color,
 			transparent: true,
-			depthWrite: false,
 			depthTest: false,
 		}, {
-			myUvTransform: this.uvTransform,
-			masked: false,
+			matrix: this.matrix,
 			maskColor: new THREE.Vector3(1, 1, 1),
+			masked: false,
 			bool: true
 		}, defines);
 		// const size = { this.data }; // Error
@@ -74,19 +76,18 @@ export function SpriteMaterial(parameters, uniforms: any, defines: any = {}) {
 	material.name = "romespritemat";
 	material.defines = defines;
 	material.onBeforeCompile = function (shader) {
-		// material.shader = shader; // Hack
-		shader.uniforms.myUvTransform = { value: uniforms.myUvTransform }
-		shader.uniforms.bool = { value: uniforms.bool }
+		shader.uniforms.matrix = { value: uniforms.matrix };
+		shader.uniforms.bool = { value: uniforms.bool };
 		if (uniforms.masked) {
-			shader.uniforms.tMask = { value: pipeline.targetMask.texture }
-			shader.uniforms.maskColor = { value: uniforms.maskColor }
+			shader.uniforms.tMask = { value: pipeline.targetMask.texture };
+			shader.uniforms.maskColor = { value: uniforms.maskColor };
 			console.log('add tmask');
 		}
 		shader.vertexShader = shader.vertexShader.replace(
 			`#include <common>`,
 			`#include <common>
 			varying vec2 myPosition;
-			uniform mat3 myUvTransform;
+			uniform mat3 matrix;
 			`
 		);
 		shader.vertexShader = shader.vertexShader.replace(
@@ -99,7 +100,7 @@ export function SpriteMaterial(parameters, uniforms: any, defines: any = {}) {
 			`#include <uv_vertex>`,
 			`
 			#ifdef USE_MAP
-				vMapUv = ( myUvTransform * vec3( uv, 1 ) ).xy;
+				vMapUv = ( matrix * vec3( uv, 1 ) ).xy;
 			#endif
 			`
 		);

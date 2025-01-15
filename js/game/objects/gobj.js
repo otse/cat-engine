@@ -2,6 +2,7 @@ import pts from "../../dep/pts.js";
 import lod from "../lod.js";
 export class gobj extends lod.obj {
     data;
+    sprite;
     r = 0; // rotation
     z = 0; // third axis
     constructor(data) {

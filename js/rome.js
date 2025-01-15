@@ -1,10 +1,11 @@
 import app from "./app.js";
 import { hooks } from "./dep/hooks.js";
 import pipeline from "./game/pipeline.js";
+import scaper from "./game/scaper/scaper.js";
 import tile from "./game/objects/tile.js";
+import wall from "./game/objects/wall.js";
 import zoom from "./game/components/zoom.js";
 import bettertile from "./game/objects/better tile.js";
-import wall from "./game/objects/wall.js";
 var rome;
 (function (rome) {
     rome.size = 8;
@@ -19,6 +20,7 @@ var rome;
     async function init() {
         console.log(' init ');
         await pipeline.init();
+        await scaper.init();
         app;
         zoom.register();
         new bettertile({ _type: 'direct', color: 'pink', _wpos: [-1, 0, 0] });

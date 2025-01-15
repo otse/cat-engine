@@ -2,11 +2,11 @@ import pts from "../dep/pts.js";
 import pipeline from "./pipeline.js";
 ;
 ;
-const doWireFrames = false;
+// A sprite uses a per-material UV transform
 export class sprite {
     data;
     gobj;
-    uvTransform;
+    matrix;
     mesh;
     geometry;
     material;
@@ -18,22 +18,24 @@ export class sprite {
             color: 'white',
             ...data
         };
-        this.data.gobj.sprite = this;
         this.gobj = this.data.gobj;
-        this.uvTransform = new THREE.Matrix3;
-        this.uvTransform.setUvTransform(0, 0, 1, 1, 0, 0, 1);
+        this.data.gobj.sprite = this;
+        this.matrix = new THREE.Matrix3;
+        this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
+        this.boosh();
+    }
+    boosh() {
         let defines = {};
         // defines.MASKED = 1;
         this.material = SpriteMaterial({
             map: pipeline.load_texture(`img/` + this.data.name, 0),
             color: this.gobj.data.color,
             transparent: true,
-            depthWrite: false,
             depthTest: false,
         }, {
-            myUvTransform: this.uvTransform,
-            masked: false,
+            matrix: this.matrix,
             maskColor: new THREE.Vector3(1, 1, 1),
+            masked: false,
             bool: true
         }, defines);
         // const size = { this.data }; // Error
@@ -58,8 +60,7 @@ export function SpriteMaterial(parameters, uniforms, defines = {}) {
     material.name = "romespritemat";
     material.defines = defines;
     material.onBeforeCompile = function (shader) {
-        // material.shader = shader; // Hack
-        shader.uniforms.myUvTransform = { value: uniforms.myUvTransform };
+        shader.uniforms.matrix = { value: uniforms.matrix };
         shader.uniforms.bool = { value: uniforms.bool };
         if (uniforms.masked) {
             shader.uniforms.tMask = { value: pipeline.targetMask.texture };
@@ -68,14 +69,14 @@ export function SpriteMaterial(parameters, uniforms, defines = {}) {
         }
         shader.vertexShader = shader.vertexShader.replace(`#include <common>`, `#include <common>
 			varying vec2 myPosition;
-			uniform mat3 myUvTransform;
+			uniform mat3 matrix;
 			`);
         shader.vertexShader = shader.vertexShader.replace(`#include <worldpos_vertex>`, `#include <worldpos_vertex>
 			myPosition = (projectionMatrix * mvPosition).xy / 2.0 + vec2(0.5, 0.5);
 			`);
         shader.vertexShader = shader.vertexShader.replace(`#include <uv_vertex>`, `
 			#ifdef USE_MAP
-				vMapUv = ( myUvTransform * vec3( uv, 1 ) ).xy;
+				vMapUv = ( matrix * vec3( uv, 1 ) ).xy;
 			#endif
 			`);
         shader.fragmentShader = shader.fragmentShader.replace(`#include <map_pars_fragment>`, `

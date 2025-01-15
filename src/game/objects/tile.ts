@@ -6,9 +6,7 @@ export class tile extends gobj {
 	constructor(data: gobj_literal) {
 		super({
 			name: 'a tile',
-			...data,
-			// _type: 'tile'
-			// Oops will overwrite subclass 'bettertile'
+			...data
 		});
 		this.data._type = 'tile';
 		console.log('tile', this.data);

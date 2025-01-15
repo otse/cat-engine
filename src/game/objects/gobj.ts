@@ -1,12 +1,14 @@
 
 import pts from "../../dep/pts.js";
 import lod from "../lod.js";
+import sprite from "../sprite.js";
 
 export namespace gobj {
 
 }
 
 export class gobj extends lod.obj {
+	sprite?: sprite
 	r = 0 // rotation
 	z = 0 // third axis
 	constructor(public data: gobj_literal) {
