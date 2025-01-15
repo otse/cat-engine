@@ -128,7 +128,6 @@ var app;
             document.onmouseup = onmouseup;
             document.onwheel = onwheel;
         }
-        await pipeline.init();
         await rome.init();
         loop(0);
     }

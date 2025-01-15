@@ -6,6 +6,7 @@ import tile from "./game/objects/tile.js";
 
 import zoom from "./game/components/zoom.js";
 import bettertile from "./game/objects/better tile.js";
+import wall from "./game/objects/wall.js";
 
 namespace rome {
 
@@ -19,8 +20,10 @@ namespace rome {
 		return val > max ? max : val < min ? min : val;
 	}
 
-	export function init() {
+	export async function init() {
 		console.log(' init ');
+		await pipeline.init();
+
 		app;
 		zoom.register();
 		new bettertile({ _type: 'direct', color: 'pink', _wpos: [-1, 0, 0] });
@@ -36,7 +39,9 @@ namespace rome {
 		new bettertile({ _type: 'direct', _wpos: [1, 0, 0] });
 		new bettertile({ _type: 'direct', _wpos: [2, 0, 0] });
 		new bettertile({ _type: 'direct', _wpos: [3, 0, 0] });
-		new bettertile({ _type: 'direct', _wpos: [4, 0, 0] });
+		new wall({ _type: 'direct', _wpos: [2, 1, 0] });
+		new wall({ _type: 'direct', _wpos: [3, 1, 0] });
+		new wall({ _type: 'direct', _wpos: [4, 1, 0] });
 		// new sprite({ size: [12, 8] });
 	}
 

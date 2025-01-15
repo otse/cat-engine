@@ -1,8 +1,10 @@
 import app from "./app.js";
 import { hooks } from "./dep/hooks.js";
+import pipeline from "./game/pipeline.js";
 import tile from "./game/objects/tile.js";
 import zoom from "./game/components/zoom.js";
 import bettertile from "./game/objects/better tile.js";
+import wall from "./game/objects/wall.js";
 var rome;
 (function (rome) {
     rome.size = 8;
@@ -14,8 +16,9 @@ var rome;
         return val > max ? max : val < min ? min : val;
     }
     rome.clamp = clamp;
-    function init() {
+    async function init() {
         console.log(' init ');
+        await pipeline.init();
         app;
         zoom.register();
         new bettertile({ _type: 'direct', color: 'pink', _wpos: [-1, 0, 0] });
@@ -31,7 +34,9 @@ var rome;
         new bettertile({ _type: 'direct', _wpos: [1, 0, 0] });
         new bettertile({ _type: 'direct', _wpos: [2, 0, 0] });
         new bettertile({ _type: 'direct', _wpos: [3, 0, 0] });
-        new bettertile({ _type: 'direct', _wpos: [4, 0, 0] });
+        new wall({ _type: 'direct', _wpos: [2, 1, 0] });
+        new wall({ _type: 'direct', _wpos: [3, 1, 0] });
+        new wall({ _type: 'direct', _wpos: [4, 1, 0] });
         // new sprite({ size: [12, 8] });
     }
     rome.init = init;

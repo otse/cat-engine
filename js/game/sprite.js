@@ -12,6 +12,12 @@ export class sprite {
     material;
     constructor(data) {
         this.data = data;
+        this.data = {
+            size: [17, 9],
+            name: 'hex/tile.png',
+            color: 'white',
+            ...data
+        };
         this.data.gobj.sprite = this;
         this.gobj = this.data.gobj;
         this.uvTransform = new THREE.Matrix3;
@@ -19,7 +25,7 @@ export class sprite {
         let defines = {};
         // defines.MASKED = 1;
         this.material = SpriteMaterial({
-            map: pipeline.load_texture(`img/hex/tile.png`, 0),
+            map: pipeline.load_texture(`img/` + this.data.name, 0),
             color: this.gobj.data.color,
             transparent: true,
             depthWrite: false,
@@ -33,10 +39,14 @@ export class sprite {
         // const size = { this.data }; // Error
         this.geometry = new THREE.PlaneGeometry(this.data.size[0], this.data.size[1], 1, 1);
         this.mesh = new THREE.Mesh(this.geometry, this.material);
-        this.mesh.renderOrder = -this.gobj.wpos[1] + this.gobj.wpos[0];
-        let pos = pts.add(this.gobj.rpos, [0, 0]);
-        this.mesh.position.fromArray([...pos, this.gobj.z]);
+        this.update();
         pipeline.groups.major.add(this.mesh);
+    }
+    update() {
+        this.material.color.set(this.gobj.data.color);
+        this.mesh.renderOrder = -this.gobj.wpos[1] + this.gobj.wpos[0];
+        let pos = pts.add(this.gobj.rpos, pts.divide(this.data.size, 2));
+        this.mesh.position.fromArray([...pos, this.gobj.z]);
     }
 }
 ;
