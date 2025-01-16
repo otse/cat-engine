@@ -1,26 +1,33 @@
-import app from "../../app.js";
 import { hooks } from "../../dep/hooks.js";
+import app from "../../app.js";
 import pipeline from "../pipeline.js";
 
 
 namespace zoom {
-    let zoom = 0;
-    
+    let level = 0;
+    export const zooms = [1, 0.5, 0.33, 0.2, 0.1, 0.05];
+
     export function register() {
         hooks.addListener('romeComponents', step);
     }
 
+    export function get_actual_zoom() {
+        return zooms[level];
+    }
+
     async function step() {
-        const zooms = [1, 0.5, 0.33, 0.2, 0.1, 0.05]
+        //console.log('zoom step');
+        
         if (app.wheel == -1) {
-            zoom = (zoom > 0) ? zoom - 1 : zoom;
+            console.log('app wheel');
+            level = (level > 0) ? level - 1 : level;
         }
         if (app.wheel == 1) {
-            zoom = (zoom < 4) ? zoom + 1 : zoom;
+            console.log('app wheel');
+            level = (level < 4) ? level + 1 : level;
         }
-        const scale = zooms[zoom];
+        const scale = zooms[level];
         pipeline.camera.scale.set(scale, scale, scale);
-        pipeline.camera.updateProjectionMatrix();
         return false;
     }
 

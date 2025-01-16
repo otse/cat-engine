@@ -55,7 +55,7 @@ export class sprite {
 		// const size = { this.data }; // Error
 		this.geometry = new THREE.PlaneGeometry(
 			this.data.size![0],
-			this.data.size![1], 1, 1)
+			this.data.size![1], 1, 1);
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
 		this.update();
 		pipeline.groups.major.add(this.mesh);

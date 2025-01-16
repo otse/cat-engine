@@ -1,9 +1,18 @@
 /// This poorly named component turns basic models into tiles
 //  for further use in pipeline.ts
 import pipeline from "../pipeline.js";
+import sprite from "../sprite.js";
+/*
+bit of a rant
+consider a game that uses an isometric 3d projection
+*/
 var scaper;
 (function (scaper) {
     async function init() {
+        const box = new THREE.BoxGeometry(10, 10, 10);
+        const material = new THREE.MeshPhongMaterial({ color: 'red' });
+        const mesh = new THREE.Mesh(box, material);
+        pipeline.scene.add(mesh);
         return boot();
     }
     scaper.init = init;
@@ -25,8 +34,34 @@ var scaper;
             // premultipliedAlpha: false
         });
     }
+    function take(model) {
+        pipeline.erase_children(scaper.group);
+        // material.map = this.target.texture;
+    }
+    scaper.take = take;
     function render() {
+        scaper.renderer.setRenderTarget(scaper.target);
+        scaper.renderer.clear();
+        scaper.renderer.render(scaper.scene, scaper.camera);
     }
     scaper.render = render;
+    class model {
+    }
+    class modelsprite extends sprite {
+        model;
+        target;
+        constructor(data, model) {
+            super(data);
+            this.model = model;
+            this.basic();
+        }
+        basic() {
+            this.target = pipeline.make_render_target(this.data.size[0], this.data.size[1]);
+        }
+        render() {
+            scaper.take(this);
+            scaper.render();
+        }
+    }
 })(scaper || (scaper = {}));
 export default scaper;

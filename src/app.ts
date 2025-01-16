@@ -23,7 +23,6 @@ namespace app {
 	var keys = {};
 	var buttons = {};
 	var pos: vec2 = [0, 0];
-	export var delta;
 	export var wheel = 0;
 	export var mobile = false;
 
@@ -127,7 +126,7 @@ namespace app {
 			document.onwheel = onwheel;
 		}
 		await rome.init();
-		loop(0);
+		const blockable = trick_animation_frame(base_loop);
 	}
 	function process_keys() {
 		for (let i in keys) {
@@ -144,22 +143,32 @@ namespace app {
 			else if (buttons[b] == MOUSE.UP)
 				buttons[b] = MOUSE.OFF;
 	}
-	var last, current
-	export function loop(timestamp) {
-		requestAnimationFrame(loop);
-		current = performance.now();
-		if (!last)
-			last = current;
-		delta = (current - last) / 1000;
-		//if (delta > 1 / 10)
-		//	delta = 1 / 10;
-		last = current;
-		rome.step();
-		hooks.emit('animationFrame', false);
+	export var delta = 0
+	export var last = 0
+	export async function base_loop() {
+		const now = (performance || Date).now();
+		delta = (now - last) / 1000;
+		last = now;
+		await rome.step();
+		await hooks.emit('animationFrame', false);
 		pipeline.render();
 		wheel = 0;
 		process_keys();
 		process_mouse_buttons();
+	}
+	export async function trick_animation_frame(callback) {
+		let run = true;
+		do {
+			await sleep();
+			await callback();
+		} while (run);
+		return {
+			runs: () => run,
+			stop: () => run = false,
+		};
+	}
+	async function sleep() {
+		return new Promise(requestAnimationFrame);
 	}
 	export function sethtml(selector, html) {
 		let element = document.querySelector(selector);

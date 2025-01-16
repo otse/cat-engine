@@ -2,12 +2,21 @@
 //  for further use in pipeline.ts
 
 import pipeline from "../pipeline.js";
+import sprite from "../sprite.js";
 
+/*
+bit of a rant
+consider a game that uses an isometric 3d projection
+*/
 namespace scaper {
 	export var scene, group, camera, target, renderer
 	export var ambient, sun
 
 	export async function init() {
+		const box = new THREE.BoxGeometry(10, 10, 10);
+		const material = new THREE.MeshPhongMaterial({ color: 'red' });
+		const mesh = new THREE.Mesh(box, material);
+		pipeline.scene.add(mesh);
 		return boot();
 	}
 
@@ -35,8 +44,35 @@ namespace scaper {
 		});
 	}
 
-	export function render() {
+	export function take(model: modelsprite) {
+		pipeline.erase_children(group);
 
+		// material.map = this.target.texture;
+
+	}
+	export function render() {
+		renderer.setRenderTarget(target);
+		renderer.clear();
+		renderer.render(scene, camera);
+	}
+
+	class model {
+
+	}
+
+	class modelsprite extends sprite {
+		target
+		constructor(data: sprite.params, protected readonly model: model) {
+			super(data);
+			this.basic();
+		}
+		basic() {
+			this.target = pipeline.make_render_target(this.data.size![0], this.data.size![1]);
+		}
+		render() {
+			scaper.take(this);
+			scaper.render();
+		}
 	}
 }
 

@@ -129,7 +129,7 @@ var app;
             document.onwheel = onwheel;
         }
         await rome.init();
-        loop(0);
+        const blockable = trick_animation_frame(base_loop);
     }
     app.boot = boot;
     function process_keys() {
@@ -147,24 +147,35 @@ var app;
             else if (buttons[b] == MOUSE.UP)
                 buttons[b] = MOUSE.OFF;
     }
-    var last, current;
-    function loop(timestamp) {
-        requestAnimationFrame(loop);
-        current = performance.now();
-        if (!last)
-            last = current;
-        app.delta = (current - last) / 1000;
-        //if (delta > 1 / 10)
-        //	delta = 1 / 10;
-        last = current;
-        rome.step();
-        hooks.emit('animationFrame', false);
+    app.delta = 0;
+    app.last = 0;
+    async function base_loop() {
+        const now = (performance || Date).now();
+        app.delta = (now - app.last) / 1000;
+        app.last = now;
+        await rome.step();
+        await hooks.emit('animationFrame', false);
         pipeline.render();
         app.wheel = 0;
         process_keys();
         process_mouse_buttons();
     }
-    app.loop = loop;
+    app.base_loop = base_loop;
+    async function trick_animation_frame(callback) {
+        let run = true;
+        do {
+            await sleep();
+            await callback();
+        } while (run);
+        return {
+            runs: () => run,
+            stop: () => run = false,
+        };
+    }
+    app.trick_animation_frame = trick_animation_frame;
+    async function sleep() {
+        return new Promise(requestAnimationFrame);
+    }
     function sethtml(selector, html) {
         let element = document.querySelector(selector);
         element.innerHTML = html;

@@ -1,24 +1,30 @@
-import app from "../../app.js";
 import { hooks } from "../../dep/hooks.js";
+import app from "../../app.js";
 import pipeline from "../pipeline.js";
 var zoom;
-(function (zoom_1) {
-    let zoom = 0;
+(function (zoom) {
+    let level = 0;
+    zoom.zooms = [1, 0.5, 0.33, 0.2, 0.1, 0.05];
     function register() {
         hooks.addListener('romeComponents', step);
     }
-    zoom_1.register = register;
+    zoom.register = register;
+    function get_actual_zoom() {
+        return zoom.zooms[level];
+    }
+    zoom.get_actual_zoom = get_actual_zoom;
     async function step() {
-        const zooms = [1, 0.5, 0.33, 0.2, 0.1, 0.05];
+        //console.log('zoom step');
         if (app.wheel == -1) {
-            zoom = (zoom > 0) ? zoom - 1 : zoom;
+            console.log('app wheel');
+            level = (level > 0) ? level - 1 : level;
         }
         if (app.wheel == 1) {
-            zoom = (zoom < 4) ? zoom + 1 : zoom;
+            console.log('app wheel');
+            level = (level < 4) ? level + 1 : level;
         }
-        const scale = zooms[zoom];
+        const scale = zoom.zooms[level];
         pipeline.camera.scale.set(scale, scale, scale);
-        pipeline.camera.updateProjectionMatrix();
         return false;
     }
 })(zoom || (zoom = {}));

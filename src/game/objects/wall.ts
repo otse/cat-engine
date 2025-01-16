@@ -7,8 +7,6 @@ export class wall extends gobj {
 		super({
 			name: 'a wall',
 			...data,
-			// _type: 'tile'
-			// Oops will overwrite subclass 'bettertile'
 		});
 		this.data._type = 'wall';
 		console.log('wall', this.data);

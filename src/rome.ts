@@ -8,6 +8,7 @@ import sprite from "./game/sprite.js";
 
 import zoom from "./game/components/zoom.js";
 import bettertile from "./game/objects/better tile.js";
+import diver from "./game/components/diver.js";
 
 namespace rome {
 
@@ -25,9 +26,9 @@ namespace rome {
 		console.log(' init ');
 		await pipeline.init();
 		await scaper.init();
-
 		app;
 		zoom.register();
+		diver.register();
 		new bettertile({ _type: 'direct', color: 'pink', _wpos: [-1, 0, 0] });
 		new bettertile({ _type: 'direct', color: 'salmon', _wpos: [-1, -1, 0] });
 		new bettertile({ _type: 'direct', color: 'cyan', _wpos: [0, -1, 0] });
@@ -48,7 +49,7 @@ namespace rome {
 	}
 
 	export function step() {
-		hooks.emit('romeComponents', 0);
+		hooks.emit('romeComponents', 1);
 		hooks.emit('romeStep', 0);
 
 	}
