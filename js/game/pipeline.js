@@ -309,7 +309,7 @@ var pipeline;
     }
     pipeline.make_render_target = make_render_target;
     function make_orthographic_camera(w, h) {
-        let camera = new THREE.OrthographicCamera(w / -2, w / 2, h / 2, h / -2, -100, 100);
+        let camera = new THREE.OrthographicCamera(w / -2, w / 2, h / 2, h / -2, -2000, 100);
         camera.updateProjectionMatrix();
         return camera;
     }

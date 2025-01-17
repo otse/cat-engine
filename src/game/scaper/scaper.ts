@@ -13,9 +13,14 @@ namespace scaper {
 	export var ambient, sun
 
 	export async function init() {
-		const box = new THREE.BoxGeometry(10, 10, 10);
-		const material = new THREE.MeshPhongMaterial({ color: 'red' });
+		const box = new THREE.BoxGeometry(50, 50, 50);
+		const material = new THREE.MeshPhongMaterial({
+			color: 'red',
+			map: pipeline.load_texture('img/moorish-ornaments.jpg', 0)
+		});
 		const mesh = new THREE.Mesh(box, material);
+		mesh.rotation.set(Math.PI / 6, Math.PI / 4, 0);
+		mesh.position.set(0, 0, 0);
 		pipeline.scene.add(mesh);
 		return boot();
 	}
