@@ -1,10 +1,10 @@
 import pts from "../dep/pts.js";
-import gobj from "./objects/gobj.js";
+import baseobject from "./objects/base object.js";
 import lod from "./lod.js";
 import pipeline from "./pipeline.js";
 
-interface sprite_literal {
-	gobj: gobj,
+interface spriteliteral {
+	gobj: baseobject,
 	size?: vec2;
 	name?: string;
 	data?: number;
@@ -18,13 +18,13 @@ export namespace sprite {
 // A sprite uses a per-material UV transform
 
 export class sprite {
-	gobj: gobj
+	gobj: baseobject
 	matrix
 	mesh
 	geometry
 	material
 	constructor(
-		public readonly data: sprite_literal
+		public readonly data: spriteliteral
 	) {
 		this.data = {
 			size: [17, 9],
@@ -36,13 +36,16 @@ export class sprite {
 		this.data.gobj.sprite = this;
 		this.matrix = new THREE.Matrix3;
 		this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
-		this.boosh();
+		this._create();
 	}
-	boosh() {
+	delete() {
+		this.mesh.parent.remove(this.mesh);
+	}
+	_create() {
 		let defines = {} as any;
 		// defines.MASKED = 1;
 		this.material = SpriteMaterial({
-			map: pipeline.load_texture(`img/` + this.data.name, 0),
+			map: pipeline.loadTexture(`img/` + this.data.name, 0),
 			color: this.gobj.data.color,
 			transparent: true,
 			depthTest: false,
@@ -56,13 +59,15 @@ export class sprite {
 		this.geometry = new THREE.PlaneGeometry(
 			this.data.size![0],
 			this.data.size![1], 1, 1);
-		this.mesh = new THREE.Mesh(this.geometry, this.material);
+		this.mesh = new THREE.Mesh(
+			this.geometry, this.material);
 		this.update();
 		pipeline.groups.major.add(this.mesh);
 	}
 	update() {
 		this.material.color.set(this.gobj.data.color);
-		this.mesh.renderOrder = -this.gobj.wpos[1] + this.gobj.wpos[0];
+		this.mesh.renderOrder =
+			-this.gobj.wpos[1] + this.gobj.wpos[0];
 		let pos = pts.add(this.gobj.rpos, pts.divide(this.data.size!, 2));
 		this.mesh.position.fromArray([...pos, this.gobj.z]);
 	}

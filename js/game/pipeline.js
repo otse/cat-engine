@@ -273,13 +273,13 @@ var pipeline;
             pipeline.camera.position.z = 800;
         }
         else {
-            pipeline.camera = make_orthographic_camera(pipeline.targetSize[0], pipeline.targetSize[1]);
+            pipeline.camera = makeOrthographicCamera(pipeline.targetSize[0], pipeline.targetSize[1]);
         }
-        pipeline.camera2 = make_orthographic_camera(pipeline.targetSize[0], pipeline.targetSize[1]);
+        pipeline.camera2 = makeOrthographicCamera(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.camera2.updateProjectionMatrix();
     }
     let mem = [];
-    function load_texture(file, mode = 1, cb, key) {
+    function loadTexture(file, mode = 1, cb, key) {
         if (mem[key || file])
             return mem[key || file];
         let texture = new THREE.TextureLoader().load(file + `?v=${app.feed}`, cb);
@@ -297,8 +297,8 @@ var pipeline;
         mem[key || file] = texture;
         return texture;
     }
-    pipeline.load_texture = load_texture;
-    function make_render_target(w, h) {
+    pipeline.loadTexture = loadTexture;
+    function makeRenderTarget(w, h) {
         const o = {
             minFilter: THREE.NearestFilter,
             magFilter: THREE.NearestFilter,
@@ -307,17 +307,17 @@ var pipeline;
         let target = new THREE.WebGLRenderTarget(w, h, o);
         return target;
     }
-    pipeline.make_render_target = make_render_target;
-    function make_orthographic_camera(w, h) {
+    pipeline.makeRenderTarget = makeRenderTarget;
+    function makeOrthographicCamera(w, h) {
         let camera = new THREE.OrthographicCamera(w / -2, w / 2, h / 2, h / -2, -2000, 100);
         camera.updateProjectionMatrix();
         return camera;
     }
-    pipeline.make_orthographic_camera = make_orthographic_camera;
-    function erase_children(group) {
+    pipeline.makeOrthographicCamera = makeOrthographicCamera;
+    function utilEraseChildren(group) {
         while (group.children.length > 0)
             group.remove(group.children[0]);
     }
-    pipeline.erase_children = erase_children;
+    pipeline.utilEraseChildren = utilEraseChildren;
 })(pipeline || (pipeline = {}));
 export default pipeline;

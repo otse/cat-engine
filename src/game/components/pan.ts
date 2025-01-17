@@ -5,7 +5,7 @@ import pts from "../../dep/pts.js";
 import pipeline from "../pipeline.js";
 import zoom from "./zoom.js";
 import lod from "../lod.js";
-import gobj from "../objects/gobj.js";
+import baseobject from "../objects/base object.js";
 
 
 namespace pan {
@@ -26,7 +26,7 @@ namespace pan {
 	let wpos: vec2 = [0, 0]
 	let rpos: vec2 = [0, 0]
 
-	let stick: gobj | undefined = undefined
+	let stick: baseobject | undefined = undefined
 
 	const rposIsBasedOnWpos = false;
 

@@ -1,6 +1,6 @@
 import pts from "../../dep/pts.js";
 import lod from "../lod.js";
-export class gobj extends lod.obj {
+export class baseobject extends lod.obj {
     data;
     sprite;
     r = 0; // rotation
@@ -16,10 +16,10 @@ export class gobj extends lod.obj {
     _delete() {
     }
     _create() {
-        console.warn(' baseobj empty create ');
+        console.warn(' gabe object empty create ');
     }
     _step() {
         super._step();
     }
 }
-export default gobj;
+export default baseobject;

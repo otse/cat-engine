@@ -1,6 +1,6 @@
-import gobj from "./gobj.js";
+import baseobject from "./base object.js";
 import sprite from "../sprite.js";
-export class tile extends gobj {
+export class tile extends baseobject {
     constructor(data) {
         super({
             name: 'a tile',
@@ -15,6 +15,9 @@ export class tile extends gobj {
             gobj: this,
             size: [17, 9]
         });
+    }
+    _delete() {
+        console.log('hiiide');
     }
 }
 export default tile;

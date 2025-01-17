@@ -22,13 +22,16 @@ export class sprite {
         this.data.gobj.sprite = this;
         this.matrix = new THREE.Matrix3;
         this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
-        this.boosh();
+        this._create();
     }
-    boosh() {
+    delete() {
+        this.mesh.parent.remove(this.mesh);
+    }
+    _create() {
         let defines = {};
         // defines.MASKED = 1;
         this.material = SpriteMaterial({
-            map: pipeline.load_texture(`img/` + this.data.name, 0),
+            map: pipeline.loadTexture(`img/` + this.data.name, 0),
             color: this.gobj.data.color,
             transparent: true,
             depthTest: false,
@@ -46,7 +49,8 @@ export class sprite {
     }
     update() {
         this.material.color.set(this.gobj.data.color);
-        this.mesh.renderOrder = -this.gobj.wpos[1] + this.gobj.wpos[0];
+        this.mesh.renderOrder =
+            -this.gobj.wpos[1] + this.gobj.wpos[0];
         let pos = pts.add(this.gobj.rpos, pts.divide(this.data.size, 2));
         this.mesh.position.fromArray([...pos, this.gobj.z]);
     }

@@ -4,9 +4,9 @@ declare type vec2 = [number, number];
 
 declare var THREE: any;
 
-type typez = 'dud' | 'direct' | 'tile' | 'bettertile' | 'wall' | 'ply'
+type typez = 'dud' | 'direct' | 'tile' | 'bettertile' | 'wall' | 'wall 3d' | 'ply'
 
-interface gobj_literal {
+interface baseobjectliteral {
 	_type?: typez
 	_wpos: vec3,
 	_r?: number,
@@ -15,4 +15,7 @@ interface gobj_literal {
 	extra?: any
 }
 
-declare class gobj {z; constructor(literal)}
+declare class baseobject {z; constructor(literal)}
+
+type gameobject = baseobject
+type gabeobject = baseobject

@@ -1,9 +1,9 @@
 import lod from "../lod.js";
-import gobj from "./gobj.js";
+import baseobject from "./base object.js";
 import sprite from "../sprite.js";
 
-export class tile extends gobj {
-	constructor(data: gobj_literal) {
+export class tile extends baseobject {
+	constructor(data: baseobjectliteral) {
 		super({
 			name: 'a tile',
 			...data
@@ -17,6 +17,10 @@ export class tile extends gobj {
 			gobj: this,
 			size: [17, 9]
 		});
+	}
+	protected override _delete() {
+		console.log('hiiide');
+		
 	}
 }
 

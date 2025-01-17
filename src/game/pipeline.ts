@@ -326,16 +326,16 @@ namespace pipeline {
 			camera.position.z = 800;
 		}
 		else {
-			camera = make_orthographic_camera(targetSize[0], targetSize[1]);
+			camera = makeOrthographicCamera(targetSize[0], targetSize[1]);
 		}
 
-		camera2 = make_orthographic_camera(targetSize[0], targetSize[1]);
+		camera2 = makeOrthographicCamera(targetSize[0], targetSize[1]);
 		camera2.updateProjectionMatrix();
 	}
 
 	let mem = []
 
-	export function load_texture(file: string, mode = 1, cb?, key?: string) {
+	export function loadTexture(file: string, mode = 1, cb?, key?: string) {
 		if (mem[key || file])
 			return mem[key || file];
 		let texture = new THREE.TextureLoader().load(file + `?v=${app.feed}`, cb);
@@ -354,7 +354,7 @@ namespace pipeline {
 		return texture;
 	}
 
-	export function make_render_target(w, h) {
+	export function makeRenderTarget(w, h) {
 		const o = {
 			minFilter: THREE.NearestFilter,
 			magFilter: THREE.NearestFilter,
@@ -364,13 +364,13 @@ namespace pipeline {
 		return target;
 	}
 
-	export function make_orthographic_camera(w, h) {
+	export function makeOrthographicCamera(w, h) {
 		let camera = new THREE.OrthographicCamera(w / - 2, w / 2, h / 2, h / - 2, -2000, 100);
 		camera.updateProjectionMatrix();
 		return camera;
 	}
 
-	export function erase_children(group) {
+	export function utilEraseChildren(group) {
 		while (group.children.length > 0)
 			group.remove(group.children[0]);
 	}
