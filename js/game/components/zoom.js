@@ -9,10 +9,10 @@ var zoom;
         hooks.addListener('romeComponents', step);
     }
     zoom.register = register;
-    function get_actual_zoom() {
+    function actualZoom() {
         return zoom.zooms[level];
     }
-    zoom.get_actual_zoom = get_actual_zoom;
+    zoom.actualZoom = actualZoom;
     async function step() {
         //console.log('zoom step');
         if (app.wheel == -1) {

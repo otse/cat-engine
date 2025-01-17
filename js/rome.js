@@ -6,7 +6,7 @@ import tile from "./game/objects/tile.js";
 import wall from "./game/objects/wall.js";
 import zoom from "./game/components/zoom.js";
 import bettertile from "./game/objects/better tile.js";
-import diver from "./game/components/diver.js";
+import pan from "./game/components/pan.js";
 var rome;
 (function (rome) {
     rome.size = 8;
@@ -24,7 +24,7 @@ var rome;
         await scaper.init();
         app;
         zoom.register();
-        diver.register();
+        pan.register();
         new bettertile({ _type: 'direct', color: 'pink', _wpos: [-1, 0, 0] });
         new bettertile({ _type: 'direct', color: 'salmon', _wpos: [-1, -1, 0] });
         new bettertile({ _type: 'direct', color: 'cyan', _wpos: [0, -1, 0] });

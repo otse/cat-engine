@@ -45,8 +45,14 @@ class pts {
             (x + y) * (-height / 2) / 2
         ];
     }
-    static unproject(a) {
-        return [a[0] - a[1] * 2, a[1] * 2 + a[0]];
+    static unproject(p) {
+        const px = p[0];
+        const py = p[1];
+        const width = 26;
+        const height = 16;
+        const x = (px / (width / 2) + py / (height / 2)) / 2;
+        const y = (py / (height / 2) - px / (width / 2)) / 2;
+        return [x, -y];
     }
     static equals(a, b) {
         return a[0] == b[0] && a[1] == b[1];

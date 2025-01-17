@@ -3,20 +3,42 @@ import app from "../../app.js";
 import pts from "../../dep/pts.js";
 import pipeline from "../pipeline.js";
 import zoom from "./zoom.js";
-var diver;
-(function (diver) {
+import lod from "../lod.js";
+var pan;
+(function (pan_1) {
     function register() {
         hooks.addListener('romeComponents', step);
     }
-    diver.register = register;
-    const pos = [0, 0, 0];
+    pan_1.register = register;
+    async function step() {
+        functions();
+        pipeline.camera.updateProjectionMatrix();
+        return false;
+    }
     let begin = [0, 0];
     let before = [0, 0];
     let wpos = [0, 0];
     let rpos = [0, 0];
-    function tick() {
+    let stick = undefined;
+    const rposIsBasedOnWpos = false;
+    function functions() {
+        follow();
         pan();
+        wpos = lod.unproject(rpos);
         set_camera();
+        //lod.gworld.update(wpos);
+    }
+    function follow() {
+        if (stick) {
+            let wpos = stick.wpos;
+            // Todo .5 ?
+            wpos = pts.add(wpos, [.5, .5]);
+            rpos = lod.project(wpos);
+        }
+        else {
+            if (rposIsBasedOnWpos)
+                rpos = lod.project(wpos);
+        }
     }
     function pan() {
         let continousMode = false;
@@ -40,7 +62,7 @@ var diver;
                 dif = pts.divide(dif, panDivisor);
                 // necessary mods
                 dif = pts.mult(dif, pipeline.dotsPerInch);
-                dif = pts.mult(dif, zoom.get_actual_zoom());
+                dif = pts.mult(dif, zoom.actualZoom());
                 dif = pts.subtract(dif, before);
                 rpos = pts.inv(dif);
             }
@@ -53,16 +75,11 @@ var diver;
     function set_camera() {
         const smooth = false;
         if (smooth) {
-            rpos = pts.floor(rpos);
+            rpos = pts.round(rpos);
         }
         // let inv = pts.inv(this.rpos);
         // ren.groups.axisSwap.position.set(inv[0], inv[1], 0);
         pipeline.camera.position.set(rpos[0], rpos[1], 0);
     }
-    async function step() {
-        tick();
-        pipeline.camera.updateProjectionMatrix();
-        return false;
-    }
-})(diver || (diver = {}));
-export default diver;
+})(pan || (pan = {}));
+export default pan;

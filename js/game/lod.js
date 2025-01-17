@@ -32,7 +32,7 @@ var lod;
     }
     lod.project = project;
     function unproject(pixel) {
-        return pts.divide(pts.unproject(pixel), lod.size);
+        return pts.divide(pts.unproject(pixel), 1);
     }
     lod.unproject = unproject;
     function add(obj) {

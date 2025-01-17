@@ -47,7 +47,7 @@ namespace lod {
 	}
 
 	export function unproject(pixel: vec2): vec2 {
-		return pts.divide(pts.unproject(pixel), size);
+		return pts.divide(pts.unproject(pixel), 1);
 	}
 
 	export function add(obj: obj | undefined) {

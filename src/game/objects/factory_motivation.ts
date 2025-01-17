@@ -3,8 +3,8 @@ import gobj from "./gobj.js";
 import tile from "./tile.js";
 import wall from "./wall.js";
 
-// Reason number one: objects come in as data from the network
-// Reason number two: it is friendlier to use type names than import a large number of class files
+// Objects come in as data from the network
+// It is friendlier to use string types than import a large number of class files
 
 export function gobjfactory(data: gobj_literal): gobj | undefined {
     let gobj: gobj | undefined;
