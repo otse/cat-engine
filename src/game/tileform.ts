@@ -6,15 +6,6 @@ import sprite from "./sprite.js";
 namespace tileform {
 
 	export async function init() {
-		const box = new THREE.BoxGeometry(20, 20, 20);
-		const material = new THREE.MeshPhongMaterial({
-			color: 'red',
-			map: pipeline.loadTexture('img/moorish-ornaments.jpg', 0)
-		});
-		const mesh = new THREE.Mesh(box, material);
-		mesh.rotation.set(Math.PI / 6, Math.PI / 4, 0);
-		mesh.position.set(0, 0, 0);
-		pipeline.scene.add(mesh);
 		await stage.init();
 		return;
 	}
@@ -51,25 +42,14 @@ namespace tileform {
 		let boxx;
 		let boz;
 		async function makeBasicShapes() {
-			const box = new THREE.BoxGeometry(10, 10, 10);
-			const material = new THREE.MeshPhongMaterial({
-				color: 'red',
-				map: pipeline.loadTexture('img/moorish-ornaments.jpg', 0)
-			});
-			const mesh = new THREE.Mesh(box, material);
-			mesh.rotation.set(Math.PI / 6, Math.PI / 4, 0);
-			mesh.position.set(0, 0, 0);
-			boxx = mesh;
-			const boz = new shapeormodel();
-			boz.object = boxx;
+			
 		}
 
-		export function prepare(sprite: spriteshape) {
-			group.add(sprite.shape.object); 
+		export function prepare(sprite: sprite3d) {
+			group.add(sprite.shape!.mesh);
 			pipeline.utilEraseChildren(group);
-			// material.map = this.target.texture;
-
 		}
+
 		export function render() {
 			renderer.setRenderTarget(target);
 			renderer.clear();
@@ -77,35 +57,69 @@ namespace tileform {
 		}
 	}
 
-	class shapeormodel {
-		object
+	abstract class shape_base {
+		mesh
 		constructor() {
+			this._create();
+		}
+		protected _create() {}
+	}
 
+	class shape_box extends shape_base {
+		constructor() {
+			super();
+		}
+		protected override _create() {
+			const box = new THREE.BoxGeometry(10, 10, 10);
+			const material = new THREE.MeshPhongMaterial({
+				color: 'red',
+				map: pipeline.loadTexture('img/moorish-ornaments.jpg', 0)
+			});
+			const mesh = new THREE.Mesh(box, material);
+			this.mesh = mesh;
 		}
 	}
 
-	function resolveShape(shape: typesofshapes) {
-		return shapeormodel;
+	function shapeMaker(type: shapez) {
+		let shape: shape_base | undefined;
+			switch (type) {
+				case 'nothing':
+					console.warn(' no type passed to factory ');
+					break;
+				case 'wall':
+					shape = new shape_box();
+					break;
+			}
+			return shape;
 	}
 
-	type typesofshapes = 'sandwall'
+	type shapez = 'nothing' | 'wall'
 
-	interface spriteshapeliteral extends sprite.params {
+	interface sprite3dliteral extends sprite.literaltype {
 		shape?: string
 	}
 
-	export class spriteshape extends sprite {
+	export namespace sprite3d {
+		export type literaltype = sprite3d['data'];
+	};
+
+	export class sprite3d extends sprite {
 		target
-		shape?: shapeormodel
+		shape?: shape_base
 		constructor(
-			shape: typesofshapes,
-			data: spriteshapeliteral,
+			shape: shapez,
+			data: sprite3dliteral,
 		) {
 			super(data);
-			this.shape = resolveShape(shape);
-			this.basic();
+			this.shape = shapeMaker(shape);
+			this.renderCode();
+			this.render();
 		}
-		basic() {
+		protected _create() {
+			super._create();
+			this.material.map = this.target.texture;
+		}
+		renderCode() {
 			this.target = pipeline.makeRenderTarget(
 				this.data.size![0], this.data.size![1]);
 		}

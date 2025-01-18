@@ -12,7 +12,7 @@ interface spriteliteral {
 };
 
 export namespace sprite {
-	export type params = sprite['data'];
+	export type literaltype = sprite['data'];
 };
 
 // A sprite uses a per-material UV transform
@@ -36,12 +36,14 @@ export class sprite {
 		this.data.gobj.sprite = this;
 		this.matrix = new THREE.Matrix3;
 		this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
-		this._create();
 	}
 	delete() {
 		this.mesh.parent.remove(this.mesh);
 	}
-	_create() {
+	create() {
+		this._create();
+	}
+	protected _create() {
 		let defines = {} as any;
 		// defines.MASKED = 1;
 		this.material = SpriteMaterial({

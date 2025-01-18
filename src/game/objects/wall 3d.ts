@@ -14,7 +14,7 @@ export class wall3d extends baseobject {
 		this._create();
 	}
 	protected override _create() {
-		new tileform.spriteshape('sandwall', {
+		new tileform.sprite3d('wall', {
 			gobj: this,
 			size: [17, 21],
 			name: 'hex/wall.png'

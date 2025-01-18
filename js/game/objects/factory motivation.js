@@ -2,7 +2,7 @@ import tile from "./tile.js";
 import wall from "./wall.js";
 // Objects come in as data from the network
 // It is friendlier to use string types than import a large number of class files
-export function gobjfactory(data) {
+export function gabeObjectMaker(data) {
     let gobj;
     switch (data._type) {
         case 'dud':
@@ -18,4 +18,4 @@ export function gobjfactory(data) {
     }
     return gobj;
 }
-export default gobjfactory;
+export default gabeObjectMaker;

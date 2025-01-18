@@ -4,15 +4,6 @@ import sprite from "./sprite.js";
 var tileform;
 (function (tileform) {
     async function init() {
-        const box = new THREE.BoxGeometry(20, 20, 20);
-        const material = new THREE.MeshPhongMaterial({
-            color: 'red',
-            map: pipeline.loadTexture('img/moorish-ornaments.jpg', 0)
-        });
-        const mesh = new THREE.Mesh(box, material);
-        mesh.rotation.set(Math.PI / 6, Math.PI / 4, 0);
-        mesh.position.set(0, 0, 0);
-        pipeline.scene.add(mesh);
         await stage.init();
         return;
     }
@@ -46,22 +37,10 @@ var tileform;
         let boxx;
         let boz;
         async function makeBasicShapes() {
-            const box = new THREE.BoxGeometry(10, 10, 10);
-            const material = new THREE.MeshPhongMaterial({
-                color: 'red',
-                map: pipeline.loadTexture('img/moorish-ornaments.jpg', 0)
-            });
-            const mesh = new THREE.Mesh(box, material);
-            mesh.rotation.set(Math.PI / 6, Math.PI / 4, 0);
-            mesh.position.set(0, 0, 0);
-            boxx = mesh;
-            const boz = new shapeormodel();
-            boz.object = boxx;
         }
         function prepare(sprite) {
-            stage.group.add(sprite.shape.object);
+            stage.group.add(sprite.shape.mesh);
             pipeline.utilEraseChildren(stage.group);
-            // material.map = this.target.texture;
         }
         stage.prepare = prepare;
         function render() {
@@ -71,23 +50,54 @@ var tileform;
         }
         stage.render = render;
     })(stage = tileform.stage || (tileform.stage = {}));
-    class shapeormodel {
-        object;
+    class shape_base {
+        mesh;
         constructor() {
+            this._create();
+        }
+        _create() { }
+    }
+    class shape_box extends shape_base {
+        constructor() {
+            super();
+        }
+        _create() {
+            const box = new THREE.BoxGeometry(10, 10, 10);
+            const material = new THREE.MeshPhongMaterial({
+                color: 'red',
+                map: pipeline.loadTexture('img/moorish-ornaments.jpg', 0)
+            });
+            const mesh = new THREE.Mesh(box, material);
+            this.mesh = mesh;
         }
     }
-    function resolveShape(shape) {
-        return shapeormodel;
+    function shapeMaker(type) {
+        let shape;
+        switch (type) {
+            case 'nothing':
+                console.warn(' no type passed to factory ');
+                break;
+            case 'wall':
+                shape = new shape_box();
+                break;
+        }
+        return shape;
     }
-    class spriteshape extends sprite {
+    ;
+    class sprite3d extends sprite {
         target;
         shape;
         constructor(shape, data) {
             super(data);
-            this.shape = resolveShape(shape);
-            this.basic();
+            this.shape = shapeMaker(shape);
+            this.renderCode();
+            this.render();
         }
-        basic() {
+        _create() {
+            super._create();
+            this.material.map = this.target.texture;
+        }
+        renderCode() {
             this.target = pipeline.makeRenderTarget(this.data.size[0], this.data.size[1]);
         }
         render() {
@@ -95,6 +105,6 @@ var tileform;
             tileform.stage.render();
         }
     }
-    tileform.spriteshape = spriteshape;
+    tileform.sprite3d = sprite3d;
 })(tileform || (tileform = {}));
 export default tileform;

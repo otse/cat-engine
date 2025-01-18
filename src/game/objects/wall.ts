@@ -18,6 +18,7 @@ export class wall extends baseobject {
 			size: [17, 21],
 			name: 'hex/wall.png'
 		});
+		this.sprite?.create();
 	}
 }
 

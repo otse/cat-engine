@@ -22,10 +22,12 @@ export class sprite {
         this.data.gobj.sprite = this;
         this.matrix = new THREE.Matrix3;
         this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
-        this._create();
     }
     delete() {
         this.mesh.parent.remove(this.mesh);
+    }
+    create() {
+        this._create();
     }
     _create() {
         let defines = {};

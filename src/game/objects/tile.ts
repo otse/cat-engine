@@ -17,6 +17,7 @@ export class tile extends baseobject {
 			gobj: this,
 			size: [17, 9]
 		});
+		this.sprite?.create();
 	}
 	protected override _delete() {
 		console.log('hiiide');
