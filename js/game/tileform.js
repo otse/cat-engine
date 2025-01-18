@@ -55,11 +55,11 @@ var tileform;
             mesh.rotation.set(Math.PI / 6, Math.PI / 4, 0);
             mesh.position.set(0, 0, 0);
             boxx = mesh;
-            const boz = new shape_or_model();
+            const boz = new shapeormodel();
             boz.object = boxx;
         }
-        function prepare(model) {
-            stage.group.add(model.object);
+        function prepare(sprite) {
+            stage.group.add(sprite.shape.object);
             pipeline.utilEraseChildren(stage.group);
             // material.map = this.target.texture;
         }
@@ -71,27 +71,30 @@ var tileform;
         }
         stage.render = render;
     })(stage = tileform.stage || (tileform.stage = {}));
-    class shape_or_model {
+    class shapeormodel {
         object;
         constructor() {
         }
     }
-    class modelsprite extends sprite {
-        model;
+    function resolveShape(shape) {
+        return shapeormodel;
+    }
+    class spriteshape extends sprite {
         target;
-        constructor(data, model) {
+        shape;
+        constructor(shape, data) {
             super(data);
-            this.model = model;
+            this.shape = resolveShape(shape);
             this.basic();
         }
         basic() {
             this.target = pipeline.makeRenderTarget(this.data.size[0], this.data.size[1]);
         }
         render() {
-            //tileform.stage.take(this);
+            tileform.stage.prepare(this);
             tileform.stage.render();
         }
     }
-    tileform.modelsprite = modelsprite;
+    tileform.spriteshape = spriteshape;
 })(tileform || (tileform = {}));
 export default tileform;

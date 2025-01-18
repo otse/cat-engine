@@ -60,12 +60,12 @@ namespace tileform {
 			mesh.rotation.set(Math.PI / 6, Math.PI / 4, 0);
 			mesh.position.set(0, 0, 0);
 			boxx = mesh;
-			const boz = new shape_or_model();
+			const boz = new shapeormodel();
 			boz.object = boxx;
 		}
 
-		export function prepare(model: shape_or_model) {
-			group.add(model.object);
+		export function prepare(sprite: spriteshape) {
+			group.add(sprite.shape.object); 
 			pipeline.utilEraseChildren(group);
 			// material.map = this.target.texture;
 
@@ -77,24 +77,32 @@ namespace tileform {
 		}
 	}
 
-	class shape_or_model {
+	class shapeormodel {
 		object
 		constructor() {
 
 		}
 	}
 
-	interface modelspriteliteral extends sprite.params {
+	function resolveShape(shape: typesofshapes) {
+		return shapeormodel;
+	}
+
+	type typesofshapes = 'sandwall'
+
+	interface spriteshapeliteral extends sprite.params {
 		shape?: string
 	}
 
-	export class modelsprite extends sprite {
+	export class spriteshape extends sprite {
 		target
+		shape?: shapeormodel
 		constructor(
-			data: modelspriteliteral,
-			readonly model?: shape_or_model
+			shape: typesofshapes,
+			data: spriteshapeliteral,
 		) {
 			super(data);
+			this.shape = resolveShape(shape);
 			this.basic();
 		}
 		basic() {
@@ -102,7 +110,7 @@ namespace tileform {
 				this.data.size![0], this.data.size![1]);
 		}
 		render() {
-			//tileform.stage.take(this);
+			tileform.stage.prepare(this);
 			tileform.stage.render();
 		}
 	}
