@@ -339,6 +339,26 @@ namespace pipeline {
 
 	let mem = []
 
+	
+	export async function loadTextureAsync(file: string, mode = 1, cb?, key?: string) {
+		if (mem[key || file])
+			return mem[key || file];
+		let texture = await new THREE.TextureLoader().loadAsync(file + `?v=${app.feed}`, cb);
+		texture.generateMipmaps = false;
+		texture.center.set(0, 1);
+		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+		if (mode) {
+			texture.magFilter = THREE.LinearFilter;
+			texture.minFilter = THREE.LinearFilter;
+		}
+		else {
+			texture.magFilter = THREE.NearestFilter;
+			texture.minFilter = THREE.NearestFilter;
+		}
+		mem[key || file] = texture;
+		return texture;
+	}
+
 	export function loadTexture(file: string, mode = 1, cb?, key?: string) {
 		if (mem[key || file])
 			return mem[key || file];

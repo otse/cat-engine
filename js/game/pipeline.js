@@ -282,6 +282,25 @@ var pipeline;
         pipeline.camera2.updateProjectionMatrix();
     }
     let mem = [];
+    async function loadTextureAsync(file, mode = 1, cb, key) {
+        if (mem[key || file])
+            return mem[key || file];
+        let texture = await new THREE.TextureLoader().loadAsync(file + `?v=${app.feed}`, cb);
+        texture.generateMipmaps = false;
+        texture.center.set(0, 1);
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        if (mode) {
+            texture.magFilter = THREE.LinearFilter;
+            texture.minFilter = THREE.LinearFilter;
+        }
+        else {
+            texture.magFilter = THREE.NearestFilter;
+            texture.minFilter = THREE.NearestFilter;
+        }
+        mem[key || file] = texture;
+        return texture;
+    }
+    pipeline.loadTextureAsync = loadTextureAsync;
     function loadTexture(file, mode = 1, cb, key) {
         if (mem[key || file])
             return mem[key || file];

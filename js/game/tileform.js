@@ -1,7 +1,6 @@
-/// This poorly named component turns basic models into tiles
+/// This poorly named component turns basic meshes into sprites
 import glob from "../dep/glob.js";
 import pipeline from "./pipeline.js";
-import sprite from "./sprite.js";
 var tileform;
 (function (tileform) {
     async function init() {
@@ -14,9 +13,13 @@ var tileform;
     })(stage = tileform.stage || (tileform.stage = {}));
     (function (stage) {
         async function init() {
+            await preload();
             await boot();
         }
         stage.init = init;
+        async function preload() {
+            await pipeline.loadTextureAsync('./img/textures/stonemixed.jpg');
+        }
         async function boot() {
             stage.scene = new THREE.Scene();
             // scene.background = new THREE.Color('purple');
@@ -33,14 +36,14 @@ var tileform;
             stage.sun = new THREE.DirectionalLight('yellow', 1);
             stage.sun.position.set(-sunDistance, 0, sunDistance / 2);
             stage.scene.add(stage.sun);
-            stage.renderer = new THREE.WebGLRenderer({
+            /*renderer = new THREE.WebGLRenderer({
                 antialias: false,
             });
-            stage.renderer.setPixelRatio(glob);
-            stage.renderer.setSize(100, 100);
-            stage.renderer.setClearColor(0xffffff, 1);
-            stage.renderer.autoClear = true;
-            stage.renderer.toneMapping = THREE.NoToneMapping;
+            renderer.setPixelRatio(glob);
+            renderer.setSize(100, 100);
+            renderer.setClearColor(0xffffff, 1);
+            renderer.autoClear = true;
+            renderer.toneMapping = THREE.NoToneMapping;*/
             // document.body.appendChild(renderer.domElement);
         }
         function prepare(sprite) {
@@ -53,7 +56,7 @@ var tileform;
         }
         stage.prepare = prepare;
         function render() {
-            // Todo: Using our own stage renderer gives us a black result
+            // Todo: stage renderer doesn't render anything so use default
             glob.renderer.setRenderTarget(stage.spotlight.target);
             glob.renderer.clear();
             glob.renderer.render(stage.scene, stage.camera);
@@ -61,65 +64,5 @@ var tileform;
         }
         stage.render = render;
     })(stage = tileform.stage || (tileform.stage = {}));
-    class shape_base {
-        mesh;
-        constructor() {
-            this._create();
-        }
-        _create() { }
-    }
-    class shape_box extends shape_base {
-        constructor() {
-            super();
-        }
-        _create() {
-            const box = new THREE.BoxGeometry(10, 16, 10);
-            const material = new THREE.MeshPhongMaterial({
-                color: 'red',
-                //map: pipeline.loadTexture('img/moorish-ornaments.jpg', 0)
-            });
-            const mesh = new THREE.Mesh(box, material);
-            this.mesh = mesh;
-        }
-    }
-    function shapeMaker(type) {
-        let shape;
-        switch (type) {
-            case 'nothing':
-                console.warn(' no type passed to factory ');
-                break;
-            case 'wall':
-                shape = new shape_box();
-                break;
-        }
-        return shape;
-    }
-    ;
-    class sprite3d extends sprite {
-        target;
-        shape;
-        constructor(shape, data) {
-            super(data);
-            this.shape = shapeMaker(shape);
-            this.renderCode();
-            this.render();
-        }
-        _create() {
-            super._create();
-            // this.material.transparent = false;
-            this.material.map = this.target.texture;
-            this.material.needsUpdate = true;
-            stage.group.position.set(0, 0, 0);
-            stage.group.updateMatrix();
-        }
-        renderCode() {
-            this.target = pipeline.makeRenderTarget(this.data.size[0], this.data.size[1]);
-        }
-        render() {
-            stage.prepare(this);
-            stage.render();
-        }
-    }
-    tileform.sprite3d = sprite3d;
 })(tileform || (tileform = {}));
 export default tileform;

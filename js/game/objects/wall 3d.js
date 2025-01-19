@@ -1,5 +1,5 @@
 import baseobject from "./base object.js";
-import tileform from "../tileform.js";
+import sprite3d from "../sprite 3d.js";
 export class wall3d extends baseobject {
     constructor(data) {
         super({
@@ -11,10 +11,14 @@ export class wall3d extends baseobject {
         this._create();
     }
     _create() {
-        new tileform.sprite3d('wall', {
+        new sprite3d({
             gabeObject: this,
             size: [17, 21],
-            name: 'hex/wall.png'
+            name: 'hex/wall.png',
+            shapeType: 'wall',
+            shapeLiteral: {
+                texture: './img/textures/stonemixed.jpg'
+            }
         });
         this.sprite?.create();
     }

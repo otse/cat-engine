@@ -3,16 +3,16 @@ import baseobject from "./objects/base object.js";
 import lod from "./lod.js";
 import pipeline from "./pipeline.js";
 
-interface spriteliteral {
+interface spriteLiteral {
 	gabeObject: baseobject,
 	size?: vec2;
 	name?: string;
-	data?: number;
+	dataa?: number;
 	color?: string;
 };
 
 export namespace sprite {
-	export type literaltype = sprite['data'];
+	export type literalType = sprite['data'];
 };
 
 // A sprite uses a per-material UV transform
@@ -24,7 +24,7 @@ export class sprite {
 	geometry
 	material
 	constructor(
-		public readonly data: spriteliteral
+		public readonly data: spriteLiteral
 	) {
 		this.data = {
 			size: [17, 9],
