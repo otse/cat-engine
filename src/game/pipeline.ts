@@ -1,4 +1,5 @@
 import app from '../app.js';
+import glob from '../dep/glob.js';
 import pts from '../dep/pts.js';
 
 const fragmentBackdrop = `
@@ -237,17 +238,19 @@ namespace pipeline {
 		sceneShader = new THREE.Scene();
 		sceneShader.frustumCulled = false;
 		sceneShader.background = new THREE.Color('purple');
-		sceneShader.add(new THREE.AmbientLight('white', Math.PI/1));
+		sceneShader.add(new THREE.AmbientLight('white', Math.PI / 1));
 
 		sceneMask = new THREE.Scene();
-		sceneMask.add(new THREE.AmbientLight('white', Math.PI/1));
+		sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
 
-		ambientLight = new THREE.AmbientLight('white', Math.PI/1);
+		ambientLight = new THREE.AmbientLight('white', Math.PI / 1);
 		scene.add(ambientLight);
 
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
 			dotsPerInch = window.devicePixelRatio;
 		}
+
+		glob.dotsPerInch = dotsPerInch;
 
 		target = new THREE.WebGLRenderTarget(1024, 1024, {
 			minFilter: THREE.NearestFilter,
@@ -262,6 +265,7 @@ namespace pipeline {
 			antialias: false,
 			// premultipliedAlpha: false
 		});
+		glob.renderer = renderer;
 		renderer.setPixelRatio(dotsPerInch);
 		renderer.setSize(100, 100);
 		renderer.setClearColor(0xffffff, 0);
@@ -354,18 +358,18 @@ namespace pipeline {
 		return texture;
 	}
 
-	export function makeRenderTarget(w, h) {
-		const o = {
+	export function makeRenderTarget(width, height) {
+		return new THREE.WebGLRenderTarget(width, height, {
 			minFilter: THREE.NearestFilter,
 			magFilter: THREE.NearestFilter,
-			format: THREE.RGBAFormat
-		};
-		let target = new THREE.WebGLRenderTarget(w, h, o);
-		return target;
+			format: THREE.RGBAFormat,
+			colorSpace: THREE.NoColorSpace,
+			generateMipmaps: false,
+		});
 	}
 
 	export function makeOrthographicCamera(w, h) {
-		let camera = new THREE.OrthographicCamera(w / - 2, w / 2, h / 2, h / - 2, -2000, 100);
+		let camera = new THREE.OrthographicCamera(w / - 2, w / 2, h / 2, h / - 2, -200, 100);
 		camera.updateProjectionMatrix();
 		return camera;
 	}

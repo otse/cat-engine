@@ -5,7 +5,7 @@ import pipeline from "./pipeline.js";
 // A sprite uses a per-material UV transform
 export class sprite {
     data;
-    gobj;
+    gabeObject;
     matrix;
     mesh;
     geometry;
@@ -18,8 +18,8 @@ export class sprite {
             color: 'white',
             ...data
         };
-        this.gobj = this.data.gobj;
-        this.data.gobj.sprite = this;
+        this.gabeObject = this.data.gabeObject;
+        this.data.gabeObject.sprite = this;
         this.matrix = new THREE.Matrix3;
         this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
     }
@@ -34,7 +34,7 @@ export class sprite {
         // defines.MASKED = 1;
         this.material = SpriteMaterial({
             map: pipeline.loadTexture(`img/` + this.data.name, 0),
-            color: this.gobj.data.color,
+            color: this.data.color,
             transparent: true,
             depthTest: false,
         }, {
@@ -50,11 +50,10 @@ export class sprite {
         pipeline.groups.major.add(this.mesh);
     }
     update() {
-        this.material.color.set(this.gobj.data.color);
-        this.mesh.renderOrder =
-            -this.gobj.wpos[1] + this.gobj.wpos[0];
-        let pos = pts.add(this.gobj.rpos, pts.divide(this.data.size, 2));
-        this.mesh.position.fromArray([...pos, this.gobj.z]);
+        this.material.color.set(this.gabeObject.data.color);
+        this.mesh.renderOrder = -this.gabeObject.wpos[1] + this.gabeObject.wpos[0];
+        let pos = pts.add(this.gabeObject.rpos, pts.divide(this.data.size, 2));
+        this.mesh.position.fromArray([...pos, this.gabeObject.z]);
     }
 }
 ;

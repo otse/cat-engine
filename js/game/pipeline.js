@@ -1,4 +1,5 @@
 import app from '../app.js';
+import glob from '../dep/glob.js';
 import pts from '../dep/pts.js';
 const fragmentBackdrop = `
 varying vec2 vUv;
@@ -209,6 +210,7 @@ var pipeline;
         if (pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
             pipeline.dotsPerInch = window.devicePixelRatio;
         }
+        glob.dotsPerInch = pipeline.dotsPerInch;
         pipeline.target = new THREE.WebGLRenderTarget(1024, 1024, {
             minFilter: THREE.NearestFilter,
             magFilter: THREE.NearestFilter,
@@ -221,6 +223,7 @@ var pipeline;
             antialias: false,
             // premultipliedAlpha: false
         });
+        glob.renderer = pipeline.renderer;
         pipeline.renderer.setPixelRatio(pipeline.dotsPerInch);
         pipeline.renderer.setSize(100, 100);
         pipeline.renderer.setClearColor(0xffffff, 0);
@@ -298,18 +301,18 @@ var pipeline;
         return texture;
     }
     pipeline.loadTexture = loadTexture;
-    function makeRenderTarget(w, h) {
-        const o = {
+    function makeRenderTarget(width, height) {
+        return new THREE.WebGLRenderTarget(width, height, {
             minFilter: THREE.NearestFilter,
             magFilter: THREE.NearestFilter,
-            format: THREE.RGBAFormat
-        };
-        let target = new THREE.WebGLRenderTarget(w, h, o);
-        return target;
+            format: THREE.RGBAFormat,
+            colorSpace: THREE.NoColorSpace,
+            generateMipmaps: false,
+        });
     }
     pipeline.makeRenderTarget = makeRenderTarget;
     function makeOrthographicCamera(w, h) {
-        let camera = new THREE.OrthographicCamera(w / -2, w / 2, h / 2, h / -2, -2000, 100);
+        let camera = new THREE.OrthographicCamera(w / -2, w / 2, h / 2, h / -2, -200, 100);
         camera.updateProjectionMatrix();
         return camera;
     }

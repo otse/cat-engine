@@ -1,4 +1,5 @@
 /// This poorly named component turns basic models into tiles
+import glob from "../dep/glob.js";
 import pipeline from "./pipeline.js";
 import sprite from "./sprite.js";
 var tileform;
@@ -13,40 +14,50 @@ var tileform;
     })(stage = tileform.stage || (tileform.stage = {}));
     (function (stage) {
         async function init() {
-            boot();
-            makeBasicShapes();
+            await boot();
         }
         stage.init = init;
         async function boot() {
-            const size = [24, 40];
             stage.scene = new THREE.Scene();
+            // scene.background = new THREE.Color('purple');
+            stage.scene.rotation.set(Math.PI / 6, Math.PI / Math.PI, 0);
+            stage.camera = new THREE.OrthographicCamera(100 / -2, 100 / 2, 100 / 2, 100 / -2, -100, 100);
             stage.group = new THREE.Group();
-            stage.target = pipeline.makeRenderTarget(size[0], size[1]);
-            stage.camera = pipeline.makeOrthographicCamera(size[0], size[1]);
-            stage.scene.rotation.set(Math.PI / 6, Math.PI / 4, 0);
             stage.group.rotation.set(-Math.PI / 2, 0, 0);
-            stage.ambient = new THREE.AmbientLight('#777');
+            stage.group.updateMatrix();
+            stage.scene.add(stage.group);
+            stage.scene.updateMatrix();
+            stage.ambient = new THREE.AmbientLight('white', 1);
             stage.scene.add(stage.ambient);
             const sunDistance = 100;
-            stage.sun = new THREE.DirectionalLight(0xffffff, 0.25);
+            stage.sun = new THREE.DirectionalLight('yellow', 1);
             stage.sun.position.set(-sunDistance, 0, sunDistance / 2);
+            stage.scene.add(stage.sun);
             stage.renderer = new THREE.WebGLRenderer({
                 antialias: false,
             });
-        }
-        let boxx;
-        let boz;
-        async function makeBasicShapes() {
+            stage.renderer.setPixelRatio(glob);
+            stage.renderer.setSize(100, 100);
+            stage.renderer.setClearColor(0xffffff, 1);
+            stage.renderer.autoClear = true;
+            stage.renderer.toneMapping = THREE.NoToneMapping;
+            // document.body.appendChild(renderer.domElement);
         }
         function prepare(sprite) {
+            stage.spotlight = sprite;
+            const size = sprite.data.size;
+            stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -100, 100);
+            while (stage.group.children.length > 0)
+                stage.group.remove(stage.group.children[0]);
             stage.group.add(sprite.shape.mesh);
-            pipeline.utilEraseChildren(stage.group);
         }
         stage.prepare = prepare;
         function render() {
-            stage.renderer.setRenderTarget(stage.target);
-            stage.renderer.clear();
-            stage.renderer.render(stage.scene, stage.camera);
+            // Todo: Using our own stage renderer gives us a black result
+            glob.renderer.setRenderTarget(stage.spotlight.target);
+            glob.renderer.clear();
+            glob.renderer.render(stage.scene, stage.camera);
+            glob.renderer.setRenderTarget(null);
         }
         stage.render = render;
     })(stage = tileform.stage || (tileform.stage = {}));
@@ -62,10 +73,10 @@ var tileform;
             super();
         }
         _create() {
-            const box = new THREE.BoxGeometry(10, 10, 10);
+            const box = new THREE.BoxGeometry(10, 16, 10);
             const material = new THREE.MeshPhongMaterial({
                 color: 'red',
-                map: pipeline.loadTexture('img/moorish-ornaments.jpg', 0)
+                //map: pipeline.loadTexture('img/moorish-ornaments.jpg', 0)
             });
             const mesh = new THREE.Mesh(box, material);
             this.mesh = mesh;
@@ -95,14 +106,18 @@ var tileform;
         }
         _create() {
             super._create();
+            // this.material.transparent = false;
             this.material.map = this.target.texture;
+            this.material.needsUpdate = true;
+            stage.group.position.set(0, 0, 0);
+            stage.group.updateMatrix();
         }
         renderCode() {
             this.target = pipeline.makeRenderTarget(this.data.size[0], this.data.size[1]);
         }
         render() {
-            tileform.stage.prepare(this);
-            tileform.stage.render();
+            stage.prepare(this);
+            stage.render();
         }
     }
     tileform.sprite3d = sprite3d;

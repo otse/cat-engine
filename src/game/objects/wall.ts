@@ -14,9 +14,10 @@ export class wall extends baseobject {
 	}
 	protected override _create() {
 		new sprite({
-			gobj: this,
+			gabeObject: this,
 			size: [17, 21],
-			name: 'hex/wall.png'
+			name: 'hex/wall.png',
+			color: 'blue'
 		});
 		this.sprite?.create();
 	}

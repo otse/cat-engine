@@ -12,7 +12,7 @@ export class tile extends baseobject {
     }
     _create() {
         new sprite({
-            gobj: this,
+            gabeObject: this,
             size: [17, 9]
         });
         this.sprite?.create();

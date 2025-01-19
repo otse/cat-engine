@@ -43,8 +43,11 @@ namespace rome {
 		new tile({ _type: 'direct', _wpos: [2, 0, 0] });
 		new tile({ _type: 'direct', _wpos: [3, 0, 0] });
 		new wall3d({ _type: 'direct', _wpos: [2, 1, 0] });
-		new wall({ _type: 'direct', _wpos: [3, 1, 0] });
+		new wall3d({ _type: 'direct', _wpos: [3, 1, 0] });
 		new wall({ _type: 'direct', _wpos: [4, 1, 0] });
+		new wall({ _type: 'direct', _wpos: [5, 1, 0] });
+		new tile({ _type: 'direct', _wpos: [3, 2, 0] });
+		new tile({ _type: 'direct', _wpos: [4, 2, 0] });
 		// new sprite({ size: [12, 8] });
 	}
 

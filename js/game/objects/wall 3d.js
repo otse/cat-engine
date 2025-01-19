@@ -12,10 +12,11 @@ export class wall3d extends baseobject {
     }
     _create() {
         new tileform.sprite3d('wall', {
-            gobj: this,
+            gabeObject: this,
             size: [17, 21],
             name: 'hex/wall.png'
         });
+        this.sprite?.create();
     }
 }
 export default wall3d;

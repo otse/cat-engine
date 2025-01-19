@@ -14,7 +14,7 @@ export class tile extends baseobject {
 	}
 	protected override _create() {
 		new sprite({
-			gobj: this,
+			gabeObject: this,
 			size: [17, 9]
 		});
 		this.sprite?.create();
