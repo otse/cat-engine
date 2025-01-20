@@ -17,7 +17,8 @@ export class wall3d extends game_object {
             name: 'hex/wall.png',
             shapeType: 'wall',
             shapeLiteral: {
-                texture: './img/textures/stonemixed.jpg'
+                texture: './img/textures/stonemixed.jpg',
+                size: [8, 20, 10]
             }
         });
         this.sprite?.create();

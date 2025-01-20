@@ -1,6 +1,7 @@
 /// This poorly named component turns basic 3d shapes into sprites
 
 import glob from "../dep/glob.js";
+import rome from "../rome.js";
 import pipeline from "./pipeline.js";
 import sprite3d from "./sprite 3d.js";
 import sprite from "./sprite.js";
@@ -66,7 +67,7 @@ namespace tileform {
 				-100, 100);
 			while (group.children.length > 0)
 				group.remove(group.children[0]);
-			group.add(sprite.shape!.mesh);
+			group.add(sprite.shape!.group);
 		}
 
 		export function render() {
@@ -82,15 +83,56 @@ namespace tileform {
 	// shapes
 
 	export abstract class shape_base {
-		mesh
+		group
 		constructor(readonly data: shape_literal) {
+			this.group = new THREE.Group();
 			this._create();
 		}
 		protected _create() { }
 	}
 
+	class hexagon {
+		mesh
+		constructor() {
+			this.make();
+		}
+		make() {
+			const vertices: number[] = [];
+			const indices: number[] = [];
+			const radius = 8.7; // 8.7 goo
+			const detail = 6; // Number of vertices on the circle
+			const angle = (Math.PI * 2) / detail;
+			let index = 0;
+			for (let i = 0; i < detail; i++) {
+				const x = radius * Math.cos(i * angle);
+				const y = radius * Math.sin(i * angle);
+				vertices.push(x, y, 0); // Z is always 0 for a 2D hexagon
+				if (i > 0) {
+					indices.push(index - 1, index, 0);
+				}
+				index++;
+			}
+			const geometry = new THREE.BufferGeometry();
+			geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+			geometry.setIndex(indices);
+			const material = new THREE.MeshPhongMaterial({
+				color: rome.sample(['blue', 'red']),
+				// wireframe: true
+			});
+			this.mesh = new THREE.Mesh(geometry, material);
+		}
+		get(shape: shape_base) {
+			const { data } = shape;
+			this.mesh.position.set(0, 0, -7);
+			this.mesh.updateMatrix();
+			return this.mesh;
+		}
+	}
+
 	export interface shape_literal {
-		texture: string
+		// gabeObject: game_object,
+		texture: string,
+		size: vec3
 	}
 
 	export class shape_box extends shape_base {
@@ -99,13 +141,16 @@ namespace tileform {
 			this._create();
 		}
 		protected override _create() {
-			const box = new THREE.BoxGeometry(8, 20, 10);
+			const { size } = this.data;
+			const box = new THREE.BoxGeometry(size[0], size[1], size[2]);
 			const material = new THREE.MeshPhongMaterial({
 				// color: 'red',
 				map: pipeline.loadTexture(this.data.texture, 0)
 			});
 			const mesh = new THREE.Mesh(box, material);
-			this.mesh = mesh;
+			// this.group.add(mesh);
+			this.group.add(new hexagon().get(this));
+			this.group.updateMatrix();
 		}
 	}
 
