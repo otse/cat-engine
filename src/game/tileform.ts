@@ -93,29 +93,19 @@ namespace tileform {
 
 	class hexagon {
 		mesh
+		scalar = 8.7
 		constructor() {
 			this.make();
 		}
 		make() {
-			const vertices: number[] = [];
-			const indices: number[] = [];
-			const radius = 8.7; // 8.7 goo
-			const detail = 6; // Number of vertices on the circle
-			const angle = (Math.PI * 2) / detail;
-			let index = 0;
-			for (let i = 0; i < detail; i++) {
-				const x = radius * Math.cos(i * angle);
-				const y = radius * Math.sin(i * angle);
-				vertices.push(x, y, 0); // Z is always 0 for a 2D hexagon
-				if (i > 0) {
-					indices.push(index - 1, index, 0);
-				}
-				index++;
-			}
+			const { scalar } = this;
+			const vertices: number[] = [1 * scalar, 0 * scalar, 0 * scalar, 0.5 * scalar, 0.866 * scalar, 0 * scalar, -0.5 * scalar, 0.866 * scalar, 0 * scalar, -1 * scalar, 0 * scalar, 0 * scalar, -0.5 * scalar, -0.866 * scalar, 0 * scalar, 0.5 * scalar, -0.866 * scalar, 0 * scalar];
+			const indices: number[] = [0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 6, 0, 6, 1];
 			const geometry = new THREE.BufferGeometry();
 			geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 			geometry.setIndex(indices);
 			const material = new THREE.MeshPhongMaterial({
+				// map: pipeline.loadTexture(, 0),
 				color: rome.sample(['blue', 'red']),
 				// wireframe: true
 			});
@@ -148,7 +138,7 @@ namespace tileform {
 				map: pipeline.loadTexture(this.data.texture, 0)
 			});
 			const mesh = new THREE.Mesh(box, material);
-			// this.group.add(mesh);
+			this.group.add(mesh);
 			this.group.add(new hexagon().get(this));
 			this.group.updateMatrix();
 		}
