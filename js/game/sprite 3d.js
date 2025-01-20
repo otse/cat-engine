@@ -1,42 +1,6 @@
 import pipeline from "./pipeline.js";
 import sprite from "./sprite.js";
 import tileform from "./tileform.js";
-class shape_base {
-    data;
-    mesh;
-    constructor(data) {
-        this.data = data;
-        this._create();
-    }
-    _create() { }
-}
-class shape_box extends shape_base {
-    constructor(data) {
-        super(data);
-        this._create();
-    }
-    _create() {
-        const box = new THREE.BoxGeometry(15, 20, 10);
-        const material = new THREE.MeshPhongMaterial({
-            color: 'red',
-            map: pipeline.loadTexture(this.data.texture, 0)
-        });
-        const mesh = new THREE.Mesh(box, material);
-        this.mesh = mesh;
-    }
-}
-function shapeMaker(type, data) {
-    let shape;
-    switch (type) {
-        case 'nothing':
-            console.warn(' no type passed to factory ');
-            break;
-        case 'wall':
-            shape = new shape_box(data);
-            break;
-    }
-    return shape;
-}
 ;
 export class sprite3d extends sprite {
     data;
@@ -45,7 +9,7 @@ export class sprite3d extends sprite {
     constructor(data) {
         super(data);
         this.data = data;
-        this.shape = shapeMaker(this.data.shapeType, this.data.shapeLiteral);
+        this.shape = tileform.shapeMaker(this.data.shapeType, this.data.shapeLiteral);
         this.renderCode();
         this.render();
     }

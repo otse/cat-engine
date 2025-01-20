@@ -1,6 +1,6 @@
-import baseobject from "./base object.js";
+import game_object from "./game object.js";
 import sprite from "../sprite.js";
-export class wall extends baseobject {
+export class wall extends game_object {
     constructor(data) {
         super({
             name: 'a wall',

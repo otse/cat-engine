@@ -2,52 +2,11 @@ import pipeline from "./pipeline.js";
 import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 
-abstract class shape_base {
-	mesh
-	constructor(readonly data: shapeLiteral) {
-		this._create();
-	}
-	protected _create() { }
-}
-
-interface shapeLiteral {
-	texture: string
-}
-
-class shape_box extends shape_base {
-	constructor(data: shapeLiteral) {
-		super(data);
-		this._create();
-	}
-	protected override _create() {
-		const box = new THREE.BoxGeometry(15, 20, 10);
-		const material = new THREE.MeshPhongMaterial({
-			color: 'red',
-			map: pipeline.loadTexture(this.data.texture, 0)
-		});
-		const mesh = new THREE.Mesh(box, material);
-		this.mesh = mesh;
-	}
-}
-
-function shapeMaker(type: shapez, data: shapeLiteral) {
-	let shape: shape_base | undefined;
-	switch (type) {
-		case 'nothing':
-			console.warn(' no type passed to factory ');
-			break;
-		case 'wall':
-			shape = new shape_box(data);
-			break;
-	}
-	return shape;
-}
-
-type shapez = 'nothing' | 'wall'
+// Todo put shapes in shapes.ts
 
 interface sprite3dliteral extends sprite.literalType {
-	shapeType: shapez,
-	shapeLiteral: shapeLiteral
+	shapeType: tileform.shape_types,
+	shapeLiteral: tileform.shape_literal
 }
 
 export namespace sprite3d {
@@ -56,12 +15,12 @@ export namespace sprite3d {
 
 export class sprite3d extends sprite {
 	target
-	shape?: shape_base
+	shape?: tileform.shape_base
 	constructor(
 		public readonly data: sprite3dliteral
 	) {
 		super(data);
-		this.shape = shapeMaker(
+		this.shape = tileform.shapeMaker(
 			this.data.shapeType,
 			this.data.shapeLiteral);
 		this.renderCode();
@@ -75,7 +34,7 @@ export class sprite3d extends sprite {
 		tileform.stage.group.updateMatrix();
 	}
 	renderCode() {
-		this.target = pipeline.makeRenderTarget(
+		this.target = pipeline.makeRenderTarget( 
 			this.data.size![0], this.data.size![1]);
 	}
 	render() {

@@ -3,15 +3,15 @@ import pts from "../../dep/pts.js";
 import lod from "../lod.js";
 import sprite from "../sprite.js";
 
-export namespace baseobject {
+export namespace base_object {
 
 }
 
-export class baseobject extends lod.obj {
+export class game_object extends lod.obj {
 	sprite?: sprite
 	r = 0 // rotation
 	z = 0 // third axis
-	constructor(public data: baseobjectliteral) {
+	constructor(public data: game_object_literal) {
 		super(undefined);
 		this.wpos = pts.copy(data._wpos);
 		this.z = data._wpos[2];
@@ -28,4 +28,4 @@ export class baseobject extends lod.obj {
 	}
 }
 
-export default baseobject;
+export default game_object;

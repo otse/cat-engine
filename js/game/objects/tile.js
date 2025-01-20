@@ -1,6 +1,6 @@
-import baseobject from "./base object.js";
+import game_object from "./game object.js";
 import sprite from "../sprite.js";
-export class tile extends baseobject {
+export class tile extends game_object {
     constructor(data) {
         super({
             name: 'a tile',

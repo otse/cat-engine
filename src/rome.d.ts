@@ -6,7 +6,7 @@ declare var THREE: any;
 
 type typez = 'dud' | 'direct' | 'tile' | 'bettertile' | 'wall' | 'wall 3d' | 'ply'
 
-interface baseobjectliteral {
+interface game_object_literal {
 	_type?: typez
 	_wpos: vec3,
 	_r?: number,
@@ -15,7 +15,4 @@ interface baseobjectliteral {
 	extra?: any
 }
 
-declare class baseobject {z; constructor(literal)}
-
-type gameobject = baseobject
-type gabeobject = baseobject
+declare class game_object {}

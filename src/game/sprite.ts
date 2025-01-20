@@ -1,10 +1,10 @@
 import pts from "../dep/pts.js";
-import baseobject from "./objects/base object.js";
+import game_object from "./objects/game object.js";
 import lod from "./lod.js";
 import pipeline from "./pipeline.js";
 
-interface spriteLiteral {
-	gabeObject: baseobject,
+interface sprite_literal {
+	gabeObject: game_object,
 	size?: vec2;
 	name?: string;
 	dataa?: number;
@@ -18,13 +18,13 @@ export namespace sprite {
 // A sprite uses a per-material UV transform
 
 export class sprite {
-	gabeObject: baseobject
+	gabeObject: game_object
 	matrix
 	mesh
 	geometry
 	material
 	constructor(
-		public readonly data: spriteLiteral
+		public readonly data: sprite_literal
 	) {
 		this.data = {
 			size: [17, 9],

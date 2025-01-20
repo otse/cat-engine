@@ -1,4 +1,4 @@
-/// This poorly named component turns basic meshes into sprites
+/// This poorly named component turns basic 3d shapes into sprites
 import glob from "../dep/glob.js";
 import pipeline from "./pipeline.js";
 var tileform;
@@ -64,5 +64,46 @@ var tileform;
         }
         stage.render = render;
     })(stage = tileform.stage || (tileform.stage = {}));
+    // end of stage
+    // shapes
+    class shape_base {
+        data;
+        mesh;
+        constructor(data) {
+            this.data = data;
+            this._create();
+        }
+        _create() { }
+    }
+    tileform.shape_base = shape_base;
+    class shape_box extends shape_base {
+        constructor(data) {
+            super(data);
+            this._create();
+        }
+        _create() {
+            const box = new THREE.BoxGeometry(8, 20, 10);
+            const material = new THREE.MeshPhongMaterial({
+                // color: 'red',
+                map: pipeline.loadTexture(this.data.texture, 0)
+            });
+            const mesh = new THREE.Mesh(box, material);
+            this.mesh = mesh;
+        }
+    }
+    tileform.shape_box = shape_box;
+    function shapeMaker(type, data) {
+        let shape;
+        switch (type) {
+            case 'nothing':
+                console.warn(' no type passed to factory ');
+                break;
+            case 'wall':
+                shape = new shape_box(data);
+                break;
+        }
+        return shape;
+    }
+    tileform.shapeMaker = shapeMaker;
 })(tileform || (tileform = {}));
 export default tileform;

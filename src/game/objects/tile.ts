@@ -1,9 +1,9 @@
 import lod from "../lod.js";
-import baseobject from "./base object.js";
+import game_object from "./game object.js";
 import sprite from "../sprite.js";
 
-export class tile extends baseobject {
-	constructor(data: baseobjectliteral) {
+export class tile extends game_object {
+	constructor(data: game_object_literal) {
 		super({
 			name: 'a tile',
 			...data

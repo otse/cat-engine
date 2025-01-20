@@ -1,11 +1,11 @@
 import lod from "../lod.js";
-import baseobject from "./base object.js";
+import game_object from "./game object.js";
 import sprite from "../sprite.js";
 import tileform from "../tileform.js";
 import sprite3d from "../sprite 3d.js";
 
-export class wall3d extends baseobject {
-	constructor(data: baseobjectliteral) {
+export class wall3d extends game_object {
+	constructor(data: game_object_literal) {
 		super({
 			name: 'a wall 3d',
 			...data,

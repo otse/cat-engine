@@ -1,6 +1,6 @@
 import pts from "../../dep/pts.js";
 import lod from "../lod.js";
-export class baseobject extends lod.obj {
+export class game_object extends lod.obj {
     data;
     sprite;
     r = 0; // rotation
@@ -22,4 +22,4 @@ export class baseobject extends lod.obj {
         super._step();
     }
 }
-export default baseobject;
+export default game_object;
