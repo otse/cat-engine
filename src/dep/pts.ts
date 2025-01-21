@@ -52,7 +52,7 @@ class pts {
 	static project(a: vec2): vec2 {
 		const x = a[0];
 		const y = -a[1];
-		const width = 26;
+		const width = 24;
 		const height = 16;
 		return [
 			(x - y) * (width / 2),

@@ -7,17 +7,16 @@ export class wall3d extends game_object {
             ...data,
         });
         this.data._type = 'wall 3d';
-        console.log('wall', this.data);
         this._create();
     }
     _create() {
         new sprite3d({
             gabeObject: this,
             size: [17, 21],
-            name: 'hex/wall.png',
+            name: 'unused',
             shapeType: 'wall',
             shapeLiteral: {
-                texture: './img/textures/stonemixed.jpg',
+                texture: './img/textures/beach.jpg',
                 size: [8, 20, 10]
             }
         });

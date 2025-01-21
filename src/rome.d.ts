@@ -4,13 +4,13 @@ declare type vec2 = [number, number];
 
 declare var THREE: any;
 
-type typez = 'dud' | 'direct' | 'tile' | 'bettertile' | 'wall' | 'wall 3d' | 'ply'
+type typez = 'dud' | 'direct' | 'tile' | 'tile 3d' | 'wall' | 'wall 3d' | 'ply'
 
 interface game_object_literal {
 	_type?: typez
 	_wpos: vec3,
 	_r?: number,
-	color?: string,
+	colorOverride?: string,
 	name?: string,
 	extra?: any
 }

@@ -29,11 +29,12 @@ export class sprite {
 		this.data = {
 			size: [17, 9],
 			name: 'hex/tile.png',
-			color: 'white',
-			...data
+			//color: 'white',
+			...data,
 		};
 		this.gabeObject = this.data.gabeObject;
-		this.data.gabeObject.sprite = this;
+		this.gabeObject.sprite = this;
+		this.data.color = this.gabeObject.data.colorOverride || 'white';
 		this.matrix = new THREE.Matrix3;
 		this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
 	}
@@ -45,7 +46,7 @@ export class sprite {
 	}
 	protected _create() {
 		let defines = {} as any;
-		// defines.MASKED = 1;
+		// defines.MASKED = 1;		
 		this.material = SpriteMaterial({
 			map: pipeline.loadTexture(`img/` + this.data.name, 0),
 			color: this.data.color,
@@ -67,7 +68,7 @@ export class sprite {
 		pipeline.groups.major.add(this.mesh);
 	}
 	update() {
-		this.material.color.set(this.gabeObject.data.color);
+		this.material.color.set(this.data.color);
 		this.mesh.renderOrder = -this.gabeObject.wpos[1] + this.gabeObject.wpos[0];
 		let pos = pts.add(this.gabeObject.rpos, pts.divide(this.data.size!, 2));
 		this.mesh.position.fromArray([...pos, this.gabeObject.z]);

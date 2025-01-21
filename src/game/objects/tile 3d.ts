@@ -2,28 +2,31 @@
 import game_object from "./game object.js";
 import sprite3d from "../sprite 3d.js";
 
-export class wall3d extends game_object {
+export class tile extends game_object {
 	constructor(data: game_object_literal) {
 		super({
-			name: 'a wall 3d',
-			...data,
+			name: 'a tile 3d',
+			...data
 		});
-		this.data._type = 'wall 3d';
+		this.data._type = 'tile 3d';
 		this._create();
 	}
 	protected override _create() {
 		new sprite3d({
 			gabeObject: this,
-			size: [17, 21],
+			size: [17, 9],
 			name: 'unused',
-			shapeType: 'wall',
+			shapeType: 'hex',
 			shapeLiteral: {
-				texture: './img/textures/beach.jpg',
+				hexTexture: './img/textures/beach.jpg',
 				size: [8, 20, 10]
 			}
 		});
 		this.sprite?.create();
 	}
+	protected override _delete() {
+		console.log('hiiide');
+	}
 }
 
-export default wall3d;
+export default tile;

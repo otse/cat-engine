@@ -17,12 +17,12 @@ export class sprite3d extends sprite {
 	target
 	shape?: tileform.shape_base
 	constructor(
-		public readonly data: sprite3dliteral
+		data: sprite3dliteral
 	) {
 		super(data);
 		this.shape = tileform.shapeMaker(
-			this.data.shapeType,
-			this.data.shapeLiteral);
+			data.shapeType,
+			data.shapeLiteral);
 		this.renderCode();
 		this.render();
 	}

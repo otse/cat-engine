@@ -1,6 +1,8 @@
 /// This poorly named component turns basic 3d shapes into sprites
 
+import app from "../app.js";
 import glob from "../dep/glob.js";
+import { hooks } from "../dep/hooks.js";
 import rome from "../rome.js";
 import pipeline from "./pipeline.js";
 import sprite3d from "./sprite 3d.js";
@@ -10,7 +12,12 @@ namespace tileform {
 
 	export async function init() {
 		await stage.init();
+		hooks.addListener('romeComponents', step);
 		return;
+	}
+
+	async function step() {
+		return false;
 	}
 
 	export namespace stage {
@@ -27,6 +34,11 @@ namespace tileform {
 
 		async function preload() {
 			await pipeline.loadTextureAsync('./img/textures/stonemixed.jpg');
+			await pipeline.loadTextureAsync('./img/textures/beach.jpg');
+			await pipeline.loadTextureAsync('./img/textures/beachnormal.jpg');
+			await pipeline.loadTextureAsync('./img/textures/sand.jpg');
+			//await pipeline.loadTextureAsync('./img/textures/sandnormal.jpg');
+			await pipeline.loadTextureAsync('./img/textures/oop.jpg');
 		}
 
 		async function boot() {
@@ -39,10 +51,10 @@ namespace tileform {
 			group.updateMatrix();
 			scene.add(group);
 			scene.updateMatrix();
-			ambient = new THREE.AmbientLight('white', 1);
+			ambient = new THREE.AmbientLight('white', Math.PI);
 			scene.add(ambient);
 			const sunDistance = 100;
-			sun = new THREE.DirectionalLight('yellow', 1);
+			sun = new THREE.DirectionalLight('yellow', Math.PI);
 			sun.position.set(-sunDistance, 0, sunDistance / 2);
 			scene.add(sun);
 			/*renderer = new THREE.WebGLRenderer({
@@ -82,32 +94,87 @@ namespace tileform {
 
 	// shapes
 
+	const shapes: shape_base[] = []
+
 	export abstract class shape_base {
 		group
 		constructor(readonly data: shape_literal) {
+			this.data = {
+				texture: '',
+				hexTexture: '',
+				...data
+			}
 			this.group = new THREE.Group();
+			shapes.push(this);
 			this._create();
 		}
 		protected _create() { }
+		step() { }
 	}
 
-	class hexagon {
+	export interface shape_literal {
+		// gabeObject: game_object,
+		texture?: string,
+		hexTexture?: string,
+		size: vec3,
+	}
+
+	export class shape_hex_wrapper extends shape_base {
+		hex: hexagon_tile
+		constructor(data: shape_literal) {
+			super(data);
+			this._create();
+		}
+		protected override _create() {
+			this.hex = new hexagon_tile(this.data);
+			this.group.add(this.hex.get(this));
+			this.hex.mesh.position.set(0, 0, 0);
+			this.hex.mesh.updateMatrix();
+		}
+	}
+
+	export class shape_box extends shape_base {
+		hex: hexagon_tile
+		constructor(data: shape_literal) {
+			super(data);
+			this._create();
+		}
+		protected override _create() {
+			const { size } = this.data;
+			const box = new THREE.BoxGeometry(size[0], size[1], size[2]);
+			const material = new THREE.MeshPhongMaterial({
+				//color: 'red',
+				map: pipeline.loadTexture(this.data.texture!, 1)
+			});
+			const mesh = new THREE.Mesh(box, material);
+			this.hex = new hexagon_tile(this.data);
+			this.group.add(this.hex.get(this));
+			this.group.add(mesh);
+			this.group.updateMatrix();
+		}
+	}
+
+	export let hex_size = 8;
+
+	class hexagon_tile {
 		mesh
-		scalar = 8.7
-		constructor() {
+		scalar = 8
+		constructor(readonly data: shape_literal) {
+			this.scalar = hex_size;
 			this.make();
 		}
 		make() {
 			const { scalar } = this;
 			const vertices: number[] = [1 * scalar, 0 * scalar, 0 * scalar, 0.5 * scalar, 0.866 * scalar, 0 * scalar, -0.5 * scalar, 0.866 * scalar, 0 * scalar, -1 * scalar, 0 * scalar, 0 * scalar, -0.5 * scalar, -0.866 * scalar, 0 * scalar, 0.5 * scalar, -0.866 * scalar, 0 * scalar];
 			const indices: number[] = [0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 6, 0, 6, 1];
+			const uvs: number[] = [0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1];
 			const geometry = new THREE.BufferGeometry();
 			geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+			geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
 			geometry.setIndex(indices);
 			const material = new THREE.MeshPhongMaterial({
-				// map: pipeline.loadTexture(, 0),
-				color: rome.sample(['blue', 'red']),
-				// wireframe: true
+				color: 'white',
+				map: pipeline.loadTexture(this.data.hexTexture!, 0),
 			});
 			this.mesh = new THREE.Mesh(geometry, material);
 		}
@@ -119,32 +186,7 @@ namespace tileform {
 		}
 	}
 
-	export interface shape_literal {
-		// gabeObject: game_object,
-		texture: string,
-		size: vec3
-	}
-
-	export class shape_box extends shape_base {
-		constructor(data: shape_literal) {
-			super(data);
-			this._create();
-		}
-		protected override _create() {
-			const { size } = this.data;
-			const box = new THREE.BoxGeometry(size[0], size[1], size[2]);
-			const material = new THREE.MeshPhongMaterial({
-				// color: 'red',
-				map: pipeline.loadTexture(this.data.texture, 0)
-			});
-			const mesh = new THREE.Mesh(box, material);
-			this.group.add(mesh);
-			this.group.add(new hexagon().get(this));
-			this.group.updateMatrix();
-		}
-	}
-
-	export type shape_types = 'nothing' | 'wall'
+	export type shape_types = 'nothing' | 'wall' | 'hex'
 
 	export function shapeMaker(type: shape_types, data: shape_literal) {
 		let shape: shape_base | undefined;
@@ -154,6 +196,9 @@ namespace tileform {
 				break;
 			case 'wall':
 				shape = new shape_box(data);
+				break;
+			case 'hex':
+				shape = new shape_hex_wrapper(data);
 				break;
 		}
 		return shape;

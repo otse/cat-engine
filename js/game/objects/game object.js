@@ -2,6 +2,7 @@ import pts from "../../dep/pts.js";
 import lod from "../lod.js";
 export class game_object extends lod.obj {
     data;
+    static _gabeObjects = [];
     sprite;
     r = 0; // rotation
     z = 0; // third axis
@@ -12,6 +13,10 @@ export class game_object extends lod.obj {
         this.z = data._wpos[2];
         this.r = data._r || 0;
         this.wtorpos();
+        game_object._gabeObjects.push(this);
+    }
+    purge() {
+        this.sprite?.delete();
     }
     _delete() {
     }

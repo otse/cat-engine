@@ -8,6 +8,7 @@ export namespace base_object {
 }
 
 export class game_object extends lod.obj {
+	static _gabeObjects: game_object[] = []
 	sprite?: sprite
 	r = 0 // rotation
 	z = 0 // third axis
@@ -17,6 +18,10 @@ export class game_object extends lod.obj {
 		this.z = data._wpos[2];
 		this.r = data._r || 0;
 		this.wtorpos();
+		game_object._gabeObjects.push(this);
+	}
+	purge() {
+		this.sprite?.delete();
 	}
 	protected override _delete() {
 	}

@@ -1,14 +1,18 @@
 /// This poorly named component turns basic 3d shapes into sprites
 import glob from "../dep/glob.js";
-import rome from "../rome.js";
+import { hooks } from "../dep/hooks.js";
 import pipeline from "./pipeline.js";
 var tileform;
 (function (tileform) {
     async function init() {
         await stage.init();
+        hooks.addListener('romeComponents', step);
         return;
     }
     tileform.init = init;
+    async function step() {
+        return false;
+    }
     let stage;
     (function (stage) {
     })(stage = tileform.stage || (tileform.stage = {}));
@@ -20,6 +24,11 @@ var tileform;
         stage.init = init;
         async function preload() {
             await pipeline.loadTextureAsync('./img/textures/stonemixed.jpg');
+            await pipeline.loadTextureAsync('./img/textures/beach.jpg');
+            await pipeline.loadTextureAsync('./img/textures/beachnormal.jpg');
+            await pipeline.loadTextureAsync('./img/textures/sand.jpg');
+            //await pipeline.loadTextureAsync('./img/textures/sandnormal.jpg');
+            await pipeline.loadTextureAsync('./img/textures/oop.jpg');
         }
         async function boot() {
             stage.scene = new THREE.Scene();
@@ -31,10 +40,10 @@ var tileform;
             stage.group.updateMatrix();
             stage.scene.add(stage.group);
             stage.scene.updateMatrix();
-            stage.ambient = new THREE.AmbientLight('white', 1);
+            stage.ambient = new THREE.AmbientLight('white', Math.PI);
             stage.scene.add(stage.ambient);
             const sunDistance = 100;
-            stage.sun = new THREE.DirectionalLight('yellow', 1);
+            stage.sun = new THREE.DirectionalLight('yellow', Math.PI);
             stage.sun.position.set(-sunDistance, 0, sunDistance / 2);
             stage.scene.add(stage.sun);
             /*renderer = new THREE.WebGLRenderer({
@@ -67,34 +76,82 @@ var tileform;
     })(stage = tileform.stage || (tileform.stage = {}));
     // end of stage
     // shapes
+    const shapes = [];
     class shape_base {
         data;
         group;
         constructor(data) {
             this.data = data;
+            this.data = {
+                texture: '',
+                hexTexture: '',
+                ...data
+            };
             this.group = new THREE.Group();
+            shapes.push(this);
             this._create();
         }
         _create() { }
+        step() { }
     }
     tileform.shape_base = shape_base;
-    class hexagon {
+    class shape_hex_wrapper extends shape_base {
+        hex;
+        constructor(data) {
+            super(data);
+            this._create();
+        }
+        _create() {
+            this.hex = new hexagon_tile(this.data);
+            this.group.add(this.hex.get(this));
+            this.hex.mesh.position.set(0, 0, 0);
+            this.hex.mesh.updateMatrix();
+        }
+    }
+    tileform.shape_hex_wrapper = shape_hex_wrapper;
+    class shape_box extends shape_base {
+        hex;
+        constructor(data) {
+            super(data);
+            this._create();
+        }
+        _create() {
+            const { size } = this.data;
+            const box = new THREE.BoxGeometry(size[0], size[1], size[2]);
+            const material = new THREE.MeshPhongMaterial({
+                //color: 'red',
+                map: pipeline.loadTexture(this.data.texture, 1)
+            });
+            const mesh = new THREE.Mesh(box, material);
+            this.hex = new hexagon_tile(this.data);
+            this.group.add(this.hex.get(this));
+            this.group.add(mesh);
+            this.group.updateMatrix();
+        }
+    }
+    tileform.shape_box = shape_box;
+    tileform.hex_size = 8;
+    class hexagon_tile {
+        data;
         mesh;
-        scalar = 8.7;
-        constructor() {
+        scalar = 8;
+        constructor(data) {
+            this.data = data;
+            this.scalar = tileform.hex_size;
             this.make();
         }
         make() {
             const { scalar } = this;
             const vertices = [1 * scalar, 0 * scalar, 0 * scalar, 0.5 * scalar, 0.866 * scalar, 0 * scalar, -0.5 * scalar, 0.866 * scalar, 0 * scalar, -1 * scalar, 0 * scalar, 0 * scalar, -0.5 * scalar, -0.866 * scalar, 0 * scalar, 0.5 * scalar, -0.866 * scalar, 0 * scalar];
             const indices = [0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 6, 0, 6, 1];
+            const uvs = [0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1];
             const geometry = new THREE.BufferGeometry();
             geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
             geometry.setIndex(indices);
             const material = new THREE.MeshPhongMaterial({
-                // map: pipeline.loadTexture(, 0),
-                color: rome.sample(['blue', 'red']),
-                // wireframe: true
+                color: 'white',
+                map: pipeline.loadTexture(this.data.hexTexture, 0),
             });
             this.mesh = new THREE.Mesh(geometry, material);
         }
@@ -105,25 +162,6 @@ var tileform;
             return this.mesh;
         }
     }
-    class shape_box extends shape_base {
-        constructor(data) {
-            super(data);
-            this._create();
-        }
-        _create() {
-            const { size } = this.data;
-            const box = new THREE.BoxGeometry(size[0], size[1], size[2]);
-            const material = new THREE.MeshPhongMaterial({
-                // color: 'red',
-                map: pipeline.loadTexture(this.data.texture, 0)
-            });
-            const mesh = new THREE.Mesh(box, material);
-            this.group.add(mesh);
-            this.group.add(new hexagon().get(this));
-            this.group.updateMatrix();
-        }
-    }
-    tileform.shape_box = shape_box;
     function shapeMaker(type, data) {
         let shape;
         switch (type) {
@@ -132,6 +170,9 @@ var tileform;
                 break;
             case 'wall':
                 shape = new shape_box(data);
+                break;
+            case 'hex':
+                shape = new shape_hex_wrapper(data);
                 break;
         }
         return shape;

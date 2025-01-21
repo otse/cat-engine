@@ -3,13 +3,11 @@ import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 ;
 export class sprite3d extends sprite {
-    data;
     target;
     shape;
     constructor(data) {
         super(data);
-        this.data = data;
-        this.shape = tileform.shapeMaker(this.data.shapeType, this.data.shapeLiteral);
+        this.shape = tileform.shapeMaker(data.shapeType, data.shapeLiteral);
         this.renderCode();
         this.render();
     }
