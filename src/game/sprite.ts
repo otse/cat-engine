@@ -1,6 +1,6 @@
 import pts from "../dep/pts.js";
 import game_object from "./objects/game object.js";
-import lod from "./lod.js";
+import clod from "./clod.js";
 import pipeline from "./pipeline.js";
 
 interface sprite_literal {

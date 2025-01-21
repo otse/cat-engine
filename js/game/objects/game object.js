@@ -1,6 +1,6 @@
 import pts from "../../dep/pts.js";
-import lod from "../lod.js";
-export class game_object extends lod.obj {
+import clod from "../clod.js";
+export class game_object extends clod.obj {
     data;
     static _gabeObjects = [];
     sprite;

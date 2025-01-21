@@ -1,13 +1,13 @@
 
 import pts from "../../dep/pts.js";
-import lod from "../lod.js";
+import clod from "../clod.js";
 import sprite from "../sprite.js";
 
 export namespace base_object {
 
 }
 
-export class game_object extends lod.obj {
+export class game_object extends clod.obj {
 	static _gabeObjects: game_object[] = []
 	sprite?: sprite
 	r = 0 // rotation

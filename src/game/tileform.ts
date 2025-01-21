@@ -54,7 +54,7 @@ namespace tileform {
 			ambient = new THREE.AmbientLight('white', Math.PI);
 			scene.add(ambient);
 			const sunDistance = 100;
-			sun = new THREE.DirectionalLight('yellow', Math.PI);
+			sun = new THREE.DirectionalLight('white', 1);
 			sun.position.set(-sunDistance, 0, sunDistance / 2);
 			scene.add(sun);
 			/*renderer = new THREE.WebGLRenderer({
@@ -100,8 +100,8 @@ namespace tileform {
 		group
 		constructor(readonly data: shape_literal) {
 			this.data = {
-				texture: '',
-				hexTexture: '',
+				texture: './img/textures/stonemixed.jpg',
+				hexTexture: './img/textures/beach.jpg',
 				...data
 			}
 			this.group = new THREE.Group();

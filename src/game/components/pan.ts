@@ -4,7 +4,7 @@ import pts from "../../dep/pts.js";
 
 import pipeline from "../pipeline.js";
 import zoom from "./zoom.js";
-import lod from "../lod.js";
+import clod from "../clod.js";
 import game_object from "../objects/game object.js";
 
 
@@ -33,7 +33,7 @@ namespace pan {
 	function functions() {
 		follow();
 		pan();
-		wpos = lod.unproject(rpos);
+		wpos = clod.unproject(rpos);
 		set_camera();
 		//lod.gworld.update(wpos);
 	}
@@ -43,11 +43,11 @@ namespace pan {
 			let wpos = stick.wpos;
 			// Todo .5 ?
 			wpos = pts.add(wpos, [.5, .5]);
-			rpos = lod.project(wpos);
+			rpos = clod.project(wpos);
 		}
 		else {
 			if (rposIsBasedOnWpos)
-				rpos = lod.project(wpos);
+				rpos = clod.project(wpos);
 		}
 	}
 

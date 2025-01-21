@@ -3,7 +3,7 @@ import app from "../../app.js";
 import pts from "../../dep/pts.js";
 import pipeline from "../pipeline.js";
 import zoom from "./zoom.js";
-import lod from "../lod.js";
+import clod from "../clod.js";
 var pan;
 (function (pan_1) {
     function register() {
@@ -24,7 +24,7 @@ var pan;
     function functions() {
         follow();
         pan();
-        wpos = lod.unproject(rpos);
+        wpos = clod.unproject(rpos);
         set_camera();
         //lod.gworld.update(wpos);
     }
@@ -33,11 +33,11 @@ var pan;
             let wpos = stick.wpos;
             // Todo .5 ?
             wpos = pts.add(wpos, [.5, .5]);
-            rpos = lod.project(wpos);
+            rpos = clod.project(wpos);
         }
         else {
             if (rposIsBasedOnWpos)
-                rpos = lod.project(wpos);
+                rpos = clod.project(wpos);
         }
     }
     function pan() {

@@ -12,96 +12,105 @@ export var numbers;
     numbers.walls = [0, 0];
 })(numbers || (numbers = {}));
 ;
-var lod;
-(function (lod) {
-    lod.size = 9;
+var clod;
+(function (clod) {
+    clod.size = 9;
     const chunk_coloration = false;
     const fog_of_war = false;
     const grid_crawl_makes_chunks = true;
-    lod.SectorSpan = 2;
-    lod.stamp = 0; // used only by server slod
+    clod.SectorSpan = 2;
+    clod.stamp = 0; // used only by server slod
+    function init() {
+        console.log('init');
+        const world = new clod.world(10);
+        return world;
+    }
+    clod.init = init;
     function register() {
         // hooks.create('sectorCreate')
         // hooks.create('sectorShow')
         // hooks.create('sectorHide')
         // hooks.register('sectorHide', () => { console.log('~'); return false; } );
     }
-    lod.register = register;
+    clod.register = register;
     function project(unit) {
         return pts.mult(pts.project(unit), 1);
     }
-    lod.project = project;
+    clod.project = project;
     function unproject(pixel) {
         return pts.divide(pts.unproject(pixel), 1);
     }
-    lod.unproject = unproject;
-    function add(obj) {
+    clod.unproject = unproject;
+    function add(world, obj) {
         if (!obj)
             return;
-        let chunk = lod.gworld.atwpos(obj.wpos);
+        let chunk = world.atwpos(obj.wpos);
         chunk.add(obj);
     }
-    lod.add = add;
+    clod.add = add;
     function remove(obj) {
         obj.chunk?.remove(obj);
     }
-    lod.remove = remove;
+    clod.remove = remove;
     class world {
+        // The client lod only has a single observer
+        // If you need more, decouple it then make sure that
+        // the grid does not start showing and hiding chunks 
+        grid;
         arrays = [];
-        constructor(span) {
-            lod.gworld = this;
-            new grid(2, 2);
+        constructor(useless_value) {
+            new grid(this, 2, 2);
         }
         update(wpos) {
-            lod.ggrid.big = lod.world.big(wpos);
-            lod.ggrid.ons();
-            lod.ggrid.offs();
+            this.grid.cpos = clod.world.cpos(wpos);
+            this.grid.ons();
+            this.grid.offs();
         }
         lookup(big) {
             if (this.arrays[big[1]] == undefined)
                 this.arrays[big[1]] = [];
             return this.arrays[big[1]][big[0]];
         }
-        at(big) {
-            return this.lookup(big) || this.make(big);
+        at(cpos) {
+            return this.lookup(cpos) || this._make(cpos);
         }
         atwpos(wpos) {
-            return this.at(world.big(wpos));
+            return this.at(world.cpos(wpos));
         }
-        make(big) {
-            let s = this.lookup(big);
+        _make(cpos) {
+            let s = this.lookup(cpos);
             if (s)
                 return s;
-            s = this.arrays[big[1]][big[0]] = new chunk(big, this);
+            s = this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
             return s;
         }
-        static big(units) {
-            return pts.floor(pts.divide(units, lod.SectorSpan));
+        static cpos(units) {
+            return pts.floor(pts.divide(units, clod.SectorSpan));
         }
     }
-    lod.world = world;
+    clod.world = world;
     class chunk extends toggle {
-        big;
+        cpos;
         world;
         group;
         color;
         fog_of_war = false;
         small;
         objs = [];
-        constructor(big, world) {
+        constructor(cpos, world) {
             super();
-            this.big = big;
+            this.cpos = cpos;
             this.world = world;
             if (chunk_coloration)
                 this.color = (['lightsalmon', 'lightblue', 'beige', 'pink'])[Math.floor(Math.random() * 4)];
-            let min = pts.mult(this.big, lod.SectorSpan);
-            let max = pts.add(min, [lod.SectorSpan - 1, lod.SectorSpan - 1]);
+            let min = pts.mult(this.cpos, clod.SectorSpan);
+            let max = pts.add(min, [clod.SectorSpan - 1, clod.SectorSpan - 1]);
             this.small = new aabb2(max, min);
             this.group = new THREE.Group;
             this.group.frustumCulled = false;
             this.group.matrixAutoUpdate = false;
             numbers.chunks[1]++;
-            world.arrays[this.big[1]][this.big[0]] = this;
+            world.arrays[this.cpos[1]][this.cpos[0]] = this;
             //console.log('sector');
             hooks.call('sectorCreate', this);
         }
@@ -163,23 +172,24 @@ var lod;
             hooks.call('sectorHide', this);
         }
         dist() {
-            return pts.distsimple(this.big, lod.ggrid.big);
+            return pts.distsimple(this.cpos, this.world.grid.cpos);
         }
         grayscale() {
             this.color = 'gray';
         }
     }
-    lod.chunk = chunk;
+    clod.chunk = chunk;
     class grid {
+        world;
         spread;
         outside;
-        big = [0, 0];
+        cpos = [0, 0];
         shown = [];
         visibleObjs = [];
-        constructor(spread, outside) {
+        constructor(world, spread, outside) {
+            this.world = world;
             this.spread = spread;
             this.outside = outside;
-            lod.ggrid = this;
             if (this.outside < this.spread) {
                 console.warn(' outside less than spread ', this.spread, this.outside);
                 this.outside = this.spread;
@@ -200,12 +210,12 @@ var lod;
             // spread = -2; < 2
             for (let y = -this.spread; y < this.spread + 1; y++) {
                 for (let x = -this.spread; x < this.spread + 1; x++) {
-                    let pos = pts.add(this.big, [x, y]);
-                    let chunk = grid_crawl_makes_chunks ? lod.gworld.at(pos) : lod.gworld.lookup(pos);
+                    let pos = pts.add(this.cpos, [x, y]);
+                    let chunk = grid_crawl_makes_chunks ? this.world.at(pos) : this.world.lookup(pos);
                     if (!chunk)
                         continue;
                     if (!chunk.active) {
-                        this.shown.push(chunk); //
+                        this.shown.push(chunk);
                         chunk.show();
                         // console.log(' show ');
                         // todo why
@@ -249,7 +259,7 @@ var lod;
                     obj.step();
         }
     }
-    lod.grid = grid;
+    clod.grid = grid;
     ;
     class obj extends toggle {
         counts;
@@ -292,7 +302,7 @@ var lod;
             this.bound.translate(this.wpos);
         }
         wtorpos() {
-            this.rpos = lod.project(this.wpos);
+            this.rpos = clod.project(this.wpos);
         }
         rtospos() {
             this.wtorpos();
@@ -317,6 +327,6 @@ var lod;
             this.rebound();
         }
     }
-    lod.obj = obj;
-})(lod || (lod = {}));
-export default lod;
+    clod.obj = obj;
+})(clod || (clod = {}));
+export default clod;

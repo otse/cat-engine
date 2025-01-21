@@ -11,6 +11,7 @@ import sprite from "./game/sprite.js";
 import zoom from "./game/components/zoom.js";
 import pan from "./game/components/pan.js";
 import game_object from "./game/objects/game object.js";
+import clod from "./game/clod.js";
 
 namespace rome {
 
@@ -24,10 +25,13 @@ namespace rome {
 		return val > max ? max : val < min ? min : val;
 	}
 
+	export var world: clod.world;
+
 	export async function init() {
 		console.log(' init ');
 		await pipeline.init();
 		await tileform.init();
+		world = clod.init();
 		app;
 		make_gabe_objects();
 		zoom.register();

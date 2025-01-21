@@ -9,6 +9,7 @@ import wall3d from "./game/objects/wall 3d.js";
 import zoom from "./game/components/zoom.js";
 import pan from "./game/components/pan.js";
 import game_object from "./game/objects/game object.js";
+import clod from "./game/clod.js";
 var rome;
 (function (rome) {
     rome.size = 8;
@@ -24,6 +25,7 @@ var rome;
         console.log(' init ');
         await pipeline.init();
         await tileform.init();
+        rome.world = clod.init();
         app;
         make_gabe_objects();
         zoom.register();

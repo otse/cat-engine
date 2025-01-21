@@ -43,7 +43,7 @@ var tileform;
             stage.ambient = new THREE.AmbientLight('white', Math.PI);
             stage.scene.add(stage.ambient);
             const sunDistance = 100;
-            stage.sun = new THREE.DirectionalLight('yellow', Math.PI);
+            stage.sun = new THREE.DirectionalLight('white', 1);
             stage.sun.position.set(-sunDistance, 0, sunDistance / 2);
             stage.scene.add(stage.sun);
             /*renderer = new THREE.WebGLRenderer({
@@ -83,8 +83,8 @@ var tileform;
         constructor(data) {
             this.data = data;
             this.data = {
-                texture: '',
-                hexTexture: '',
+                texture: './img/textures/stonemixed.jpg',
+                hexTexture: './img/textures/beach.jpg',
                 ...data
             };
             this.group = new THREE.Group();

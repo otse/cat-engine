@@ -18,7 +18,7 @@ export namespace numbers {
 	export var walls: tally = [0, 0]
 };
 
-namespace lod {
+namespace clod {
 	export const size = 9;
 
 	const chunk_coloration = false;
@@ -27,18 +27,21 @@ namespace lod {
 
 	const grid_crawl_makes_chunks = true;
 
-	export var gworld: world;
-	export var ggrid: grid;
-
 	export var SectorSpan = 2;
 
 	export var stamp = 0; // used only by server slod
+
+	export function init() {
+		console.log('init');
+
+		const world = new clod.world(10);
+		return world;
+	}
 
 	export function register() {
 		// hooks.create('sectorCreate')
 		// hooks.create('sectorShow')
 		// hooks.create('sectorHide')
-
 		// hooks.register('sectorHide', () => { console.log('~'); return false; } );
 	}
 
@@ -50,10 +53,10 @@ namespace lod {
 		return pts.divide(pts.unproject(pixel), 1);
 	}
 
-	export function add(obj: obj | undefined) {
+	export function add(world: world, obj?: obj) {
 		if (!obj)
 			return;
-		let chunk = gworld.atwpos(obj.wpos);
+		let chunk = world.atwpos(obj.wpos);
 		chunk.add(obj);
 	}
 
@@ -62,35 +65,38 @@ namespace lod {
 	}
 
 	export class world {
+		// The client lod only has a single observer
+		// If you need more, decouple it then make sure that
+		// the grid does not start showing and hiding chunks 
+		grid: grid
 		readonly arrays: chunk[][] = []
-		constructor(span) {
-			gworld = this;
-			new grid(2, 2);
+		constructor(useless_value) { // Useless value
+			new grid(this, 2, 2);
 		}
 		update(wpos: vec2) {
-			ggrid.big = lod.world.big(wpos);
-			ggrid.ons();
-			ggrid.offs();
+			this.grid.cpos = clod.world.cpos(wpos);
+			this.grid.ons();
+			this.grid.offs();
 		}
 		lookup(big: vec2): chunk | undefined {
 			if (this.arrays[big[1]] == undefined)
 				this.arrays[big[1]] = [];
 			return this.arrays[big[1]][big[0]];
 		}
-		at(big: vec2): chunk {
-			return this.lookup(big) || this.make(big);
+		at(cpos: vec2): chunk {
+			return this.lookup(cpos) || this._make(cpos);
 		}
 		atwpos(wpos: vec2 | vec3): chunk {
-			return this.at(world.big(wpos));
+			return this.at(world.cpos(wpos));
 		}
-		protected make(big): chunk {
-			let s = this.lookup(big);
+		protected _make(cpos): chunk {
+			let s = this.lookup(cpos);
 			if (s)
 				return s;
-			s = this.arrays[big[1]][big[0]] = new chunk(big, this);
+			s = this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
 			return s;
 		}
-		static big(units: vec2 | vec3): vec2 {
+		static cpos(units: vec2 | vec3): vec2 {
 			return pts.floor(pts.divide(units, SectorSpan));
 		}
 		// todo add(obj) {}
@@ -104,20 +110,20 @@ namespace lod {
 		readonly small: aabb2;
 		readonly objs: obj[] = [];
 		constructor(
-			public readonly big: vec2,
+			public readonly cpos: vec2,
 			readonly world: world
 		) {
 			super();
 			if (chunk_coloration)
 				this.color = (['lightsalmon', 'lightblue', 'beige', 'pink'])[Math.floor(Math.random() * 4)];
-			let min = pts.mult(this.big, SectorSpan);
+			let min = pts.mult(this.cpos, SectorSpan);
 			let max = pts.add(min, [SectorSpan - 1, SectorSpan - 1]);
 			this.small = new aabb2(max, min);
 			this.group = new THREE.Group;
 			this.group.frustumCulled = false;
 			this.group.matrixAutoUpdate = false;
 			numbers.chunks[1]++;
-			world.arrays[this.big[1]][this.big[0]] = this;
+			world.arrays[this.cpos[1]][this.cpos[0]] = this;
 			//console.log('sector');
 
 			hooks.call('sectorCreate', this);
@@ -182,22 +188,22 @@ namespace lod {
 			hooks.call('sectorHide', this);
 		}
 		dist() {
-			return pts.distsimple(this.big, lod.ggrid.big);
+			return pts.distsimple(this.cpos, this.world.grid.cpos);
 		}
 		grayscale() {
 			this.color = 'gray';
 		}
 	}
 
-	export class grid {
-		big: vec2 = [0, 0];
+	export class grid { // the observer
+		cpos: vec2 = [0, 0];
 		public shown: chunk[] = [];
 		visibleObjs: obj[] = []
 		constructor(
+			readonly world: world,
 			public spread: number,
 			public outside: number
 		) {
-			lod.ggrid = this;
 			if (this.outside < this.spread) {
 				console.warn(' outside less than spread ', this.spread, this.outside);
 				this.outside = this.spread;
@@ -218,12 +224,12 @@ namespace lod {
 			// spread = -2; < 2
 			for (let y = -this.spread; y < this.spread + 1; y++) {
 				for (let x = -this.spread; x < this.spread + 1; x++) {
-					let pos = pts.add(this.big, [x, y]);
-					let chunk = grid_crawl_makes_chunks ? gworld.at(pos) : gworld.lookup(pos);
+					let pos = pts.add(this.cpos, [x, y]);
+					let chunk = grid_crawl_makes_chunks ? this.world.at(pos) : this.world.lookup(pos);
 					if (!chunk)
 						continue;
 					if (!chunk.active) {
-						this.shown.push(chunk);//
+						this.shown.push(chunk);
 						chunk.show();
 						// console.log(' show ');
 						// todo why
@@ -313,7 +319,7 @@ namespace lod {
 			this.bound.translate(this.wpos);
 		}
 		wtorpos() {
-			this.rpos = lod.project(this.wpos);
+			this.rpos = clod.project(this.wpos);
 		}
 		rtospos() {
 			this.wtorpos();
@@ -341,4 +347,4 @@ namespace lod {
 
 }
 
-export default lod;
+export default clod;
