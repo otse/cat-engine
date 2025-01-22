@@ -6,12 +6,14 @@ import pipeline from "../pipeline.js";
 import zoom from "./zoom.js";
 import clod from "../clod.js";
 import game_object from "../objects/game object.js";
+import tile from "../objects/tile.js";
 
 
 namespace pan {
 
 	export function register() {
 		hooks.addListener('romeComponents', step);
+		startup();
 	}
 
 	async function step() {
@@ -23,17 +25,33 @@ namespace pan {
 	let begin: vec2 = [0, 0];
 	let before: vec2 = [0, 0];
 
-	let wpos: vec2 = [0, 0]
-	let rpos: vec2 = [0, 0]
+	export let wpos: vec2 = [0, 0]
+	export let rpos: vec2 = [0, 0]
 
 	let stick: game_object | undefined = undefined
 
 	const rposIsBasedOnWpos = false;
 
+	var marker: game_object;
+
+	function startup() {
+		marker = new tile({
+			_wpos: [0, 0, 0],
+			colorOverride: 'purple',
+			lonely: true,
+		});
+		marker.create();
+	}
+
 	function functions() {
 		follow();
 		pan();
 		wpos = clod.unproject(rpos);
+		marker.wpos = wpos;
+		marker.wtorpos();
+		marker.update();
+		//marker.
+		console.log('wpos', wpos);
 		set_camera();
 		//lod.gworld.update(wpos);
 	}

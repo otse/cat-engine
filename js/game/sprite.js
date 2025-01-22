@@ -26,6 +26,7 @@ export class sprite {
     }
     delete() {
         this.mesh.parent.remove(this.mesh);
+        this.gabeObject.sprite = undefined;
     }
     create() {
         this._create();

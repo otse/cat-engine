@@ -1,6 +1,6 @@
 import aabb2 from "../dep/aabb2.js";
 import pts from "../dep/pts.js";
-import hooks from "../dep/hooks.js";
+import { hooks } from "../dep/hooks.js";
 import ren from "./pipeline.js";
 import toggle from "../dep/toggle.js";
 export var numbers;
@@ -55,14 +55,14 @@ var clod;
     class world {
         // The client lod only has a single observer
         // If you need more, decouple it then make sure that
-        // the grid does not start showing and hiding chunks 
+        // the grid does not start showing and hiding chunks
         grid;
         arrays = [];
         constructor(useless_value) {
-            new grid(this, 2, 2);
+            this.grid = new grid(this, 2, 2);
         }
         update(wpos) {
-            this.grid.cpos = clod.world.cpos(wpos);
+            this.grid.cpos = clod.world.wtocpos(wpos);
             this.grid.ons();
             this.grid.offs();
         }
@@ -75,7 +75,7 @@ var clod;
             return this.lookup(cpos) || this._make(cpos);
         }
         atwpos(wpos) {
-            return this.at(world.cpos(wpos));
+            return this.at(world.wtocpos(wpos));
         }
         _make(cpos) {
             let s = this.lookup(cpos);
@@ -84,7 +84,7 @@ var clod;
             s = this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
             return s;
         }
-        static cpos(units) {
+        static wtocpos(units) {
             return pts.floor(pts.divide(units, clod.SectorSpan));
         }
     }
@@ -112,7 +112,7 @@ var clod;
             numbers.chunks[1]++;
             world.arrays[this.cpos[1]][this.cpos[0]] = this;
             //console.log('sector');
-            hooks.call('sectorCreate', this);
+            hooks.emit('sectorCreate', this);
         }
         add(obj) {
             if (!this.objs.includes(obj)) {
@@ -149,7 +149,7 @@ var clod;
             }
         }
         tick() {
-            hooks.call('sectorTick', this);
+            hooks.emit('sectorTick', this);
             //for (let obj of this.objs)
             //	obj.tick();
         }
@@ -160,7 +160,7 @@ var clod;
             for (const obj of this.objs)
                 obj.show();
             ren.scene.add(this.group);
-            hooks.call('sectorShow', this);
+            hooks.emit('sectorShow', this);
         }
         hide() {
             if (this.off())
@@ -169,7 +169,7 @@ var clod;
             for (let obj of this.objs)
                 obj.hide();
             ren.scene.remove(this.group);
-            hooks.call('sectorHide', this);
+            hooks.emit('sectorHide', this);
         }
         dist() {
             return pts.distsimple(this.cpos, this.world.grid.cpos);
@@ -318,7 +318,7 @@ var clod;
             this._step();
         }
         _create() {
-            console.warn('obj.create');
+            console.warn(' empty create ');
         }
         _delete() {
         }

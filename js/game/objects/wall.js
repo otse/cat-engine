@@ -8,7 +8,6 @@ export class wall extends game_object {
             ...data,
         });
         this.data._type = 'wall';
-        this._create();
     }
     _create() {
         new sprite({

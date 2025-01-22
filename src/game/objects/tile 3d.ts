@@ -1,3 +1,4 @@
+import glob from "../../dep/glob.js";
 
 import game_object from "./game object.js";
 import sprite3d from "../sprite 3d.js";
@@ -9,7 +10,6 @@ export class tile extends game_object {
 			...data
 		});
 		this.data._type = 'tile 3d';
-		this._create();
 	}
 	protected override _create() {
 		new sprite3d({
@@ -24,9 +24,9 @@ export class tile extends game_object {
 		});
 		this.sprite?.create();
 	}
-	protected override _delete() {
-		console.log('hiiide');
-	}
+	/*protected override _delete() {
+		console.log('delete');
+	}*/
 }
 
 export default tile;

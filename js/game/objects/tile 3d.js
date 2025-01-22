@@ -7,7 +7,6 @@ export class tile extends game_object {
             ...data
         });
         this.data._type = 'tile 3d';
-        this._create();
     }
     _create() {
         new sprite3d({
@@ -21,9 +20,6 @@ export class tile extends game_object {
             }
         });
         this.sprite?.create();
-    }
-    _delete() {
-        console.log('hiiide');
     }
 }
 export default tile;

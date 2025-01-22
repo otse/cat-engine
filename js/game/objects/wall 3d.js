@@ -7,7 +7,6 @@ export class wall3d extends game_object {
             ...data,
         });
         this.data._type = 'wall 3d';
-        this._create();
     }
     _create() {
         new sprite3d({

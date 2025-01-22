@@ -1,6 +1,7 @@
 
 import game_object from "./game object.js";
 import sprite3d from "../sprite 3d.js";
+import glob from "../../dep/glob.js";
 
 export class wall3d extends game_object {
 	constructor(data: game_object_literal) {
@@ -9,7 +10,6 @@ export class wall3d extends game_object {
 			...data,
 		});
 		this.data._type = 'wall 3d';
-		this._create();
 	}
 	protected override _create() {
 		new sprite3d({
@@ -24,6 +24,9 @@ export class wall3d extends game_object {
 		});
 		this.sprite?.create();
 	}
+	/*protected override _delete() {
+		console.log('delete');
+	}*/
 }
 
 export default wall3d;

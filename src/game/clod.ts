@@ -1,6 +1,6 @@
 import aabb2 from "../dep/aabb2.js";
 import pts from "../dep/pts.js";
-import hooks from "../dep/hooks.js";
+import { hooks } from "../dep/hooks.js";
 
 import ren from "./pipeline.js";
 import gtasmr from "../rome.js";
@@ -67,14 +67,14 @@ namespace clod {
 	export class world {
 		// The client lod only has a single observer
 		// If you need more, decouple it then make sure that
-		// the grid does not start showing and hiding chunks 
+		// the grid does not start showing and hiding chunks
 		grid: grid
 		readonly arrays: chunk[][] = []
 		constructor(useless_value) { // Useless value
-			new grid(this, 2, 2);
+			this.grid = new grid(this, 2, 2);
 		}
 		update(wpos: vec2) {
-			this.grid.cpos = clod.world.cpos(wpos);
+			this.grid.cpos = clod.world.wtocpos(wpos);
 			this.grid.ons();
 			this.grid.offs();
 		}
@@ -87,7 +87,7 @@ namespace clod {
 			return this.lookup(cpos) || this._make(cpos);
 		}
 		atwpos(wpos: vec2 | vec3): chunk {
-			return this.at(world.cpos(wpos));
+			return this.at(world.wtocpos(wpos));
 		}
 		protected _make(cpos): chunk {
 			let s = this.lookup(cpos);
@@ -96,7 +96,7 @@ namespace clod {
 			s = this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
 			return s;
 		}
-		static cpos(units: vec2 | vec3): vec2 {
+		static wtocpos(units: vec2 | vec3): vec2 {
 			return pts.floor(pts.divide(units, SectorSpan));
 		}
 		// todo add(obj) {}
@@ -126,7 +126,7 @@ namespace clod {
 			world.arrays[this.cpos[1]][this.cpos[0]] = this;
 			//console.log('sector');
 
-			hooks.call('sectorCreate', this);
+			hooks.emit('sectorCreate', this);
 
 		}
 		add(obj: obj) {
@@ -165,7 +165,7 @@ namespace clod {
 			}
 		}
 		tick() {
-			hooks.call('sectorTick', this);
+			hooks.emit('sectorTick', this);
 			//for (let obj of this.objs)
 			//	obj.tick();
 		}
@@ -176,7 +176,7 @@ namespace clod {
 			for (const obj of this.objs)
 				obj.show();
 			ren.scene.add(this.group);
-			hooks.call('sectorShow', this);
+			hooks.emit('sectorShow', this);
 		}
 		hide() {
 			if (this.off())
@@ -185,7 +185,7 @@ namespace clod {
 			for (let obj of this.objs)
 				obj.hide();
 			ren.scene.remove(this.group);
-			hooks.call('sectorHide', this);
+			hooks.emit('sectorHide', this);
 		}
 		dist() {
 			return pts.distsimple(this.cpos, this.world.grid.cpos);
@@ -335,7 +335,7 @@ namespace clod {
 			this._step();
 		}
 		protected _create() {
-			console.warn('obj.create');
+			console.warn(' empty create ');
 		}
 		protected _delete() {
 		}

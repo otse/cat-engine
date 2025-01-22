@@ -1,4 +1,5 @@
 
+import glob from "../../dep/glob.js";
 import pts from "../../dep/pts.js";
 import clod from "../clod.js";
 import sprite from "../sprite.js";
@@ -18,12 +19,20 @@ export class game_object extends clod.obj {
 		this.z = data._wpos[2];
 		this.r = data._r || 0;
 		this.wtorpos();
-		game_object._gabeObjects.push(this);
+		if (!data.lonely) {
+			glob.rome.addGabeObject(this);
+			game_object._gabeObjects.push(this);
+		}
 	}
 	purge() {
 		this.sprite?.delete();
+		glob.rome.removeGabeObject(this);
+	}
+	update() {
+		this.sprite?.update();
 	}
 	protected override _delete() {
+		this.sprite?.delete();
 	}
 	protected override _create() {
 		console.warn(' gabe object empty create ');

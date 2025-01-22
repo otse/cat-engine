@@ -8,7 +8,6 @@ export class tile extends game_object {
             ...data
         });
         this.data._type = 'tile';
-        this._create();
     }
     _create() {
         new sprite({
@@ -16,9 +15,6 @@ export class tile extends game_object {
             size: [17, 9]
         });
         this.sprite?.create();
-    }
-    _delete() {
-        console.log('hiiide');
     }
 }
 export default tile;

@@ -49,27 +49,28 @@ class pts {
 		}
 	}
 
-	static project(a: vec2): vec2 {
-		const x = a[0];
-		const y = -a[1];
+	static project(w: vec2): vec2 {
 		const width = 24;
 		const height = 16;
+		const x = w[0];
+		const y = -w[1];
 		return [
 			(x - y) * (width / 2),
 			(x + y) * (-height / 2) / 2
 		];
 	}
 
-	static unproject(p: vec2): vec2 {
-		const px = p[0];
-		const py = p[1];
-		const width = 26;
+	static unproject(r: vec2): vec2 {
+		const width = 24;
 		const height = 16;
-		const x = (px / (width / 2) + py / (height / 2)) / 2;
-		const y = (py / (height / 2) - px / (width / 2)) / 2;
-		return [x, -y];
+		const x = r[0] / (width / 2);
+		const y = -r[1] / (height / 2) * 2;
+		return [
+			(x + y) / 2,
+			(x - y) / 2
+		];
 	}
-	
+
 
 	static equals(a: vec2, b: vec2): boolean {
 		return a[0] == b[0] && a[1] == b[1];
