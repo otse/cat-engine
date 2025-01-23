@@ -22,7 +22,8 @@ var pan;
     pan_1.wpos = [0, 0];
     pan_1.rpos = [0, 0];
     let stick = undefined;
-    const rposIsBasedOnWpos = false;
+    const startWtorpos = true;
+    const jaggedRpos = false;
     var marker;
     function startup() {
         marker = new tile({
@@ -41,6 +42,8 @@ var pan;
         marker.update();
         //marker.
         console.log('wpos', pan_1.wpos);
+        if (jaggedRpos)
+            pan_1.rpos = pts.round(pan_1.rpos);
         set_camera();
         //lod.gworld.update(wpos);
     }
@@ -52,8 +55,9 @@ var pan;
             pan_1.rpos = clod.project(wpos);
         }
         else {
-            if (rposIsBasedOnWpos)
+            if (startWtorpos)
                 pan_1.rpos = clod.project(pan_1.wpos);
+            // rpos = pts.add(rpos, clod.project([.5, .5]));
         }
     }
     function pan() {
@@ -85,17 +89,14 @@ var pan;
         }
         else if (app.button(1) == -1) {
             console.log('release');
-            pan_1.rpos = pts.floor(pan_1.rpos);
+            pan_1.rpos = pts.round(pan_1.rpos);
         }
     }
     function set_camera() {
-        const smooth = false;
-        if (smooth) {
-            pan_1.rpos = pts.round(pan_1.rpos);
-        }
         // let inv = pts.inv(this.rpos);
         // ren.groups.axisSwap.position.set(inv[0], inv[1], 0);
-        pipeline.camera.position.set(pan_1.rpos[0], pan_1.rpos[1], 0);
+        const rpos2 = pts.add(pan_1.rpos, clod.project([.5, .5]));
+        pipeline.camera.position.set(rpos2[0], rpos2[1], 0);
     }
 })(pan || (pan = {}));
 export default pan;

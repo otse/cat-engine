@@ -30,7 +30,8 @@ namespace pan {
 
 	let stick: game_object | undefined = undefined
 
-	const rposIsBasedOnWpos = false;
+	const startWtorpos = true;
+	const jaggedRpos = false;
 
 	var marker: game_object;
 
@@ -52,6 +53,8 @@ namespace pan {
 		marker.update();
 		//marker.
 		console.log('wpos', wpos);
+		if (jaggedRpos)
+			rpos = pts.round(rpos);
 		set_camera();
 		//lod.gworld.update(wpos);
 	}
@@ -64,8 +67,9 @@ namespace pan {
 			rpos = clod.project(wpos);
 		}
 		else {
-			if (rposIsBasedOnWpos)
+			if (startWtorpos)
 				rpos = clod.project(wpos);
+			// rpos = pts.add(rpos, clod.project([.5, .5]));
 		}
 	}
 
@@ -98,18 +102,15 @@ namespace pan {
 		}
 		else if (app.button(1) == -1) {
 			console.log('release');
-			rpos = pts.floor(rpos);
+			rpos = pts.round(rpos);
 		}
 	}
 
 	function set_camera() {
-		const smooth = false;
-		if (smooth) {
-			rpos = pts.round(rpos);
-		}
 		// let inv = pts.inv(this.rpos);
 		// ren.groups.axisSwap.position.set(inv[0], inv[1], 0);
-		pipeline.camera.position.set(rpos[0], rpos[1], 0);
+		const rpos2 = pts.add(rpos, clod.project([.5, .5]));
+		pipeline.camera.position.set(rpos2[0], rpos2[1], 0);
 	}
 
 }
