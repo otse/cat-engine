@@ -5,6 +5,7 @@ import pipeline from "../pipeline.js";
 import zoom from "./zoom.js";
 import clod from "../clod.js";
 import tile from "../objects/tile.js";
+import rome from "../../rome.js";
 var pan;
 (function (pan_1) {
     function register() {
@@ -95,7 +96,7 @@ var pan;
     function set_camera() {
         // let inv = pts.inv(this.rpos);
         // ren.groups.axisSwap.position.set(inv[0], inv[1], 0);
-        const rpos2 = pts.add(pan_1.rpos, clod.project([.5, .5]));
+        const rpos2 = pts.add(pan_1.rpos, pts.divide(rome.tileSize, 2));
         pipeline.camera.position.set(rpos2[0], rpos2[1], 0);
     }
 })(pan || (pan = {}));

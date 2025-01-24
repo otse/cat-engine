@@ -7,6 +7,7 @@ import zoom from "./zoom.js";
 import clod from "../clod.js";
 import game_object from "../objects/game object.js";
 import tile from "../objects/tile.js";
+import rome from "../../rome.js";
 
 
 namespace pan {
@@ -109,7 +110,7 @@ namespace pan {
 	function set_camera() {
 		// let inv = pts.inv(this.rpos);
 		// ren.groups.axisSwap.position.set(inv[0], inv[1], 0);
-		const rpos2 = pts.add(rpos, clod.project([.5, .5]));
+		const rpos2 = pts.add(rpos, pts.divide(rome.tileSize, 2));
 		pipeline.camera.position.set(rpos2[0], rpos2[1], 0);
 	}
 

@@ -16,7 +16,7 @@ import glob from "./dep/glob.js";
 
 namespace rome {
 
-	export const size = 8;
+	export const tileSize: vec2 = [17, 9]; // glob?
 
 	export function sample(a) {
 		return a[Math.floor(Math.random() * a.length)];

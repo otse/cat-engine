@@ -13,7 +13,7 @@ import clod from "./game/clod.js";
 import glob from "./dep/glob.js";
 var rome;
 (function (rome) {
-    rome.size = 8;
+    rome.tileSize = [17, 9]; // glob?
     function sample(a) {
         return a[Math.floor(Math.random() * a.length)];
     }

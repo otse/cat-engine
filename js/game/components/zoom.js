@@ -4,7 +4,7 @@ import pipeline from "../pipeline.js";
 var zoom;
 (function (zoom) {
     let level = 0;
-    zoom.zooms = [1, 0.5, 0.33, 0.2, 0.1, 0.05];
+    zoom.zooms = [1, 0.5, 0.33, 0.2, 0.1, 0.05, 0.025, 0.01];
     function register() {
         hooks.addListener('romeComponents', step);
     }
@@ -21,7 +21,7 @@ var zoom;
         }
         if (app.wheel == 1) {
             console.log('app wheel');
-            level = (level < 4) ? level + 1 : level;
+            level = (level < zoom.zooms.length - 1) ? level + 1 : level;
         }
         const scale = zoom.zooms[level];
         pipeline.camera.scale.set(scale, scale, scale);
