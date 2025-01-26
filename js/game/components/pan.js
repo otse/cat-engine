@@ -42,7 +42,7 @@ var pan;
         marker.wtorpos();
         marker.update();
         //marker.
-        console.log('wpos', pan_1.wpos);
+        // console.log('wpos', wpos);
         if (jaggedRpos)
             pan_1.rpos = pts.round(pan_1.rpos);
         set_camera();

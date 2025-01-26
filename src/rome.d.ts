@@ -3,6 +3,7 @@ declare type vec3 = [number, number, number];
 declare type vec2 = [number, number];
 
 declare var THREE: any;
+declare var BufferGeometryUtils: any;
 
 type typez = 'dud' | 'direct' | 'tile' | 'tile 3d' | 'wall' | 'wall 3d' | 'ply'
 

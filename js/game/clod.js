@@ -129,6 +129,7 @@ var clod;
                 return !!this.objs.splice(i, 1).length;
             }
         }
+        // Get all things at one point
         stacked(wpos) {
             let stack = [];
             for (let obj of this.objs)
@@ -328,5 +329,22 @@ var clod;
         }
     }
     clod.obj = obj;
+    let util;
+    (function (util) {
+        function getSurrounding(world, wpos) {
+            const threesixty = [
+                [-1, -1], [-1, 0], [-1, 1],
+                [0, -1], /*[0, 0],*/ [0, 1],
+                [1, -1], [1, 0], [1, 1]
+            ];
+            let objs = [];
+            threesixty.forEach((pos) => {
+                const chunk = world.atwpos(pos);
+                objs = objs.concat(chunk.stacked(pos));
+            });
+            return objs;
+        }
+        util.getSurrounding = getSurrounding;
+    })(util = clod.util || (clod.util = {}));
 })(clod || (clod = {}));
 export default clod;

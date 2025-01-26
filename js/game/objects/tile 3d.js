@@ -13,8 +13,10 @@ export class tile extends game_object {
             gabeObject: this,
             size: [17, 9],
             name: 'unused',
+            scenePreset: 'hex',
             shapeType: 'hex',
             shapeLiteral: {
+                type: 'regular',
                 hexTexture: './img/textures/beach.jpg',
                 size: [8, 20, 10]
             }

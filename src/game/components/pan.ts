@@ -53,7 +53,7 @@ namespace pan {
 		marker.wtorpos();
 		marker.update();
 		//marker.
-		console.log('wpos', wpos);
+		// console.log('wpos', wpos);
 		if (jaggedRpos)
 			rpos = pts.round(rpos);
 		set_camera();

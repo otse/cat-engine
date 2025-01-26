@@ -144,6 +144,7 @@ namespace clod {
 				return !!this.objs.splice(i, 1).length;
 			}
 		}
+		// Get all things at one point
 		stacked(wpos: vec2) {
 			let stack: obj[] = [];
 			for (let obj of this.objs)
@@ -151,7 +152,7 @@ namespace clod {
 					stack.push(obj);
 			return stack;
 		}
-		
+
 		static swap(obj: obj) {
 			// Call me whenever you move
 			let oldChunk = obj.chunk!;
@@ -269,7 +270,7 @@ namespace clod {
 			}
 		}
 		ticks() {
-			for (const chunk of this.shown) 
+			for (const chunk of this.shown)
 				for (const obj of chunk.objs)
 					obj.step();
 		}
@@ -345,6 +346,21 @@ namespace clod {
 		}
 	}
 
+	export namespace util {
+		export function getSurrounding(world: world, wpos: vec2) {
+			const threesixty: vec2[] = [
+				[-1, -1], [-1, 0], [-1, 1],
+				[0, -1],/*[0, 0],*/[0, 1],
+				[1, -1], [1, 0], [1, 1]
+			];
+			let objs: any[] = [];
+			threesixty.forEach((pos) => {
+				const chunk = world.atwpos(pos);
+				objs = objs.concat(chunk.stacked(pos));
+			});
+			return objs;
+		}
+	}
 }
 
 export default clod;

@@ -4,11 +4,14 @@ import app from "../app.js";
 import glob from "../dep/glob.js";
 import { hooks } from "../dep/hooks.js";
 import rome from "../rome.js";
+import game_object from "./objects/game object.js";
 import pipeline from "./pipeline.js";
 import sprite3d from "./sprite 3d.js";
 import sprite from "./sprite.js";
 
 namespace tileform {
+
+	export type scene_preset = 'hex' | 'wall'
 
 	export async function init() {
 		await stage.init();
@@ -17,15 +20,45 @@ namespace tileform {
 	}
 
 	async function step() {
+		stage.step();
+
 		return false;
 	}
 
 	export namespace stage {
-		export let scene, group, camera, renderer, ambient, sun
+		export let scene, mainGroup, camera, renderer, ambient, sun
 		export let spotlight: sprite3d | undefined
 	}
 
 	export namespace stage {
+
+		let rotationX = 1;
+		let rotationY = 1;
+
+		export function step() {
+			let change = false;
+			if (app.key('o') == 1) {
+				rotationX -= 1;
+				change = true;
+			}
+			if (app.key('p') == 1) {
+				rotationX += 1;
+				change = true;
+			}
+			if (app.key('k') == 1) {
+				rotationY -= 1;
+				change = true;
+			}
+			if (app.key('l') == 1) {
+				rotationY += 1;
+				change = true;
+			}
+			if (!change)
+				return;
+			console.log(rotationX, rotationY);
+			scene.rotation.set(Math.PI / rotationX, Math.PI / rotationY, 0);
+			scene.updateMatrix();
+		}
 
 		export async function init() {
 			await preload();
@@ -46,10 +79,10 @@ namespace tileform {
 			// scene.background = new THREE.Color('purple');
 			scene.rotation.set(Math.PI / 6, Math.PI / Math.PI, 0);
 			camera = new THREE.OrthographicCamera(100 / - 2, 100 / 2, 100 / 2, 100 / - 2, -100, 100);
-			group = new THREE.Group();
-			group.rotation.set(-Math.PI / 2, 0, 0);
-			group.updateMatrix();
-			scene.add(group);
+			mainGroup = new THREE.Group();
+			//defaultRotation.rotation.set(-Math.PI / 2, 0, 0);
+			mainGroup.updateMatrix();
+			scene.add(mainGroup);
 			scene.updateMatrix();
 			ambient = new THREE.AmbientLight('white', Math.PI);
 			scene.add(ambient);
@@ -68,7 +101,20 @@ namespace tileform {
 			// document.body.appendChild(renderer.domElement);
 		}
 
+		function set_preset(scenePreset: scene_preset) {
+			switch (scenePreset) {
+				case 'hex':
+					//majorGroup.rotation.set(Math.PI / 6, Math.PI / Math.PI, 0);
+					break;
+				case 'wall':
+					//majorGroup.rotation.set(Math.PI / 6, 1, 0);
+					break;
+			}
+			//majorGroup.updateMatrix();
+		}
+
 		export function prepare(sprite: sprite3d) {
+			set_preset(sprite.data.scenePreset);
 			spotlight = sprite;
 			const size = sprite.data.size!;
 			camera = new THREE.OrthographicCamera(
@@ -77,9 +123,9 @@ namespace tileform {
 				size[1] / 2,
 				size[1] / - 2,
 				-100, 100);
-			while (group.children.length > 0)
-				group.remove(group.children[0]);
-			group.add(sprite.shape!.group);
+			while (mainGroup.children.length > 0)
+				mainGroup.remove(mainGroup.children[0]);
+			mainGroup.add(sprite.shape!.group);
 		}
 
 		export function render() {
@@ -114,49 +160,29 @@ namespace tileform {
 
 	export interface shape_literal {
 		// gabeObject: game_object,
+		type: shape_modifiers,
 		texture?: string,
 		hexTexture?: string,
 		size: vec3,
 	}
 
 	export class shape_hex_wrapper extends shape_base {
-		hex: hexagon_tile
+		hex: hex_tile
 		constructor(data: shape_literal) {
 			super(data);
 			this._create();
 		}
 		protected override _create() {
-			this.hex = new hexagon_tile(this.data);
+			this.hex = new hex_tile(this.data);
 			this.group.add(this.hex.get(this));
 			this.hex.mesh.position.set(0, 0, 0);
 			this.hex.mesh.updateMatrix();
 		}
 	}
 
-	export class shape_box extends shape_base {
-		hex: hexagon_tile
-		constructor(data: shape_literal) {
-			super(data);
-			this._create();
-		}
-		protected override _create() {
-			const { size } = this.data;
-			const box = new THREE.BoxGeometry(size[0], size[1], size[2]);
-			const material = new THREE.MeshPhongMaterial({
-				//color: 'red',
-				map: pipeline.loadTexture(this.data.texture!, 1)
-			});
-			const mesh = new THREE.Mesh(box, material);
-			this.hex = new hexagon_tile(this.data);
-			this.group.add(this.hex.get(this));
-			this.group.add(mesh);
-			this.group.updateMatrix();
-		}
-	}
-
 	export let hex_size = 8;
 
-	class hexagon_tile {
+	class hex_tile {
 		mesh
 		scalar = 8
 		constructor(readonly data: shape_literal) {
@@ -177,16 +203,17 @@ namespace tileform {
 				map: pipeline.loadTexture(this.data.hexTexture!, 0),
 			});
 			this.mesh = new THREE.Mesh(geometry, material);
+			this.mesh.rotation.set(-Math.PI / 2, 0, 0);
+			this.mesh.updateMatrix();
 		}
 		get(shape: shape_base) {
-			const { data } = shape;
-			this.mesh.position.set(0, 0, -7);
-			this.mesh.updateMatrix();
 			return this.mesh;
 		}
 	}
 
 	export type shape_types = 'nothing' | 'wall' | 'hex'
+
+	export type shape_modifiers = 'regular' | 'concave' | 'convex' | 'north' | 'east' | 'south' | 'west'
 
 	export function shapeMaker(type: shape_types, data: shape_literal) {
 		let shape: shape_base | undefined;
@@ -195,13 +222,58 @@ namespace tileform {
 				console.warn(' no type passed to factory ');
 				break;
 			case 'wall':
-				shape = new shape_box(data);
+				shape = new shape_wall(data);
 				break;
 			case 'hex':
 				shape = new shape_hex_wrapper(data);
 				break;
 		}
 		return shape;
+	}
+
+	// boring wall geometries
+
+	export class shape_wall extends shape_base {
+		hexTile: hex_tile
+		constructor(data: shape_literal) {
+			super(data);
+			this._create();
+		}
+		protected override _create() {
+			const { size } = this.data;
+			const geometry = wall_geometry_builder(this);
+			const material = new THREE.MeshPhongMaterial({
+				//color: 'red',
+				map: pipeline.loadTexture(this.data.texture!, 1)
+			});
+			const mesh = new THREE.Mesh(geometry, material);
+			this.hexTile = new hex_tile(this.data);
+			const wallRotation = new THREE.Group();
+			wallRotation.add(mesh);
+			wallRotation.rotation.set(0, Math.PI / 3, 0);
+			wallRotation.updateMatrix();
+			this.group.add(this.hexTile.mesh);
+			this.hexTile.mesh.position.set(0, 0, -7);
+			this.hexTile.mesh.updateMatrix();
+			this.group.add(wallRotation);
+			this.group.updateMatrix();
+		}
+	}
+
+	function wall_geometry_builder(wall: shape_wall) {
+		const { size } = wall.data;
+		const geometries: any[] = [];
+		switch (wall.data.type) {
+			case 'concave':
+
+				break;
+			case 'regular':
+				const geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
+				geometries.push(geometry);
+				break;
+		}
+		const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries);
+		return mergedGeometry;
 	}
 }
 

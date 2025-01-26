@@ -58,8 +58,8 @@ var rome;
         new tile3d({ _type: 'direct', colorOverride: 'lavender', _wpos: [0, 8, 0] });
         new tile3d({ _type: 'direct', colorOverride: 'cyan', _wpos: [0, 9, 0] });
         new tile({ _type: 'direct', colorOverride: 'orange', _wpos: [1, -1, 0] });
-        new tile({ colorOverride: 'red', _wpos: [0, 0, 0] });
-        new tile({ name: 'ass', colorOverride: 'pink', _wpos: [1, 0, 0] });
+        new tile({ _type: 'direct', colorOverride: 'red', _wpos: [0, 0, 0] });
+        new tile({ _type: 'direct', colorOverride: 'pink', _wpos: [1, 0, 0] });
         new tile({ _type: 'direct', colorOverride: 'blue', _wpos: [0, 1, 0] });
         new tile({ _type: 'direct', _wpos: [1, 1, 0] });
         new tile({ _type: 'direct', _wpos: [0, 2, 0] });
@@ -76,6 +76,10 @@ var rome;
         new wall({ _type: 'direct', _wpos: [5, 1, 0] });
         new tile({ _type: 'direct', _wpos: [3, 2, 0] });
         new tile({ _type: 'direct', _wpos: [4, 2, 0] });
+        new wall3d({ _type: 'direct', _wpos: [1, 3, 0] });
+        new wall3d({ _type: 'direct', _wpos: [1, 4, 0] });
+        new wall3d({ _type: 'direct', _wpos: [1, 5, 0] });
+        new wall3d({ _type: 'direct', _wpos: [1, 6, 0] });
     }
     function step() {
         hooks.emit('romeComponents', 1);

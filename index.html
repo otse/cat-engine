@@ -28,7 +28,9 @@
 	<script type="module">
 		import { default as app } from "./js/app.js";
 		import * as THREE from 'three';
+		import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 		window.THREE = THREE;
+		window.BufferGeometryUtils = BufferGeometryUtils;
 		window.app = app;
 	</script>
 
