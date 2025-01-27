@@ -5,7 +5,7 @@ import tileform from "./tileform.js";
 // Todo put shapes in shapes.ts
 
 interface sprite3dliteral extends sprite.literalType {
-	scenePreset: tileform.scene_preset,
+	_scenePresetDepr: tileform.scene_preset,
 	shapeType?: tileform.shape_types,
 	shapeLiteral?: tileform.shape_literal
 }
@@ -16,7 +16,7 @@ export namespace sprite3d {
 
 export class sprite3d extends sprite {
 	target
-	shape?: tileform.shape_base
+	shape3d?: tileform.shape_base
 	constructor(
 		public readonly data: sprite3dliteral
 	) {
@@ -25,16 +25,22 @@ export class sprite3d extends sprite {
 			shapeLiteral: {
 				hexTexture: '',
 				texture: '',
-				size: [10, 10]
+				size: [0, 0]
 			},
 			...data
 		});
 	}
 	protected _create() {
 		super._create();
-		this.shape = tileform.shapeMaker(
+		this.shape3d = tileform.shapeMaker(
 			this.data.shapeType!,
 			this.data.shapeLiteral!);
+		this.shape3d?.create();
+		this.prerender();
+	}
+	protected override _step() {
+		super._step();
+		this.shape3d?.step();
 		this.prerender();
 	}
 	prerender() {

@@ -5,14 +5,14 @@ import tileform from "./tileform.js";
 export class sprite3d extends sprite {
     data;
     target;
-    shape;
+    shape3d;
     constructor(data) {
         super({
             shapeType: 'nothing',
             shapeLiteral: {
                 hexTexture: '',
                 texture: '',
-                size: [10, 10]
+                size: [0, 0]
             },
             ...data
         });
@@ -20,7 +20,13 @@ export class sprite3d extends sprite {
     }
     _create() {
         super._create();
-        this.shape = tileform.shapeMaker(this.data.shapeType, this.data.shapeLiteral);
+        this.shape3d = tileform.shapeMaker(this.data.shapeType, this.data.shapeLiteral);
+        this.shape3d?.create();
+        this.prerender();
+    }
+    _step() {
+        super._step();
+        this.shape3d?.step();
         this.prerender();
     }
     prerender() {

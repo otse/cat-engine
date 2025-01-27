@@ -301,18 +301,18 @@ var pipeline;
         return texture;
     }
     pipeline.loadTextureAsync = loadTextureAsync;
-    function loadTexture(file, mode = 1, cb, key) {
+    function loadTexture(file, mode, cb, key) {
         if (mem[key || file])
             return mem[key || file];
         let texture = new THREE.TextureLoader().load(file + `?v=${app.feed}`, cb);
         texture.generateMipmaps = false;
         texture.center.set(0, 1);
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        if (mode) {
+        if (mode === 'liner') {
             texture.magFilter = THREE.LinearFilter;
             texture.minFilter = THREE.LinearFilter;
         }
-        else {
+        else if (mode === 'nearest') {
             texture.magFilter = THREE.NearestFilter;
             texture.minFilter = THREE.NearestFilter;
         }

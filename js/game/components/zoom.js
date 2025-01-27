@@ -15,11 +15,11 @@ var zoom;
     zoom.actualZoom = actualZoom;
     async function step() {
         //console.log('zoom step');
-        if (app.wheel == -1) {
+        if (app.wheel == -1 || app.key('f') == 1) {
             console.log('app wheel');
             level = (level > 0) ? level - 1 : level;
         }
-        if (app.wheel == 1) {
+        if (app.wheel == 1 || app.key('r') == 1) {
             console.log('app wheel');
             level = (level < zoom.zooms.length - 1) ? level + 1 : level;
         }

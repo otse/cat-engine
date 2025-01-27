@@ -339,7 +339,7 @@ namespace pipeline {
 
 	let mem = []
 
-	
+
 	export async function loadTextureAsync(file: string, mode = 1, cb?, key?: string) {
 		if (mem[key || file])
 			return mem[key || file];
@@ -359,18 +359,18 @@ namespace pipeline {
 		return texture;
 	}
 
-	export function loadTexture(file: string, mode = 1, cb?, key?: string) {
+	export function loadTexture(file: string, mode: 'nearest' | 'liner', cb?, key?: string) {
 		if (mem[key || file])
 			return mem[key || file];
 		let texture = new THREE.TextureLoader().load(file + `?v=${app.feed}`, cb);
 		texture.generateMipmaps = false;
 		texture.center.set(0, 1);
 		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-		if (mode) {
+		if (mode === 'liner') {
 			texture.magFilter = THREE.LinearFilter;
 			texture.minFilter = THREE.LinearFilter;
 		}
-		else {
+		else if (mode === 'nearest') {
 			texture.magFilter = THREE.NearestFilter;
 			texture.minFilter = THREE.NearestFilter;
 		}

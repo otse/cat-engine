@@ -24,6 +24,10 @@ export class sprite {
         this.matrix = new THREE.Matrix3;
         this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
     }
+    step() {
+        this._step();
+    }
+    _step() { }
     delete() {
         this.mesh.parent.remove(this.mesh);
         this.gabeObject.sprite = undefined;
@@ -35,7 +39,7 @@ export class sprite {
         let defines = {};
         // defines.MASKED = 1;		
         this.material = SpriteMaterial({
-            map: pipeline.loadTexture(`img/` + this.data.name, 0),
+            map: pipeline.loadTexture(`img/` + this.data.name, 'nearest'),
             color: this.data.color,
             transparent: true,
             depthTest: false,
@@ -52,10 +56,12 @@ export class sprite {
         pipeline.groups.major.add(this.mesh);
     }
     update() {
+        const gabe = this.gabeObject;
         this.material.color.set(this.data.color);
-        this.mesh.renderOrder = -this.gabeObject.wpos[1] + this.gabeObject.wpos[0];
-        let pos = pts.add(this.gabeObject.rpos, pts.divide(this.data.size, 2));
-        this.mesh.position.fromArray([...pos, this.gabeObject.z]);
+        this.mesh.renderOrder = -gabe.wpos[1] + gabe.wpos[0];
+        let pos = pts.add(gabe.rpos, pts.divide([0, this.data.size[1]], 2));
+        //let pos = pts.add(this.gabeObject.rpos, pts.divide(this.data.size!, 2));
+        this.mesh.position.fromArray([...pos, gabe.z]);
     }
 }
 ;

@@ -14,17 +14,17 @@ export class wall3d extends game_object {
     _create() {
         new sprite3d({
             gabeObject: this,
-            size: [17, 21],
+            size: [34, 34],
             name: 'unused',
-            scenePreset: 'wall',
+            _scenePresetDepr: 'wall',
             shapeType: 'wall',
             shapeLiteral: {
                 type: 'regular',
-                texture: './img/textures/beach.jpg',
-                size: [8, 14, 10]
+                texture: './img/textures/sand.jpg',
+                size: [26, 10, 26]
             }
         });
-        //this.da.search();
+        this.da.search();
         this.sprite?.create();
     }
     /*protected override _delete() {
@@ -32,7 +32,7 @@ export class wall3d extends game_object {
     }*/
     _step() {
         super._step();
-        this.sprite?.prerender();
+        this.sprite?.step();
     }
 }
 export default wall3d;
