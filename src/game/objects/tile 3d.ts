@@ -19,6 +19,7 @@ export class tile extends game_object {
 			_scenePresetDepr: 'hex',
 			shapeType: 'hex',
 			shapeLiteral: {
+				gabeObject: this,
 				type: 'regular',
 				hexTexture: './img/textures/beach.jpg',
 				size: [8, 20, 10]

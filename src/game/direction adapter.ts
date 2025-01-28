@@ -19,14 +19,14 @@ export namespace direction_adapter {
 export class direction_adapter {
 	target
 	shape?: tileform.shape_base
+	matrix: game_object[][]
+	directions: (string | null)[]
 	constructor(readonly gabeObject: game_object) {
-		
+		//[]
 	}
-	search() {
-		type sd = game_object.literalType;
-		const matrix = game_object.SortMatrix(
-			rome.world, this.gabeObject.wpos, ['wall', 'wall 3d']);
-		const directions = game_object.GetDirections(matrix);
+	search(types: string[]) {
+		this.matrix = game_object.SortMatrix(rome.world, this.gabeObject.wpos, types);
+		this.directions = game_object.GetDirections(this.matrix);
 	}
 }
 

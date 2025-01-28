@@ -5,12 +5,15 @@ export class direction_adapter {
     gabeObject;
     target;
     shape;
+    matrix;
+    directions;
     constructor(gabeObject) {
         this.gabeObject = gabeObject;
+        //[]
     }
-    search() {
-        const matrix = game_object.SortMatrix(rome.world, this.gabeObject.wpos, ['wall', 'wall 3d']);
-        const directions = game_object.GetDirections(matrix);
+    search(types) {
+        this.matrix = game_object.SortMatrix(rome.world, this.gabeObject.wpos, types);
+        this.directions = game_object.GetDirections(this.matrix);
     }
 }
 export default direction_adapter;

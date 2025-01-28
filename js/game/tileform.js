@@ -249,12 +249,32 @@ var tileform;
     function wall_geometry_builder(wall) {
         const { size } = wall.data;
         const geometries = [];
+        const directionAdapter = wall.data.gabeObject.directionAdapter;
+        const da = directionAdapter;
+        if (!da)
+            return;
         switch (wall.data.type) {
             case 'concave':
                 break;
             case 'regular':
-                const geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
-                geometries.push(geometry);
+                // We need to build different boxes
+                // based on the string presences of the directions
+                // from the direction adapter da
+                let geometry;
+                switch (true) {
+                    case da.directions.includes('east'):
+                        //case da.directions.includes('north'):
+                        geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+                        geometry.translate(-size[0] / 4, 0, size[2] / 4);
+                        geometries.push(geometry);
+                        break;
+                    default:
+                        geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
+                        geometries.push(geometry);
+                        break;
+                }
+                //geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
+                //geometries.push(geometry);
                 break;
         }
         const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries);

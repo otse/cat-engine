@@ -4,6 +4,7 @@ import app from "../app.js";
 import glob from "../dep/glob.js";
 import { hooks } from "../dep/hooks.js";
 import rome from "../rome.js";
+import direction_adapter from "./direction adapter.js";
 import game_object from "./objects/game object.js";
 import pipeline from "./pipeline.js";
 import sprite3d from "./sprite 3d.js";
@@ -172,7 +173,7 @@ namespace tileform {
 	}
 
 	export interface shape_literal {
-		// gabeObject: game_object,
+		gabeObject: game_object,
 		type: shape_modifiers,
 		texture?: string,
 		hexTexture?: string,
@@ -284,13 +285,33 @@ namespace tileform {
 	function wall_geometry_builder(wall: shape_wall) {
 		const { size } = wall.data;
 		const geometries: any[] = [];
+		const directionAdapter = (wall.data.gabeObject as any).directionAdapter as direction_adapter;
+		const da = directionAdapter;
+		if (!da)
+			return;
 		switch (wall.data.type) {
 			case 'concave':
 
 				break;
 			case 'regular':
-				const geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
-				geometries.push(geometry);
+				// We need to build different boxes
+				// based on the string presences of the directions
+				// from the direction adapter da
+				let geometry;
+				switch (true) {
+					case da.directions.includes('east'):
+						//case da.directions.includes('north'):
+						geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+						geometry.translate(-size[0] / 4, 0, size[2] / 4);
+						geometries.push(geometry);
+						break;
+					default:
+						geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
+						geometries.push(geometry);
+						break;
+				}
+				//geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
+				//geometries.push(geometry);
 				break;
 		}
 		const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries);

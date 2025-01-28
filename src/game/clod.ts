@@ -349,16 +349,16 @@ namespace clod {
 	}
 
 	export namespace util {
-		export function GetMatrix(world: world, wpos: vec2) {
+		export function GetMatrix<Type>(world: world, wpos: vec2) {
 			const directions: vec2[] = [
-				[-1, -1], [-1, 0], [-1, 1],
-				[0, -1], [0, 0], [0, 1],
-				[1, -1], [1, 0], [1, 1]
+				[-1, 1], [0, 1], [1, 1],
+				[-1, 0], [0, 0], [1, 0],
+				[-1, -1], [0, -1], [1, -1]
 			];
-			let matrix: obj[][] = [];
+			let matrix: Type[][] = [];
 			directions.forEach((pos, index) => {
 				pos = pts.add(pos, wpos);
-				matrix[index] = world.atwpos(pos).stacked(pos);
+				matrix[index] = world.atwpos(pos).stacked(pos) as any[];
 			});
 			return matrix;
 		}

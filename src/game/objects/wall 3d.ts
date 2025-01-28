@@ -5,7 +5,7 @@ import glob from "../../dep/glob.js";
 import direction_adapter from "../direction adapter.js";
 
 export class wall3d extends game_object {
-	da: direction_adapter
+	directionAdapter: direction_adapter
 	declare sprite?: sprite3d // why declare
 
 	constructor(data: game_object_literal) {
@@ -14,7 +14,7 @@ export class wall3d extends game_object {
 			...data,
 		});
 		this.data._type = 'wall 3d';
-		this.da = new direction_adapter(this);
+		this.directionAdapter = new direction_adapter(this);
 	}
 	protected override _create() {
 		new sprite3d({
@@ -24,12 +24,13 @@ export class wall3d extends game_object {
 			_scenePresetDepr: 'wall',
 			shapeType: 'wall',
 			shapeLiteral: {
+				gabeObject: this,
 				type: 'regular',
 				texture: './img/textures/sand.jpg',
 				size: [17, 10, 17]
 			}
 		});
-		this.da.search();
+		this.directionAdapter.search(['wall 3d']);
 		this.sprite?.create();
 	}
 	/*protected override _delete() {

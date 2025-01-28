@@ -333,9 +333,9 @@ var clod;
     (function (util) {
         function GetMatrix(world, wpos) {
             const directions = [
-                [-1, -1], [-1, 0], [-1, 1],
-                [0, -1], [0, 0], [0, 1],
-                [1, -1], [1, 0], [1, 1]
+                [-1, 1], [0, 1], [1, 1],
+                [-1, 0], [0, 0], [1, 0],
+                [-1, -1], [0, -1], [1, -1]
             ];
             let matrix = [];
             directions.forEach((pos, index) => {
