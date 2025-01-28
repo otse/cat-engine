@@ -132,8 +132,8 @@ var clod;
         // Get all things at one point
         stacked(wpos) {
             let stack = [];
-            for (let obj of this.objs)
-                if (pts.equals(wpos, pts.round(obj.wpos)))
+            for (const obj of this.objs)
+                if (pts.equals(pts.round(wpos), pts.round(obj.wpos)))
                     stack.push(obj);
             return stack;
         }
@@ -331,20 +331,20 @@ var clod;
     clod.obj = obj;
     let util;
     (function (util) {
-        function getSurrounding(world, wpos) {
-            const threesixty = [
+        function GetMatrix(world, wpos) {
+            const directions = [
                 [-1, -1], [-1, 0], [-1, 1],
-                [0, -1], /*[0, 0],*/ [0, 1],
+                [0, -1], [0, 0], [0, 1],
                 [1, -1], [1, 0], [1, 1]
             ];
-            let objs = [];
-            threesixty.forEach((pos) => {
-                const chunk = world.atwpos(pos);
-                objs = objs.concat(chunk.stacked(pos));
+            let matrix = [];
+            directions.forEach((pos, index) => {
+                pos = pts.add(pos, wpos);
+                matrix[index] = world.atwpos(pos).stacked(pos);
             });
-            return objs;
+            return matrix;
         }
-        util.getSurrounding = getSurrounding;
+        util.GetMatrix = GetMatrix;
     })(util = clod.util || (clod.util = {}));
 })(clod || (clod = {}));
 export default clod;

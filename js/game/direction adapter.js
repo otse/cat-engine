@@ -1,5 +1,5 @@
 import rome from "../rome.js";
-import clod from "./clod.js";
+import game_object from "./objects/game object.js";
 ;
 export class direction_adapter {
     gabeObject;
@@ -9,12 +9,8 @@ export class direction_adapter {
         this.gabeObject = gabeObject;
     }
     search() {
-        const around = clod.util.getSurrounding(rome.world, this.gabeObject.wpos);
-        console.log('objects surrounding us', around);
-        around.forEach(obj => {
-            console.log('360 ', obj.wpos, obj.data.name);
-        });
-        rome.world.grid.visibleObjs;
+        const matrix = game_object.SortMatrix(rome.world, this.gabeObject.wpos, ['wall', 'wall 3d']);
+        const directions = game_object.GetDirections(matrix);
     }
 }
 export default direction_adapter;

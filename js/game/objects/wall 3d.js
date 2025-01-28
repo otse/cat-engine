@@ -21,7 +21,7 @@ export class wall3d extends game_object {
             shapeLiteral: {
                 type: 'regular',
                 texture: './img/textures/sand.jpg',
-                size: [26, 10, 26]
+                size: [17, 10, 17]
             }
         });
         this.da.search();

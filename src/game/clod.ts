@@ -107,8 +107,8 @@ namespace clod {
 		group
 		color?
 		fog_of_war = false
-		readonly small: aabb2;
-		readonly objs: obj[] = [];
+		readonly small: aabb2
+		readonly objs: obj[] = []
 		constructor(
 			public readonly cpos: vec2,
 			readonly world: world
@@ -147,8 +147,10 @@ namespace clod {
 		// Get all things at one point
 		stacked(wpos: vec2) {
 			let stack: obj[] = [];
-			for (let obj of this.objs)
-				if (pts.equals(wpos, pts.round(obj.wpos)))
+			for (const obj of this.objs)
+				if (pts.equals(
+					pts.round(wpos),
+					pts.round(obj.wpos)))
 					stack.push(obj);
 			return stack;
 		}
@@ -347,19 +349,20 @@ namespace clod {
 	}
 
 	export namespace util {
-		export function getSurrounding(world: world, wpos: vec2) {
-			const threesixty: vec2[] = [
+		export function GetMatrix(world: world, wpos: vec2) {
+			const directions: vec2[] = [
 				[-1, -1], [-1, 0], [-1, 1],
-				[0, -1],/*[0, 0],*/[0, 1],
+				[0, -1], [0, 0], [0, 1],
 				[1, -1], [1, 0], [1, 1]
 			];
-			let objs: any[] = [];
-			threesixty.forEach((pos) => {
-				const chunk = world.atwpos(pos);
-				objs = objs.concat(chunk.stacked(pos));
+			let matrix: obj[][] = [];
+			directions.forEach((pos, index) => {
+				pos = pts.add(pos, wpos);
+				matrix[index] = world.atwpos(pos).stacked(pos);
 			});
-			return objs;
+			return matrix;
 		}
+		
 	}
 }
 

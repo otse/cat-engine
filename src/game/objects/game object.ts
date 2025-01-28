@@ -4,8 +4,8 @@ import pts from "../../dep/pts.js";
 import clod from "../clod.js";
 import sprite from "../sprite.js";
 
-export namespace base_object {
-
+export namespace game_object {
+	export type literalType = game_object['data'];
 }
 
 export class game_object extends clod.obj {
@@ -39,6 +39,26 @@ export class game_object extends clod.obj {
 	}
 	protected override _step() {
 		super._step();
+	}
+}
+
+// Messy!
+export namespace game_object {
+	export function SortMatrix(world: clod.world, wpos: vec2, types: string[]) {
+		const around = clod.util.GetMatrix(world, wpos);
+		const typed = around as game_object[][];
+		const filteredAround = typed.map(row => row.filter(obj => {
+			return types.includes(obj.data._type!);
+		}));
+		return filteredAround;
+	}
+	export function GetDirections(matrix: game_object[][]) {
+		const directions = [
+			'northwest', 'north', 'northeast',
+			'west', 'center', 'east',
+			'southwest', 'south', 'southeast'
+		];
+		return directions.map((dir, index) => matrix[index].length > 0 ? dir : null);
 	}
 }
 

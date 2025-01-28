@@ -259,10 +259,12 @@ namespace tileform {
 			const geometry = wall_geometry_builder(this);
 			const material = new THREE.MeshPhongMaterial({
 				// color: 'red',
+				opacity: 0.8,
+				transparent: true,
 				map: pipeline.loadTexture(this.data.texture!, 'nearest')
 			});
 			const mesh = new THREE.Mesh(geometry, material);
-			mesh.position.set(0, 0, 0);
+			mesh.position.set(0, -6, 0);
 			mesh.updateMatrix();
 			this.hexTile = new hex_tile(this.data);
 			this.rotationGroup = new THREE.Group();
