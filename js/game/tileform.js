@@ -274,54 +274,40 @@ var tileform;
             case 'concave':
                 break;
             case 'regular':
-                // We need to build different boxes
-                // based on the string presences of the directions
-                // from the direction adapter da
                 let geometry;
-                // The following are edge-cases
-                if (da.directions.includes('east') && !da.directions.includes('west')) {
-                    buildSegment(0);
-                    /*geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-                    geometry.translate(-size[0] / 4, 0, size[2] / 4);
-                    geometries.push(geometry);*/
+                if (da.directions.includes('north')) {
+                    geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+                    geometry.translate(size[0] / 4, 0, size[2] / 4);
+                    geometries.push(geometry);
                 }
-                if (da.directions.includes('west') && !da.directions.includes('east')) {
-                    // Foremost
+                if (da.directions.includes('east')) {
                     geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
                     geometry.translate(-size[0] / 4, 0, size[2] / 4);
                     geometries.push(geometry);
-                    // Backmost
+                }
+                if (da.directions.includes('south')) {
+                    geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+                    geometry.translate(-size[0] / 4, 0, size[2] / 4);
+                    geometries.push(geometry);
+                }
+                if (da.directions.includes('west')) {
                     geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
                     geometry.translate(-size[0] / 4, 0, -size[2] / 4);
                     geometries.push(geometry);
                 }
-                if (da.directions.includes('north') && !da.directions.includes('south')) {
-                    geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-                    geometry.translate(size[0] / 4, 0, size[2] / 4);
-                    geometries.push(geometry);
-                }
-                if (da.directions.includes('south') && !da.directions.includes('north')) {
-                    geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-                    geometry.translate(size[0] / 4, 0, size[2] / 4);
-                    geometries.push(geometry);
-                }
-                // The following are between cases (AND)
-                if (da.directions.includes('south') && da.directions.includes('north')) {
-                    geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-                    geometry.translate(size[0] / 4, 0, size[2] / 4);
-                    geometries.push(geometry);
+                if (da.directions.includes('north') &&
+                    da.directions.includes('aest') ||
+                    da.directions.includes('east') &&
+                        da.directions.includes('south') ||
+                    da.directions.includes('south') &&
+                        da.directions.includes('west') ||
+                    da.directions.includes('west') &&
+                        da.directions.includes('north')) {
+                    // Middle piece!
                     geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
                     geometry.translate(-size[0] / 4, 0, size[2] / 4);
                     geometries.push(geometry);
                 }
-                /*
-                if (da.directions.includes('north')) {
-                    geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
-                    geometries.push(geometry);
-                } else {
-                    geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
-                    geometries.push(geometry);
-                }*/
                 break;
         }
         if (!geometries.length)

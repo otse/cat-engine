@@ -81,6 +81,8 @@ namespace rome {
 		new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [3, 1, 0] });
 		new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [3, 2, 0] });
 		new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [3, 3, 0] });
+		new wall3d({ _type: 'direct', colorOverride: 'red', _wpos: [4, 3, 0] });
+		new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [5, 3, 0] });
 		//new wall({ _type: 'direct', _wpos: [4, 1, 0] });
 		new wall({ _type: 'direct', _wpos: [5, 1, 0] });
 		// new tile({ _type: 'direct', _wpos: [3, 2, 0] });
