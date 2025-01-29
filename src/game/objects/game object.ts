@@ -42,7 +42,7 @@ export class game_object extends clod.obj {
 	}
 }
 
-// Messy!
+// Messy
 export namespace game_object {
 	export function SortMatrix(world: clod.world, wpos: vec2, types: string[]) {
 		return clod.util.GetMatrix<game_object>(

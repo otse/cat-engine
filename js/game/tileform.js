@@ -43,6 +43,7 @@ var tileform;
             }
             if (!change)
                 return;
+            glob.rerender = true;
             console.log(wallRotationX, wallRotationY);
             //scene.rotation.set(Math.PI / rotationX, Math.PI / rotationY, 0);
             //scene.updateMatrix();
@@ -223,7 +224,7 @@ var tileform;
             // 	this.group.remove(this.group.children[0]);
             const geometry = wall_geometry_builder(this);
             const material = new THREE.MeshPhongMaterial({
-                // color: 'red',
+                color: this.data.gabeObject.data.colorOverride || 'white',
                 opacity: 0.8,
                 transparent: true,
                 map: pipeline.loadTexture(this.data.texture, 'nearest')
@@ -239,10 +240,12 @@ var tileform;
             this.hexTile.rotationGroup.updateMatrix();
             this.group.add(this.rotationGroup);
             this.group.updateMatrix();
+            this._step();
         }
         _step() {
             this.rotationGroup.rotation.set(Math.PI / wallRotationX, Math.PI / wallRotationY, 0);
             this.rotationGroup.updateMatrix();
+            this.group.updateMatrix();
         }
     }
     tileform.shape_wall = shape_wall;
@@ -251,6 +254,20 @@ var tileform;
         const geometries = [];
         const directionAdapter = wall.data.gabeObject.directionAdapter;
         const da = directionAdapter;
+        const buildSegment = (nesw) => {
+            // This will take a number 0 - 3 for north east south west
+            // and then use a const array of multipliers to offset our cube
+            const multipliers = [
+                [-1, 1],
+                [1, 0],
+                [0, -1],
+                [-1, 0]
+            ];
+            const [x, y] = multipliers[nesw];
+            let geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+            geometry.translate(x * size[0] / 4, 0, y * size[2] / 4);
+            geometries.push(geometry);
+        };
         if (!da)
             return;
         switch (wall.data.type) {
@@ -261,22 +278,54 @@ var tileform;
                 // based on the string presences of the directions
                 // from the direction adapter da
                 let geometry;
-                switch (true) {
-                    case da.directions.includes('east'):
-                        //case da.directions.includes('north'):
-                        geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-                        geometry.translate(-size[0] / 4, 0, size[2] / 4);
-                        geometries.push(geometry);
-                        break;
-                    default:
-                        geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
-                        geometries.push(geometry);
-                        break;
+                // The following are edge-cases
+                if (da.directions.includes('east') && !da.directions.includes('west')) {
+                    buildSegment(0);
+                    /*geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+                    geometry.translate(-size[0] / 4, 0, size[2] / 4);
+                    geometries.push(geometry);*/
                 }
-                //geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
-                //geometries.push(geometry);
+                if (da.directions.includes('west') && !da.directions.includes('east')) {
+                    // Foremost
+                    geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+                    geometry.translate(-size[0] / 4, 0, size[2] / 4);
+                    geometries.push(geometry);
+                    // Backmost
+                    geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+                    geometry.translate(-size[0] / 4, 0, -size[2] / 4);
+                    geometries.push(geometry);
+                }
+                if (da.directions.includes('north') && !da.directions.includes('south')) {
+                    geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+                    geometry.translate(size[0] / 4, 0, size[2] / 4);
+                    geometries.push(geometry);
+                }
+                if (da.directions.includes('south') && !da.directions.includes('north')) {
+                    geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+                    geometry.translate(size[0] / 4, 0, size[2] / 4);
+                    geometries.push(geometry);
+                }
+                // The following are between cases (AND)
+                if (da.directions.includes('south') && da.directions.includes('north')) {
+                    geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+                    geometry.translate(size[0] / 4, 0, size[2] / 4);
+                    geometries.push(geometry);
+                    geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+                    geometry.translate(-size[0] / 4, 0, size[2] / 4);
+                    geometries.push(geometry);
+                }
+                /*
+                if (da.directions.includes('north')) {
+                    geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
+                    geometries.push(geometry);
+                } else {
+                    geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
+                    geometries.push(geometry);
+                }*/
                 break;
         }
+        if (!geometries.length)
+            return;
         const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries);
         return mergedGeometry;
     }

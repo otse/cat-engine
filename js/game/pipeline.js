@@ -198,7 +198,7 @@ var pipeline;
         pipeline.scene = new THREE.Scene();
         pipeline.scene.frustumCulled = false;
         pipeline.scene.add(groups.major);
-        pipeline.scene.background = new THREE.Color('#666');
+        pipeline.scene.background = new THREE.Color('#111');
         pipeline.sceneShader = new THREE.Scene();
         pipeline.sceneShader.frustumCulled = false;
         pipeline.sceneShader.background = new THREE.Color('purple');

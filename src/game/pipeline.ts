@@ -233,7 +233,7 @@ namespace pipeline {
 		scene = new THREE.Scene();
 		scene.frustumCulled = false;
 		scene.add(groups.major);
-		scene.background = new THREE.Color('#666');
+		scene.background = new THREE.Color('#111');
 
 		sceneShader = new THREE.Scene();
 		sceneShader.frustumCulled = false;

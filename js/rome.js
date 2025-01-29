@@ -25,6 +25,7 @@ var rome;
     async function init() {
         console.log(' init ');
         glob.rome = rome;
+        glob.prerender = true;
         await pipeline.init();
         await tileform.init();
         rome.world = clod.init();
@@ -71,11 +72,14 @@ var rome;
         new tile({ _type: 'direct', _wpos: [6, 0, 0] });
         new tile({ _type: 'direct', _wpos: [7, 0, 0] });
         new wall3d({ _type: 'direct', _wpos: [2, 1, 0] });
-        new wall3d({ _type: 'direct', _wpos: [3, 1, 0] });
-        new wall({ _type: 'direct', _wpos: [4, 1, 0] });
+        new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [3, 1, 0] });
+        new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [3, 2, 0] });
+        new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [3, 3, 0] });
+        //new wall({ _type: 'direct', _wpos: [4, 1, 0] });
         new wall({ _type: 'direct', _wpos: [5, 1, 0] });
-        new tile({ _type: 'direct', _wpos: [3, 2, 0] });
+        // new tile({ _type: 'direct', _wpos: [3, 2, 0] });
         new tile({ _type: 'direct', _wpos: [4, 2, 0] });
+        new wall3d({ _type: 'direct', _wpos: [1, 2, 0] });
         new wall3d({ _type: 'direct', _wpos: [1, 3, 0] });
         new wall3d({ _type: 'direct', _wpos: [1, 4, 0] });
         new wall3d({ _type: 'direct', _wpos: [1, 5, 0] });
@@ -103,6 +107,7 @@ var rome;
             remakeObjects();
             ;
         }
+        glob.rerender = false;
     }
     rome.step = step;
 })(rome || (rome = {}));

@@ -1,3 +1,4 @@
+import glob from "../dep/glob.js";
 import pipeline from "./pipeline.js";
 import sprite from "./sprite.js";
 import tileform from "./tileform.js";
@@ -15,6 +16,7 @@ export namespace sprite3d {
 };
 
 export class sprite3d extends sprite {
+	rerender = true
 	target
 	shape3d?: tileform.shape_base
 	constructor(
@@ -44,10 +46,13 @@ export class sprite3d extends sprite {
 		this.prerender();
 	}
 	prerender() {
+		if (!this.rerender && !glob.rerender) // If both are false
+			return;
 		this._make_target();
 		this._render();
 		this.material.map = this.target.texture;
 		this.material.needsUpdate = true;
+		this.rerender = false;
 	}
 	protected _make_target() {
 		this.target = pipeline.makeRenderTarget(
