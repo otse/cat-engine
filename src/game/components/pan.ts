@@ -48,6 +48,7 @@ namespace pan {
 	function functions() {
 		follow();
 		pan();
+		sideways();
 		wpos = clod.unproject(rpos);
 		marker.wpos = wpos;
 		marker.wtorpos();
@@ -71,6 +72,21 @@ namespace pan {
 			if (startWtorpos)
 				rpos = clod.project(wpos);
 			// rpos = pts.add(rpos, clod.project([.5, .5]));
+		}
+	}
+
+	function sideways() {
+		if (app.key('arrowright')) {
+			rpos[0] += 1;
+		}
+		if (app.key('arrowleft')) {
+			rpos[0] -= 1;
+		}
+		if (app.key('arrowup')) {
+			rpos[1] += 1;
+		}
+		if (app.key('arrowdown')) {
+			rpos[1] -= 1;
 		}
 	}
 

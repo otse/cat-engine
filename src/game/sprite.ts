@@ -53,7 +53,7 @@ export class sprite {
 		let defines = {} as any;
 		// defines.MASKED = 1;		
 		this.material = SpriteMaterial({
-			map: pipeline.loadTexture(`img/` + this.data.name, 'nearest'),
+			map: pipeline.getTexture(`./img/` + this.data.name),
 			color: this.data.color,
 			transparent: true,
 			depthTest: false,

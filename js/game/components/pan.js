@@ -37,6 +37,7 @@ var pan;
     function functions() {
         follow();
         pan();
+        sideways();
         pan_1.wpos = clod.unproject(pan_1.rpos);
         marker.wpos = pan_1.wpos;
         marker.wtorpos();
@@ -59,6 +60,20 @@ var pan;
             if (startWtorpos)
                 pan_1.rpos = clod.project(pan_1.wpos);
             // rpos = pts.add(rpos, clod.project([.5, .5]));
+        }
+    }
+    function sideways() {
+        if (app.key('arrowright')) {
+            pan_1.rpos[0] += 1;
+        }
+        if (app.key('arrowleft')) {
+            pan_1.rpos[0] -= 1;
+        }
+        if (app.key('arrowup')) {
+            pan_1.rpos[1] += 1;
+        }
+        if (app.key('arrowdown')) {
+            pan_1.rpos[1] -= 1;
         }
     }
     function pan() {

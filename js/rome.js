@@ -26,6 +26,7 @@ var rome;
         console.log(' init ');
         glob.rome = rome;
         glob.prerender = true;
+        await preload_basic_textures();
         await pipeline.init();
         await tileform.init();
         rome.world = clod.init();
@@ -44,6 +45,10 @@ var rome;
         clod.remove(gabeObject);
     }
     rome.removeGabeObject = removeGabeObject;
+    async function preload_basic_textures() {
+        await pipeline.preloadTextureAsync('./img/hex/tile.png');
+        await pipeline.preloadTextureAsync('./img/hex/wall.png');
+    }
     function make_gabe_objects() {
         new tile3d({ _type: 'direct', colorOverride: 'pink', _wpos: [-1, 0, 0] });
         new tile3d({ _type: 'direct', colorOverride: 'salmon', _wpos: [-1, -1, 0] });

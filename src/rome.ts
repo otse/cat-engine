@@ -30,8 +30,10 @@ namespace rome {
 
 	export async function init() {
 		console.log(' init ');
+
 		glob.rome = rome;
 		glob.prerender = true;
+		await preload_basic_textures();
 		await pipeline.init();
 		await tileform.init();
 		world = clod.init();
@@ -48,6 +50,11 @@ namespace rome {
 
 	export function removeGabeObject(gabeObject: game_object) {
 		clod.remove(gabeObject);
+	}
+
+	async function preload_basic_textures() {
+		await pipeline.preloadTextureAsync('./img/hex/tile.png');
+		await pipeline.preloadTextureAsync('./img/hex/wall.png');
 	}
 
 	function make_gabe_objects() {

@@ -26,7 +26,7 @@ export class wall3d extends game_object {
 			shapeLiteral: {
 				gabeObject: this,
 				type: 'regular',
-				texture: './img/textures/sand.jpg',
+				texture: './img/textures/cobblestone2.jpg',
 				size: [17, 10, 17]
 			}
 		});

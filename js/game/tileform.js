@@ -55,12 +55,14 @@ var tileform;
         }
         stage.init = init;
         async function preload() {
-            await pipeline.loadTextureAsync('./img/textures/stonemixed.jpg');
-            await pipeline.loadTextureAsync('./img/textures/beach.jpg');
-            await pipeline.loadTextureAsync('./img/textures/beachnormal.jpg');
-            await pipeline.loadTextureAsync('./img/textures/sand.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/stonemixed.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/beach.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/beachnormal.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/sand.jpg');
             //await pipeline.loadTextureAsync('./img/textures/sandnormal.jpg');
-            await pipeline.loadTextureAsync('./img/textures/oop.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/oop.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/cobblestone.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/cobblestone2.jpg');
             //await pipeline.loadTextureAsync('./img/textures/bricks.jpg');
         }
         async function boot() {
@@ -185,7 +187,7 @@ var tileform;
             geometry.setIndex(indices);
             const material = new THREE.MeshPhongMaterial({
                 color: 'white',
-                map: pipeline.loadTexture(this.data.hexTexture, 'nearest'),
+                map: pipeline.getTexture(this.data.hexTexture),
             });
             this.rotationGroup = new THREE.Group();
             this.rotationGroup.rotation.set(GreatRotationX, GreatRotationY, 0);
@@ -220,14 +222,12 @@ var tileform;
             super(data);
         }
         _create() {
-            // while (this.group.children.length > 0)
-            // 	this.group.remove(this.group.children[0]);
-            const geometry = wall_geometry_builder(this);
+            const geometry = wallMaker(this);
             const material = new THREE.MeshPhongMaterial({
-                color: this.data.gabeObject.data.colorOverride || 'white',
-                opacity: 0.8,
+                // color: this.data.gabeObject.data.colorOverride || 'white',
+                opacity: 1,
                 transparent: true,
-                map: pipeline.loadTexture(this.data.texture, 'nearest')
+                map: pipeline.getTexture(this.data.texture)
             });
             const mesh = new THREE.Mesh(geometry, material);
             mesh.position.set(0, -6, 0);
@@ -249,60 +249,46 @@ var tileform;
         }
     }
     tileform.shape_wall = shape_wall;
-    function wall_geometry_builder(wall) {
+    function wallMaker(wall) {
         const { size } = wall.data;
         const geometries = [];
+        // Hack!
         const directionAdapter = wall.data.gabeObject.directionAdapter;
-        const da = directionAdapter;
-        const buildSegment = (nesw) => {
-            // This will take a number 0 - 3 for north east south west
-            // and then use a const array of multipliers to offset our cube
-            const multipliers = [
-                [-1, 1],
-                [1, 0],
-                [0, -1],
-                [-1, 0]
-            ];
-            const [x, y] = multipliers[nesw];
-            let geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-            geometry.translate(x * size[0] / 4, 0, y * size[2] / 4);
-            geometries.push(geometry);
-        };
-        if (!da)
+        if (!directionAdapter)
             return;
         switch (wall.data.type) {
             case 'concave':
                 break;
             case 'regular':
                 let geometry;
-                if (da.directions.includes('north')) {
+                if (directionAdapter.directions.includes('north')) {
                     geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
                     geometry.translate(size[0] / 4, 0, size[2] / 4);
                     geometries.push(geometry);
                 }
-                if (da.directions.includes('east')) {
+                if (directionAdapter.directions.includes('east')) {
                     geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
                     geometry.translate(-size[0] / 4, 0, size[2] / 4);
                     geometries.push(geometry);
                 }
-                if (da.directions.includes('south')) {
+                if (directionAdapter.directions.includes('south')) {
                     geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
                     geometry.translate(-size[0] / 4, 0, size[2] / 4);
                     geometries.push(geometry);
                 }
-                if (da.directions.includes('west')) {
+                if (directionAdapter.directions.includes('west')) {
                     geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
                     geometry.translate(-size[0] / 4, 0, -size[2] / 4);
                     geometries.push(geometry);
                 }
-                if (da.directions.includes('north') &&
-                    da.directions.includes('aest') ||
-                    da.directions.includes('east') &&
-                        da.directions.includes('south') ||
-                    da.directions.includes('south') &&
-                        da.directions.includes('west') ||
-                    da.directions.includes('west') &&
-                        da.directions.includes('north')) {
+                if (directionAdapter.directions.includes('north') &&
+                    directionAdapter.directions.includes('aest') ||
+                    directionAdapter.directions.includes('east') &&
+                        directionAdapter.directions.includes('south') ||
+                    directionAdapter.directions.includes('south') &&
+                        directionAdapter.directions.includes('west') ||
+                    directionAdapter.directions.includes('west') &&
+                        directionAdapter.directions.includes('north')) {
                     // Middle piece!
                     geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
                     geometry.translate(-size[0] / 4, 0, size[2] / 4);

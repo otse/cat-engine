@@ -339,30 +339,9 @@ namespace pipeline {
 
 	let mem = []
 
-
-	export async function loadTextureAsync(file: string, mode = 1, cb?, key?: string) {
-		if (mem[key || file])
-			return mem[key || file];
-		let texture = await new THREE.TextureLoader().loadAsync(file + `?v=${app.feed}`, cb);
-		texture.generateMipmaps = false;
-		texture.center.set(0, 1);
-		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-		if (mode) {
-			texture.magFilter = THREE.LinearFilter;
-			texture.minFilter = THREE.LinearFilter;
-		}
-		else {
-			texture.magFilter = THREE.NearestFilter;
-			texture.minFilter = THREE.NearestFilter;
-		}
-		mem[key || file] = texture;
-		return texture;
-	}
-
-	export function loadTexture(file: string, mode: 'nearest' | 'liner', cb?, key?: string) {
-		if (mem[key || file])
-			return mem[key || file];
-		let texture = new THREE.TextureLoader().load(file + `?v=${app.feed}`, cb);
+	export async function preloadTextureAsync(file: string, mode: 'nearest' | 'liner' = 'nearest') {
+		let texture = await new THREE.TextureLoader().loadAsync(file + `?v=${app.feed}`);
+		mem[file] = texture;
 		texture.generateMipmaps = false;
 		texture.center.set(0, 1);
 		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -374,8 +353,10 @@ namespace pipeline {
 			texture.magFilter = THREE.NearestFilter;
 			texture.minFilter = THREE.NearestFilter;
 		}
-		mem[key || file] = texture;
-		return texture;
+	}
+
+	export function getTexture(file: string) {
+		return mem[file];
 	}
 
 	export function makeRenderTarget(width, height) {
