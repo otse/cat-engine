@@ -2,7 +2,7 @@ import tile from "./tile.js";
 import wall from "./wall.js";
 // Objects come in as data from the network
 // It is friendlier to use string types than import a large number of class files
-export function gabeObjectMaker(data) {
+export function gameObjectMaker(data) {
     let gobj;
     switch (data._type) {
         case 'dud':
@@ -18,4 +18,4 @@ export function gabeObjectMaker(data) {
     }
     return gobj;
 }
-export default gabeObjectMaker;
+export default gameObjectMaker;

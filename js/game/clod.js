@@ -1,7 +1,8 @@
 import aabb2 from "../dep/aabb2.js";
+import glob from "../dep/glob.js";
 import pts from "../dep/pts.js";
 import { hooks } from "../dep/hooks.js";
-import ren from "./pipeline.js";
+import pipeline from "./pipeline.js"; // Begone!
 import toggle from "../dep/toggle.js";
 export var numbers;
 (function (numbers) {
@@ -34,18 +35,17 @@ var clod;
     }
     clod.register = register;
     function project(unit) {
-        return pts.mult(pts.project(unit), 1);
+        return pts.mult(pts.project(unit), glob.scale);
     }
     clod.project = project;
     function unproject(pixel) {
-        return pts.divide(pts.unproject(pixel), 1);
+        return pts.divide(pts.unproject(pixel), glob.scale);
     }
     clod.unproject = unproject;
-    function add(world, obj) {
+    function add(world, obj, show = true) {
         if (!obj)
             return;
-        let chunk = world.atwpos(obj.wpos);
-        chunk.add(obj);
+        world.atwpos(obj.wpos).add(obj, show);
     }
     clod.add = add;
     function remove(obj) {
@@ -114,11 +114,11 @@ var clod;
             //console.log('sector');
             hooks.emit('sectorCreate', this);
         }
-        add(obj) {
+        add(obj, show = true) {
             if (!this.objs.includes(obj)) {
                 this.objs.push(obj);
                 obj.chunk = this;
-                if (this.active)
+                if (this.active && show)
                     obj.show();
             }
         }
@@ -160,7 +160,7 @@ var clod;
             numbers.chunks[0]++;
             for (const obj of this.objs)
                 obj.show();
-            ren.scene.add(this.group);
+            pipeline.scene.add(this.group);
             hooks.emit('sectorShow', this);
         }
         hide() {
@@ -169,7 +169,7 @@ var clod;
             numbers.chunks[0]--;
             for (let obj of this.objs)
                 obj.hide();
-            ren.scene.remove(this.group);
+            pipeline.scene.remove(this.group);
             hooks.emit('sectorHide', this);
         }
         dist() {

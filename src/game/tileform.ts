@@ -3,6 +3,7 @@
 import app from "../app.js";
 import glob from "../dep/glob.js";
 import { hooks } from "../dep/hooks.js";
+import pts from "../dep/pts.js";
 import rome from "../rome.js";
 import direction_adapter from "./direction adapter.js";
 import game_object from "./objects/game object.js";
@@ -78,6 +79,9 @@ namespace tileform {
 			await pipeline.preloadTextureAsync('./img/textures/oop.jpg');
 			await pipeline.preloadTextureAsync('./img/textures/cobblestone.jpg');
 			await pipeline.preloadTextureAsync('./img/textures/cobblestone2.jpg');
+			await pipeline.preloadTextureAsync('./img/textures/basaltcliffs.jpg');
+			await pipeline.preloadTextureAsync('./img/textures/cliffs.jpg');
+			await pipeline.preloadTextureAsync('./img/textures/overgrown.jpg');
 			//await pipeline.loadTextureAsync('./img/textures/bricks.jpg');
 		}
 
@@ -91,11 +95,11 @@ namespace tileform {
 			putGroup.updateMatrix();
 			scene.add(putGroup);
 			scene.updateMatrix();
-			ambient = new THREE.AmbientLight('white', Math.PI);
+			ambient = new THREE.AmbientLight('white', Math.PI / 1);
 			scene.add(ambient);
 			const sunDistance = 100;
-			sun = new THREE.DirectionalLight('white', 1);
-			sun.position.set(-sunDistance, 0, sunDistance / 2);
+			sun = new THREE.DirectionalLight('red', 1);
+			sun.position.set(-sunDistance, -sunDistance / 3, -sunDistance);
 			scene.add(sun);
 			/*renderer = new THREE.WebGLRenderer({
 				antialias: false,
@@ -121,9 +125,10 @@ namespace tileform {
 		}
 
 		export function prepare(sprite: sprite3d) {
-			set_preset(sprite.data._scenePresetDepr);
+			set_preset(sprite.data_._scenePresetDepr);
 			spotlight = sprite;
-			const size = sprite.data.size!;
+			let { size } = sprite.data;
+			size = pts.mult(size!, glob.scale);
 			camera = new THREE.OrthographicCamera(
 				size[0] / - 2,
 				size[0] / 2,
@@ -159,6 +164,8 @@ namespace tileform {
 				...data
 			}
 			this.group = new THREE.Group();
+			this.group.scale.set(glob.scale, glob.scale, glob.scale);
+			this.group.updateMatrix();
 			shapes.push(this);
 			// this.create(); // Spike
 		}
@@ -176,7 +183,7 @@ namespace tileform {
 	}
 
 	export interface shape_literal {
-		gabeObject: game_object,
+		gobj: game_object,
 		type: shape_modifiers,
 		texture?: string,
 		hexTexture?: string,
@@ -258,6 +265,7 @@ namespace tileform {
 			super(data);
 		}
 		protected override _create() {
+			
 			const geometry = wallMaker(this);
 			const material = new THREE.MeshPhongMaterial({
 				// color: this.data.gabeObject.data.colorOverride || 'white',
@@ -289,9 +297,14 @@ namespace tileform {
 		const { size } = wall.data;
 		const geometries: any[] = [];
 		// Hack!
-		const directionAdapter = (wall.data.gabeObject as any).directionAdapter as direction_adapter;
-		if (!directionAdapter)
+		const directionAdapter = (wall.data.gobj as any).directionAdapter as direction_adapter;
+		//console.log('shape wall create!', directionAdapter.directions);
+
+		if (!directionAdapter) {
+			console.warn(' no direction adapter for wallmaker');
+			
 			return;
+		}
 		switch (wall.data.type) {
 			case 'concave':
 

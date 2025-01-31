@@ -21,11 +21,12 @@ export class direction_adapter {
 	shape?: tileform.shape_base
 	matrix: game_object[][]
 	directions: (string | null)[]
-	constructor(readonly gabeObject: game_object) {
+	constructor(readonly gobj: game_object) {
 		//[]
 	}
 	search(types: string[]) {
-		this.matrix = game_object.SortMatrix(rome.world, this.gabeObject.wpos, types);
+		this.matrix = game_object.SortMatrix(rome.world, this.gobj.wpos, types);
+		console.log('pos', this.gobj.wpos, this.matrix);
 		this.directions = game_object.GetDirections(this.matrix);
 	}
 }

@@ -339,13 +339,13 @@ namespace pipeline {
 
 	let mem = []
 
-	export async function preloadTextureAsync(file: string, mode: 'nearest' | 'liner' = 'nearest') {
+	export async function preloadTextureAsync(file: string, mode: 'nearest' | 'linear' = 'linear') {
 		let texture = await new THREE.TextureLoader().loadAsync(file + `?v=${app.feed}`);
 		mem[file] = texture;
 		texture.generateMipmaps = false;
 		texture.center.set(0, 1);
 		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-		if (mode === 'liner') {
+		if (mode === 'linear') {
 			texture.magFilter = THREE.LinearFilter;
 			texture.minFilter = THREE.LinearFilter;
 		}

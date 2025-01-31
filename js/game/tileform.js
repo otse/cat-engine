@@ -2,6 +2,7 @@
 import app from "../app.js";
 import glob from "../dep/glob.js";
 import { hooks } from "../dep/hooks.js";
+import pts from "../dep/pts.js";
 import pipeline from "./pipeline.js";
 var tileform;
 (function (tileform) {
@@ -63,6 +64,9 @@ var tileform;
             await pipeline.preloadTextureAsync('./img/textures/oop.jpg');
             await pipeline.preloadTextureAsync('./img/textures/cobblestone.jpg');
             await pipeline.preloadTextureAsync('./img/textures/cobblestone2.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/basaltcliffs.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/cliffs.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/overgrown.jpg');
             //await pipeline.loadTextureAsync('./img/textures/bricks.jpg');
         }
         async function boot() {
@@ -75,11 +79,11 @@ var tileform;
             stage.putGroup.updateMatrix();
             stage.scene.add(stage.putGroup);
             stage.scene.updateMatrix();
-            stage.ambient = new THREE.AmbientLight('white', Math.PI);
+            stage.ambient = new THREE.AmbientLight('white', Math.PI / 1);
             stage.scene.add(stage.ambient);
             const sunDistance = 100;
-            stage.sun = new THREE.DirectionalLight('white', 1);
-            stage.sun.position.set(-sunDistance, 0, sunDistance / 2);
+            stage.sun = new THREE.DirectionalLight('red', 1);
+            stage.sun.position.set(-sunDistance, -sunDistance / 3, -sunDistance);
             stage.scene.add(stage.sun);
             /*renderer = new THREE.WebGLRenderer({
                 antialias: false,
@@ -103,9 +107,10 @@ var tileform;
             //majorGroup.updateMatrix();
         }
         function prepare(sprite) {
-            set_preset(sprite.data._scenePresetDepr);
+            set_preset(sprite.data_._scenePresetDepr);
             stage.spotlight = sprite;
-            const size = sprite.data.size;
+            let { size } = sprite.data;
+            size = pts.mult(size, glob.scale);
             stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -100, 100);
             while (stage.putGroup.children.length > 0)
                 stage.putGroup.remove(stage.putGroup.children[0]);
@@ -136,6 +141,8 @@ var tileform;
                 ...data
             };
             this.group = new THREE.Group();
+            this.group.scale.set(glob.scale, glob.scale, glob.scale);
+            this.group.updateMatrix();
             shapes.push(this);
             // this.create(); // Spike
         }
@@ -253,9 +260,12 @@ var tileform;
         const { size } = wall.data;
         const geometries = [];
         // Hack!
-        const directionAdapter = wall.data.gabeObject.directionAdapter;
-        if (!directionAdapter)
+        const directionAdapter = wall.data.gobj.directionAdapter;
+        //console.log('shape wall create!', directionAdapter.directions);
+        if (!directionAdapter) {
+            console.warn(' no direction adapter for wallmaker');
             return;
+        }
         switch (wall.data.type) {
             case 'concave':
                 break;

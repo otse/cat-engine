@@ -11,7 +11,7 @@ export class tile extends game_object {
     }
     _create() {
         new sprite({
-            gabeObject: this,
+            gobj: this,
             size: [17, 9]
         });
         this.sprite?.create();

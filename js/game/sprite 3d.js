@@ -1,13 +1,14 @@
 import glob from "../dep/glob.js";
+import pts from "../dep/pts.js";
 import pipeline from "./pipeline.js";
 import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 ;
 export class sprite3d extends sprite {
-    data;
     rerender = true;
     target;
     shape3d;
+    data_; // Hack
     constructor(data) {
         super({
             shapeType: 'nothing',
@@ -18,11 +19,11 @@ export class sprite3d extends sprite {
             },
             ...data
         });
-        this.data = data;
+        this.data_ = this.data;
     }
     _create() {
         super._create();
-        this.shape3d = tileform.shapeMaker(this.data.shapeType, this.data.shapeLiteral);
+        this.shape3d = tileform.shapeMaker(this.data_.shapeType, this.data_.shapeLiteral);
         this.shape3d?.create();
         this.prerender();
     }
@@ -41,7 +42,9 @@ export class sprite3d extends sprite {
         this.rerender = false;
     }
     _make_target() {
-        this.target = pipeline.makeRenderTarget(this.data.size[0], this.data.size[1]);
+        let { size } = this.data;
+        size = pts.mult(size, glob.scale);
+        this.target = pipeline.makeRenderTarget(size[0], size[1]);
     }
     _render() {
         tileform.stage.prepare(this);

@@ -3,7 +3,7 @@ import pts from "../../dep/pts.js";
 import clod from "../clod.js";
 export class game_object extends clod.obj {
     data;
-    static _gabeObjects = [];
+    static _gameObjects = [];
     sprite;
     r = 0; // rotation
     z = 0; // third axis
@@ -14,14 +14,11 @@ export class game_object extends clod.obj {
         this.z = data._wpos[2];
         this.r = data._r || 0;
         this.wtorpos();
-        if (!data.lonely) {
-            glob.rome.addGabeObject(this);
-            game_object._gabeObjects.push(this);
-        }
+        game_object._gameObjects.push(this);
     }
     purge() {
         this.sprite?.delete();
-        glob.rome.removeGabeObject(this);
+        glob.rome.removeGameObject(this);
     }
     update() {
         this.sprite?.update();

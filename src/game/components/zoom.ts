@@ -5,7 +5,7 @@ import pipeline from "../pipeline.js";
 
 namespace zoom {
     let level = 0;
-    export const zooms = [1, 0.5, 0.33, 0.2, 0.1, 0.05, 0.025, 0.01];
+    export const zooms = [1, 0.5, 0.33, 0.2, 0.1, 0.05];
 
     export function register() {
         hooks.addListener('romeComponents', step);

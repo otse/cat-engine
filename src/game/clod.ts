@@ -1,11 +1,10 @@
 import aabb2 from "../dep/aabb2.js";
+import glob from "../dep/glob.js";
 import pts from "../dep/pts.js";
 import { hooks } from "../dep/hooks.js";
 
-import ren from "./pipeline.js";
-import gtasmr from "../rome.js";
+import pipeline from "./pipeline.js"; // Begone!
 import toggle from "../dep/toggle.js";
-import rome from "../rome.js";
 
 export namespace numbers {
 	export type tally = [active: number, total: number]
@@ -46,18 +45,17 @@ namespace clod {
 	}
 
 	export function project(unit: vec2): vec2 {
-		return pts.mult(pts.project(unit), 1);
+		return pts.mult(pts.project(unit), glob.scale);
 	}
 
 	export function unproject(pixel: vec2): vec2 {
-		return pts.divide(pts.unproject(pixel), 1);
+		return pts.divide(pts.unproject(pixel), glob.scale);
 	}
 
-	export function add(world: world, obj?: obj) {
+	export function add(world: world, obj?: obj, show = true) {
 		if (!obj)
 			return;
-		let chunk = world.atwpos(obj.wpos);
-		chunk.add(obj);
+		world.atwpos(obj.wpos).add(obj, show);
 	}
 
 	export function remove(obj: obj) {
@@ -129,11 +127,11 @@ namespace clod {
 			hooks.emit('sectorCreate', this);
 
 		}
-		add(obj: obj) {
+		add(obj: obj, show = true) {
 			if (!this.objs.includes(obj)) {
 				this.objs.push(obj);
 				obj.chunk = this;
-				if (this.active)
+				if (this.active && show)
 					obj.show();
 			}
 		}
@@ -178,7 +176,7 @@ namespace clod {
 			numbers.chunks[0]++;
 			for (const obj of this.objs)
 				obj.show();
-			ren.scene.add(this.group);
+			pipeline.scene.add(this.group);
 			hooks.emit('sectorShow', this);
 		}
 		hide() {
@@ -187,7 +185,7 @@ namespace clod {
 			numbers.chunks[0]--;
 			for (let obj of this.objs)
 				obj.hide();
-			ren.scene.remove(this.group);
+			pipeline.scene.remove(this.group);
 			hooks.emit('sectorHide', this);
 		}
 		dist() {
@@ -358,11 +356,11 @@ namespace clod {
 			let matrix: Type[][] = [];
 			directions.forEach((pos, index) => {
 				pos = pts.add(pos, wpos);
-				matrix[index] = world.atwpos(pos).stacked(pos) as any[];
+				matrix[index] = world.atwpos(pos).stacked(pos) as Type[];
 			});
 			return matrix;
 		}
-		
+
 	}
 }
 

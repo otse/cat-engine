@@ -26,71 +26,91 @@ var rome;
         console.log(' init ');
         glob.rome = rome;
         glob.prerender = true;
+        glob.scale = 1;
         await preload_basic_textures();
         await pipeline.init();
         await tileform.init();
         rome.world = clod.init();
         app;
-        make_gabe_objects();
+        makeGameObjects();
         zoom.register();
         pan.register();
         // new sprite({ size: [12, 8] });
     }
     rome.init = init;
-    function addGabeObject(gabeObject) {
-        clod.add(rome.world, gabeObject);
+    // This is useful for adding walls,
+    // or the direction adapters will stop working
+    function addMutipleGameObject(gobjs) {
+        for (const gobj of gobjs) {
+            clod.add(rome.world, gobj, false);
+        }
+        for (const gobj of gobjs) {
+            if (gobj.chunk?.active)
+                gobj.show();
+        }
     }
-    rome.addGabeObject = addGabeObject;
-    function removeGabeObject(gabeObject) {
-        clod.remove(gabeObject);
+    rome.addMutipleGameObject = addMutipleGameObject;
+    // Silly function to add to our parameter injection world
+    function addGameObject(gobj) {
+        clod.add(rome.world, gobj);
     }
-    rome.removeGabeObject = removeGabeObject;
+    rome.addGameObject = addGameObject;
+    function removeGameObject(gobj) {
+        clod.remove(gobj);
+    }
+    rome.removeGameObject = removeGameObject;
     async function preload_basic_textures() {
-        await pipeline.preloadTextureAsync('./img/hex/tile.png');
-        await pipeline.preloadTextureAsync('./img/hex/wall.png');
+        await pipeline.preloadTextureAsync('./img/hex/tile.png', 'nearest');
+        await pipeline.preloadTextureAsync('./img/hex/wall.png', 'nearest');
     }
-    function make_gabe_objects() {
-        new tile3d({ _type: 'direct', colorOverride: 'pink', _wpos: [-1, 0, 0] });
-        new tile3d({ _type: 'direct', colorOverride: 'salmon', _wpos: [-1, -1, 0] });
-        new tile3d({ _type: 'direct', colorOverride: 'cyan', _wpos: [0, -1, 0] });
-        new tile3d({ _type: 'direct', colorOverride: 'yellow', _wpos: [-1, 1, 0] });
-        new tile3d({ _type: 'direct', colorOverride: 'yellow', _wpos: [0, 1, 0] });
-        new tile3d({ _type: 'direct', colorOverride: 'salmon', _wpos: [0, 2, 0] });
-        new tile3d({ _type: 'direct', colorOverride: 'yellow', _wpos: [0, 3, 0] });
-        new tile3d({ _type: 'direct', colorOverride: 'orange', _wpos: [0, 4, 0] });
-        new tile3d({ _type: 'direct', colorOverride: 'red', _wpos: [0, 5, 0] });
-        new tile3d({ _type: 'direct', colorOverride: 'blue', _wpos: [0, 6, 0] });
-        new tile3d({ _type: 'direct', colorOverride: 'wheat', _wpos: [0, 7, 0] });
-        new tile3d({ _type: 'direct', colorOverride: 'lavender', _wpos: [0, 8, 0] });
-        new tile3d({ _type: 'direct', colorOverride: 'cyan', _wpos: [0, 9, 0] });
-        new tile({ _type: 'direct', colorOverride: 'orange', _wpos: [1, -1, 0] });
-        new tile({ _type: 'direct', colorOverride: 'red', _wpos: [0, 0, 0] });
-        new tile({ _type: 'direct', colorOverride: 'pink', _wpos: [1, 0, 0] });
-        new tile({ _type: 'direct', colorOverride: 'blue', _wpos: [0, 1, 0] });
-        new tile({ _type: 'direct', _wpos: [1, 1, 0] });
-        new tile({ _type: 'direct', _wpos: [0, 2, 0] });
-        new tile({ _type: 'direct', _wpos: [1, 0, 0] });
-        new tile({ _type: 'direct', _wpos: [2, 0, 0] });
-        new tile({ _type: 'direct', _wpos: [3, 0, 0] });
-        new tile({ _type: 'direct', _wpos: [4, 0, 0] });
-        new tile({ _type: 'direct', _wpos: [5, 0, 0] });
-        new tile({ _type: 'direct', _wpos: [6, 0, 0] });
-        new tile({ _type: 'direct', _wpos: [7, 0, 0] });
-        new wall3d({ _type: 'direct', _wpos: [2, 1, 0] });
-        new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [3, 1, 0] });
-        new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [3, 2, 0] });
-        new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [3, 3, 0] });
-        new wall3d({ _type: 'direct', colorOverride: 'red', _wpos: [4, 3, 0] });
-        new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [5, 3, 0] });
-        //new wall({ _type: 'direct', _wpos: [4, 1, 0] });
-        new wall({ _type: 'direct', _wpos: [5, 1, 0] });
-        // new tile({ _type: 'direct', _wpos: [3, 2, 0] });
-        new tile({ _type: 'direct', _wpos: [4, 2, 0] });
-        new wall3d({ _type: 'direct', _wpos: [1, 2, 0] });
-        new wall3d({ _type: 'direct', _wpos: [1, 3, 0] });
-        new wall3d({ _type: 'direct', _wpos: [1, 4, 0] });
-        new wall3d({ _type: 'direct', _wpos: [1, 5, 0] });
-        new wall3d({ _type: 'direct', _wpos: [1, 6, 0] });
+    function makeGameObjects() {
+        let gobjs = [];
+        function collect(gobj) {
+            gobjs.push(gobj);
+        }
+        collect(new tile3d({ _type: 'direct', colorOverride: 'pink', _wpos: [-1, 0, 0] }));
+        collect(new tile3d({ _type: 'direct', colorOverride: 'salmon', _wpos: [-1, -1, 0] }));
+        collect(new tile3d({ _type: 'direct', colorOverride: 'cyan', _wpos: [0, -1, 0] }));
+        collect(new tile3d({ _type: 'direct', colorOverride: 'yellow', _wpos: [-1, 1, 0] }));
+        collect(new tile3d({ _type: 'direct', colorOverride: 'yellow', _wpos: [0, 1, 0] }));
+        collect(new tile3d({ _type: 'direct', colorOverride: 'salmon', _wpos: [0, 2, 0] }));
+        collect(new tile3d({ _type: 'direct', colorOverride: 'yellow', _wpos: [0, 3, 0] }));
+        collect(new tile3d({ _type: 'direct', colorOverride: 'orange', _wpos: [0, 4, 0] }));
+        collect(new tile3d({ _type: 'direct', colorOverride: 'red', _wpos: [0, 5, 0] }));
+        collect(new tile3d({ _type: 'direct', colorOverride: 'blue', _wpos: [0, 6, 0] }));
+        collect(new tile3d({ _type: 'direct', colorOverride: 'wheat', _wpos: [0, 7, 0] }));
+        collect(new tile3d({ _type: 'direct', colorOverride: 'lavender', _wpos: [0, 8, 0] }));
+        collect(new tile3d({ _type: 'direct', colorOverride: 'cyan', _wpos: [0, 9, 0] }));
+        collect(new tile({ _type: 'direct', colorOverride: 'orange', _wpos: [1, -1, 0] }));
+        collect(new tile({ _type: 'direct', colorOverride: 'red', _wpos: [0, 0, 0] }));
+        collect(new tile({ _type: 'direct', colorOverride: 'pink', _wpos: [1, 0, 0] }));
+        collect(new tile({ _type: 'direct', colorOverride: 'blue', _wpos: [0, 1, 0] }));
+        collect(new tile({ _type: 'direct', _wpos: [1, 1, 0] }));
+        collect(new tile({ _type: 'direct', _wpos: [0, 2, 0] }));
+        collect(new tile({ _type: 'direct', _wpos: [1, 0, 0] }));
+        collect(new tile({ _type: 'direct', _wpos: [2, 0, 0] }));
+        collect(new tile({ _type: 'direct', _wpos: [3, 0, 0] }));
+        collect(new tile({ _type: 'direct', _wpos: [4, 0, 0] }));
+        collect(new tile({ _type: 'direct', _wpos: [5, 0, 0] }));
+        collect(new tile({ _type: 'direct', _wpos: [6, 0, 0] }));
+        collect(new tile({ _type: 'direct', _wpos: [7, 0, 0] }));
+        collect(new wall3d({ _type: 'direct', _wpos: [2, 1, 0] }));
+        collect(new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [3, 1, 0] }));
+        collect(new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [3, 2, 0] }));
+        collect(new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [3, 3, 0] }));
+        collect(new wall3d({ _type: 'direct', colorOverride: 'red', _wpos: [4, 3, 0] }));
+        collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [5, 3, 0] }));
+        collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
+        collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
+        collect(new tile({ _type: 'direct', _wpos: [3, 2, 0] }));
+        collect(new tile({ _type: 'direct', _wpos: [4, 2, 0] }));
+        collect(new wall3d({ _type: 'direct', _wpos: [1, 2, 0] }));
+        collect(new wall3d({ _type: 'direct', _wpos: [1, 3, 0] }));
+        collect(new wall3d({ _type: 'direct', _wpos: [1, 4, 0] }));
+        collect(new wall3d({ _type: 'direct', _wpos: [1, 5, 0] }));
+        collect(new wall3d({ _type: 'direct', _wpos: [1, 6, 0] }));
+        // This is stupid
+        addMutipleGameObject(gobjs);
     }
     function step() {
         hooks.emit('romeComponents', 1);
@@ -99,9 +119,9 @@ var rome;
         rome.world.update(pan.wpos);
         rome.world.grid.ticks();
         const remakeObjects = () => {
-            game_object._gabeObjects.forEach(gabeObject => gabeObject.purge());
-            game_object._gabeObjects = [];
-            make_gabe_objects();
+            game_object._gameObjects.forEach(gobj => gobj.purge());
+            game_object._gameObjects = [];
+            makeGameObjects();
         };
         if (app.key('[') == 1) {
             tileform.hex_size -= .1;
@@ -111,6 +131,16 @@ var rome;
         if (app.key(']') == 1) {
             tileform.hex_size += .1;
             console.log(tileform.hex_size);
+            remakeObjects();
+        }
+        if (app.key('-') == 1) {
+            glob.scale -= .1;
+            console.log(glob.scale);
+            remakeObjects();
+        }
+        if (app.key('=') == 1) {
+            glob.scale += .1;
+            console.log(glob.scale);
             remakeObjects();
             ;
         }

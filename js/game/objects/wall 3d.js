@@ -9,19 +9,24 @@ export class wall3d extends game_object {
             ...data,
         });
         this.data._type = 'wall 3d';
-        this.directionAdapter = new direction_adapter(this);
+        // This code runs after _create
+        // because the super adds this object to the clod
     }
     _create() {
+        this.directionAdapter = new direction_adapter(this);
+        // Had to move the DA to the creator, because the super constructor
+        // would add the object to the CLOD who would call CREATE
+        // before we instantiated our adapter
         new sprite3d({
-            gabeObject: this,
+            gobj: this,
             size: [34, 34],
-            name: 'unused',
+            // image: 'unused',
             _scenePresetDepr: 'wall',
             shapeType: 'wall',
             shapeLiteral: {
-                gabeObject: this,
+                gobj: this,
                 type: 'regular',
-                texture: './img/textures/cobblestone2.jpg',
+                texture: './img/textures/cliffs.jpg',
                 size: [17, 10, 17]
             }
         });

@@ -15,9 +15,9 @@ export class wall extends game_object {
 	}
 	protected override _create() {
 		new sprite({
-			gabeObject: this,
+			gobj: this,
 			size: [17, 21],
-			name: 'hex/wall.png',
+			image: 'hex/wall.png',
 			color: 'blue'
 		});
 		this.sprite?.create();

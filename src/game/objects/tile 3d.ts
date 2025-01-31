@@ -13,13 +13,13 @@ export class tile extends game_object {
 	}
 	protected override _create() {
 		new sprite3d({
-			gabeObject: this,
+			gobj: this,
 			size: [17, 9],
-			name: 'unused',
+			// image: 'unused',
 			_scenePresetDepr: 'hex',
 			shapeType: 'hex',
 			shapeLiteral: {
-				gabeObject: this,
+				gobj: this,
 				type: 'regular',
 				hexTexture: './img/textures/beach.jpg',
 				size: [8, 20, 10]

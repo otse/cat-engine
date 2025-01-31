@@ -6,7 +6,7 @@ import wall from "./wall.js";
 // Objects come in as data from the network
 // It is friendlier to use string types than import a large number of class files
 
-export function gabeObjectMaker(data: game_object_literal): game_object | undefined {
+export function gameObjectMaker(data: game_object_literal): game_object | undefined {
 	let gobj: game_object | undefined;
 	switch (data._type) {
 		case 'dud':
@@ -23,4 +23,4 @@ export function gabeObjectMaker(data: game_object_literal): game_object | undefi
 	return gobj;
 }
 
-export default gabeObjectMaker;
+export default gameObjectMaker;

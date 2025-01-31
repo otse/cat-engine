@@ -282,13 +282,13 @@ var pipeline;
         pipeline.camera2.updateProjectionMatrix();
     }
     let mem = [];
-    async function preloadTextureAsync(file, mode = 'nearest') {
+    async function preloadTextureAsync(file, mode = 'linear') {
         let texture = await new THREE.TextureLoader().loadAsync(file + `?v=${app.feed}`);
         mem[file] = texture;
         texture.generateMipmaps = false;
         texture.center.set(0, 1);
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        if (mode === 'liner') {
+        if (mode === 'linear') {
             texture.magFilter = THREE.LinearFilter;
             texture.minFilter = THREE.LinearFilter;
         }

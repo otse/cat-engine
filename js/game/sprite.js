@@ -1,11 +1,12 @@
 import pts from "../dep/pts.js";
 import pipeline from "./pipeline.js";
+import glob from "../dep/glob.js";
 ;
 ;
 // A sprite uses a per-material UV transform
 export class sprite {
     data;
-    gabeObject;
+    gobj;
     matrix;
     mesh;
     geometry;
@@ -14,13 +15,13 @@ export class sprite {
         this.data = data;
         this.data = {
             size: [17, 9],
-            name: 'hex/tile.png',
-            //color: 'white',
+            image: 'hex/tile.png',
+            color: 'magenta',
             ...data,
         };
-        this.gabeObject = this.data.gabeObject;
-        this.gabeObject.sprite = this;
-        this.data.color = this.gabeObject.data.colorOverride || 'white';
+        this.gobj = this.data.gobj;
+        this.gobj.sprite = this;
+        this.data.color = this.gobj.data.colorOverride || 'white';
         this.matrix = new THREE.Matrix3;
         this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
     }
@@ -30,17 +31,17 @@ export class sprite {
     _step() { }
     delete() {
         this.mesh.parent.remove(this.mesh);
-        this.gabeObject.sprite = undefined;
+        this.gobj.sprite = undefined;
     }
     create() {
         this._create();
     }
     _create() {
         let defines = {};
-        // defines.MASKED = 1;		
+        // defines.MASKED = 1;
         this.material = SpriteMaterial({
-            map: pipeline.getTexture(`./img/` + this.data.name),
-            color: this.data.color,
+            map: pipeline.getTexture('./img/' + this.data.image),
+            color: 'pink',
             transparent: true,
             depthTest: false,
         }, {
@@ -49,15 +50,17 @@ export class sprite {
             masked: false,
             bool: true
         }, defines);
-        // const size = { this.data }; // Error
-        this.geometry = new THREE.PlaneGeometry(this.data.size[0], this.data.size[1], 1, 1);
+        let { size } = this.data;
+        size = pts.mult(size, glob.scale);
+        this.geometry = new THREE.PlaneGeometry(size[0], size[1], 1, 1);
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.update();
         pipeline.groups.major.add(this.mesh);
     }
     update() {
-        const gabe = this.gabeObject;
+        const gabe = this.gobj;
         this.material.color.set(this.data.color);
+        console.log('no color?', this.data.color);
         this.mesh.renderOrder = -gabe.wpos[1] + gabe.wpos[0];
         let pos = pts.add(gabe.rpos, pts.divide([0, this.data.size[1]], 2));
         //let pos = pts.add(this.gabeObject.rpos, pts.divide(this.data.size!, 2));
