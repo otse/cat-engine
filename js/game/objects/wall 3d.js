@@ -19,7 +19,7 @@ export class wall3d extends game_object {
         // before we instantiated our adapter
         new sprite3d({
             gobj: this,
-            size: [34, 34],
+            size: [17 * 3, 9 * 3],
             // image: 'unused',
             _scenePresetDepr: 'wall',
             shapeType: 'wall',

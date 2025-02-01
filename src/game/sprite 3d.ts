@@ -22,7 +22,6 @@ export class sprite3d extends sprite {
 	target
 	shape3d?: tileform.shape_base
 	data_: sprite3dliteral // Hack
-
 	constructor(
 		data: sprite3dliteral
 	) {

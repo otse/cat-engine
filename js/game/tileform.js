@@ -111,7 +111,7 @@ var tileform;
             stage.spotlight = sprite;
             let { size } = sprite.data;
             size = pts.mult(size, glob.scale);
-            stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -100, 100);
+            stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -300, 300);
             while (stage.putGroup.children.length > 0)
                 stage.putGroup.remove(stage.putGroup.children[0]);
             stage.putGroup.add(sprite.shape3d.group);
@@ -142,6 +142,7 @@ var tileform;
             };
             this.group = new THREE.Group();
             this.group.scale.set(glob.scale, glob.scale, glob.scale);
+            this.group.add(new THREE.AxesHelper(2));
             this.group.updateMatrix();
             shapes.push(this);
             // this.create(); // Spike
@@ -167,8 +168,8 @@ var tileform;
         _create() {
             this.hex = new hex_tile(this.data);
             this.group.add(this.hex.rotationGroup);
-            this.hex.rotationGroup.position.set(0, 0, 0);
-            this.hex.rotationGroup.updateMatrix();
+            //this.hex.rotationGroup.position.set(0, 0, 0);
+            //this.hex.rotationGroup.updateMatrix();
         }
     }
     tileform.shape_hex_wrapper = shape_hex_wrapper;
@@ -237,15 +238,15 @@ var tileform;
                 map: pipeline.getTexture(this.data.texture)
             });
             const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set(0, -6, 0);
+            mesh.position.set(0, 6, 0);
             mesh.updateMatrix();
             this.hexTile = new hex_tile(this.data);
             this.rotationGroup = new THREE.Group();
             this.rotationGroup.add(mesh);
-            this.group.add(this.hexTile.rotationGroup);
-            this.hexTile.rotationGroup.position.set(0, -13, 0);
-            this.hexTile.rotationGroup.updateMatrix();
             this.group.add(this.rotationGroup);
+            this.group.add(this.hexTile.rotationGroup);
+            this.hexTile.rotationGroup.position.set(0, 0, 0);
+            this.hexTile.rotationGroup.updateMatrix();
             this.group.updateMatrix();
             this._step();
         }
@@ -257,7 +258,11 @@ var tileform;
     }
     tileform.shape_wall = shape_wall;
     function wallMaker(wall) {
-        const { size } = wall.data;
+        let { size } = wall.data;
+        /*size = [
+            size[0] * glob.scale,
+            size[1] * glob.scale,
+            size[2] * glob.scale];*/
         const geometries = [];
         // Hack!
         const directionAdapter = wall.data.gobj.directionAdapter;

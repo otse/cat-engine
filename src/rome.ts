@@ -107,17 +107,16 @@ namespace rome {
 		collect(new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [3, 3, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'red', _wpos: [4, 3, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [5, 3, 0] }));
-		collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
-		collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
-		collect(new tile({ _type: 'direct', _wpos: [3, 2, 0] }));
 		collect(new tile({ _type: 'direct', _wpos: [4, 2, 0] }));
 		collect(new wall3d({ _type: 'direct', _wpos: [1, 2, 0] }));
 		collect(new wall3d({ _type: 'direct', _wpos: [1, 3, 0] }));
 		collect(new wall3d({ _type: 'direct', _wpos: [1, 4, 0] }));
 		collect(new wall3d({ _type: 'direct', _wpos: [1, 5, 0] }));
 		collect(new wall3d({ _type: 'direct', _wpos: [1, 6, 0] }));
+		collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
+		collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
 		// This is stupid
-		addMutipleGameObject(gobjs);		
+		addMutipleGameObject(gobjs);
 	}
 
 	export function step() {
@@ -144,12 +143,13 @@ namespace rome {
 			remakeObjects();
 		}
 		if (app.key('-') == 1) {
-			glob.scale -= .1;
+			if (glob.scale > 1)
+				glob.scale -= 1;
 			console.log(glob.scale);
 			remakeObjects();
 		}
 		if (app.key('=') == 1) {
-			glob.scale += .1;
+			glob.scale += 1;
 			console.log(glob.scale);
 			remakeObjects();;
 		}

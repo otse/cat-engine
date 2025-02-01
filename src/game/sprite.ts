@@ -8,6 +8,7 @@ import glob from "../dep/glob.js";
 interface sprite_literal {
 	gobj: game_object,
 	size?: vec2;
+	bottomSort?: boolean;
 	image?: string;
 	dataa?: number;
 	color?: string;
@@ -44,7 +45,7 @@ export class sprite {
 		this._step();
 	}
 	protected _step() { }
-	delete() {		
+	delete() {
 		this.mesh.parent.remove(this.mesh);
 		this.gobj.sprite = undefined;
 	}
@@ -76,12 +77,16 @@ export class sprite {
 		pipeline.groups.major.add(this.mesh);
 	}
 	update() {
-		const gabe = this.gobj;		
+		const gabe = this.gobj;
 		this.material.color.set(this.data.color);
-		console.log('no color?', this.data.color);
-		
+		//console.log('no color?', this.data.color);
 		this.mesh.renderOrder = -gabe.wpos[1] + gabe.wpos[0];
-		let pos = pts.add(gabe.rpos, pts.divide([0, this.data.size![1]], 2));
+		let pos = gabe.rpos;
+		// Todo the problem here was that aligning the bottom
+		// resulted in impossible problems
+		const tileSize = rome.tileSize;
+		if (this.data.bottomSort)
+			pos = pts.add(pos, pts.divide([0, pts.subtract(this.data.size!, tileSize)[1]], 2));
 		//let pos = pts.add(this.gabeObject.rpos, pts.divide(this.data.size!, 2));
 		this.mesh.position.fromArray([...pos, gabe.z]);
 	}
