@@ -19,8 +19,8 @@ var tileform;
     let stage;
     (function (stage) {
     })(stage = tileform.stage || (tileform.stage = {}));
-    const GreatRotationX = Math.PI / 6;
-    const GreatRotationY = Math.PI / Math.PI;
+    tileform.GreatRotationX = 0.6035987755982989;
+    tileform.GreatRotationY = 1.05;
     let wallRotationX = 9;
     let wallRotationY = 4;
     (function (stage) {
@@ -173,7 +173,7 @@ var tileform;
         }
     }
     tileform.shape_hex_wrapper = shape_hex_wrapper;
-    tileform.hex_size = 8;
+    tileform.hex_size = 7.7;
     class hex_tile {
         data;
         scalar = 8;
@@ -187,8 +187,9 @@ var tileform;
         make() {
             const { scalar } = this;
             const vertices = [1 * scalar, 0 * scalar, 0 * scalar, 0.5 * scalar, 0.866 * scalar, 0 * scalar, -0.5 * scalar, 0.866 * scalar, 0 * scalar, -1 * scalar, 0 * scalar, 0 * scalar, -0.5 * scalar, -0.866 * scalar, 0 * scalar, 0.5 * scalar, -0.866 * scalar, 0 * scalar];
+            const vertices2 = [1, 0, 0, 0.5, 0.866, 0, -0.5, 0.866, 0, -1, 0, 0, -0.5, -0.866, 0, 0.5, -0.866, 0];
             const indices = [0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 6, 0, 6, 1];
-            const uvs = [0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1];
+            const uvs = [0.5, 0, 1, 0.5, 0.75, 1, 0.25, 1, 0, 0.5, 0.25, 0, 0.75, 0];
             const geometry = new THREE.BufferGeometry();
             geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
             geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
@@ -198,7 +199,7 @@ var tileform;
                 map: pipeline.getTexture(this.data.hexTexture),
             });
             this.rotationGroup = new THREE.Group();
-            this.rotationGroup.rotation.set(GreatRotationX, GreatRotationY, 0);
+            this.rotationGroup.rotation.set(tileform.GreatRotationX, tileform.GreatRotationY, 0);
             this.mesh = new THREE.Mesh(geometry, material);
             this.mesh.rotation.set(-Math.PI / 2, 0, 0);
             this.mesh.updateMatrix();

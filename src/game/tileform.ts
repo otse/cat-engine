@@ -31,8 +31,8 @@ namespace tileform {
 		export let spotlight: sprite3d | undefined
 	}
 
-	const GreatRotationX = Math.PI / 6;
-	const GreatRotationY = Math.PI / Math.PI;
+	export let GreatRotationX = 0.6035987755982989;
+	export let GreatRotationY = 1.05;
 
 	let wallRotationX = 9;
 	let wallRotationY = 4;
@@ -204,7 +204,7 @@ namespace tileform {
 		}
 	}
 
-	export let hex_size = 8;
+	export let hex_size = 7.7;
 
 	class hex_tile {
 		scalar = 8
@@ -217,8 +217,9 @@ namespace tileform {
 		make() {
 			const { scalar } = this;
 			const vertices: number[] = [1 * scalar, 0 * scalar, 0 * scalar, 0.5 * scalar, 0.866 * scalar, 0 * scalar, -0.5 * scalar, 0.866 * scalar, 0 * scalar, -1 * scalar, 0 * scalar, 0 * scalar, -0.5 * scalar, -0.866 * scalar, 0 * scalar, 0.5 * scalar, -0.866 * scalar, 0 * scalar];
+			const vertices2: number[] = [1, 0, 0, 0.5, 0.866, 0, -0.5, 0.866, 0, -1, 0, 0, -0.5, -0.866, 0, 0.5, -0.866, 0];
 			const indices: number[] = [0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 6, 0, 6, 1];
-			const uvs: number[] = [0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1];
+			const uvs: number[] = [0.5, 0, 1, 0.5, 0.75, 1, 0.25, 1, 0, 0.5, 0.25, 0, 0.75, 0];
 			const geometry = new THREE.BufferGeometry();
 			geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 			geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));

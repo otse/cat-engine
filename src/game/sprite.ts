@@ -86,7 +86,7 @@ export class sprite {
 		// resulted in impossible problems
 		const tileSize = rome.tileSize;
 		if (this.data.bottomSort)
-			pos = pts.add(pos, pts.divide([0, pts.subtract(this.data.size!, tileSize)[1]], 2));
+			pos = pts.add(pos, pts.divide([0, pts.mult(pts.subtract(this.data.size!, tileSize), glob.scale)[1]], 2));
 		//let pos = pts.add(this.gabeObject.rpos, pts.divide(this.data.size!, 2));
 		this.mesh.position.fromArray([...pos, gabe.z]);
 	}

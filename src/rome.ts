@@ -153,6 +153,26 @@ namespace rome {
 			console.log(glob.scale);
 			remakeObjects();;
 		}
+		if (app.key(',') == 1) {
+			tileform.GreatRotationY -= .01;
+			console.log(tileform.GreatRotationY);
+			remakeObjects();
+		}
+		if (app.key('.') == 1) {
+			tileform.GreatRotationY += .01;
+			console.log(tileform.GreatRotationY);
+			remakeObjects();
+		}
+		if (app.key('n') == 1) {
+			tileform.GreatRotationX -= .01;
+			console.log(tileform.GreatRotationX);
+			remakeObjects();
+		}
+		if (app.key('m') == 1) {
+			tileform.GreatRotationX += .01;
+			console.log(tileform.GreatRotationX);
+			remakeObjects();
+		}
 
 		glob.rerender = false;
 	}

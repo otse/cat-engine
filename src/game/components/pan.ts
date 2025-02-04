@@ -8,6 +8,7 @@ import clod from "../clod.js";
 import game_object from "../objects/game object.js";
 import tile from "../objects/tile.js";
 import rome from "../../rome.js";
+import glob from "../../dep/glob.js";
 
 
 namespace pan {
@@ -77,16 +78,16 @@ namespace pan {
 
 	function sideways() {
 		if (app.key('arrowright')) {
-			rpos[0] += 1;
+			rpos[0] += 1 * glob.scale;
 		}
 		if (app.key('arrowleft')) {
-			rpos[0] -= 1;
+			rpos[0] -= 1 * glob.scale;
 		}
 		if (app.key('arrowup')) {
-			rpos[1] += 1;
+			rpos[1] += 1 * glob.scale;
 		}
 		if (app.key('arrowdown')) {
-			rpos[1] -= 1;
+			rpos[1] -= 1 * glob.scale;
 		}
 	}
 

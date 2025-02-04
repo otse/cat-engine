@@ -6,6 +6,7 @@ import zoom from "./zoom.js";
 import clod from "../clod.js";
 import tile from "../objects/tile.js";
 import rome from "../../rome.js";
+import glob from "../../dep/glob.js";
 var pan;
 (function (pan_1) {
     function register() {
@@ -64,16 +65,16 @@ var pan;
     }
     function sideways() {
         if (app.key('arrowright')) {
-            pan_1.rpos[0] += 1;
+            pan_1.rpos[0] += 1 * glob.scale;
         }
         if (app.key('arrowleft')) {
-            pan_1.rpos[0] -= 1;
+            pan_1.rpos[0] -= 1 * glob.scale;
         }
         if (app.key('arrowup')) {
-            pan_1.rpos[1] += 1;
+            pan_1.rpos[1] += 1 * glob.scale;
         }
         if (app.key('arrowdown')) {
-            pan_1.rpos[1] -= 1;
+            pan_1.rpos[1] -= 1 * glob.scale;
         }
     }
     function pan() {

@@ -36,7 +36,8 @@ export class game_object extends clod.obj {
 // Messy
 (function (game_object) {
     function SortMatrix(world, wpos, types) {
-        return clod.util.GetMatrix(world, wpos).map(column => column.filter(obj => types.includes(obj.data._type)));
+        const matrix = clod.util.GetMatrix(world, wpos);
+        return matrix.map(column => column.filter(obj => types.includes(obj.data._type)));
     }
     game_object.SortMatrix = SortMatrix;
     function GetDirections(matrix) {
