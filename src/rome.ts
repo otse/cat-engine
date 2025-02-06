@@ -13,6 +13,7 @@ import pan from "./game/components/pan.js";
 import game_object from "./game/objects/game object.js";
 import clod from "./game/clod.js";
 import glob from "./dep/glob.js";
+import land from "./land.js";
 
 namespace rome {
 
@@ -32,23 +33,47 @@ namespace rome {
 		console.log(' init ');
 		glob.rome = rome;
 		glob.prerender = true;
-		glob.scale = 1;
+		glob.scale = 8;
 		await preload_basic_textures();
 		await pipeline.init();
 		await tileform.init();
+		land.init();
 		world = clod.init();
 		app;
-		makeGameObjects();
+		makeTestingChamber();
+		land.make();
 		zoom.register();
 		pan.register();
 		// new sprite({ size: [12, 8] });
+		// What might this do
 	}
 
-	// This is useful for adding walls,
-	// or the direction adapters will stop working
-	export function addMutipleGameObject(gobjs: game_object[]) {
+	export function addMergeOrReplace(target: game_object) {
+		const chunk = world.atwpos(target.wpos);
+		const stacked = chunk.stacked(target.wpos) as game_object[];
+		let merged = false;
+		for (const gobj of stacked) {
+			if (gobj.data._type! == 'wall 3d' ||
+				gobj.data._type == 'tile 3d'
+			) {
+				const wall_ = gobj as wall3d;
+				//wall_.data
+				console.log(' already wll here ');
+				merged = true;
+				// console.warn('boo');
+			}
+		}
+		if (!merged) {
+			clod.addNoCreate(rome.world, target);
+		}
+	}
+
+	export function addLateGobjs(gobjs: game_object[], mode: 'keep' | 'merge') {
 		for (const gobj of gobjs) {
-			clod.add(rome.world, gobj, false);
+			if (mode === 'keep')
+				clod.addNoCreate(rome.world, gobj);
+			else if (mode === 'merge')
+				addMergeOrReplace(gobj);
 		}
 		for (const gobj of gobjs) {
 			if (gobj.chunk?.active)
@@ -56,12 +81,12 @@ namespace rome {
 		}
 	}
 
-	// Silly function to add to our parameter injection world
-	export function addGameObject(gobj: game_object) {
+	export function addGobj(gobj: game_object) {
+		// Parameter injection
 		clod.add(world, gobj);
 	}
 
-	export function removeGameObject(gobj: game_object) {
+	export function removeGobj(gobj: game_object) {
 		clod.remove(gobj);
 	}
 
@@ -70,7 +95,7 @@ namespace rome {
 		await pipeline.preloadTextureAsync('./img/hex/wall.png', 'nearest');
 	}
 
-	function makeGameObjects() {
+	function makeTestingChamber() {
 		let gobjs: game_object[] = [];
 		function collect(gobj: game_object) {
 			gobjs.push(gobj);
@@ -116,7 +141,7 @@ namespace rome {
 		collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
 		collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
 		// This is stupid
-		addMutipleGameObject(gobjs);
+		addLateGobjs(gobjs, 'keep');
 	}
 
 	export function step() {
@@ -130,7 +155,7 @@ namespace rome {
 		const remakeObjects = () => {
 			game_object._gameObjects.forEach(gobj => gobj.purge());
 			game_object._gameObjects = [];
-			makeGameObjects();
+			makeTestingChamber();
 		}
 		if (app.key('[') == 1) {
 			tileform.hex_size -= .1;
@@ -151,26 +176,26 @@ namespace rome {
 		if (app.key('=') == 1) {
 			glob.scale += 1;
 			console.log(glob.scale);
-			remakeObjects();;
+			remakeObjects();
 		}
 		if (app.key(',') == 1) {
-			tileform.GreatRotationY -= .01;
-			console.log(tileform.GreatRotationY);
+			tileform.HexRotationY -= .005;
+			console.log(tileform.HexRotationY);
 			remakeObjects();
 		}
 		if (app.key('.') == 1) {
-			tileform.GreatRotationY += .01;
-			console.log(tileform.GreatRotationY);
+			tileform.HexRotationY += .005;
+			console.log(tileform.HexRotationY);
 			remakeObjects();
 		}
 		if (app.key('n') == 1) {
-			tileform.GreatRotationX -= .01;
-			console.log(tileform.GreatRotationX);
+			tileform.HexRotationX -= .01;
+			console.log(tileform.HexRotationX);
 			remakeObjects();
 		}
 		if (app.key('m') == 1) {
-			tileform.GreatRotationX += .01;
-			console.log(tileform.GreatRotationX);
+			tileform.HexRotationX += .01;
+			console.log(tileform.HexRotationX);
 			remakeObjects();
 		}
 

@@ -42,12 +42,18 @@ var clod;
         return pts.divide(pts.unproject(pixel), glob.scale);
     }
     clod.unproject = unproject;
-    function add(world, obj, show = true) {
+    function add(world, obj) {
         if (!obj)
             return;
-        world.atwpos(obj.wpos).add(obj, show);
+        world.atwpos(obj.wpos).add(obj);
     }
     clod.add = add;
+    function addNoCreate(world, obj) {
+        if (!obj)
+            return;
+        world.atwpos(obj.wpos).add(obj, false);
+    }
+    clod.addNoCreate = addNoCreate;
     function remove(obj) {
         obj.chunk?.remove(obj);
     }
@@ -131,7 +137,7 @@ var clod;
         }
         // Get all things at one point
         stacked(wpos) {
-            let stack = [];
+            const stack = [];
             for (const obj of this.objs)
                 if (pts.equals(pts.round(wpos), pts.round(obj.wpos)))
                     stack.push(obj);

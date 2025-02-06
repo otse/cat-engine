@@ -52,10 +52,16 @@ namespace clod {
 		return pts.divide(pts.unproject(pixel), glob.scale);
 	}
 
-	export function add(world: world, obj?: obj, show = true) {
+	export function add(world: world, obj?: obj) {
 		if (!obj)
 			return;
-		world.atwpos(obj.wpos).add(obj, show);
+		world.atwpos(obj.wpos).add(obj);
+	}
+
+	export function addNoCreate(world: world, obj?: obj) {
+		if (!obj)
+			return;
+		world.atwpos(obj.wpos).add(obj, false);
 	}
 
 	export function remove(obj: obj) {
@@ -144,7 +150,7 @@ namespace clod {
 		}
 		// Get all things at one point
 		stacked(wpos: vec2) {
-			let stack: obj[] = [];
+			const stack: obj[] = [];
 			for (const obj of this.objs)
 				if (pts.equals(
 					pts.round(wpos),

@@ -11,6 +11,7 @@ import pan from "./game/components/pan.js";
 import game_object from "./game/objects/game object.js";
 import clod from "./game/clod.js";
 import glob from "./dep/glob.js";
+import land from "./land.js";
 var rome;
 (function (rome) {
     rome.tileSize = [17, 9]; // glob?
@@ -26,44 +27,67 @@ var rome;
         console.log(' init ');
         glob.rome = rome;
         glob.prerender = true;
-        glob.scale = 1;
+        glob.scale = 8;
         await preload_basic_textures();
         await pipeline.init();
         await tileform.init();
+        land.init();
         rome.world = clod.init();
         app;
-        makeGameObjects();
+        makeTestingChamber();
+        land.make();
         zoom.register();
         pan.register();
         // new sprite({ size: [12, 8] });
+        // What might this do
     }
     rome.init = init;
-    // This is useful for adding walls,
-    // or the direction adapters will stop working
-    function addMutipleGameObject(gobjs) {
+    function addMergeOrReplace(target) {
+        const chunk = rome.world.atwpos(target.wpos);
+        const stacked = chunk.stacked(target.wpos);
+        let merged = false;
+        for (const gobj of stacked) {
+            if (gobj.data._type == 'wall 3d' ||
+                gobj.data._type == 'tile 3d') {
+                const wall_ = gobj;
+                //wall_.data
+                console.log(' already wll here ');
+                merged = true;
+                // console.warn('boo');
+            }
+        }
+        if (!merged) {
+            clod.addNoCreate(rome.world, target);
+        }
+    }
+    rome.addMergeOrReplace = addMergeOrReplace;
+    function addLateGobjs(gobjs, mode) {
         for (const gobj of gobjs) {
-            clod.add(rome.world, gobj, false);
+            if (mode === 'keep')
+                clod.addNoCreate(rome.world, gobj);
+            else if (mode === 'merge')
+                addMergeOrReplace(gobj);
         }
         for (const gobj of gobjs) {
             if (gobj.chunk?.active)
                 gobj.show();
         }
     }
-    rome.addMutipleGameObject = addMutipleGameObject;
-    // Silly function to add to our parameter injection world
-    function addGameObject(gobj) {
+    rome.addLateGobjs = addLateGobjs;
+    function addGobj(gobj) {
+        // Parameter injection
         clod.add(rome.world, gobj);
     }
-    rome.addGameObject = addGameObject;
-    function removeGameObject(gobj) {
+    rome.addGobj = addGobj;
+    function removeGobj(gobj) {
         clod.remove(gobj);
     }
-    rome.removeGameObject = removeGameObject;
+    rome.removeGobj = removeGobj;
     async function preload_basic_textures() {
         await pipeline.preloadTextureAsync('./img/hex/tile.png', 'nearest');
         await pipeline.preloadTextureAsync('./img/hex/wall.png', 'nearest');
     }
-    function makeGameObjects() {
+    function makeTestingChamber() {
         let gobjs = [];
         function collect(gobj) {
             gobjs.push(gobj);
@@ -109,7 +133,7 @@ var rome;
         collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
         collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
         // This is stupid
-        addMutipleGameObject(gobjs);
+        addLateGobjs(gobjs, 'keep');
     }
     function step() {
         hooks.emit('romeComponents', 1);
@@ -120,7 +144,7 @@ var rome;
         const remakeObjects = () => {
             game_object._gameObjects.forEach(gobj => gobj.purge());
             game_object._gameObjects = [];
-            makeGameObjects();
+            makeTestingChamber();
         };
         if (app.key('[') == 1) {
             tileform.hex_size -= .1;
@@ -142,26 +166,25 @@ var rome;
             glob.scale += 1;
             console.log(glob.scale);
             remakeObjects();
-            ;
         }
         if (app.key(',') == 1) {
-            tileform.GreatRotationY -= .01;
-            console.log(tileform.GreatRotationY);
+            tileform.HexRotationY -= .005;
+            console.log(tileform.HexRotationY);
             remakeObjects();
         }
         if (app.key('.') == 1) {
-            tileform.GreatRotationY += .01;
-            console.log(tileform.GreatRotationY);
+            tileform.HexRotationY += .005;
+            console.log(tileform.HexRotationY);
             remakeObjects();
         }
         if (app.key('n') == 1) {
-            tileform.GreatRotationX -= .01;
-            console.log(tileform.GreatRotationX);
+            tileform.HexRotationX -= .01;
+            console.log(tileform.HexRotationX);
             remakeObjects();
         }
         if (app.key('m') == 1) {
-            tileform.GreatRotationX += .01;
-            console.log(tileform.GreatRotationX);
+            tileform.HexRotationX += .01;
+            console.log(tileform.HexRotationX);
             remakeObjects();
         }
         glob.rerender = false;

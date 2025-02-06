@@ -31,8 +31,8 @@ namespace tileform {
 		export let spotlight: sprite3d | undefined
 	}
 
-	export let GreatRotationX = 0.6035987755982989;
-	export let GreatRotationY = 1.05;
+	export let HexRotationX = 0.6135987755982989;
+	export let HexRotationY = 1.045;
 
 	let wallRotationX = 9;
 	let wallRotationY = 4;
@@ -229,7 +229,7 @@ namespace tileform {
 				map: pipeline.getTexture(this.data.hexTexture!),
 			});
 			this.rotationGroup = new THREE.Group();
-			this.rotationGroup.rotation.set(GreatRotationX, GreatRotationY, 0);
+			this.rotationGroup.rotation.set(HexRotationX, HexRotationY, 0);
 			this.mesh = new THREE.Mesh(geometry, material);
 			this.mesh.rotation.set(-Math.PI / 2, 0, 0);
 			this.mesh.updateMatrix();

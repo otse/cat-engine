@@ -19,8 +19,8 @@ var tileform;
     let stage;
     (function (stage) {
     })(stage = tileform.stage || (tileform.stage = {}));
-    tileform.GreatRotationX = 0.6035987755982989;
-    tileform.GreatRotationY = 1.05;
+    tileform.HexRotationX = 0.6135987755982989;
+    tileform.HexRotationY = 1.045;
     let wallRotationX = 9;
     let wallRotationY = 4;
     (function (stage) {
@@ -199,7 +199,7 @@ var tileform;
                 map: pipeline.getTexture(this.data.hexTexture),
             });
             this.rotationGroup = new THREE.Group();
-            this.rotationGroup.rotation.set(tileform.GreatRotationX, tileform.GreatRotationY, 0);
+            this.rotationGroup.rotation.set(tileform.HexRotationX, tileform.HexRotationY, 0);
             this.mesh = new THREE.Mesh(geometry, material);
             this.mesh.rotation.set(-Math.PI / 2, 0, 0);
             this.mesh.updateMatrix();
