@@ -11,16 +11,10 @@ export class tile extends game_object {
     _create() {
         new sprite3d({
             gobj: this,
-            size: [17, 9],
-            // image: 'unused',
-            _scenePresetDepr: 'hex',
+            spriteSize: [17, 9],
             shapeType: 'hex',
-            shapeLiteral: {
-                gobj: this,
-                type: 'regular',
-                hexTexture: './img/textures/beach.jpg',
-                size: [8, 20, 10]
-            }
+            shapeHexTexture: './img/textures/beach.jpg',
+            shapeSize: [8, 20, 10]
         });
         this.sprite?.create();
     }

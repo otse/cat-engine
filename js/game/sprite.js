@@ -15,14 +15,14 @@ export class sprite {
     constructor(data) {
         this.data = data;
         this.data = {
-            size: [17, 9],
-            image: 'hex/tile.png',
-            color: 'magenta',
+            spriteSize: [17, 9],
+            spriteImage: 'hex/tile.png',
+            spriteColor: 'magenta',
             ...data,
         };
         this.gobj = this.data.gobj;
         this.gobj.sprite = this;
-        this.data.color = this.gobj.data.colorOverride || 'white';
+        this.data.spriteColor = this.gobj.data.colorOverride || 'white';
         this.matrix = new THREE.Matrix3;
         this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
     }
@@ -41,7 +41,7 @@ export class sprite {
         let defines = {};
         // defines.MASKED = 1;
         this.material = SpriteMaterial({
-            map: pipeline.getTexture('./img/' + this.data.image),
+            map: pipeline.getTexture('./img/' + this.data.spriteImage),
             color: 'pink',
             transparent: true,
             depthTest: false,
@@ -51,7 +51,7 @@ export class sprite {
             masked: false,
             bool: true
         }, defines);
-        let { size } = this.data;
+        let { spriteSize: size } = this.data;
         size = pts.mult(size, glob.scale);
         this.geometry = new THREE.PlaneGeometry(size[0], size[1], 1, 1);
         this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -60,7 +60,7 @@ export class sprite {
     }
     update() {
         const gabe = this.gobj;
-        this.material.color.set(this.data.color);
+        this.material.color.set(this.data.spriteColor);
         //console.log('no color?', this.data.color);
         this.mesh.renderOrder = -gabe.wpos[1] + gabe.wpos[0];
         let pos = gabe.rpos;
@@ -68,7 +68,7 @@ export class sprite {
         // resulted in impossible problems
         const tileSize = rome.tileSize;
         if (this.data.bottomSort)
-            pos = pts.add(pos, pts.divide([0, pts.mult(pts.subtract(this.data.size, tileSize), glob.scale)[1]], 2));
+            pos = pts.add(pos, pts.divide([0, pts.mult(pts.subtract(this.data.spriteSize, tileSize), glob.scale)[1]], 2));
         //let pos = pts.add(this.gabeObject.rpos, pts.divide(this.data.size!, 2));
         this.mesh.position.fromArray([...pos, gabe.z]);
     }

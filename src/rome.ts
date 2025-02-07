@@ -53,14 +53,18 @@ namespace rome {
 		const stacked = chunk.stacked(target.wpos) as game_object[];
 		let merged = false;
 		for (const gobj of stacked) {
-			if (gobj.data._type! == 'wall 3d' ||
-				gobj.data._type == 'tile 3d'
-			) {
+			if (gobj.data._type! == 'wall 3d') {
 				const wall_ = gobj as wall3d;
-				//wall_.data
+				wall_.data
 				console.log(' already wll here ');
 				merged = true;
 				// console.warn('boo');
+			}
+			else if (
+				gobj.data._type! == 'wall' ||
+				gobj.data._type! == 'tile'
+			) {
+				merged = true;
 			}
 		}
 		if (!merged) {
@@ -68,7 +72,7 @@ namespace rome {
 		}
 	}
 
-	export function addLateGobjs(gobjs: game_object[], mode: 'keep' | 'merge') {
+	export function addLateGobjsBatch(gobjs: game_object[], mode: 'keep' | 'merge') {
 		for (const gobj of gobjs) {
 			if (mode === 'keep')
 				clod.addNoCreate(rome.world, gobj);
@@ -141,7 +145,7 @@ namespace rome {
 		collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
 		collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
 		// This is stupid
-		addLateGobjs(gobjs, 'keep');
+		addLateGobjsBatch(gobjs, 'keep');
 	}
 
 	export function step() {

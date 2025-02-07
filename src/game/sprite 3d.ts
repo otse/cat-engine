@@ -7,10 +7,8 @@ import tileform from "./tileform.js";
 
 // Todo put shapes in shapes.ts
 
-interface sprite3dliteral extends sprite.literalType {
-	_scenePresetDepr: tileform.scene_preset,
-	shapeType?: tileform.shape_types,
-	shapeLiteral?: tileform.shape_literal
+interface sprite3d_literal extends sprite.literal_, tileform.shape_literal {
+
 }
 
 export namespace sprite3d {
@@ -21,26 +19,24 @@ export class sprite3d extends sprite {
 	rerender = true
 	target
 	shape3d?: tileform.shape_base
-	data_: sprite3dliteral // Hack
+	data_: sprite3d_literal // Hack
 	constructor(
-		data: sprite3dliteral
+		data: sprite3d_literal
 	) {
 		super({
 			shapeType: 'nothing',
-			shapeLiteral: {
-				hexTexture: '',
-				texture: '',
-				size: [0, 0]
-			},
+			shapeTexture: './img/textures/stonemixed.jpg',
+			shapeHexTexture: './img/textures/overgrown.jpg',
+			shapeSize: [10, 10],
 			...data
 		});
-		this.data_ = this.data as sprite3dliteral;
+		this.data_ = this.data as sprite3d_literal;
 	}
 	protected _create() {
 		super._create();
 		this.shape3d = tileform.shapeMaker(
 			this.data_.shapeType!,
-			this.data_.shapeLiteral!);
+			this.data_);
 		this.shape3d?.create();
 		this.prerender();
 	}
@@ -59,7 +55,7 @@ export class sprite3d extends sprite {
 		this.rerender = false;
 	}
 	protected _make_target() {
-		let { size } = this.data;
+		let { spriteSize: size } = this.data;
 		size = pts.mult(size!, glob.scale);
 		this.target = pipeline.makeRenderTarget(
 			size![0], size![1]);

@@ -47,13 +47,16 @@ var rome;
         const stacked = chunk.stacked(target.wpos);
         let merged = false;
         for (const gobj of stacked) {
-            if (gobj.data._type == 'wall 3d' ||
-                gobj.data._type == 'tile 3d') {
+            if (gobj.data._type == 'wall 3d') {
                 const wall_ = gobj;
-                //wall_.data
+                wall_.data;
                 console.log(' already wll here ');
                 merged = true;
                 // console.warn('boo');
+            }
+            else if (gobj.data._type == 'wall' ||
+                gobj.data._type == 'tile') {
+                merged = true;
             }
         }
         if (!merged) {
@@ -61,7 +64,7 @@ var rome;
         }
     }
     rome.addMergeOrReplace = addMergeOrReplace;
-    function addLateGobjs(gobjs, mode) {
+    function addLateGobjsBatch(gobjs, mode) {
         for (const gobj of gobjs) {
             if (mode === 'keep')
                 clod.addNoCreate(rome.world, gobj);
@@ -73,7 +76,7 @@ var rome;
                 gobj.show();
         }
     }
-    rome.addLateGobjs = addLateGobjs;
+    rome.addLateGobjsBatch = addLateGobjsBatch;
     function addGobj(gobj) {
         // Parameter injection
         clod.add(rome.world, gobj);
@@ -133,7 +136,7 @@ var rome;
         collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
         collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
         // This is stupid
-        addLateGobjs(gobjs, 'keep');
+        addLateGobjsBatch(gobjs, 'keep');
     }
     function step() {
         hooks.emit('romeComponents', 1);

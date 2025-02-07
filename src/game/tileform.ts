@@ -112,22 +112,9 @@ namespace tileform {
 			// document.body.appendChild(renderer.domElement);
 		}
 
-		function set_preset(scenePreset: scene_preset) {
-			switch (scenePreset) {
-				case 'hex':
-					//majorGroup.rotation.set(Math.PI / 6, Math.PI / Math.PI, 0);
-					break;
-				case 'wall':
-					//majorGroup.rotation.set(Math.PI / 6, 1, 0);
-					break;
-			}
-			//majorGroup.updateMatrix();
-		}
-
 		export function prepare(sprite: sprite3d) {
-			set_preset(sprite.data_._scenePresetDepr);
 			spotlight = sprite;
-			let { size } = sprite.data;
+			let { spriteSize: size } = sprite.data;
 			size = pts.mult(size!, glob.scale);
 			camera = new THREE.OrthographicCamera(
 				size[0] / - 2,
@@ -159,8 +146,8 @@ namespace tileform {
 		_created
 		constructor(readonly data: shape_literal) {
 			this.data = {
-				texture: './img/textures/stonemixed.jpg',
-				hexTexture: './img/textures/beach.jpg',
+				shapeTexture: './img/textures/stonemixed.jpg',
+				shapeHexTexture: './img/textures/beachnormal.jpg',
 				...data
 			}
 			this.group = new THREE.Group();
@@ -185,10 +172,10 @@ namespace tileform {
 
 	export interface shape_literal {
 		gobj: game_object,
-		type: shape_modifiers,
-		texture?: string,
-		hexTexture?: string,
-		size: vec3,
+		shapeType?: shape_types,
+		shapeTexture?: string,
+		shapeHexTexture?: string,
+		shapeSize?: vec3,
 	}
 
 	export class shape_hex_wrapper extends shape_base {
@@ -226,7 +213,7 @@ namespace tileform {
 			geometry.setIndex(indices);
 			const material = new THREE.MeshPhongMaterial({
 				color: 'white',
-				map: pipeline.getTexture(this.data.hexTexture!),
+				map: pipeline.getTexture(this.data.shapeHexTexture!),
 			});
 			this.rotationGroup = new THREE.Group();
 			this.rotationGroup.rotation.set(HexRotationX, HexRotationY, 0);
@@ -273,7 +260,7 @@ namespace tileform {
 				// color: this.data.gabeObject.data.colorOverride || 'white',
 				opacity: 1,
 				transparent: true,
-				map: pipeline.getTexture(this.data.texture!)
+				map: pipeline.getTexture(this.data.shapeTexture!)
 			});
 			const mesh = new THREE.Mesh(geometry, material);
 			mesh.position.set(0, 6, 0);
@@ -296,7 +283,8 @@ namespace tileform {
 	}
 
 	function wallMaker(wall: shape_wall) {
-		let { size } = wall.data;
+		let { shapeSize } = wall.data;
+		const size = shapeSize!;
 		/*size = [
 			size[0] * glob.scale,
 			size[1] * glob.scale,
@@ -305,53 +293,44 @@ namespace tileform {
 		// Hack!
 		const directionAdapter = (wall.data.gobj as any).directionAdapter as direction_adapter;
 		//console.log('shape wall create!', directionAdapter.directions);
-
 		if (!directionAdapter) {
 			console.warn(' no direction adapter for wallmaker');
-
 			return;
 		}
-		switch (wall.data.type) {
-			case 'concave':
-
-				break;
-			case 'regular':
-				let geometry;
-				if (directionAdapter.directions.includes('north')) {
-					geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-					geometry.translate(size[0] / 4, 0, size[2] / 4);
-					geometries.push(geometry);
-				}
-				if (directionAdapter.directions.includes('east')) {
-					geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-					geometry.translate(-size[0] / 4, 0, size[2] / 4);
-					geometries.push(geometry);
-				}
-				if (directionAdapter.directions.includes('south')) {
-					geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-					geometry.translate(-size[0] / 4, 0, size[2] / 4);
-					geometries.push(geometry);
-				}
-				if (directionAdapter.directions.includes('west')) {
-					geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-					geometry.translate(-size[0] / 4, 0, -size[2] / 4);
-					geometries.push(geometry);
-				}
-				if (directionAdapter.directions.includes('north') &&
-					directionAdapter.directions.includes('aest') ||
-					directionAdapter.directions.includes('east') &&
-					directionAdapter.directions.includes('south') ||
-					directionAdapter.directions.includes('south') &&
-					directionAdapter.directions.includes('west') ||
-					directionAdapter.directions.includes('west') &&
-					directionAdapter.directions.includes('north')
-				) {
-					// Middle piece!
-					geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-					geometry.translate(-size[0] / 4, 0, size[2] / 4);
-					geometries.push(geometry);
-				}
-				break;
+		let geometry;
+		if (directionAdapter.directions.includes('north')) {
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+			geometry.translate(size[0] / 4, 0, size[2] / 4);
+			geometries.push(geometry);
+		}
+		if (directionAdapter.directions.includes('east')) {
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+			geometry.translate(-size[0] / 4, 0, size[2] / 4);
+			geometries.push(geometry);
+		}
+		if (directionAdapter.directions.includes('south')) {
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+			geometry.translate(-size[0] / 4, 0, size[2] / 4);
+			geometries.push(geometry);
+		}
+		if (directionAdapter.directions.includes('west')) {
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+			geometry.translate(-size[0] / 4, 0, -size[2] / 4);
+			geometries.push(geometry);
+		}
+		if (directionAdapter.directions.includes('north') &&
+			directionAdapter.directions.includes('aest') ||
+			directionAdapter.directions.includes('east') &&
+			directionAdapter.directions.includes('south') ||
+			directionAdapter.directions.includes('south') &&
+			directionAdapter.directions.includes('west') ||
+			directionAdapter.directions.includes('west') &&
+			directionAdapter.directions.includes('north')
+		) {
+			// Middle piece!
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
+			geometry.translate(-size[0] / 4, 0, size[2] / 4);
+			geometries.push(geometry);
 		}
 		if (!geometries.length)
 			return;

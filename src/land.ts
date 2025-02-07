@@ -22,7 +22,7 @@ namespace land {
 				gobjs.push(tile);
 			}
 		}
-		rome.addLateGobjs(gobjs, 'merge');
+		rome.addLateGobjsBatch(gobjs, 'merge');
 	}
 }
 

@@ -16,7 +16,7 @@ var land;
                 gobjs.push(tile);
             }
         }
-        rome.addLateGobjs(gobjs, 'merge');
+        rome.addLateGobjsBatch(gobjs, 'merge');
     }
     land.make = make;
 })(land || (land = {}));

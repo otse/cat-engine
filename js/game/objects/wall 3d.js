@@ -19,16 +19,10 @@ export class wall3d extends game_object {
         // before we instantiated our adapter
         new sprite3d({
             gobj: this,
-            size: [17 * 3, 9 * 3],
-            // image: 'unused',
-            _scenePresetDepr: 'wall',
+            spriteSize: [17 * 3, 9 * 3],
+            shapeSize: [17, 10, 17],
             shapeType: 'wall',
-            shapeLiteral: {
-                gobj: this,
-                type: 'regular',
-                texture: './img/textures/cliffs.jpg',
-                size: [17, 10, 17]
-            }
+            shapeTexture: './img/textures/cliffs.jpg',
         });
         this.directionAdapter.search(['wall 3d']);
         this.sprite?.create();

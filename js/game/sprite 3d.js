@@ -12,18 +12,16 @@ export class sprite3d extends sprite {
     constructor(data) {
         super({
             shapeType: 'nothing',
-            shapeLiteral: {
-                hexTexture: '',
-                texture: '',
-                size: [0, 0]
-            },
+            shapeTexture: './img/textures/stonemixed.jpg',
+            shapeHexTexture: './img/textures/overgrown.jpg',
+            shapeSize: [10, 10],
             ...data
         });
         this.data_ = this.data;
     }
     _create() {
         super._create();
-        this.shape3d = tileform.shapeMaker(this.data_.shapeType, this.data_.shapeLiteral);
+        this.shape3d = tileform.shapeMaker(this.data_.shapeType, this.data_);
         this.shape3d?.create();
         this.prerender();
     }
@@ -42,7 +40,7 @@ export class sprite3d extends sprite {
         this.rerender = false;
     }
     _make_target() {
-        let { size } = this.data;
+        let { spriteSize: size } = this.data;
         size = pts.mult(size, glob.scale);
         this.target = pipeline.makeRenderTarget(size[0], size[1]);
     }
