@@ -1,22 +1,38 @@
 import game_object from "./game object.js";
 import sprite3d from "../sprite 3d.js";
-export class tile extends game_object {
-    constructor(data) {
+export class tile3d extends game_object {
+    preset;
+    constructor(data, preset = 'default') {
         super({
             name: 'a tile 3d',
             ...data
         });
+        this.preset = presets[preset] || presets['default'];
         this.data._type = 'tile 3d';
     }
     _create() {
         new sprite3d({
+            ...this.preset,
             gobj: this,
             spriteSize: [17, 9],
+            shapeSize: [1, 1, 1],
             shapeType: 'hex',
-            shapeHexTexture: './img/textures/beach.jpg',
-            shapeSize: [8, 20, 10]
         });
         this.sprite?.create();
     }
 }
-export default tile;
+const presets = {
+    default: {
+        gobj: {},
+        shapeHexTexture: './img/textures/beach.jpg',
+    },
+    overgrown: {
+        gobj: {},
+        shapeHexTexture: './img/textures/overgrown.jpg',
+    },
+    cobblestone: {
+        gobj: {},
+        shapeHexTexture: './img/textures/cobblestone2.jpg',
+    }
+};
+export default tile3d;

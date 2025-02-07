@@ -124,7 +124,7 @@ namespace tileform {
 				-300, 300);
 			while (putGroup.children.length > 0)
 				putGroup.remove(putGroup.children[0]);
-			putGroup.add(sprite.shape3d!.group);
+			putGroup.add(sprite.shape3d!.shapeGroup);
 		}
 
 		export function render() {
@@ -142,18 +142,18 @@ namespace tileform {
 	const shapes: shape_base[] = []
 
 	export abstract class shape_base {
-		group
-		_created
+		shapeGroup
+		// _created
 		constructor(readonly data: shape_literal) {
 			this.data = {
 				shapeTexture: './img/textures/stonemixed.jpg',
 				shapeHexTexture: './img/textures/beachnormal.jpg',
 				...data
 			}
-			this.group = new THREE.Group();
-			this.group.scale.set(glob.scale, glob.scale, glob.scale);
-			this.group.add(new THREE.AxesHelper(2));
-			this.group.updateMatrix();
+			this.shapeGroup = new THREE.Group();
+			this.shapeGroup.scale.set(glob.scale, glob.scale, glob.scale);
+			this.shapeGroup.add(new THREE.AxesHelper(2));
+			this.shapeGroup.updateMatrix();
 			shapes.push(this);
 			// this.create(); // Spike
 		}
@@ -162,10 +162,16 @@ namespace tileform {
 		}
 		create() {
 			this._create();
-			this._created = true;
+			// this._created = true;
+		}
+		delete() {
+			this._delete();
 		}
 		protected _create() {
 			console.warn(' empty shape create ');
+		}
+		protected _delete() {
+			console.warn(' empty shape delete ');
 		}
 		protected _step() { }
 	}
@@ -179,15 +185,18 @@ namespace tileform {
 	}
 
 	export class shape_hex_wrapper extends shape_base {
-		hex: hex_tile
+		hexTile: hex_tile
 		constructor(data: shape_literal) {
 			super(data);
 		}
 		protected override _create() {
-			this.hex = new hex_tile(this.data);
-			this.group.add(this.hex.rotationGroup);
+			this.hexTile = new hex_tile(this.data);
+			this.shapeGroup.add(this.hexTile.rotationGroup);
 			//this.hex.rotationGroup.position.set(0, 0, 0);
 			//this.hex.rotationGroup.updateMatrix();
+		}
+		protected override _delete() {
+			this.hexTile.destroy();
 		}
 	}
 
@@ -223,6 +232,10 @@ namespace tileform {
 			this.rotationGroup.add(this.mesh);
 			this.rotationGroup.updateMatrix();
 		}
+		destroy() {
+			this.mesh.geometry.dispose();
+			this.mesh.material.dispose();
+		}
 	}
 
 	export type shape_types = 'nothing' | 'wall' | 'hex'
@@ -249,12 +262,12 @@ namespace tileform {
 
 	export class shape_wall extends shape_base {
 		hexTile: hex_tile
-		rotationGroup
+		wallRotationGroup
+		mesh
 		constructor(data: shape_literal) {
 			super(data);
 		}
 		protected override _create() {
-
 			const geometry = wallMaker(this);
 			const material = new THREE.MeshPhongMaterial({
 				// color: this.data.gabeObject.data.colorOverride || 'white',
@@ -262,23 +275,31 @@ namespace tileform {
 				transparent: true,
 				map: pipeline.getTexture(this.data.shapeTexture!)
 			});
-			const mesh = new THREE.Mesh(geometry, material);
-			mesh.position.set(0, 6, 0);
-			mesh.updateMatrix();
+			// Make the merged geometries mesh
+			this.mesh = new THREE.Mesh(geometry, material);
+			this.mesh.position.set(0, 6, 0);
+			this.mesh.updateMatrix();
+			// Make the base plate
 			this.hexTile = new hex_tile(this.data);
-			this.rotationGroup = new THREE.Group();
-			this.rotationGroup.add(mesh);
-			this.group.add(this.rotationGroup);
-			this.group.add(this.hexTile.rotationGroup);
-			this.hexTile.rotationGroup.position.set(0, 0, 0);
-			this.hexTile.rotationGroup.updateMatrix();
-			this.group.updateMatrix();
+			// Set up rotations
+			this.wallRotationGroup = new THREE.Group();
+			this.wallRotationGroup.add(this.mesh);
+			this.shapeGroup.add(this.wallRotationGroup);
+			this.shapeGroup.add(this.hexTile.rotationGroup);
+			//this.hexTile.rotationGroup.position.set(0, 0, 0);
+			//this.hexTile.rotationGroup.updateMatrix();
+			//this.shapeGroup.updateMatrix();
 			this._step();
 		}
+		protected override _delete() {
+			this.hexTile.destroy();
+			this.mesh.geometry.dispose();
+			this.mesh.material.dispose();
+		}
 		protected override _step() {
-			this.rotationGroup.rotation.set(Math.PI / wallRotationX, Math.PI / wallRotationY, 0);
-			this.rotationGroup.updateMatrix();
-			this.group.updateMatrix();
+			this.wallRotationGroup.rotation.set(Math.PI / wallRotationX, Math.PI / wallRotationY, 0);
+			this.wallRotationGroup.updateMatrix();
+			this.shapeGroup.updateMatrix();
 		}
 	}
 

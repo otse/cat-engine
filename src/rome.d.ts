@@ -4,6 +4,7 @@ declare type vec2 = [number, number];
 
 declare var THREE: any;
 declare var perlin: any;
+declare var noise: any;
 declare var BufferGeometryUtils: any;
 
 type typez = 'dud' | 'direct' | 'tile' | 'tile 3d' | 'wall' | 'wall 3d' | 'ply'

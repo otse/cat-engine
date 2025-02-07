@@ -17,8 +17,8 @@ export class game_object extends clod.obj {
         game_object._gameObjects.push(this);
     }
     purge() {
-        this.sprite?.delete();
-        glob.rome.removeGameObject(this);
+        this._delete();
+        glob.rome.removeGobj(this);
     }
     update() {
         this.sprite?.update();

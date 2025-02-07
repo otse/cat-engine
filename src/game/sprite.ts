@@ -45,6 +45,9 @@ export class sprite {
 	}
 	protected _step() { }
 	delete() {
+		this._delete();
+	}
+	protected _delete() {
 		this.mesh.parent.remove(this.mesh);
 		this.gobj.sprite = undefined;
 	}

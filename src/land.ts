@@ -5,21 +5,40 @@ import rome from "./rome.js";
 
 /// generates land
 
+// https://github.com/josephg/noisejs
+
 namespace land {
 	export function init() {
 
 	}
 
 	export function make() {
-		// lets make some things!
+		// woo
 
-		const point = perlin.get(0, 1);
+		noise.seed(12); // 1 to 65536
 
 		const gobjs: game_object[] = [];
-		for (let y = 0; y < 100; y++) {
-			for (let x = 0; x < 100; x++) {
-				const tile = new tile3d({ _type: 'direct', colorOverride: 'pink', _wpos: [-50 + x, -50 + y, 0] });
-				gobjs.push(tile);
+		const baseWidth = 100;
+		const baseHeight = 100;
+		const width = 10;
+		const height = 10;
+		for (let y = 0; y < baseWidth; y++) {
+			for (let x = 0; x < baseHeight; x++) {
+				const point = noise.simplex2(x / width, y / height);
+				let tilePreset = 'default';
+				if (point < 0) {
+					if (point < -0.6) {
+						tilePreset = 'cobblestone';
+					}
+					else if (point < -0.3) {
+						tilePreset = 'overgrown';
+					}
+					const tile = new tile3d({
+						_type: 'direct',
+						_wpos: [(-baseWidth / 2) + x, (-baseHeight / 2) + y, 0]
+					}, tilePreset);
+					gobjs.push(tile);
+				}
 			}
 		}
 		rome.addLateGobjsBatch(gobjs, 'merge');

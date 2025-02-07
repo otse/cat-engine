@@ -102,7 +102,7 @@ var tileform;
             stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -300, 300);
             while (stage.putGroup.children.length > 0)
                 stage.putGroup.remove(stage.putGroup.children[0]);
-            stage.putGroup.add(sprite.shape3d.group);
+            stage.putGroup.add(sprite.shape3d.shapeGroup);
         }
         stage.prepare = prepare;
         function render() {
@@ -119,8 +119,8 @@ var tileform;
     const shapes = [];
     class shape_base {
         data;
-        group;
-        _created;
+        shapeGroup;
+        // _created
         constructor(data) {
             this.data = data;
             this.data = {
@@ -128,10 +128,10 @@ var tileform;
                 shapeHexTexture: './img/textures/beachnormal.jpg',
                 ...data
             };
-            this.group = new THREE.Group();
-            this.group.scale.set(glob.scale, glob.scale, glob.scale);
-            this.group.add(new THREE.AxesHelper(2));
-            this.group.updateMatrix();
+            this.shapeGroup = new THREE.Group();
+            this.shapeGroup.scale.set(glob.scale, glob.scale, glob.scale);
+            this.shapeGroup.add(new THREE.AxesHelper(2));
+            this.shapeGroup.updateMatrix();
             shapes.push(this);
             // this.create(); // Spike
         }
@@ -140,24 +140,33 @@ var tileform;
         }
         create() {
             this._create();
-            this._created = true;
+            // this._created = true;
+        }
+        delete() {
+            this._delete();
         }
         _create() {
             console.warn(' empty shape create ');
+        }
+        _delete() {
+            console.warn(' empty shape delete ');
         }
         _step() { }
     }
     tileform.shape_base = shape_base;
     class shape_hex_wrapper extends shape_base {
-        hex;
+        hexTile;
         constructor(data) {
             super(data);
         }
         _create() {
-            this.hex = new hex_tile(this.data);
-            this.group.add(this.hex.rotationGroup);
+            this.hexTile = new hex_tile(this.data);
+            this.shapeGroup.add(this.hexTile.rotationGroup);
             //this.hex.rotationGroup.position.set(0, 0, 0);
             //this.hex.rotationGroup.updateMatrix();
+        }
+        _delete() {
+            this.hexTile.destroy();
         }
     }
     tileform.shape_hex_wrapper = shape_hex_wrapper;
@@ -194,6 +203,10 @@ var tileform;
             this.rotationGroup.add(this.mesh);
             this.rotationGroup.updateMatrix();
         }
+        destroy() {
+            this.mesh.geometry.dispose();
+            this.mesh.material.dispose();
+        }
     }
     function shapeMaker(type, data) {
         let shape;
@@ -214,7 +227,8 @@ var tileform;
     // boring wall geometries
     class shape_wall extends shape_base {
         hexTile;
-        rotationGroup;
+        wallRotationGroup;
+        mesh;
         constructor(data) {
             super(data);
         }
@@ -226,23 +240,31 @@ var tileform;
                 transparent: true,
                 map: pipeline.getTexture(this.data.shapeTexture)
             });
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set(0, 6, 0);
-            mesh.updateMatrix();
+            // Make the merged geometries mesh
+            this.mesh = new THREE.Mesh(geometry, material);
+            this.mesh.position.set(0, 6, 0);
+            this.mesh.updateMatrix();
+            // Make the base plate
             this.hexTile = new hex_tile(this.data);
-            this.rotationGroup = new THREE.Group();
-            this.rotationGroup.add(mesh);
-            this.group.add(this.rotationGroup);
-            this.group.add(this.hexTile.rotationGroup);
-            this.hexTile.rotationGroup.position.set(0, 0, 0);
-            this.hexTile.rotationGroup.updateMatrix();
-            this.group.updateMatrix();
+            // Set up rotations
+            this.wallRotationGroup = new THREE.Group();
+            this.wallRotationGroup.add(this.mesh);
+            this.shapeGroup.add(this.wallRotationGroup);
+            this.shapeGroup.add(this.hexTile.rotationGroup);
+            //this.hexTile.rotationGroup.position.set(0, 0, 0);
+            //this.hexTile.rotationGroup.updateMatrix();
+            //this.shapeGroup.updateMatrix();
             this._step();
         }
+        _delete() {
+            this.hexTile.destroy();
+            this.mesh.geometry.dispose();
+            this.mesh.material.dispose();
+        }
         _step() {
-            this.rotationGroup.rotation.set(Math.PI / wallRotationX, Math.PI / wallRotationY, 0);
-            this.rotationGroup.updateMatrix();
-            this.group.updateMatrix();
+            this.wallRotationGroup.rotation.set(Math.PI / wallRotationX, Math.PI / wallRotationY, 0);
+            this.wallRotationGroup.updateMatrix();
+            this.shapeGroup.updateMatrix();
         }
     }
     tileform.shape_wall = shape_wall;

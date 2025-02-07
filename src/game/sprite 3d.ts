@@ -5,23 +5,21 @@ import pipeline from "./pipeline.js";
 import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 
-// Todo put shapes in shapes.ts
-
-interface sprite3d_literal extends sprite.literal_, tileform.shape_literal {
+export interface sprite3d_joint_literal extends sprite.literal_, tileform.shape_literal {
 
 }
 
 export namespace sprite3d {
-	export type literaltype = sprite3d['data'];
+	export type literaltype = sprite3d['data_'];
 };
 
 export class sprite3d extends sprite {
 	rerender = true
 	target
 	shape3d?: tileform.shape_base
-	data_: sprite3d_literal // Hack
+	data_: sprite3d_joint_literal
 	constructor(
-		data: sprite3d_literal
+		data: sprite3d_joint_literal
 	) {
 		super({
 			shapeType: 'nothing',
@@ -30,7 +28,11 @@ export class sprite3d extends sprite {
 			shapeSize: [10, 10],
 			...data
 		});
-		this.data_ = this.data as sprite3d_literal;
+		this.data_ = this.data as sprite3d_joint_literal;
+	}
+	protected _delete() {
+		super._delete();
+		this.shape3d?.delete();
 	}
 	protected _create() {
 		super._create();

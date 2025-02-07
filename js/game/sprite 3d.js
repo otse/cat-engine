@@ -8,7 +8,7 @@ export class sprite3d extends sprite {
     rerender = true;
     target;
     shape3d;
-    data_; // Hack
+    data_;
     constructor(data) {
         super({
             shapeType: 'nothing',
@@ -18,6 +18,10 @@ export class sprite3d extends sprite {
             ...data
         });
         this.data_ = this.data;
+    }
+    _delete() {
+        super._delete();
+        this.shape3d?.delete();
     }
     _create() {
         super._create();

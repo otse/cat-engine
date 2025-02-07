@@ -5,8 +5,6 @@ import pipeline from "./pipeline.js";
 import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 
-// Todo put shapes in shapes.ts
-
 interface sprite3dliteral extends sprite.literal_ {
 	shapeType: tileform.shape_types,
 	shapeLiteral: tileform.shape_literal
