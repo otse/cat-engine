@@ -1,7 +1,7 @@
 import { hooks } from "./dep/hooks.js";
 import pts from "./dep/pts.js";
 import rome from "./rome.js";
-import pipeline from "./game/pipeline.js";
+import pipeline from "./core/pipeline.js";
 
 namespace app {
 	window['App'] = app;

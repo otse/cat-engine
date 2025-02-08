@@ -152,7 +152,7 @@ namespace tileform {
 			}
 			this.shapeGroup = new THREE.Group();
 			this.shapeGroup.scale.set(glob.scale, glob.scale, glob.scale);
-			this.shapeGroup.add(new THREE.AxesHelper(2));
+			//this.shapeGroup.add(new THREE.AxesHelper(2));
 			this.shapeGroup.updateMatrix();
 			shapes.push(this);
 			// this.create(); // Spike

@@ -1,6 +1,6 @@
-import clod from "./game/clod.js";
-import game_object from "./game/objects/game object.js";
-import tile3d from "./game/objects/tile 3d.js";
+import clod from "./core/clod.js";
+import game_object from "./core/objects/game object.js";
+import tile3d from "./core/objects/tile 3d.js";
 import rome from "./rome.js";
 
 /// generates land

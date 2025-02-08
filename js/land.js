@@ -1,4 +1,4 @@
-import tile3d from "./game/objects/tile 3d.js";
+import tile3d from "./core/objects/tile 3d.js";
 import rome from "./rome.js";
 /// generates land
 // https://github.com/josephg/noisejs

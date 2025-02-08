@@ -3,7 +3,8 @@ import app from "../../app.js";
 import pipeline from "../pipeline.js";
 var zoom;
 (function (zoom) {
-    let level = 0;
+    let level = 3;
+    const wheelEnabled = false;
     zoom.zooms = [1, 0.5, 0.33, 0.2, 0.1, 0.05];
     function register() {
         hooks.addListener('romeComponents', step);
@@ -15,11 +16,11 @@ var zoom;
     zoom.actualZoom = actualZoom;
     async function step() {
         //console.log('zoom step');
-        if (app.wheel == -1 || app.key('f') == 1) {
+        if (wheelEnabled && app.wheel == -1 || app.key('f') == 1) {
             console.log('app wheel');
             level = (level > 0) ? level - 1 : level;
         }
-        if (app.wheel == 1 || app.key('r') == 1) {
+        if (wheelEnabled && app.wheel == 1 || app.key('r') == 1) {
             console.log('app wheel');
             level = (level < zoom.zooms.length - 1) ? level + 1 : level;
         }

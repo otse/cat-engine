@@ -1,19 +1,20 @@
 import app from "./app.js";
 import { hooks } from "./dep/hooks.js";
-import pipeline from "./game/pipeline.js";
-import tileform from "./game/tileform.js";
-import tile from "./game/objects/tile.js";
-import tile3d from "./game/objects/tile 3d.js";
-import wall from "./game/objects/wall.js";
-import wall3d from "./game/objects/wall 3d.js";
-import sprite from "./game/sprite.js";
+import pipeline from "./core/pipeline.js";
+import tileform from "./core/tileform.js";
+import tile from "./core/objects/tile.js";
+import tile3d from "./core/objects/tile 3d.js";
+import wall from "./core/objects/wall.js";
+import wall3d from "./core/objects/wall 3d.js";
+import sprite from "./core/sprite.js";
 
-import zoom from "./game/components/zoom.js";
-import pan from "./game/components/pan.js";
-import game_object from "./game/objects/game object.js";
-import clod from "./game/clod.js";
+import zoom from "./core/components/zoom.js";
+import pan from "./core/components/pan.js";
+import game_object from "./core/objects/game object.js";
+import clod from "./core/clod.js";
 import glob from "./dep/glob.js";
 import land from "./land.js";
+import romanlike from "./romanlike/romanlike.js";
 
 namespace rome {
 
@@ -33,10 +34,11 @@ namespace rome {
 		console.log(' init ');
 		glob.rome = rome;
 		glob.prerender = true;
-		glob.scale = 8;
+		glob.scale = 1;
 		await preload_basic_textures();
 		await pipeline.init();
 		await tileform.init();
+		romanlike.init();
 		land.init();
 		world = clod.init();
 		app;
@@ -146,6 +148,7 @@ namespace rome {
 		collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
 		// This is stupid
 		addLateGobjsBatch(gobjs, 'keep');
+		land.make();
 	}
 
 	export function step() {
