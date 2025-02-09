@@ -4,9 +4,12 @@ import clod from "../clod.js";
 export class game_object extends clod.obj {
     data;
     static _gameObjects = [];
+    // A lot of game objects are represented by an image or sprite
     sprite;
-    r = 0; // rotation
-    z = 0; // third axis
+    // Rotation
+    r = 0;
+    // Third axis
+    z = 0;
     constructor(data) {
         super(undefined);
         this.data = data;

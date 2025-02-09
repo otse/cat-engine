@@ -103,7 +103,7 @@ namespace tileform {
 			const sunDistance = 2;
 			sun = new THREE.DirectionalLight('red', Math.PI);
 			sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
-			scene.add(new THREE.AxesHelper(50));
+			// scene.add(new THREE.AxesHelper(50));
 			scene.add(sun);
 			scene.updateMatrix();
 			/*renderer = new THREE.WebGLRenderer({
@@ -152,6 +152,8 @@ namespace tileform {
 
 	// shapes
 
+	// Arrays that's never used for anything
+	// "A useless array"
 	const shapes: shape_base[] = []
 
 	export abstract class shape_base {
@@ -284,7 +286,7 @@ namespace tileform {
 			const geometry = wallMaker(this);
 			const material = new THREE.MeshPhongMaterial({
 				// color: this.data.gabeObject.data.colorOverride || 'white',
-				opacity: 1,
+				// opacity: 0.8,
 				transparent: true,
 				map: pipeline.getTexture(this.data.shapeTexture!)
 			});
@@ -375,6 +377,15 @@ namespace tileform {
 			return;
 		const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries);
 		return mergedGeometry;
+	}
+
+	export class shape_light extends shape_base {
+		light
+		constructor(data: shape_literal) {
+			super(data);
+		}
+		protected override _create() {
+		}
 	}
 }
 

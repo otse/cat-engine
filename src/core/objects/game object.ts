@@ -10,9 +10,12 @@ export namespace game_object {
 
 export class game_object extends clod.obj {
 	static _gameObjects: game_object[] = []
+	// A lot of game objects are represented by an image or sprite
 	sprite?: sprite
-	r = 0 // rotation
-	z = 0 // third axis
+	// Rotation
+	r = 0
+	// Third axis
+	z = 0
 	constructor(public data: game_object_literal) {
 		super(undefined);
 		this.wpos = pts.copy(data._wpos);

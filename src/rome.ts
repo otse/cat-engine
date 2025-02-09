@@ -139,11 +139,11 @@ namespace rome {
 		collect(new wall3d({ _type: 'direct', colorOverride: 'red', _wpos: [4, 3, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [5, 3, 0] }));
 		collect(new tile({ _type: 'direct', _wpos: [4, 2, 0] }));
-		collect(new wall3d({ _type: 'direct', _wpos: [1, 2, 0] }));
-		collect(new wall3d({ _type: 'direct', _wpos: [1, 3, 0] }));
-		collect(new wall3d({ _type: 'direct', _wpos: [1, 4, 0] }));
-		collect(new wall3d({ _type: 'direct', _wpos: [1, 5, 0] }));
-		collect(new wall3d({ _type: 'direct', _wpos: [1, 6, 0] }));
+		collect(new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [1, 2, 0] }));
+		collect(new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [1, 3, 0] }));
+		collect(new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [1, 4, 0] }));
+		collect(new wall3d({ _type: 'direct', colorOverride: 'red', _wpos: [1, 5, 0] }));
+		collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [1, 6, 0] }));
 		collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
 		collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
 		// This is stupid

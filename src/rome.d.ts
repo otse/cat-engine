@@ -7,7 +7,7 @@ declare var perlin: any;
 declare var noise: any;
 declare var BufferGeometryUtils: any;
 
-type typez = 'dud' | 'direct' | 'tile' | 'tile 3d' | 'wall' | 'wall 3d' | 'ply'
+type typez = 'dud' | 'direct' | 'tile' | 'tile 3d' | 'wall' | 'wall 3d' | 'ply' | 'light'
 
 interface game_object_literal {
 	_type?: typez
