@@ -22,7 +22,7 @@ export class wall3d extends game_object {
             spriteSize: [17 * 3, 9 * 3],
             shapeSize: [17, 10, 17],
             shapeType: 'wall',
-            shapeTexture: './img/textures/cliffs.jpg',
+            shapeTexture: './img/textures/basaltcliffs.jpg',
         });
         this.directionAdapter.search(['wall 3d']);
         this.sprite?.create();

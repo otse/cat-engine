@@ -17,6 +17,7 @@ export class sprite3d extends sprite {
 	rerender = true
 	target
 	shape3d?: tileform.shape_base
+	_3dpos: vec2 = [0, 0]
 	data_: sprite3d_joint_literal
 	constructor(
 		data: sprite3d_joint_literal

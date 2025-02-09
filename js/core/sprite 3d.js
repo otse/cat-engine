@@ -8,6 +8,7 @@ export class sprite3d extends sprite {
     rerender = true;
     target;
     shape3d;
+    _3dpos = [0, 0];
     data_;
     constructor(data) {
         super({

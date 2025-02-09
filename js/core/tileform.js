@@ -6,6 +6,8 @@ import pts from "../dep/pts.js";
 import pipeline from "./pipeline.js";
 var tileform;
 (function (tileform) {
+    // This doesn't do anything but it's a cool ide
+    const tileformSpaceScaling = 10;
     async function init() {
         await stage.init();
         hooks.addListener('romeComponents', step);
@@ -81,10 +83,12 @@ var tileform;
             stage.scene.updateMatrix();
             stage.ambient = new THREE.AmbientLight('white', Math.PI / 1);
             stage.scene.add(stage.ambient);
-            const sunDistance = 100;
-            stage.sun = new THREE.DirectionalLight('red', 1);
-            stage.sun.position.set(-sunDistance, -sunDistance / 3, -sunDistance);
+            const sunDistance = 2;
+            stage.sun = new THREE.DirectionalLight('red', Math.PI);
+            stage.sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
+            stage.scene.add(new THREE.AxesHelper(50));
             stage.scene.add(stage.sun);
+            stage.scene.updateMatrix();
             /*renderer = new THREE.WebGLRenderer({
                 antialias: false,
             });
@@ -95,11 +99,18 @@ var tileform;
             renderer.toneMapping = THREE.NoToneMapping;*/
             // document.body.appendChild(renderer.domElement);
         }
+        // aka stage
         function prepare(sprite) {
+            stage.scene.scale.set(glob.scale, glob.scale, glob.scale);
+            stage.scene.updateMatrix();
             stage.spotlight = sprite;
             let { spriteSize: size } = sprite.data;
-            size = pts.mult(size, glob.scale);
+            size = (pts.mult(size, glob.scale));
             stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -300, 300);
+            // Translate
+            const pos = (pts.mult(sprite._3dpos, glob.scale));
+            stage.camera.position.set(pos[0], 0, pos[1]);
+            stage.camera.updateMatrix();
             while (stage.putGroup.children.length > 0)
                 stage.putGroup.remove(stage.putGroup.children[0]);
             stage.putGroup.add(sprite.shape3d.shapeGroup);
@@ -129,9 +140,8 @@ var tileform;
                 ...data
             };
             this.shapeGroup = new THREE.Group();
-            this.shapeGroup.scale.set(glob.scale, glob.scale, glob.scale);
             //this.shapeGroup.add(new THREE.AxesHelper(2));
-            this.shapeGroup.updateMatrix();
+            //this.shapeGroup.updateMatrix();
             shapes.push(this);
             // this.create(); // Spike
         }
@@ -166,7 +176,7 @@ var tileform;
             //this.hex.rotationGroup.updateMatrix();
         }
         _delete() {
-            this.hexTile.destroy();
+            this.hexTile.free();
         }
     }
     tileform.shape_hex_wrapper = shape_hex_wrapper;
@@ -203,7 +213,7 @@ var tileform;
             this.rotationGroup.add(this.mesh);
             this.rotationGroup.updateMatrix();
         }
-        destroy() {
+        free() {
             this.mesh.geometry.dispose();
             this.mesh.material.dispose();
         }
@@ -233,6 +243,7 @@ var tileform;
             super(data);
         }
         _create() {
+            const { shapeSize } = this.data;
             const geometry = wallMaker(this);
             const material = new THREE.MeshPhongMaterial({
                 // color: this.data.gabeObject.data.colorOverride || 'white',
@@ -242,7 +253,7 @@ var tileform;
             });
             // Make the merged geometries mesh
             this.mesh = new THREE.Mesh(geometry, material);
-            this.mesh.position.set(0, 6, 0);
+            this.mesh.position.set(0, shapeSize[1] / 2, 0);
             this.mesh.updateMatrix();
             // Make the base plate
             this.hexTile = new hex_tile(this.data);
@@ -251,15 +262,24 @@ var tileform;
             this.wallRotationGroup.add(this.mesh);
             this.shapeGroup.add(this.wallRotationGroup);
             this.shapeGroup.add(this.hexTile.rotationGroup);
+            // Translate the shape group so we can take lighting sources
+            const { wpos } = this.data.gobj;
+            const projected = (pts.mult(pts.project(wpos), tileformSpaceScaling));
+            this.data.gobj.sprite._3dpos = projected;
+            // Translate
+            this.shapeGroup.position.set(projected[0], 0, projected[1]);
+            this.shapeGroup.updateMatrix();
             //this.hexTile.rotationGroup.position.set(0, 0, 0);
             //this.hexTile.rotationGroup.updateMatrix();
-            //this.shapeGroup.updateMatrix();
             this._step();
         }
-        _delete() {
-            this.hexTile.destroy();
+        free() {
             this.mesh.geometry.dispose();
             this.mesh.material.dispose();
+        }
+        _delete() {
+            this.hexTile.free();
+            this.free();
         }
         _step() {
             this.wallRotationGroup.rotation.set(Math.PI / wallRotationX, Math.PI / wallRotationY, 0);
@@ -271,10 +291,6 @@ var tileform;
     function wallMaker(wall) {
         let { shapeSize } = wall.data;
         const size = shapeSize;
-        /*size = [
-            size[0] * glob.scale,
-            size[1] * glob.scale,
-            size[2] * glob.scale];*/
         const geometries = [];
         // Hack!
         const directionAdapter = wall.data.gobj.directionAdapter;
