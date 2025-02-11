@@ -138,7 +138,7 @@ var tileform;
         translate() {
             // Translate so we can take lighting sources
             const { wpos } = this.gobj;
-            this.pos3d = (pts.mult(pts.project(wpos), tfStretchSpace));
+            this.pos3d = (pts.mult(projectSquareHex(wpos), tfStretchSpace));
             const temp = pts.copy(this.pos3d);
             this.pos3d = [temp[0], temp[1]];
             this.group.position.set(this.pos3d[0], this.pos3d[1], 0);
