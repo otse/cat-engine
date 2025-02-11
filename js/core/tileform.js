@@ -3,6 +3,7 @@ import app from "../app.js";
 import glob from "../dep/glob.js";
 import { hooks } from "../dep/hooks.js";
 import pts from "../dep/pts.js";
+import rome from "../rome.js";
 import pipeline from "./pipeline.js";
 var tileform;
 (function (tileform) {
@@ -23,6 +24,7 @@ var tileform;
     })(stage = tileform.stage || (tileform.stage = {}));
     tileform.HexRotationX = 0.6135987755982989;
     tileform.HexRotationY = 1.045;
+    let stageCameraRotation = Math.PI / 3;
     let wallRotationX = 9;
     let wallRotationY = 4;
     (function (stage) {
@@ -60,8 +62,6 @@ var tileform;
             //scene.add(helper);
             // scene.background = new THREE.Color('purple');
             stage.camera = new THREE.OrthographicCamera(100 / -2, 100 / 2, 100 / 2, 100 / -2, -100, 100);
-            stage.camera.position.set(0, 1, 0); // Point the camera down at a dimetric rotation
-            stage.camera.rotation.set(-Math.PI / 6, 0, 0); // Dimetric rotation
             stage.soleGroup = new THREE.Group();
             stage.lightsGroup = new THREE.Group();
             stage.scene.add(stage.soleGroup);
@@ -87,12 +87,12 @@ var tileform;
             size = (pts.mult(size, glob.scale));
             stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -100, 500);
             stage.camera.position.set(0, 1, 0); // Point the camera down at a dimetric rotation
-            stage.camera.rotation.set(-Math.PI / 3, 0, 0); // Dimetric rotation
+            stage.camera.rotation.set(stageCameraRotation, 0, 0); // Dimetric rotation
             // scene.add(camera);
             // camera.position.y = 20 * glob.scale;
             // Translate
             const pos = (pts.mult(sprite.shape3d.pos3d, glob.scale));
-            stage.camera.position.set(pos[0], 0, pos[1]);
+            stage.camera.position.set(pos[0], pos[1], 0);
             //camera.updateMatrix();
             while (stage.soleGroup.children.length > 0)
                 stage.soleGroup.remove(stage.soleGroup.children[0]);
@@ -129,7 +129,9 @@ var tileform;
             // Translate so we can take lighting sources
             const { wpos } = this.gobj;
             this.pos3d = (pts.mult(pts.project(wpos), tfStretchSpace));
-            this.group.position.set(this.pos3d[0], 0, this.pos3d[1]);
+            const temp = pts.copy(this.pos3d);
+            this.pos3d = [temp[0], -temp[1]];
+            this.group.position.set(this.pos3d[0], this.pos3d[1], 0);
         }
     }
     class shape3d extends entity3d {
@@ -199,7 +201,7 @@ var tileform;
             const vertices2 = [1, 0, 0, 0.5, 0.866, 0, -0.5, 0.866, 0, -1, 0, 0, -0.5, -0.866, 0, 0.5, -0.866, 0];
             const indices = [0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 6, 0, 6, 1];
             const uvs = [0.5, 0, 1, 0.5, 0.75, 1, 0.25, 1, 0, 0.5, 0.25, 0, 0.75, 0];
-            const geometry = new THREE.BufferGeometry();
+            let geometry = new THREE.BufferGeometry();
             geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
             geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
             geometry.setIndex(indices);
@@ -211,15 +213,15 @@ var tileform;
             geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
             const material = new THREE.MeshPhongMaterial({
                 color: 'white',
-                // shininess: 30,
+                shininess: 0,
                 map: pipeline.getTexture(this.data.shapeGroundTexture),
                 // side: THREE.DoubleSide
             });
+            // geometry = new THREE.PlaneGeometry(10, 10);
             // Now do the grouping
             this.group = new THREE.Group();
             // this.group.rotation.set(HexRotationX, HexRotationY, 0);
             this.mesh = new THREE.Mesh(geometry, material);
-            // this.mesh.rotation.set(-Math.PI / 2, 0, 0);
             this.group.add(this.mesh);
         }
         free() {
@@ -287,8 +289,8 @@ var tileform;
             this.free();
         }
         _step() {
-            this.wallRotationGroup.rotation.set(Math.PI / wallRotationX, Math.PI / wallRotationY, 0);
-            this.wallRotationGroup.updateMatrix();
+            //this.wallRotationGroup.rotation.set(Math.PI / wallRotationX, Math.PI / wallRotationY, 0);
+            //this.wallRotationGroup.updateMatrix();
             this.group.updateMatrix();
         }
     }
@@ -374,11 +376,12 @@ var tileform;
         }
         _create() {
             console.log(' tf light source create ');
-            this.light = new THREE.PointLight('purple', 20, 0);
+            this.light = new THREE.PointLight('cyan', 30, 0);
+            this.light.decay = 2.4;
             this.group.add(this.light);
             // Translate
             this.translate();
-            this.group.position.y = 50;
+            this.group.position.z = 10;
             stage.lightsGroup.add(this.group);
             //this.light.updateMatrixWorld();
         }
@@ -410,10 +413,21 @@ var tileform;
             wallRotationY += 1;
             change = true;
         }
+        if (app.key('v') == 1) {
+            if (stageCameraRotation > 0)
+                stageCameraRotation -= .1;
+            change = true;
+        }
+        if (app.key('b') == 1) {
+            stageCameraRotation += .1;
+            change = true;
+        }
         if (!change)
             return;
         glob.rerender = true;
+        rome.purgeRemake();
         console.log(wallRotationX, wallRotationY);
+        console.log("stageCameraRotation", stageCameraRotation);
         //scene.rotation.set(Math.PI / rotationX, Math.PI / rotationY, 0);
         //scene.updateMatrix();
     }

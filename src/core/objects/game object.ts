@@ -39,6 +39,7 @@ export class game_object extends clod.obj {
 	}
 	protected override _step() {
 		super._step();
+		this.sprite?.step();
 	}
 }
 

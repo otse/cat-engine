@@ -45,7 +45,7 @@ export class sprite {
         // defines.MASKED = 1;
         this.material = SpriteMaterial({
             map: pipeline.getTexture('./img/' + this.data.spriteImage),
-            color: 'pink',
+            color: this.data.spriteColor,
             transparent: true,
             depthTest: false,
         }, {

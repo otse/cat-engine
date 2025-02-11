@@ -34,6 +34,7 @@ export class game_object extends clod.obj {
     }
     _step() {
         super._step();
+        this.sprite?.step();
     }
 }
 // Messy

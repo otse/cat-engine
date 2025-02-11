@@ -138,63 +138,67 @@ var rome;
         collect(new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [1, 4, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'red', _wpos: [1, 5, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [1, 6, 0] }));
+        collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [1, 7, 0] }));
+        collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [1, 8, 0] }));
         collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
         collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
         // This is stupid
         addLateGobjsBatch(gobjs, 'keep');
         land.make();
     }
+    rome.makeTestingChamber = makeTestingChamber;
+    function purgeRemake() {
+        game_object._gameObjects.forEach(gobj => gobj.purge());
+        game_object._gameObjects = [];
+        makeTestingChamber();
+    }
+    rome.purgeRemake = purgeRemake;
     function step() {
         hooks.emit('romeComponents', 1);
         hooks.emit('romeStep', 0);
         // Todo fix this double update
         rome.world.update(pan.wpos);
         rome.world.grid.ticks();
-        const remakeObjects = () => {
-            game_object._gameObjects.forEach(gobj => gobj.purge());
-            game_object._gameObjects = [];
-            makeTestingChamber();
-        };
         if (app.key('[') == 1) {
             tileform.hex_size -= .1;
             console.log(tileform.hex_size);
-            remakeObjects();
+            purgeRemake();
         }
         if (app.key(']') == 1) {
             tileform.hex_size += .1;
             console.log(tileform.hex_size);
-            remakeObjects();
+            purgeRemake();
         }
         if (app.key('-') == 1) {
             if (glob.scale > 1)
                 glob.scale -= 1;
             console.log(glob.scale);
-            remakeObjects();
+            purgeRemake();
         }
         if (app.key('=') == 1) {
             glob.scale += 1;
             console.log(glob.scale);
-            remakeObjects();
+            purgeRemake();
         }
         if (app.key(',') == 1) {
             tileform.HexRotationY -= .005;
             console.log(tileform.HexRotationY);
-            remakeObjects();
+            purgeRemake();
         }
         if (app.key('.') == 1) {
             tileform.HexRotationY += .005;
             console.log(tileform.HexRotationY);
-            remakeObjects();
+            purgeRemake();
         }
         if (app.key('n') == 1) {
             tileform.HexRotationX -= .01;
             console.log(tileform.HexRotationX);
-            remakeObjects();
+            purgeRemake();
         }
         if (app.key('m') == 1) {
             tileform.HexRotationX += .01;
             console.log(tileform.HexRotationX);
-            remakeObjects();
+            purgeRemake();
         }
         glob.rerender = false;
     }
