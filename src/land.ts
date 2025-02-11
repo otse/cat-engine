@@ -15,7 +15,7 @@ namespace land {
 	export function make() {
 		// woo
 
-		noise.seed(22); // 1 to 65536
+		noise.seed(26); // 1 to 65536
 
 		const gobjs: game_object[] = [];
 		const baseWidth = 100;

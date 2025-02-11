@@ -19,6 +19,16 @@ var tileform;
         stage.step();
         return false;
     }
+    function projectSquareHex(w) {
+        const width = 24;
+        const height = 24;
+        const x = w[0];
+        const y = -w[1];
+        return [
+            (x - y) * (width / 2),
+            (x + y) * (-height / 2) / 2
+        ];
+    }
     let stage;
     (function (stage) {
     })(stage = tileform.stage || (tileform.stage = {}));

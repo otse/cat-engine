@@ -29,6 +29,17 @@ namespace tileform {
 		return false;
 	}
 
+	function projectSquareHex(w: vec2): vec2 {
+		const width = 24;
+		const height = 24;
+		const x = w[0];
+		const y = -w[1];
+		return [
+			(x - y) * (width / 2),
+			(x + y) * (-height / 2) / 2
+		];
+	}
+
 	export namespace stage {
 		export let scene, soleGroup, lightsGroup, camera, stageRenderer, ambient, sun
 		export let spotlight: sprite3d | undefined
@@ -152,7 +163,6 @@ namespace tileform {
 		protected translate() {
 			// Translate so we can take lighting sources
 			const { wpos } = this.gobj;
-			
 			this.pos3d = (pts.mult(pts.project(wpos), tfStretchSpace));
 			const temp = pts.copy(this.pos3d);
 			this.pos3d = [temp[0], temp[1]];
