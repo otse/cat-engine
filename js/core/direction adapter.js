@@ -4,7 +4,7 @@ import game_object from "./objects/game object.js";
 export class direction_adapter {
     gobj;
     target;
-    shape;
+    shape3d;
     matrix;
     directions;
     constructor(gobj) {

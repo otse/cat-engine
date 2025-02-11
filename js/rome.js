@@ -13,6 +13,7 @@ import clod from "./core/clod.js";
 import glob from "./dep/glob.js";
 import land from "./land.js";
 import romanlike from "./romanlike/romanlike.js";
+import light from "./core/objects/light.js";
 var rome;
 (function (rome) {
     rome.tileSize = [17, 9]; // glob?
@@ -91,6 +92,7 @@ var rome;
     async function preload_basic_textures() {
         await pipeline.preloadTextureAsync('./img/hex/tile.png', 'nearest');
         await pipeline.preloadTextureAsync('./img/hex/wall.png', 'nearest');
+        await pipeline.preloadTextureAsync('./img/hex/post.png', 'nearest');
     }
     function makeTestingChamber() {
         let gobjs = [];
@@ -130,6 +132,7 @@ var rome;
         collect(new wall3d({ _type: 'direct', colorOverride: 'red', _wpos: [4, 3, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [5, 3, 0] }));
         collect(new tile({ _type: 'direct', _wpos: [4, 2, 0] }));
+        collect(new light({ _type: 'direct', _wpos: [2, 3, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [1, 2, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [1, 3, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [1, 4, 0] }));

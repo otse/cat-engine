@@ -31,15 +31,15 @@ export class tile3d extends game_object {
 const presets: { [index: string]: sprite3d.literaltype } = {
 	default: {
 		gobj: {} as any,
-		shapeHexTexture: './img/textures/beach.jpg',
+		shapeGroundTexture: './img/textures/beach.jpg',
 	},
 	overgrown: {
 		gobj: {} as any,
-		shapeHexTexture: './img/textures/overgrown.jpg',
+		shapeGroundTexture: './img/textures/overgrown.jpg',
 	},
 	cobblestone: {
 		gobj: {} as any,
-		shapeHexTexture: './img/textures/cobblestone2.jpg',
+		shapeGroundTexture: './img/textures/cobblestone2.jpg',
 	}
 }
 

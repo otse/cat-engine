@@ -223,7 +223,7 @@ namespace pipeline {
 		console.log('pipeline init')
 
 		THREE.ColorManagement.enabled = false;
-		THREE.Object3D.DefaultMatrixAutoUpdate = false;
+		//THREE.Object3D.DefaultMatrixAutoUpdate = false;
 
 		groups.major = new THREE.Group;
 		groups.major.frustumCulled = false;

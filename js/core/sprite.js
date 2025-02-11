@@ -17,12 +17,12 @@ export class sprite {
         this.data = {
             spriteSize: [17, 9],
             spriteImage: 'hex/tile.png',
-            spriteColor: 'magenta',
+            spriteColor: 'white',
             ...data,
         };
         this.gobj = this.data.gobj;
         this.gobj.sprite = this;
-        this.data.spriteColor = this.gobj.data.colorOverride || 'white';
+        // this.data.spriteColor = this.gobj.data.colorOverride || 'white';
         this.matrix = new THREE.Matrix3;
         this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
     }
@@ -62,7 +62,7 @@ export class sprite {
         pipeline.groups.major.add(this.mesh);
     }
     update() {
-        const gabe = this.gobj;
+        const { gobj: gabe } = this;
         this.material.color.set(this.data.spriteColor);
         //console.log('no color?', this.data.color);
         this.mesh.renderOrder = -gabe.wpos[1] + gabe.wpos[0];
@@ -70,6 +70,7 @@ export class sprite {
         // Todo the problem here was that aligning the bottom
         // resulted in impossible problems
         const tileSize = rome.tileSize;
+        // Todo omg
         if (this.data.bottomSort)
             pos = pts.add(pos, pts.divide([0, pts.mult(pts.subtract(this.data.spriteSize, tileSize), glob.scale)[1]], 2));
         //let pos = pts.add(this.gabeObject.rpos, pts.divide(this.data.size!, 2));

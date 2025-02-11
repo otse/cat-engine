@@ -24,15 +24,15 @@ export class tile3d extends game_object {
 const presets = {
     default: {
         gobj: {},
-        shapeHexTexture: './img/textures/beach.jpg',
+        shapeGroundTexture: './img/textures/beach.jpg',
     },
     overgrown: {
         gobj: {},
-        shapeHexTexture: './img/textures/overgrown.jpg',
+        shapeGroundTexture: './img/textures/overgrown.jpg',
     },
     cobblestone: {
         gobj: {},
-        shapeHexTexture: './img/textures/cobblestone2.jpg',
+        shapeGroundTexture: './img/textures/cobblestone2.jpg',
     }
 };
 export default tile3d;

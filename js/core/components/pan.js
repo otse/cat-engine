@@ -34,6 +34,7 @@ var pan;
             lonely: true,
         });
         marker.create();
+        window['panMarker'] = marker;
     }
     function functions() {
         follow();

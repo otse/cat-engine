@@ -5,7 +5,7 @@ import pipeline from "./pipeline.js";
 import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 
-interface sprite3dliteral extends sprite.literal_ {
+interface sprite3dliteral extends sprite.literal {
 	shapeType: tileform.shape_types,
 	shapeLiteral: tileform.shape_literal
 }
@@ -16,7 +16,7 @@ export namespace direction_adapter {
 
 export class direction_adapter {
 	target
-	shape?: tileform.shape_base
+	shape3d?: tileform.shape3d
 	matrix: game_object[][]
 	directions: (string | null)[]
 	constructor(readonly gobj: game_object) {

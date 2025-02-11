@@ -16,7 +16,7 @@ namespace tileform {
 	export type scene_preset = 'hex' | 'wall'
 
 	// This doesn't do anything but it's a cool ide
-	const tileformSpaceScaling = 10;
+	const tfStretchSpace = 1;
 
 	export async function init() {
 		await stage.init();
@@ -30,7 +30,7 @@ namespace tileform {
 	}
 
 	export namespace stage {
-		export let scene, putGroup, camera, renderer, ambient, sun
+		export let scene, soleGroup, lightsGroup, camera, stageRenderer, ambient, sun
 		export let spotlight: sprite3d | undefined
 	}
 
@@ -43,29 +43,7 @@ namespace tileform {
 	export namespace stage {
 
 		export function step() {
-			let change = false;
-			if (app.key('o') == 1) {
-				wallRotationX -= 1;
-				change = true;
-			}
-			if (app.key('p') == 1) {
-				wallRotationX += 1;
-				change = true;
-			}
-			if (app.key('k') == 1) {
-				wallRotationY -= 1;
-				change = true;
-			}
-			if (app.key('l') == 1) {
-				wallRotationY += 1;
-				change = true;
-			}
-			if (!change)
-				return;
-			glob.rerender = true;
-			console.log(wallRotationX, wallRotationY);
-			//scene.rotation.set(Math.PI / rotationX, Math.PI / rotationY, 0);
-			//scene.updateMatrix();
+			opkl();
 		}
 
 		export async function init() {
@@ -89,39 +67,40 @@ namespace tileform {
 		}
 
 		async function boot() {
+			const testLight = new THREE.PointLight('red', 100000, 0);
+			testLight.distance = 0;
+			testLight.position.set(0, 100, 0);
+			const helper = new THREE.PointLightHelper(testLight, 30);
 			scene = new THREE.Scene();
+			scene.matrixWorldAutoUpdate = true;
+			//scene.add(testLight);
+			//scene.add(helper);
 			// scene.background = new THREE.Color('purple');
-			//scene.rotation.set(GreatRotationX, GreatRotationY, 0);
 			camera = new THREE.OrthographicCamera(100 / - 2, 100 / 2, 100 / 2, 100 / - 2, -100, 100);
-			putGroup = new THREE.Group();
-			//defaultRotation.rotation.set(-Math.PI / 2, 0, 0);
-			putGroup.updateMatrix();
-			scene.add(putGroup);
+			camera.position.set(0, 1, 0); // Point the camera down at a dimetric rotation
+			camera.rotation.set(-Math.PI / 6, 0, 0); // Dimetric rotation
+			soleGroup = new THREE.Group();
+			lightsGroup = new THREE.Group();
+			scene.add(soleGroup);
+			scene.add(lightsGroup);
 			scene.updateMatrix();
-			ambient = new THREE.AmbientLight('white', Math.PI / 1);
+			ambient = new THREE.AmbientLight('white', 1);
 			scene.add(ambient);
 			const sunDistance = 2;
-			sun = new THREE.DirectionalLight('red', Math.PI);
+			sun = new THREE.DirectionalLight('yellow', Math.PI / 3);
 			sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
-			// scene.add(new THREE.AxesHelper(50));
+			scene.add(new THREE.AxesHelper(5));
 			scene.add(sun);
+
+			scene.add(camera);
 			scene.updateMatrix();
-			/*renderer = new THREE.WebGLRenderer({
-				antialias: false,
-			});
-			renderer.setPixelRatio(glob);
-			renderer.setSize(100, 100);
-			renderer.setClearColor(0xffffff, 1);
-			renderer.autoClear = true;
-			renderer.toneMapping = THREE.NoToneMapping;*/
-			// document.body.appendChild(renderer.domElement);
 		}
 
 		// aka stage
 		export function prepare(sprite: sprite3d) {
 			scene.scale.set(glob.scale, glob.scale, glob.scale);
-			scene.updateMatrix();
-
+			//scene.updateMatrix();
+			//scene.updateMatrixWorld(true); // Wonky
 			spotlight = sprite;
 			let { spriteSize: size } = sprite.data;
 			size = (pts.mult(size!, glob.scale));
@@ -130,14 +109,22 @@ namespace tileform {
 				size[0] / 2,
 				size[1] / 2,
 				size[1] / - 2,
-				-300, 300);
+				-100, 500);
+			camera.position.set(0, 1, 0); // Point the camera down at a dimetric rotation
+			camera.rotation.set(-Math.PI / 3, 0, 0); // Dimetric rotation
+			// scene.add(camera);
+			// camera.position.y = 20 * glob.scale;
 			// Translate
-			const pos = (pts.mult(sprite._3dpos, glob.scale));
+			const pos = (pts.mult(sprite.shape3d!.pos3d, glob.scale));
 			camera.position.set(pos[0], 0, pos[1]);
-			camera.updateMatrix();
-			while (putGroup.children.length > 0)
-				putGroup.remove(putGroup.children[0]);
-			putGroup.add(sprite.shape3d!.shapeGroup);
+			//camera.updateMatrix();
+			while (soleGroup.children.length > 0)
+				soleGroup.remove(soleGroup.children[0]);
+			//soleGroup.add(lightsGroup);
+			soleGroup.add(sprite.shape3d!.group);
+			/*const { wpos } = sprite.gobj;
+			const projected = (pts.mult(pts.project(wpos), tfMultiplier));
+			soleGroup.position.set(projected[0], 0, projected[1]);*/
 		}
 
 		export function render() {
@@ -146,30 +133,40 @@ namespace tileform {
 			glob.renderer.clear();
 			glob.renderer.render(scene, camera);
 			glob.renderer.setRenderTarget(null);
+			// console.log("Lights:", scene.children.filter(obj => obj.isLight));
 		}
 	}
 	// end of stage
 
 	// shapes
 
-	// Arrays that's never used for anything
-	// "A useless array"
-	const shapes: shape_base[] = []
+	// Unused array
+	const shapes: shape3d[] = []
 
-	export abstract class shape_base {
-		shapeGroup
+	abstract class entity3d {
+		group
+		pos3d: vec2 = [0, 0]
+		constructor(readonly gobj: game_object) {
+			this.group = new THREE.Group();
+		}
+		protected translate() {
+			// Translate so we can take lighting sources
+			const { wpos } = this.gobj;
+			this.pos3d = (pts.mult(pts.project(wpos), tfStretchSpace));
+			this.group.position.set(this.pos3d[0], 0, this.pos3d[1]);
+		}
+	}
+
+	export abstract class shape3d extends entity3d {
 		// _created
 		constructor(readonly data: shape_literal) {
+			super(data.gobj);
 			this.data = {
 				shapeTexture: './img/textures/stonemixed.jpg',
-				shapeHexTexture: './img/textures/beachnormal.jpg',
+				shapeGroundTexture: './img/textures/beachnormal.jpg',
 				...data
 			}
-			this.shapeGroup = new THREE.Group();
-			//this.shapeGroup.add(new THREE.AxesHelper(2));
-			//this.shapeGroup.updateMatrix();
 			shapes.push(this);
-			// this.create(); // Spike
 		}
 		step() {
 			this._step();
@@ -190,24 +187,29 @@ namespace tileform {
 		protected _step() { }
 	}
 
+	export namespace shape3d {
+		export type literal = shape3d['data'];
+	};
+
 	export interface shape_literal {
 		gobj: game_object,
 		shapeType?: shape_types,
 		shapeTexture?: string,
-		shapeHexTexture?: string,
+		shapeGroundTexture?: string,
 		shapeSize?: vec3,
 	}
 
-	export class shape_hex_wrapper extends shape_base {
+	export class shape_hex_wrapper extends shape3d {
 		hexTile: hex_tile
 		constructor(data: shape_literal) {
 			super(data);
 		}
 		protected override _create() {
 			this.hexTile = new hex_tile(this.data);
-			this.shapeGroup.add(this.hexTile.rotationGroup);
-			//this.hex.rotationGroup.position.set(0, 0, 0);
-			//this.hex.rotationGroup.updateMatrix();
+			this.group.add(this.hexTile.group);
+			this.group.add(new THREE.AxesHelper(5));
+			this.translate();
+			// this.shapeGroup.updateMatrix();
 		}
 		protected override _delete() {
 			this.hexTile.free();
@@ -218,7 +220,7 @@ namespace tileform {
 
 	class hex_tile {
 		scalar = 8
-		rotationGroup
+		group
 		protected mesh
 		constructor(readonly data: shape_literal) {
 			this.scalar = hex_size;
@@ -234,17 +236,24 @@ namespace tileform {
 			geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 			geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
 			geometry.setIndex(indices);
+			const normals: number[] = [];
+			for (let i = 0; i < indices.length; i += 3) {
+				// Define a flat normal pointing up (0, 1, 0) for each vertex in a face
+				normals.push(0, 0, 1, 0, 0, 1, 0, 0, 1);
+			}
+			geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
 			const material = new THREE.MeshPhongMaterial({
 				color: 'white',
-				map: pipeline.getTexture(this.data.shapeHexTexture!),
+				// shininess: 30,
+				map: pipeline.getTexture(this.data.shapeGroundTexture!),
+				// side: THREE.DoubleSide
 			});
-			this.rotationGroup = new THREE.Group();
-			this.rotationGroup.rotation.set(HexRotationX, HexRotationY, 0);
+			// Now do the grouping
+			this.group = new THREE.Group();
+			// this.group.rotation.set(HexRotationX, HexRotationY, 0);
 			this.mesh = new THREE.Mesh(geometry, material);
-			this.mesh.rotation.set(-Math.PI / 2, 0, 0);
-			this.mesh.updateMatrix();
-			this.rotationGroup.add(this.mesh);
-			this.rotationGroup.updateMatrix();
+			// this.mesh.rotation.set(-Math.PI / 2, 0, 0);
+			this.group.add(this.mesh);
 		}
 		free() {
 			this.mesh.geometry.dispose();
@@ -257,16 +266,16 @@ namespace tileform {
 	export type shape_modifiers = 'regular' | 'concave' | 'convex' | 'north' | 'east' | 'south' | 'west'
 
 	export function shapeMaker(type: shape_types, data: shape_literal) {
-		let shape: shape_base | undefined;
+		let shape: shape3d | undefined;
 		switch (type) {
 			case 'nothing':
 				console.warn(' no shape type passed to factory ');
 				break;
-			case 'wall':
-				shape = new shape_wall(data);
-				break;
 			case 'hex':
 				shape = new shape_hex_wrapper(data);
+				break;
+			case 'wall':
+				shape = new shape_wall(data);
 				break;
 		}
 		return shape;
@@ -274,7 +283,7 @@ namespace tileform {
 
 	// boring wall geometries
 
-	export class shape_wall extends shape_base {
+	export class shape_wall extends shape3d {
 		hexTile: hex_tile
 		wallRotationGroup
 		mesh
@@ -282,8 +291,8 @@ namespace tileform {
 			super(data);
 		}
 		protected override _create() {
-			const { shapeSize } = this.data;
-			const geometry = wallMaker(this);
+			//const geometry = wallMaker(this);
+			const geometry = new THREE.SphereGeometry(8, 8, 8);
 			const material = new THREE.MeshPhongMaterial({
 				// color: this.data.gabeObject.data.colorOverride || 'white',
 				// opacity: 0.8,
@@ -291,23 +300,19 @@ namespace tileform {
 				map: pipeline.getTexture(this.data.shapeTexture!)
 			});
 			// Make the merged geometries mesh
+			const { shapeSize } = this.data;
 			this.mesh = new THREE.Mesh(geometry, material);
-			this.mesh.position.set(0, shapeSize![1] / 2, 0);
+			this.mesh.position.set(0, shapeSize![1], 0);
 			this.mesh.updateMatrix();
 			// Make the base plate
 			this.hexTile = new hex_tile(this.data);
 			// Set up rotations
 			this.wallRotationGroup = new THREE.Group();
 			this.wallRotationGroup.add(this.mesh);
-			this.shapeGroup.add(this.wallRotationGroup);
-			this.shapeGroup.add(this.hexTile.rotationGroup);
-			// Translate the shape group so we can take lighting sources
-			const { wpos } = this.data.gobj;
-			const projected = (pts.mult(pts.project(wpos), tileformSpaceScaling));
-			(this.data.gobj.sprite as sprite3d)._3dpos = projected;
-			// Translate
-			this.shapeGroup.position.set(projected[0], 0, projected[1]);
-			this.shapeGroup.updateMatrix();
+			this.group.add(this.wallRotationGroup);
+			this.group.add(this.hexTile.group);
+			// Translate so we can take lighting sources
+			this.translate();
 			//this.hexTile.rotationGroup.position.set(0, 0, 0);
 			//this.hexTile.rotationGroup.updateMatrix();
 			this._step();
@@ -323,7 +328,7 @@ namespace tileform {
 		protected override _step() {
 			this.wallRotationGroup.rotation.set(Math.PI / wallRotationX, Math.PI / wallRotationY, 0);
 			this.wallRotationGroup.updateMatrix();
-			this.shapeGroup.updateMatrix();
+			this.group.updateMatrix();
 		}
 	}
 
@@ -379,13 +384,82 @@ namespace tileform {
 		return mergedGeometry;
 	}
 
-	export class shape_light extends shape_base {
+	export class shape_light_bad_idea extends shape3d {
 		light
 		constructor(data: shape_literal) {
 			super(data);
 		}
 		protected override _create() {
 		}
+	}
+
+	export interface light_source_literal {
+		gobj: game_object,
+		radiance?: number
+	}
+
+	export class light_source extends entity3d {
+		light
+		constructor(readonly data: light_source_literal) {
+			super(data.gobj);
+			this.data = {
+				radiance: 60,
+				...data
+			}
+		}
+		create() {
+			this._create();
+		}
+		delete() {
+			this._delete();
+		}
+		update() {
+			this._update();
+		}
+		protected _create() {
+			console.log(' tf light source create ');
+			this.light = new THREE.PointLight('purple', 20, 0);
+			this.group.add(this.light);
+			// Translate
+			this.translate();
+			this.group.position.y = 50;
+			stage.lightsGroup.add(this.group);
+			//this.light.updateMatrixWorld();
+		}
+		protected _delete() {
+			console.log('remove light');
+			// Todo there's a crash here without qm
+			this.group.parent?.remove(this.group);
+		}
+		protected _update() {
+			this.light.intensity *= 2000 / stage.scene.scale.x;
+		}
+	}
+
+	function opkl() {
+		let change = false;
+		if (app.key('o') == 1) {
+			wallRotationX -= 1;
+			change = true;
+		}
+		if (app.key('p') == 1) {
+			wallRotationX += 1;
+			change = true;
+		}
+		if (app.key('k') == 1) {
+			wallRotationY -= 1;
+			change = true;
+		}
+		if (app.key('l') == 1) {
+			wallRotationY += 1;
+			change = true;
+		}
+		if (!change)
+			return;
+		glob.rerender = true;
+		console.log(wallRotationX, wallRotationY);
+		//scene.rotation.set(Math.PI / rotationX, Math.PI / rotationY, 0);
+		//scene.updateMatrix();
 	}
 }
 

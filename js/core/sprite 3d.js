@@ -8,13 +8,14 @@ export class sprite3d extends sprite {
     rerender = true;
     target;
     shape3d;
+    // The sprite maintains the 3dpos instead of the shape?
     _3dpos = [0, 0];
     data_;
     constructor(data) {
         super({
             shapeType: 'nothing',
             shapeTexture: './img/textures/stonemixed.jpg',
-            shapeHexTexture: './img/textures/overgrown.jpg',
+            shapeGroundTexture: './img/textures/overgrown.jpg',
             shapeSize: [10, 10],
             ...data
         });
@@ -36,7 +37,8 @@ export class sprite3d extends sprite {
         this.prerender();
     }
     prerender() {
-        if (!this.rerender && !glob.rerender) // If both are false
+        // If both are false guard
+        if (!this.rerender && !glob.rerender)
             return;
         this._make_target();
         this._render();

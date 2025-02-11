@@ -7,7 +7,7 @@ import pipeline from "./pipeline.js";
 var tileform;
 (function (tileform) {
     // This doesn't do anything but it's a cool ide
-    const tileformSpaceScaling = 10;
+    const tfStretchSpace = 1;
     async function init() {
         await stage.init();
         hooks.addListener('romeComponents', step);
@@ -27,29 +27,7 @@ var tileform;
     let wallRotationY = 4;
     (function (stage) {
         function step() {
-            let change = false;
-            if (app.key('o') == 1) {
-                wallRotationX -= 1;
-                change = true;
-            }
-            if (app.key('p') == 1) {
-                wallRotationX += 1;
-                change = true;
-            }
-            if (app.key('k') == 1) {
-                wallRotationY -= 1;
-                change = true;
-            }
-            if (app.key('l') == 1) {
-                wallRotationY += 1;
-                change = true;
-            }
-            if (!change)
-                return;
-            glob.rerender = true;
-            console.log(wallRotationX, wallRotationY);
-            //scene.rotation.set(Math.PI / rotationX, Math.PI / rotationY, 0);
-            //scene.updateMatrix();
+            opkl();
         }
         stage.step = step;
         async function init() {
@@ -72,48 +50,57 @@ var tileform;
             //await pipeline.loadTextureAsync('./img/textures/bricks.jpg');
         }
         async function boot() {
+            const testLight = new THREE.PointLight('red', 100000, 0);
+            testLight.distance = 0;
+            testLight.position.set(0, 100, 0);
+            const helper = new THREE.PointLightHelper(testLight, 30);
             stage.scene = new THREE.Scene();
+            stage.scene.matrixWorldAutoUpdate = true;
+            //scene.add(testLight);
+            //scene.add(helper);
             // scene.background = new THREE.Color('purple');
-            //scene.rotation.set(GreatRotationX, GreatRotationY, 0);
             stage.camera = new THREE.OrthographicCamera(100 / -2, 100 / 2, 100 / 2, 100 / -2, -100, 100);
-            stage.putGroup = new THREE.Group();
-            //defaultRotation.rotation.set(-Math.PI / 2, 0, 0);
-            stage.putGroup.updateMatrix();
-            stage.scene.add(stage.putGroup);
+            stage.camera.position.set(0, 1, 0); // Point the camera down at a dimetric rotation
+            stage.camera.rotation.set(-Math.PI / 6, 0, 0); // Dimetric rotation
+            stage.soleGroup = new THREE.Group();
+            stage.lightsGroup = new THREE.Group();
+            stage.scene.add(stage.soleGroup);
+            stage.scene.add(stage.lightsGroup);
             stage.scene.updateMatrix();
-            stage.ambient = new THREE.AmbientLight('white', Math.PI / 1);
+            stage.ambient = new THREE.AmbientLight('white', 1);
             stage.scene.add(stage.ambient);
             const sunDistance = 2;
-            stage.sun = new THREE.DirectionalLight('red', Math.PI);
+            stage.sun = new THREE.DirectionalLight('yellow', Math.PI / 3);
             stage.sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
-            // scene.add(new THREE.AxesHelper(50));
+            stage.scene.add(new THREE.AxesHelper(5));
             stage.scene.add(stage.sun);
+            stage.scene.add(stage.camera);
             stage.scene.updateMatrix();
-            /*renderer = new THREE.WebGLRenderer({
-                antialias: false,
-            });
-            renderer.setPixelRatio(glob);
-            renderer.setSize(100, 100);
-            renderer.setClearColor(0xffffff, 1);
-            renderer.autoClear = true;
-            renderer.toneMapping = THREE.NoToneMapping;*/
-            // document.body.appendChild(renderer.domElement);
         }
         // aka stage
         function prepare(sprite) {
             stage.scene.scale.set(glob.scale, glob.scale, glob.scale);
-            stage.scene.updateMatrix();
+            //scene.updateMatrix();
+            //scene.updateMatrixWorld(true); // Wonky
             stage.spotlight = sprite;
             let { spriteSize: size } = sprite.data;
             size = (pts.mult(size, glob.scale));
-            stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -300, 300);
+            stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -100, 500);
+            stage.camera.position.set(0, 1, 0); // Point the camera down at a dimetric rotation
+            stage.camera.rotation.set(-Math.PI / 3, 0, 0); // Dimetric rotation
+            // scene.add(camera);
+            // camera.position.y = 20 * glob.scale;
             // Translate
-            const pos = (pts.mult(sprite._3dpos, glob.scale));
+            const pos = (pts.mult(sprite.shape3d.pos3d, glob.scale));
             stage.camera.position.set(pos[0], 0, pos[1]);
-            stage.camera.updateMatrix();
-            while (stage.putGroup.children.length > 0)
-                stage.putGroup.remove(stage.putGroup.children[0]);
-            stage.putGroup.add(sprite.shape3d.shapeGroup);
+            //camera.updateMatrix();
+            while (stage.soleGroup.children.length > 0)
+                stage.soleGroup.remove(stage.soleGroup.children[0]);
+            //soleGroup.add(lightsGroup);
+            stage.soleGroup.add(sprite.shape3d.group);
+            /*const { wpos } = sprite.gobj;
+            const projected = (pts.mult(pts.project(wpos), tfMultiplier));
+            soleGroup.position.set(projected[0], 0, projected[1]);*/
         }
         stage.prepare = prepare;
         function render() {
@@ -122,30 +109,41 @@ var tileform;
             glob.renderer.clear();
             glob.renderer.render(stage.scene, stage.camera);
             glob.renderer.setRenderTarget(null);
+            // console.log("Lights:", scene.children.filter(obj => obj.isLight));
         }
         stage.render = render;
     })(stage = tileform.stage || (tileform.stage = {}));
     // end of stage
     // shapes
-    // Arrays that's never used for anything
-    // "A useless array"
+    // Unused array
     const shapes = [];
-    class shape_base {
+    class entity3d {
+        gobj;
+        group;
+        pos3d = [0, 0];
+        constructor(gobj) {
+            this.gobj = gobj;
+            this.group = new THREE.Group();
+        }
+        translate() {
+            // Translate so we can take lighting sources
+            const { wpos } = this.gobj;
+            this.pos3d = (pts.mult(pts.project(wpos), tfStretchSpace));
+            this.group.position.set(this.pos3d[0], 0, this.pos3d[1]);
+        }
+    }
+    class shape3d extends entity3d {
         data;
-        shapeGroup;
         // _created
         constructor(data) {
+            super(data.gobj);
             this.data = data;
             this.data = {
                 shapeTexture: './img/textures/stonemixed.jpg',
-                shapeHexTexture: './img/textures/beachnormal.jpg',
+                shapeGroundTexture: './img/textures/beachnormal.jpg',
                 ...data
             };
-            this.shapeGroup = new THREE.Group();
-            //this.shapeGroup.add(new THREE.AxesHelper(2));
-            //this.shapeGroup.updateMatrix();
             shapes.push(this);
-            // this.create(); // Spike
         }
         step() {
             this._step();
@@ -165,17 +163,19 @@ var tileform;
         }
         _step() { }
     }
-    tileform.shape_base = shape_base;
-    class shape_hex_wrapper extends shape_base {
+    tileform.shape3d = shape3d;
+    ;
+    class shape_hex_wrapper extends shape3d {
         hexTile;
         constructor(data) {
             super(data);
         }
         _create() {
             this.hexTile = new hex_tile(this.data);
-            this.shapeGroup.add(this.hexTile.rotationGroup);
-            //this.hex.rotationGroup.position.set(0, 0, 0);
-            //this.hex.rotationGroup.updateMatrix();
+            this.group.add(this.hexTile.group);
+            this.group.add(new THREE.AxesHelper(5));
+            this.translate();
+            // this.shapeGroup.updateMatrix();
         }
         _delete() {
             this.hexTile.free();
@@ -186,7 +186,7 @@ var tileform;
     class hex_tile {
         data;
         scalar = 8;
-        rotationGroup;
+        group;
         mesh;
         constructor(data) {
             this.data = data;
@@ -203,17 +203,24 @@ var tileform;
             geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
             geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
             geometry.setIndex(indices);
+            const normals = [];
+            for (let i = 0; i < indices.length; i += 3) {
+                // Define a flat normal pointing up (0, 1, 0) for each vertex in a face
+                normals.push(0, 0, 1, 0, 0, 1, 0, 0, 1);
+            }
+            geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
             const material = new THREE.MeshPhongMaterial({
                 color: 'white',
-                map: pipeline.getTexture(this.data.shapeHexTexture),
+                // shininess: 30,
+                map: pipeline.getTexture(this.data.shapeGroundTexture),
+                // side: THREE.DoubleSide
             });
-            this.rotationGroup = new THREE.Group();
-            this.rotationGroup.rotation.set(tileform.HexRotationX, tileform.HexRotationY, 0);
+            // Now do the grouping
+            this.group = new THREE.Group();
+            // this.group.rotation.set(HexRotationX, HexRotationY, 0);
             this.mesh = new THREE.Mesh(geometry, material);
-            this.mesh.rotation.set(-Math.PI / 2, 0, 0);
-            this.mesh.updateMatrix();
-            this.rotationGroup.add(this.mesh);
-            this.rotationGroup.updateMatrix();
+            // this.mesh.rotation.set(-Math.PI / 2, 0, 0);
+            this.group.add(this.mesh);
         }
         free() {
             this.mesh.geometry.dispose();
@@ -226,18 +233,18 @@ var tileform;
             case 'nothing':
                 console.warn(' no shape type passed to factory ');
                 break;
-            case 'wall':
-                shape = new shape_wall(data);
-                break;
             case 'hex':
                 shape = new shape_hex_wrapper(data);
+                break;
+            case 'wall':
+                shape = new shape_wall(data);
                 break;
         }
         return shape;
     }
     tileform.shapeMaker = shapeMaker;
     // boring wall geometries
-    class shape_wall extends shape_base {
+    class shape_wall extends shape3d {
         hexTile;
         wallRotationGroup;
         mesh;
@@ -245,8 +252,8 @@ var tileform;
             super(data);
         }
         _create() {
-            const { shapeSize } = this.data;
-            const geometry = wallMaker(this);
+            //const geometry = wallMaker(this);
+            const geometry = new THREE.SphereGeometry(8, 8, 8);
             const material = new THREE.MeshPhongMaterial({
                 // color: this.data.gabeObject.data.colorOverride || 'white',
                 // opacity: 0.8,
@@ -254,23 +261,19 @@ var tileform;
                 map: pipeline.getTexture(this.data.shapeTexture)
             });
             // Make the merged geometries mesh
+            const { shapeSize } = this.data;
             this.mesh = new THREE.Mesh(geometry, material);
-            this.mesh.position.set(0, shapeSize[1] / 2, 0);
+            this.mesh.position.set(0, shapeSize[1], 0);
             this.mesh.updateMatrix();
             // Make the base plate
             this.hexTile = new hex_tile(this.data);
             // Set up rotations
             this.wallRotationGroup = new THREE.Group();
             this.wallRotationGroup.add(this.mesh);
-            this.shapeGroup.add(this.wallRotationGroup);
-            this.shapeGroup.add(this.hexTile.rotationGroup);
-            // Translate the shape group so we can take lighting sources
-            const { wpos } = this.data.gobj;
-            const projected = (pts.mult(pts.project(wpos), tileformSpaceScaling));
-            this.data.gobj.sprite._3dpos = projected;
-            // Translate
-            this.shapeGroup.position.set(projected[0], 0, projected[1]);
-            this.shapeGroup.updateMatrix();
+            this.group.add(this.wallRotationGroup);
+            this.group.add(this.hexTile.group);
+            // Translate so we can take lighting sources
+            this.translate();
             //this.hexTile.rotationGroup.position.set(0, 0, 0);
             //this.hexTile.rotationGroup.updateMatrix();
             this._step();
@@ -286,7 +289,7 @@ var tileform;
         _step() {
             this.wallRotationGroup.rotation.set(Math.PI / wallRotationX, Math.PI / wallRotationY, 0);
             this.wallRotationGroup.updateMatrix();
-            this.shapeGroup.updateMatrix();
+            this.group.updateMatrix();
         }
     }
     tileform.shape_wall = shape_wall;
@@ -340,7 +343,7 @@ var tileform;
         const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries);
         return mergedGeometry;
     }
-    class shape_light extends shape_base {
+    class shape_light_bad_idea extends shape3d {
         light;
         constructor(data) {
             super(data);
@@ -348,6 +351,71 @@ var tileform;
         _create() {
         }
     }
-    tileform.shape_light = shape_light;
+    tileform.shape_light_bad_idea = shape_light_bad_idea;
+    class light_source extends entity3d {
+        data;
+        light;
+        constructor(data) {
+            super(data.gobj);
+            this.data = data;
+            this.data = {
+                radiance: 60,
+                ...data
+            };
+        }
+        create() {
+            this._create();
+        }
+        delete() {
+            this._delete();
+        }
+        update() {
+            this._update();
+        }
+        _create() {
+            console.log(' tf light source create ');
+            this.light = new THREE.PointLight('purple', 20, 0);
+            this.group.add(this.light);
+            // Translate
+            this.translate();
+            this.group.position.y = 50;
+            stage.lightsGroup.add(this.group);
+            //this.light.updateMatrixWorld();
+        }
+        _delete() {
+            console.log('remove light');
+            // Todo there's a crash here without qm
+            this.group.parent?.remove(this.group);
+        }
+        _update() {
+            this.light.intensity *= 2000 / stage.scene.scale.x;
+        }
+    }
+    tileform.light_source = light_source;
+    function opkl() {
+        let change = false;
+        if (app.key('o') == 1) {
+            wallRotationX -= 1;
+            change = true;
+        }
+        if (app.key('p') == 1) {
+            wallRotationX += 1;
+            change = true;
+        }
+        if (app.key('k') == 1) {
+            wallRotationY -= 1;
+            change = true;
+        }
+        if (app.key('l') == 1) {
+            wallRotationY += 1;
+            change = true;
+        }
+        if (!change)
+            return;
+        glob.rerender = true;
+        console.log(wallRotationX, wallRotationY);
+        //scene.rotation.set(Math.PI / rotationX, Math.PI / rotationY, 0);
+        //scene.updateMatrix();
+    }
 })(tileform || (tileform = {}));
 export default tileform;

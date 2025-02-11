@@ -5,7 +5,7 @@ import pipeline from "./pipeline.js";
 import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 
-export interface sprite3d_joint_literal extends sprite.literal_, tileform.shape_literal {
+export interface sprite3d_joint_literal extends sprite.literal, tileform.shape3d.literal {
 
 }
 
@@ -16,7 +16,8 @@ export namespace sprite3d {
 export class sprite3d extends sprite {
 	rerender = true
 	target
-	shape3d?: tileform.shape_base
+	shape3d?: tileform.shape3d
+	// The sprite maintains the 3dpos instead of the shape?
 	_3dpos: vec2 = [0, 0]
 	data_: sprite3d_joint_literal
 	constructor(
@@ -25,7 +26,7 @@ export class sprite3d extends sprite {
 		super({
 			shapeType: 'nothing',
 			shapeTexture: './img/textures/stonemixed.jpg',
-			shapeHexTexture: './img/textures/overgrown.jpg',
+			shapeGroundTexture: './img/textures/overgrown.jpg',
 			shapeSize: [10, 10],
 			...data
 		});
@@ -49,7 +50,8 @@ export class sprite3d extends sprite {
 		this.prerender();
 	}
 	prerender() {
-		if (!this.rerender && !glob.rerender) // If both are false
+		// If both are false guard
+		if (!this.rerender && !glob.rerender)
 			return;
 		this._make_target();
 		this._render();
