@@ -62,10 +62,10 @@ var tileform;
             //await pipeline.loadTextureAsync('./img/textures/bricks.jpg');
         }
         async function boot() {
-            const testLight = new THREE.PointLight('red', 100000, 0);
-            testLight.distance = 0;
-            testLight.position.set(0, 100, 0);
-            const helper = new THREE.PointLightHelper(testLight, 30);
+            //const testLight = new THREE.PointLight('red', 100000, 0);
+            //testLight.distance = 0;
+            //testLight.position.set(0, 100, 0);
+            //const helper = new THREE.PointLightHelper(testLight, 30);
             stage.scene = new THREE.Scene();
             stage.scene.matrixWorldAutoUpdate = true;
             //scene.add(testLight);
@@ -80,7 +80,7 @@ var tileform;
             stage.ambient = new THREE.AmbientLight('white', 1);
             stage.scene.add(stage.ambient);
             const sunDistance = 2;
-            stage.sun = new THREE.DirectionalLight('yellow', Math.PI / 3);
+            stage.sun = new THREE.DirectionalLight('white', Math.PI / 3);
             stage.sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
             stage.scene.add(new THREE.AxesHelper(5));
             stage.scene.add(stage.sun);
@@ -101,13 +101,17 @@ var tileform;
             // scene.add(camera);
             // camera.position.y = 20 * glob.scale;
             // Translate
-            const pos = (pts.mult(sprite.shape3d.pos3d, glob.scale));
-            stage.camera.position.set(pos[0], pos[1], 0);
+            const pos3d = (pts.mult(sprite.shape3d.pos3d, glob.scale));
+            stage.camera.position.set(pos3d[0], pos3d[1], 0);
             //camera.updateMatrix();
             while (stage.soleGroup.children.length > 0)
                 stage.soleGroup.remove(stage.soleGroup.children[0]);
             //soleGroup.add(lightsGroup);
-            stage.soleGroup.add(sprite.shape3d.group);
+            stage.soleGroup.add(sprite.shape3d.entityGroup);
+            stage.soleGroup.updateMatrix();
+            stage.soleGroup.updateMatrixWorld(true);
+            stage.scene.updateMatrix();
+            stage.scene.updateMatrixWorld(true);
             /*const { wpos } = sprite.gobj;
             const projected = (pts.mult(pts.project(wpos), tfMultiplier));
             soleGroup.position.set(projected[0], 0, projected[1]);*/
@@ -129,19 +133,18 @@ var tileform;
     const shapes = [];
     class entity3d {
         gobj;
-        group;
+        entityGroup;
         pos3d = [0, 0];
         constructor(gobj) {
             this.gobj = gobj;
-            this.group = new THREE.Group();
+            this.entityGroup = new THREE.Group();
         }
         translate() {
             // Translate so we can take lighting sources
             const { wpos } = this.gobj;
             this.pos3d = (pts.mult(projectSquareHex(wpos), tfStretchSpace));
-            const temp = pts.copy(this.pos3d);
-            this.pos3d = [temp[0], temp[1]];
-            this.group.position.set(this.pos3d[0], this.pos3d[1], 0);
+            this.entityGroup.position.set(this.pos3d[0], this.pos3d[1], 0);
+            this.entityGroup.updateMatrix();
         }
     }
     class shape3d extends entity3d {
@@ -184,8 +187,8 @@ var tileform;
         }
         _create() {
             this.hexTile = new hex_tile(this.data);
-            this.group.add(this.hexTile.group);
-            this.group.add(new THREE.AxesHelper(5));
+            this.entityGroup.add(this.hexTile.group);
+            this.entityGroup.add(new THREE.AxesHelper(5));
             this.translate();
             // this.shapeGroup.updateMatrix();
         }
@@ -282,8 +285,8 @@ var tileform;
             // Set up rotations
             this.wallRotationGroup = new THREE.Group();
             this.wallRotationGroup.add(this.mesh);
-            this.group.add(this.wallRotationGroup);
-            this.group.add(this.hexTile.group);
+            this.entityGroup.add(this.wallRotationGroup);
+            this.entityGroup.add(this.hexTile.group);
             // Translate so we can take lighting sources
             this.translate();
             //this.hexTile.rotationGroup.position.set(0, 0, 0);
@@ -301,7 +304,7 @@ var tileform;
         _step() {
             //this.wallRotationGroup.rotation.set(Math.PI / wallRotationX, Math.PI / wallRotationY, 0);
             //this.wallRotationGroup.updateMatrix();
-            this.group.updateMatrix();
+            this.entityGroup.updateMatrix();
         }
     }
     tileform.shape_wall = shape_wall;
@@ -386,22 +389,21 @@ var tileform;
         }
         _create() {
             console.log(' tf light source create ');
-            this.light = new THREE.PointLight('cyan', 30, 0);
+            this.light = new THREE.PointLight('cyan', 30000, 500);
             this.light.decay = 2.4;
-            this.group.add(this.light);
+            this.entityGroup.add(this.light);
             // Translate
             this.translate();
-            this.group.position.z = 10;
-            stage.lightsGroup.add(this.group);
-            //this.light.updateMatrixWorld();
+            this.entityGroup.position.z = 10;
+            this.entityGroup.updateMatrix();
+            stage.scene.add(this.entityGroup);
         }
         _delete() {
             console.log('remove light');
             // Todo there's a crash here without qm
-            this.group.parent?.remove(this.group);
+            this.entityGroup.parent?.remove(this.entityGroup);
         }
         _update() {
-            this.light.intensity *= 2000 / stage.scene.scale.x;
         }
     }
     tileform.light_source = light_source;

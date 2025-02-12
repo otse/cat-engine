@@ -19,7 +19,7 @@ var clod;
     const chunk_coloration = false;
     const fog_of_war = false;
     const grid_crawl_makes_chunks = true;
-    clod.SectorSpan = 4;
+    clod.SectorSpan = 2;
     clod.stamp = 0; // used only by server slod
     function init() {
         console.log('init');
