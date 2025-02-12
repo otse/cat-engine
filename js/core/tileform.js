@@ -278,7 +278,7 @@ var tileform;
             // Make the merged geometries mesh
             const { shapeSize } = this.data;
             this.mesh = new THREE.Mesh(geometry, material);
-            this.mesh.position.set(0, shapeSize[1], 0);
+            this.mesh.position.set(0, 0, 8);
             this.mesh.updateMatrix();
             // Make the base plate
             this.hexTile = new hex_tile(this.data);
@@ -394,7 +394,7 @@ var tileform;
             this.entityGroup.add(this.light);
             // Translate
             this.translate();
-            this.entityGroup.position.z = 10;
+            this.entityGroup.position.z = 12;
             this.entityGroup.updateMatrix();
             stage.scene.add(this.entityGroup);
         }

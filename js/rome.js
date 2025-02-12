@@ -28,7 +28,8 @@ var rome;
     async function init() {
         console.log(' init ');
         glob.rome = rome;
-        glob.prerender = true;
+        glob.rerender = true;
+        glob.rerenderNext = false;
         glob.scale = 1;
         await preload_basic_textures();
         await pipeline.init();
@@ -156,9 +157,18 @@ var rome;
     function step() {
         hooks.emit('romeComponents', 1);
         hooks.emit('romeStep', 0);
+        debugCallbacks();
+        if (glob.rerenderNext) {
+            glob.rerenderNext = false;
+            glob.rerender = true;
+        }
         // Todo fix this double update
         rome.world.update(pan.wpos);
         rome.world.grid.ticks();
+        glob.rerender = false;
+    }
+    rome.step = step;
+    function debugCallbacks() {
         if (app.key('[') == 1) {
             tileform.hex_size -= .1;
             console.log(tileform.hex_size);
@@ -200,8 +210,6 @@ var rome;
             console.log(tileform.HexRotationX);
             purgeRemake();
         }
-        glob.rerender = false;
     }
-    rome.step = step;
 })(rome || (rome = {}));
 export default rome;
