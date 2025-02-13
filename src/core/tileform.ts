@@ -235,7 +235,7 @@ namespace tileform {
 		protected override _create() {
 			this.hexTile = new hex_tile(this.data);
 			this.entityGroup.add(this.hexTile.group);
-			this.entityGroup.add(new THREE.AxesHelper(8));
+			// this.entityGroup.add(new THREE.AxesHelper(8));
 			this.translate();
 			// this.shapeGroup.updateMatrix();
 		}
@@ -244,10 +244,10 @@ namespace tileform {
 		}
 	}
 
-	export let hex_size = 7.7;
+	export let hex_size = 8.1;
 
 	class hex_tile {
-		scalar = 8
+		scalar
 		group
 		protected mesh
 		constructor(readonly data: shape_literal) {

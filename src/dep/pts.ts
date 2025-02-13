@@ -56,8 +56,9 @@ class pts {
 		const tileHeight = this.hexSize[1] - 1;
 		const x = w[0];
 		const y = -w[1]; // Invert Y to match the hex grid behavior.
+		const scaleFactor = tileWidth * 0.75;  // This corresponds to the scaling factor in project function
 		return [
-			(x - y) * ((tileWidth * 0.75)),
+			(x - y) * ((scaleFactor)),
 			(x + y) * ((-tileHeight) / 2)
 		];
 	}

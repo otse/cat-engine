@@ -26,6 +26,7 @@ export class light extends game_object {
 			radiance: 200
 		});
 		this.light_source.create();
+		return;
 		new sprite({
 			gobj: this,
 			spriteImage: 'hex/post.png',

@@ -36,7 +36,8 @@ export class sprite {
 		};
 		this.gobj = this.data.gobj;
 		this.gobj.sprite = this;
-		// this.data.spriteColor = this.gobj.data.colorOverride || 'white';
+		this.data.spriteColor = this.gobj.data.colorOverride || 'white';
+		this.data.spriteColor = rome.sample(['purple', 'magenta', 'cyan', 'wheat', 'pink', 'salmon']);
 		this.matrix = new THREE.Matrix3;
 		this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
 	}

@@ -120,7 +120,7 @@ namespace rome {
 		collect(new tile3d({ _type: 'direct', colorOverride: 'wheat', _wpos: [0, 7, 0] }));
 		collect(new tile3d({ _type: 'direct', colorOverride: 'lavender', _wpos: [0, 8, 0] }));
 		collect(new tile3d({ _type: 'direct', colorOverride: 'cyan', _wpos: [0, 9, 0] }));
-		collect(new tile({ _type: 'direct', colorOverride: 'orange', _wpos: [1, -1, 0] }));
+		/*collect(new tile({ _type: 'direct', colorOverride: 'orange', _wpos: [1, -1, 0] }));
 		collect(new tile({ _type: 'direct', colorOverride: 'red', _wpos: [0, 0, 0] }));
 		collect(new tile({ _type: 'direct', colorOverride: 'pink', _wpos: [1, 0, 0] }));
 		collect(new tile({ _type: 'direct', colorOverride: 'blue', _wpos: [0, 1, 0] }));
@@ -132,14 +132,14 @@ namespace rome {
 		collect(new tile({ _type: 'direct', _wpos: [4, 0, 0] }));
 		collect(new tile({ _type: 'direct', _wpos: [5, 0, 0] }));
 		collect(new tile({ _type: 'direct', _wpos: [6, 0, 0] }));
-		collect(new tile({ _type: 'direct', _wpos: [7, 0, 0] }));
+		collect(new tile({ _type: 'direct', _wpos: [7, 0, 0] }));*/
 		collect(new wall3d({ _type: 'direct', _wpos: [2, 1, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [3, 1, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [3, 2, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [3, 3, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'red', _wpos: [4, 3, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [5, 3, 0] }));
-		collect(new tile({ _type: 'direct', _wpos: [4, 2, 0] }));
+		// collect(new tile({ _type: 'direct', _wpos: [4, 2, 0] }));
 		collect(new light({ _type: 'direct', _wpos: [2, 3, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [1, 2, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [1, 3, 0] }));
@@ -148,9 +148,8 @@ namespace rome {
 		collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [1, 6, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [1, 7, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [1, 8, 0] }));
-		collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
-		collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
-		// This is stupid
+		// collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
+		// collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
 		addLateGobjsBatch(gobjs, 'keep');
 		land.make();
 	}

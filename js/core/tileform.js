@@ -199,7 +199,7 @@ var tileform;
         _create() {
             this.hexTile = new hex_tile(this.data);
             this.entityGroup.add(this.hexTile.group);
-            this.entityGroup.add(new THREE.AxesHelper(8));
+            // this.entityGroup.add(new THREE.AxesHelper(8));
             this.translate();
             // this.shapeGroup.updateMatrix();
         }
@@ -208,10 +208,10 @@ var tileform;
         }
     }
     tileform.shape_hex_wrapper = shape_hex_wrapper;
-    tileform.hex_size = 7.7;
+    tileform.hex_size = 8.1;
     class hex_tile {
         data;
-        scalar = 8;
+        scalar;
         group;
         mesh;
         constructor(data) {
