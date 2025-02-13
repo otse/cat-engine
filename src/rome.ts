@@ -19,8 +19,6 @@ import light from "./core/objects/light.js";
 
 namespace rome {
 
-	export const tileSize: vec2 = [17, 9]; // glob?
-
 	export function sample(a) {
 		return a[Math.floor(Math.random() * a.length)];
 	}

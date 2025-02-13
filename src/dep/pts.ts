@@ -49,26 +49,35 @@ class pts {
 		}
 	}
 
+	static readonly hexSize: vec2 = [17, 9];
+
 	static project(w: vec2): vec2 {
-		const width = 24;
-		const height = 16;
+		const tileWidth = this.hexSize[0];
+		const tileHeight = this.hexSize[1] - 1;
 		const x = w[0];
-		const y = -w[1];
+		const y = -w[1]; // Invert Y to match the hex grid behavior.
 		return [
-			(x - y) * (width / 2),
-			(x + y) * (-height / 2) / 2
+			(x - y) * ((tileWidth * 0.75)),
+			(x + y) * ((-tileHeight) / 2)
 		];
 	}
 
 	static unproject(r: vec2): vec2 {
-		const width = 24;
-		const height = 16;
-		const x = r[0] / (width / 2);
-		const y = -r[1] / (height / 2) * 2;
-		return [
-			(x + y) / 2,
-			(x - y) / 2
-		];
+		const tileWidth = this.hexSize[0];
+		const tileHeight = this.hexSize[1] - 1;
+
+		// Reverse the Y-axis scaling, considering tileHeight
+		const scaleFactor = tileWidth * 0.75;  // This corresponds to the scaling factor in project function
+
+		// Convert screen coordinates back to world coordinates
+		const x = r[0] / scaleFactor;
+		const y = -r[1] / (tileHeight / 2);
+
+		// Use the formula to convert to grid coordinates
+		const worldX = (x + y) / 2;
+		const worldY = (x - y) / 2;
+
+		return [worldX, worldY];
 	}
 
 

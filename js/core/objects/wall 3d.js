@@ -1,6 +1,7 @@
 import game_object from "./game object.js";
 import sprite3d from "../sprite 3d.js";
 import direction_adapter from "../direction adapter.js";
+import pts from "../../dep/pts.js";
 export class wall3d extends game_object {
     directionAdapter;
     constructor(data) {
@@ -19,7 +20,7 @@ export class wall3d extends game_object {
         // before we instantiated our adapter
         new sprite3d({
             gobj: this,
-            spriteSize: [17 * 4, 9 * 4],
+            spriteSize: [pts.hexSize[0] * 4, pts.hexSize[1] * 4],
             shapeSize: [16, 16, 10],
             shapeType: 'wall',
             shapeTexture: './img/textures/basaltcliffs.jpg',

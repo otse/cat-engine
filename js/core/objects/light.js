@@ -1,6 +1,7 @@
 import game_object from "./game object.js";
 import tileform from "../tileform.js";
 import sprite from "../sprite.js";
+import pts from "../../dep/pts.js";
 // I think it's better to make a tileform.light entity
 // Rather than overload a sprite3d to become anything you want it to
 export class light extends game_object {
@@ -23,7 +24,7 @@ export class light extends game_object {
         new sprite({
             gobj: this,
             spriteImage: 'hex/post.png',
-            spriteSize: [17, 30],
+            spriteSize: [pts.hexSize[0], 30],
             bottomSort: true,
         });
         this.sprite?.create();

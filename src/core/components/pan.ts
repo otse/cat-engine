@@ -55,8 +55,7 @@ namespace pan {
 		marker.wpos = wpos;
 		marker.wtorpos();
 		marker.update();
-		//marker.
-		// console.log('wpos', wpos);
+		// Jump to nearest full pixel
 		if (jaggedRpos)
 			rpos = pts.round(rpos);
 		set_camera();
@@ -128,7 +127,7 @@ namespace pan {
 	function set_camera() {
 		// let inv = pts.inv(this.rpos);
 		// ren.groups.axisSwap.position.set(inv[0], inv[1], 0);
-		const rpos2 = pts.add(rpos, pts.divide([0, rome.tileSize[1]], 2));
+		const rpos2 = pts.add(rpos, pts.divide([0, pts.hexSize[1]], 2));
 		pipeline.camera.position.set(rpos2[0], rpos2[1], 0);
 	}
 

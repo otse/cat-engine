@@ -16,7 +16,6 @@ import romanlike from "./romanlike/romanlike.js";
 import light from "./core/objects/light.js";
 var rome;
 (function (rome) {
-    rome.tileSize = [17, 9]; // glob?
     function sample(a) {
         return a[Math.floor(Math.random() * a.length)];
     }

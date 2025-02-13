@@ -29,7 +29,7 @@ export class sprite {
 		public readonly data: sprite_literal
 	) {
 		this.data = {
-			spriteSize: [17, 9],
+			spriteSize: pts.hexSize,
 			spriteImage: 'hex/tile.png',
 			spriteColor: 'white',
 			...data,
@@ -86,7 +86,7 @@ export class sprite {
 		let pos = gabe.rpos;
 		// Todo the problem here was that aligning the bottom
 		// resulted in impossible problems
-		const tileSize = rome.tileSize;
+		const tileSize = pts.hexSize;
 		// Todo omg
 		if (this.data.bottomSort)
 			pos = pts.add(pos, pts.divide([0, pts.mult(pts.subtract(this.data.spriteSize!, tileSize), glob.scale)[1]], 2));
