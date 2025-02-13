@@ -326,7 +326,7 @@ namespace clod {
 			this.bound.translate(this.wpos);
 		}
 		wtorpos() {
-			this.rpos = clod.project(this.wpos);
+			this.rpos = (clod.project(this.wpos));
 		}
 		rtospos() {
 			this.wtorpos();

@@ -24,7 +24,7 @@ var pan;
     pan_1.rpos = [0, 0];
     let stick = undefined;
     const startWtorpos = true;
-    const jaggedRpos = false;
+    const funnyJumpingRpos = false;
     var marker;
     function startup() {
         marker = new tile({
@@ -37,14 +37,16 @@ var pan;
     }
     function functions() {
         follow();
+        // Pan the rpos
         pan();
         sideways();
+        // Make a wpos from the nearest full pixel rpos
         pan_1.wpos = clod.unproject(pan_1.rpos);
         marker.wpos = pan_1.wpos;
         marker.wtorpos();
         marker.update();
         // Jump to nearest full pixel
-        if (jaggedRpos)
+        if (funnyJumpingRpos)
             pan_1.rpos = pts.round(pan_1.rpos);
         set_camera();
         //lod.gworld.update(wpos);

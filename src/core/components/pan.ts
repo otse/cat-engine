@@ -33,7 +33,7 @@ namespace pan {
 	let stick: game_object | undefined = undefined
 
 	const startWtorpos = true;
-	const jaggedRpos = false;
+	const funnyJumpingRpos = false;
 
 	var marker: game_object;
 
@@ -49,14 +49,16 @@ namespace pan {
 
 	function functions() {
 		follow();
+		// Pan the rpos
 		pan();
 		sideways();
+		// Make a wpos from the nearest full pixel rpos
 		wpos = clod.unproject(rpos);
 		marker.wpos = wpos;
 		marker.wtorpos();
 		marker.update();
 		// Jump to nearest full pixel
-		if (jaggedRpos)
+		if (funnyJumpingRpos)
 			rpos = pts.round(rpos);
 		set_camera();
 		//lod.gworld.update(wpos);

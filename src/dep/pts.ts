@@ -52,7 +52,7 @@ class pts {
 	static readonly hexSize: vec2 = [17, 9];
 
 	static project(w: vec2): vec2 {
-		const tileWidth = this.hexSize[0];
+		const tileWidth = this.hexSize[0] - 1;
 		const tileHeight = this.hexSize[1] - 1;
 		const x = w[0];
 		const y = -w[1]; // Invert Y to match the hex grid behavior.
@@ -63,7 +63,7 @@ class pts {
 	}
 
 	static unproject(r: vec2): vec2 {
-		const tileWidth = this.hexSize[0];
+		const tileWidth = this.hexSize[0] - 1;
 		const tileHeight = this.hexSize[1] - 1;
 
 		// Reverse the Y-axis scaling, considering tileHeight
