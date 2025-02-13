@@ -160,6 +160,7 @@ namespace rome {
 	export function purgeRemake() {
 		game_object._gameObjects.forEach(gobj => gobj.purge());
 		game_object._gameObjects = [];
+		glob.rerender = true;
 		makeTestingChamber();
 	}
 

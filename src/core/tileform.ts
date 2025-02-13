@@ -48,10 +48,10 @@ namespace tileform {
 	export let HexRotationX = 0.6135987755982989;
 	export let HexRotationY = 1.045;
 
-	let stageCameraRotation = Math.PI / 3;
+	let stageCameraRotation = 0.9471975511965977;
 
-	let wallRotationX = 9;
-	let wallRotationY = 4;
+	let wallRotationX = -1;
+	let wallRotationY = 6;
 
 	export namespace stage {
 
@@ -91,6 +91,7 @@ namespace tileform {
 			// scene.background = new THREE.Color('purple');
 			camera = new THREE.OrthographicCamera(100 / - 2, 100 / 2, 100 / 2, 100 / - 2, -100, 100);
 			soleGroup = new THREE.Group();
+			//soleGroup.rotation.y = Math.PI / 2;
 			lightsGroup = new THREE.Group();
 			scene.add(soleGroup);
 			scene.add(lightsGroup);
@@ -100,7 +101,7 @@ namespace tileform {
 			const sunDistance = 2;
 			sun = new THREE.DirectionalLight('white', Math.PI / 3);
 			sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
-			scene.add(new THREE.AxesHelper(5));
+			// scene.add(new THREE.AxesHelper(5));
 			scene.add(sun);
 
 			scene.add(camera);
@@ -121,10 +122,21 @@ namespace tileform {
 				size[1] / 2,
 				size[1] / - 2,
 				-100, 500);
-			camera.position.set(0, 1, 0); // Point the camera down at a dimetric rotation
-			camera.rotation.set(stageCameraRotation, 0, 0); // Dimetric rotation
-			// scene.add(camera);
-			// camera.position.y = 20 * glob.scale;
+			camera.position.set(0, 0, 1);
+			camera.rotation.set(stageCameraRotation, 0, 0);
+			// Use integer-based positioning to avoid jagged artifacts
+			/*camera.up.set(0, 0, 1);
+
+			// Use integer-based positioning to avoid jagged artifacts
+			const scaleFactor = 20;
+			camera.position.set(
+				2 * scaleFactor, // X-axis
+				-2 * scaleFactor, // Y-axis
+				1 * scaleFactor  // Z-axis (half of X & Y for 2:1 dimetric)
+			);
+
+			camera.lookAt(0, 0, 0);*/
+
 			// Translate
 			const pos3d = (pts.mult(sprite.shape3d!.pos3d, glob.scale));
 			camera.position.set(pos3d[0], pos3d[1], 0);
@@ -223,7 +235,7 @@ namespace tileform {
 		protected override _create() {
 			this.hexTile = new hex_tile(this.data);
 			this.entityGroup.add(this.hexTile.group);
-			this.entityGroup.add(new THREE.AxesHelper(5));
+			this.entityGroup.add(new THREE.AxesHelper(8));
 			this.translate();
 			// this.shapeGroup.updateMatrix();
 		}
@@ -307,8 +319,8 @@ namespace tileform {
 			super(data);
 		}
 		protected override _create() {
-			//const geometry = wallMaker(this);
-			const geometry = new THREE.SphereGeometry(8, 8, 8);
+			const geometry = wallMaker(this);
+			//const geometry = new THREE.SphereGeometry(8, 8, 8);
 			const material = new THREE.MeshPhongMaterial({
 				// color: this.data.gabeObject.data.colorOverride || 'white',
 				// opacity: 0.8,
@@ -318,13 +330,13 @@ namespace tileform {
 			// Make the merged geometries mesh
 			const { shapeSize } = this.data;
 			this.mesh = new THREE.Mesh(geometry, material);
-			this.mesh.position.set(0, 0, 8);
 			this.mesh.updateMatrix();
 			// Make the base plate
 			this.hexTile = new hex_tile(this.data);
 			// Set up rotations
 			this.wallRotationGroup = new THREE.Group();
 			this.wallRotationGroup.add(this.mesh);
+			this.wallRotationGroup.position.z = shapeSize![2];
 			this.entityGroup.add(this.wallRotationGroup);
 			this.entityGroup.add(this.hexTile.group);
 			// Translate so we can take lighting sources
@@ -342,8 +354,8 @@ namespace tileform {
 			this.free();
 		}
 		protected override _step() {
-			//this.wallRotationGroup.rotation.set(Math.PI / wallRotationX, Math.PI / wallRotationY, 0);
-			//this.wallRotationGroup.updateMatrix();
+			this.wallRotationGroup.rotation.set(0, 0, Math.PI / wallRotationY);
+			this.wallRotationGroup.updateMatrix();
 			this.entityGroup.updateMatrix();
 		}
 	}
@@ -361,23 +373,23 @@ namespace tileform {
 		}
 		let geometry;
 		if (directionAdapter.directions.includes('north')) {
-			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-			geometry.translate(size[0] / 4, 0, size[2] / 4);
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
+			geometry.translate(size[0] / 4, size[1] / 4, 0);
 			geometries.push(geometry);
 		}
 		if (directionAdapter.directions.includes('east')) {
-			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-			geometry.translate(-size[0] / 4, 0, size[2] / 4);
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
+			geometry.translate(-size[0] / 4, size[1] / 4, 0);
 			geometries.push(geometry);
 		}
 		if (directionAdapter.directions.includes('south')) {
-			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-			geometry.translate(-size[0] / 4, 0, size[2] / 4);
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
+			geometry.translate(-size[0] / 4, size[1] / 4, 0);
 			geometries.push(geometry);
 		}
 		if (directionAdapter.directions.includes('west')) {
-			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-			geometry.translate(-size[0] / 4, 0, -size[2] / 4);
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
+			geometry.translate(-size[0] / 4, -size[1] / 4, 0);
 			geometries.push(geometry);
 		}
 		if (directionAdapter.directions.includes('north') &&
@@ -390,8 +402,8 @@ namespace tileform {
 			directionAdapter.directions.includes('north')
 		) {
 			// Middle piece!
-			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2] / 2);
-			geometry.translate(-size[0] / 4, 0, size[2] / 4);
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
+			geometry.translate(-size[0] / 4, size[1] / 4, 0);
 			geometries.push(geometry);
 		}
 		if (!geometries.length)
@@ -434,14 +446,16 @@ namespace tileform {
 		}
 		protected _create() {
 			console.log(' tf light source create ');
-			this.light = new THREE.PointLight('cyan', 30000, 500);
-			this.light.decay = 2.4;
+			this.light = new THREE.PointLight('cyan', 1, 5);
+			// this.light.decay = 2.4;
+			this.light.intensity = 20000 * glob.scale;
+			this.light.distance = 300 * glob.scale;
 			this.entityGroup.add(this.light);
 			// Translate
 			this.translate();
 			this.entityGroup.position.z = 12;
 			this.entityGroup.updateMatrix();
-			stage.scene.add(this.entityGroup);
+			stage.lightsGroup.add(this.entityGroup);
 		}
 		protected _delete() {
 			console.log('remove light');
@@ -449,6 +463,7 @@ namespace tileform {
 			this.entityGroup.parent?.remove(this.entityGroup);
 		}
 		protected _update() {
+			// this.light.intensity = 30000 * glob.scale;
 		}
 	}
 
