@@ -101,6 +101,7 @@ namespace tileform {
 			const sunDistance = 2;
 			sun = new THREE.DirectionalLight('white', Math.PI / 3);
 			sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
+			sun.updateMatrix();
 			// scene.add(new THREE.AxesHelper(5));
 			scene.add(sun);
 
@@ -140,6 +141,7 @@ namespace tileform {
 			// Translate
 			const pos3d = (pts.mult(sprite.shape3d!.pos3d, glob.scale));
 			camera.position.set(pos3d[0], pos3d[1], 0);
+			camera.updateMatrix();
 			//camera.updateMatrix();
 			while (soleGroup.children.length > 0)
 				soleGroup.remove(soleGroup.children[0]);

@@ -177,9 +177,9 @@ var pipeline;
         if (glob.rerenderGame) {
             if (app.key('z') == 1)
                 pipeline.materialPost.uniforms.compression.value = !pipeline.materialPost.uniforms.compression.value;
-            pipeline.renderer.setRenderTarget(pipeline.targetMask);
-            pipeline.renderer.clear();
-            pipeline.renderer.render(pipeline.sceneMask, pipeline.camera);
+            //renderer.setRenderTarget(targetMask);
+            //renderer.clear();
+            //renderer.render(sceneMask, camera);
             pipeline.renderer.setRenderTarget(pipeline.target); // target
             pipeline.renderer.clear();
             pipeline.renderer.render(pipeline.scene, pipeline.camera);
@@ -194,7 +194,8 @@ var pipeline;
         console.log('pipeline init');
         glob.rerenderGame = true;
         THREE.ColorManagement.enabled = false;
-        //THREE.Object3D.DefaultMatrixAutoUpdate = false;
+        THREE.Object3D.DEFAULT_MATRIX_AUTO_UPDATE = false;
+        THREE.Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
         groups.major = new THREE.Group;
         groups.major.frustumCulled = false;
         groups.major.matrixAutoUpdate = false;

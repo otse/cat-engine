@@ -29,6 +29,7 @@ var zoom;
         }
         const scale = zoom.zooms[level];
         pipeline.camera.scale.set(scale, scale, scale);
+        pipeline.camera.updateMatrix();
         return false;
     }
 })(zoom || (zoom = {}));

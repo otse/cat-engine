@@ -34,6 +34,7 @@ namespace zoom {
         }
         const scale = zooms[level];
         pipeline.camera.scale.set(scale, scale, scale);
+        pipeline.camera.updateMatrix();
         return false;
     }
 

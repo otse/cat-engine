@@ -205,9 +205,9 @@ namespace pipeline {
 			if (app.key('z') == 1)
 				materialPost.uniforms.compression.value = !materialPost.uniforms.compression.value;
 
-			renderer.setRenderTarget(targetMask);
-			renderer.clear();
-			renderer.render(sceneMask, camera);
+			//renderer.setRenderTarget(targetMask);
+			//renderer.clear();
+			//renderer.render(sceneMask, camera);
 
 			renderer.setRenderTarget(target); // target
 			renderer.clear();
@@ -229,7 +229,8 @@ namespace pipeline {
 		glob.rerenderGame = true;
 
 		THREE.ColorManagement.enabled = false;
-		//THREE.Object3D.DefaultMatrixAutoUpdate = false;
+		THREE.Object3D.DEFAULT_MATRIX_AUTO_UPDATE = false;
+		THREE.Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		groups.major = new THREE.Group;
 		groups.major.frustumCulled = false;

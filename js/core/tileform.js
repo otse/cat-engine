@@ -83,6 +83,7 @@ var tileform;
             const sunDistance = 2;
             stage.sun = new THREE.DirectionalLight('white', Math.PI / 3);
             stage.sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
+            stage.sun.updateMatrix();
             // scene.add(new THREE.AxesHelper(5));
             stage.scene.add(stage.sun);
             stage.scene.add(stage.camera);
@@ -114,6 +115,7 @@ var tileform;
             // Translate
             const pos3d = (pts.mult(sprite.shape3d.pos3d, glob.scale));
             stage.camera.position.set(pos3d[0], pos3d[1], 0);
+            stage.camera.updateMatrix();
             //camera.updateMatrix();
             while (stage.soleGroup.children.length > 0)
                 stage.soleGroup.remove(stage.soleGroup.children[0]);
