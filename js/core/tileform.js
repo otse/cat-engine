@@ -208,7 +208,7 @@ var tileform;
         }
     }
     tileform.shape_hex_wrapper = shape_hex_wrapper;
-    tileform.hex_size = 8.1;
+    tileform.hex_size = 7.9;
     class hex_tile {
         data;
         scalar;
@@ -402,8 +402,8 @@ var tileform;
             console.log(' tf light source create ');
             this.light = new THREE.PointLight('cyan', 1, 5);
             // this.light.decay = 2.4;
-            this.light.intensity = 20000 * glob.scale;
-            this.light.distance = 300 * glob.scale;
+            this.light.intensity = 5000 * glob.scale;
+            this.light.distance = 500 * glob.scale;
             this.entityGroup.add(this.light);
             // Translate
             this.translate();

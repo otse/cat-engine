@@ -2,6 +2,7 @@ import { hooks } from "./dep/hooks.js";
 import pts from "./dep/pts.js";
 import rome from "./rome.js";
 import pipeline from "./core/pipeline.js";
+import glob from "./dep/glob.js";
 
 namespace app {
 	window['App'] = app;
@@ -143,14 +144,44 @@ namespace app {
 			else if (buttons[b] == MOUSE.UP)
 				buttons[b] = MOUSE.OFF;
 	}
+
+	export var fps = 0
 	export var delta = 0
-	export var last = 0
+
+	const take_time = (() => {
+		let beginTime = (performance || Date).now(), prevTime = beginTime, frames = 0
+		return function () {
+			frames++;
+			var time = (performance || Date).now();
+			if (time >= prevTime + 1000) {
+				fps = (frames * 1000) / (time - prevTime);
+				prevTime = time;
+				frames = 0;
+				return fps;
+			}
+		}
+	})();
+
+	const take_delta = (() => {
+		let last = 0;
+		return function () {
+			const now = (performance || Date).now();
+			delta = (now - last) / 1000;
+			last = now;
+			return delta;
+		};
+	})();
+
 	export async function base_loop() {
-		const now = (performance || Date).now();
-		delta = (now - last) / 1000;
-		last = now;
+		take_time();
+		take_delta();
 		await rome.step();
 		await hooks.emit('animationFrame', false);
+		document.querySelector('rome-stats')!.innerHTML = `
+		fps: ${fps.toFixed(2)}
+		<br />delta: ${delta.toFixed(3)}
+		<br />glob.rerenderGame: ${glob.rerenderGame}
+		`;
 		pipeline.render();
 		wheel = 0;
 		process_keys();

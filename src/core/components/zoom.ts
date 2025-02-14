@@ -1,6 +1,7 @@
 import { hooks } from "../../dep/hooks.js";
 import app from "../../app.js";
 import pipeline from "../pipeline.js";
+import glob from "../../dep/glob.js";
 
 
 namespace zoom {
@@ -24,10 +25,12 @@ namespace zoom {
         if (wheelEnabled && app.wheel == -1 || app.key('f') == 1) {
             console.log('app wheel');
             level = (level > 0) ? level - 1 : level;
+            glob.rerenderGame = true;
         }
         if (wheelEnabled && app.wheel == 1 || app.key('r') == 1) {
             console.log('app wheel');
             level = (level < zooms.length - 1) ? level + 1 : level;
+            glob.rerenderGame = true;
         }
         const scale = zooms[level];
         pipeline.camera.scale.set(scale, scale, scale);

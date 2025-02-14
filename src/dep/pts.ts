@@ -1,8 +1,11 @@
 import aabb2 from "./aabb2.js";
+import glob from "./glob.js";
 
 export interface Pt { x: number; y: number };
 
 type both = vec2 | vec3;
+
+glob.hexSize = [10, 10];
 
 class pts {
 	static pt(a: vec2): Pt {
@@ -49,11 +52,11 @@ class pts {
 		}
 	}
 
-	static readonly hexSize: vec2 = [17, 9];
+	// static readonly hexSize: vec2 = [17, 9];
 
 	static project(w: vec2): vec2 {
-		const tileWidth = this.hexSize[0] - 1;
-		const tileHeight = this.hexSize[1] - 1;
+		const tileWidth = glob.hexSize[0] - 1;
+		const tileHeight = glob.hexSize[1] - 1;
 		const x = w[0];
 		const y = -w[1]; // Invert Y to match the hex grid behavior.
 		const scaleFactor = tileWidth * 0.75;  // This corresponds to the scaling factor in project function
@@ -64,8 +67,8 @@ class pts {
 	}
 
 	static unproject(r: vec2): vec2 {
-		const tileWidth = this.hexSize[0] - 1;
-		const tileHeight = this.hexSize[1] - 1;
+		const tileWidth = glob.hexSize[0] - 1;
+		const tileHeight = glob.hexSize[1] - 1;
 
 		// Reverse the Y-axis scaling, considering tileHeight
 		const scaleFactor = tileWidth * 0.75;  // This corresponds to the scaling factor in project function

@@ -1,6 +1,6 @@
 import game_object from "./game object.js";
 import sprite from "../sprite.js";
-import pts from "../../dep/pts.js";
+import glob from "../../dep/glob.js";
 // Legacy just use wall 3d
 export class wall extends game_object {
     constructor(data) {
@@ -14,7 +14,7 @@ export class wall extends game_object {
         new sprite({
             gobj: this,
             bottomSort: true,
-            spriteSize: [pts.hexSize[0], 21],
+            spriteSize: [glob.hexSize[0], 21],
             spriteImage: 'hex/wall.png',
             spriteColor: 'blue'
         });

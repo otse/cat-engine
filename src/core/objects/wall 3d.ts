@@ -25,7 +25,7 @@ export class wall3d extends game_object {
 		// before we instantiated our adapter
 		new sprite3d({
 			gobj: this,
-			spriteSize: [pts.hexSize[0] * 4, pts.hexSize[1] * 4],
+			spriteSize: [glob.hexSize[0] * 4, glob.hexSize[1] * 4],
 			shapeSize: [16, 16, 10],
 			shapeType: 'wall',
 			shapeTexture: './img/textures/basaltcliffs.jpg',

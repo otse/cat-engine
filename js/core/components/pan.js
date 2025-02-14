@@ -89,6 +89,7 @@ var pan;
             before = pts.copy(pan_1.rpos);
         }
         if (app.button(1) >= 1) {
+            glob.rerenderGame = true;
             let mouse = app.mouse();
             mouse[1] = -mouse[1];
             let dif = pts.subtract(begin, mouse);
@@ -113,7 +114,7 @@ var pan;
     function set_camera() {
         // let inv = pts.inv(this.rpos);
         // ren.groups.axisSwap.position.set(inv[0], inv[1], 0);
-        const rpos2 = pts.add(pan_1.rpos, pts.divide([0, pts.hexSize[1]], 2));
+        const rpos2 = pts.add(pan_1.rpos, pts.divide([0, glob.hexSize[1]], 2));
         pipeline.camera.position.set(rpos2[0], rpos2[1], 0);
     }
 })(pan || (pan = {}));

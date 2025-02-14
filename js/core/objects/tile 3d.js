@@ -1,6 +1,6 @@
+import glob from "../../dep/glob.js";
 import game_object from "./game object.js";
 import sprite3d from "../sprite 3d.js";
-import pts from "../../dep/pts.js";
 export class tile3d extends game_object {
     preset;
     constructor(data, preset = 'default') {
@@ -15,7 +15,7 @@ export class tile3d extends game_object {
         new sprite3d({
             ...this.preset,
             gobj: this,
-            spriteSize: pts.hexSize,
+            spriteSize: glob.hexSize,
             shapeSize: [1, 1, 1],
             shapeType: 'hex',
         });

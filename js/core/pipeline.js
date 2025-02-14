@@ -157,7 +157,7 @@ void main() {
 	clr = vec4(grey + saturation * (original_color - grey), 1.0);*/
 	
 	gl_FragColor = clr;
-	// gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
+	gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
 
 }`;
 const vertexScreen = `
@@ -174,21 +174,25 @@ var pipeline;
     (function (groups) {
     })(groups = pipeline.groups || (pipeline.groups = {}));
     function render() {
-        if (app.key('z') == 1)
-            pipeline.materialPost.uniforms.compression.value = !pipeline.materialPost.uniforms.compression.value;
-        pipeline.renderer.setRenderTarget(pipeline.targetMask);
-        pipeline.renderer.clear();
-        pipeline.renderer.render(pipeline.sceneMask, pipeline.camera);
-        pipeline.renderer.setRenderTarget(pipeline.target); // target
-        pipeline.renderer.clear();
-        pipeline.renderer.render(pipeline.scene, pipeline.camera);
+        if (glob.rerenderGame) {
+            if (app.key('z') == 1)
+                pipeline.materialPost.uniforms.compression.value = !pipeline.materialPost.uniforms.compression.value;
+            pipeline.renderer.setRenderTarget(pipeline.targetMask);
+            pipeline.renderer.clear();
+            pipeline.renderer.render(pipeline.sceneMask, pipeline.camera);
+            pipeline.renderer.setRenderTarget(pipeline.target); // target
+            pipeline.renderer.clear();
+            pipeline.renderer.render(pipeline.scene, pipeline.camera);
+        }
         pipeline.renderer.setRenderTarget(null);
         pipeline.renderer.clear();
         pipeline.renderer.render(pipeline.sceneShader, pipeline.camera2);
+        glob.rerenderGame = false;
     }
     pipeline.render = render;
     function init() {
         console.log('pipeline init');
+        glob.rerenderGame = true;
         THREE.ColorManagement.enabled = false;
         //THREE.Object3D.DefaultMatrixAutoUpdate = false;
         groups.major = new THREE.Group;

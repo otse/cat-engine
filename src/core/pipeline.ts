@@ -159,7 +159,7 @@ void main() {
 	clr = vec4(grey + saturation * (original_color - grey), 1.0);*/
 	
 	gl_FragColor = clr;
-	// gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
+	gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
 
 }`
 
@@ -201,26 +201,32 @@ namespace pipeline {
 
 	export function render() {
 
-		if (app.key('z') == 1)
-			materialPost.uniforms.compression.value = !materialPost.uniforms.compression.value;
+		if (glob.rerenderGame) {
+			if (app.key('z') == 1)
+				materialPost.uniforms.compression.value = !materialPost.uniforms.compression.value;
 
-		renderer.setRenderTarget(targetMask);
-		renderer.clear();
-		renderer.render(sceneMask, camera);
+			renderer.setRenderTarget(targetMask);
+			renderer.clear();
+			renderer.render(sceneMask, camera);
 
-		renderer.setRenderTarget(target); // target
-		renderer.clear();
-		renderer.render(scene, camera);
+			renderer.setRenderTarget(target); // target
+			renderer.clear();
+			renderer.render(scene, camera);
+		}
 
 		renderer.setRenderTarget(null);
 		renderer.clear();
 		renderer.render(sceneShader, camera2);
+
+		glob.rerenderGame = false;
 	}
 
 	export var plane
 
 	export function init() {
 		console.log('pipeline init')
+
+		glob.rerenderGame = true;
 
 		THREE.ColorManagement.enabled = false;
 		//THREE.Object3D.DefaultMatrixAutoUpdate = false;

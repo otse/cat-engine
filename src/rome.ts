@@ -34,7 +34,9 @@ namespace rome {
 		glob.rome = rome;
 		glob.rerender = true;
 		glob.rerenderNext = false;
+		glob.rerenderGame = true;
 		glob.scale = 1;
+		glob.hexSize = [17, 9];
 		await preload_basic_textures();
 		await pipeline.init();
 		await tileform.init();
