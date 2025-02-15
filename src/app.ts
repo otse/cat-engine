@@ -3,6 +3,7 @@ import pts from "./dep/pts.js";
 import rome from "./rome.js";
 import pipeline from "./core/pipeline.js";
 import glob from "./dep/glob.js";
+import zoom from "./core/components/zoom.js";
 
 namespace app {
 	window['App'] = app;
@@ -181,6 +182,8 @@ namespace app {
 		fps: ${fps.toFixed(2)}
 		<br />delta: ${delta.toFixed(3)}
 		<br />glob.rerenderGame: ${glob.rerenderGame}
+		<br />zoom: ${zoom.actualZoom()}
+		<br />cameraMode: ${pipeline.cameraMode}
 		`;
 		pipeline.render();
 		wheel = 0;

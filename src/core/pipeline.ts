@@ -173,11 +173,14 @@ void main() {
 
 namespace pipeline {
 
+	export const cameraMode: 'ortho' | 'perspective' = 'ortho';
+
 	export const DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
 
 	export var dotsPerInch = 1;
 
 	export namespace groups {
+		export var camera
 		export var major
 	}
 	export var scene
@@ -232,15 +235,16 @@ namespace pipeline {
 		THREE.Object3D.DEFAULT_MATRIX_AUTO_UPDATE = false;
 		THREE.Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
+		groups.camera = new THREE.Group;
 		groups.major = new THREE.Group;
 		groups.major.frustumCulled = false;
-		groups.major.matrixAutoUpdate = false;
-		groups.major.matrixWorldAutoUpdate = false;
 
 		scene = new THREE.Scene();
 		scene.frustumCulled = false;
+		scene.add(groups.camera);
 		scene.add(groups.major);
-		scene.background = new THREE.Color('#111');
+		// scene.add(new THREE.AxesHelper(100));
+		scene.background = new THREE.Color('#333');
 
 		sceneShader = new THREE.Scene();
 		sceneShader.frustumCulled = false;
@@ -325,20 +329,29 @@ namespace pipeline {
 
 		plane = new THREE.PlaneGeometry(targetSize[0], targetSize[1]);
 
-		if (quadPost)
+		glob.rerenderGame = true;
+
+		if (quadPost) // ?
 			quadPost.geometry = plane;
 
-		const cameraMode = 0;
+		while (groups.camera.children.length > 0)
+			groups.camera.remove(groups.camera.children[0]);
 
-		if (cameraMode) {
+		if (cameraMode == 'perspective') {
 			camera = new THREE.PerspectiveCamera(
-				70, window.innerWidth / window.innerHeight, 1, 1000);
-			//camera.zoom = camera.aspect; // scales "to fit" rather than zooming out
-			camera.position.z = 800;
+				45, window.innerWidth / window.innerHeight, 0.1, 1000);
+			camera.position.z = 200;
+			camera.updateMatrix();
+			groups.camera.rotation.x = Math.PI / 12;
+			groups.camera.add(camera);
+			groups.camera.updateMatrix();
 		}
 		else {
 			camera = makeOrthographicCamera(targetSize[0], targetSize[1]);
+			groups.camera.add(camera);
 		}
+		camera.updateMatrix();
+		camera.updateProjectionMatrix();
 
 		camera2 = makeOrthographicCamera(targetSize[0], targetSize[1]);
 		camera2.updateProjectionMatrix();

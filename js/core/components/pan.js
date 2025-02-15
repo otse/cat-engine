@@ -115,7 +115,9 @@ var pan;
         // let inv = pts.inv(this.rpos);
         // ren.groups.axisSwap.position.set(inv[0], inv[1], 0);
         const rpos2 = pts.add(pan_1.rpos, pts.divide([0, glob.hexSize[1]], 2));
-        pipeline.camera.position.set(rpos2[0], rpos2[1], 0);
+        pipeline.groups.camera.position.x = rpos2[0];
+        pipeline.groups.camera.position.y = rpos2[1];
+        pipeline.groups.camera.updateMatrix();
     }
 })(pan || (pan = {}));
 export default pan;

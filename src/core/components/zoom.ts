@@ -5,7 +5,7 @@ import glob from "../../dep/glob.js";
 
 
 namespace zoom {
-    let level = 3;
+    export let level = 3;
 
     const wheelEnabled = false;
 
@@ -33,8 +33,14 @@ namespace zoom {
             glob.rerenderGame = true;
         }
         const scale = zooms[level];
-        pipeline.camera.scale.set(scale, scale, scale);
+        if (pipeline.cameraMode == 'perspective') {
+            pipeline.camera.position.z = (5 - level) * 40 || 10;
+        }
+        else {
+            pipeline.camera.scale.set(scale, scale, scale);
+        }
         pipeline.camera.updateMatrix();
+        pipeline.camera.updateProjectionMatrix();
         return false;
     }
 

@@ -3,6 +3,7 @@ import pts from "./dep/pts.js";
 import rome from "./rome.js";
 import pipeline from "./core/pipeline.js";
 import glob from "./dep/glob.js";
+import zoom from "./core/components/zoom.js";
 var app;
 (function (app) {
     window['App'] = app;
@@ -181,6 +182,8 @@ var app;
 		fps: ${app.fps.toFixed(2)}
 		<br />delta: ${app.delta.toFixed(3)}
 		<br />glob.rerenderGame: ${glob.rerenderGame}
+		<br />zoom: ${zoom.actualZoom()}
+		<br />cameraMode: ${pipeline.cameraMode}
 		`;
         pipeline.render();
         app.wheel = 0;

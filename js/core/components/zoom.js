@@ -4,7 +4,7 @@ import pipeline from "../pipeline.js";
 import glob from "../../dep/glob.js";
 var zoom;
 (function (zoom) {
-    let level = 3;
+    zoom.level = 3;
     const wheelEnabled = false;
     zoom.zooms = [1, 0.5, 0.33, 0.2, 0.1, 0.05];
     function register() {
@@ -12,24 +12,30 @@ var zoom;
     }
     zoom.register = register;
     function actualZoom() {
-        return zoom.zooms[level];
+        return zoom.zooms[zoom.level];
     }
     zoom.actualZoom = actualZoom;
     async function step() {
         //console.log('zoom step');
         if (wheelEnabled && app.wheel == -1 || app.key('f') == 1) {
             console.log('app wheel');
-            level = (level > 0) ? level - 1 : level;
+            zoom.level = (zoom.level > 0) ? zoom.level - 1 : zoom.level;
             glob.rerenderGame = true;
         }
         if (wheelEnabled && app.wheel == 1 || app.key('r') == 1) {
             console.log('app wheel');
-            level = (level < zoom.zooms.length - 1) ? level + 1 : level;
+            zoom.level = (zoom.level < zoom.zooms.length - 1) ? zoom.level + 1 : zoom.level;
             glob.rerenderGame = true;
         }
-        const scale = zoom.zooms[level];
-        pipeline.camera.scale.set(scale, scale, scale);
+        const scale = zoom.zooms[zoom.level];
+        if (pipeline.cameraMode == 'perspective') {
+            pipeline.camera.position.z = (5 - zoom.level) * 40 || 10;
+        }
+        else {
+            pipeline.camera.scale.set(scale, scale, scale);
+        }
         pipeline.camera.updateMatrix();
+        pipeline.camera.updateProjectionMatrix();
         return false;
     }
 })(zoom || (zoom = {}));

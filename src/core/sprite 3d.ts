@@ -14,11 +14,9 @@ export namespace sprite3d {
 };
 
 export class sprite3d extends sprite {
-	rerender = true
+	rerender
 	target
 	shape3d?: tileform.shape3d
-	// The sprite maintains the 3dpos instead of the shape?
-	_3dpos: vec2 = [0, 0]
 	data_: sprite3d_joint_literal
 	constructor(
 		data: sprite3d_joint_literal
@@ -31,6 +29,7 @@ export class sprite3d extends sprite {
 			...data
 		});
 		this.data_ = this.data as sprite3d_joint_literal;
+		this.rerender = true;
 	}
 	protected _delete() {
 		super._delete();
@@ -42,6 +41,7 @@ export class sprite3d extends sprite {
 			this.data_.shapeType!,
 			this.data_);
 		this.shape3d?.create();
+		this._make_target();
 		this.prerender();
 	}
 	protected override _step() {
@@ -53,7 +53,6 @@ export class sprite3d extends sprite {
 		// If both are false guard
 		if (!this.rerender && !glob.rerender)
 			return;
-		this._make_target();
 		this._render();
 		this.material.map = this.target.texture;
 		this.material.needsUpdate = true;

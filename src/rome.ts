@@ -160,6 +160,7 @@ namespace rome {
 		game_object._gameObjects.forEach(gobj => gobj.purge());
 		game_object._gameObjects = [];
 		glob.rerender = true;
+		glob.rerenderGame = true;
 		makeTestingChamber();
 	}
 

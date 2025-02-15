@@ -49,6 +49,7 @@ export class sprite {
             color: this.data.spriteColor,
             transparent: true,
             depthTest: false,
+            // side: THREE.DoubleSide
         }, {
             matrix: this.matrix,
             maskColor: new THREE.Vector3(1, 1, 1),

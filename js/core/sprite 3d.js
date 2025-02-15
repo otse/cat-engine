@@ -5,11 +5,9 @@ import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 ;
 export class sprite3d extends sprite {
-    rerender = true;
+    rerender;
     target;
     shape3d;
-    // The sprite maintains the 3dpos instead of the shape?
-    _3dpos = [0, 0];
     data_;
     constructor(data) {
         super({
@@ -20,6 +18,7 @@ export class sprite3d extends sprite {
             ...data
         });
         this.data_ = this.data;
+        this.rerender = true;
     }
     _delete() {
         super._delete();
@@ -29,6 +28,7 @@ export class sprite3d extends sprite {
         super._create();
         this.shape3d = tileform.shapeMaker(this.data_.shapeType, this.data_);
         this.shape3d?.create();
+        this._make_target();
         this.prerender();
     }
     _step() {
@@ -40,7 +40,6 @@ export class sprite3d extends sprite {
         // If both are false guard
         if (!this.rerender && !glob.rerender)
             return;
-        this._make_target();
         this._render();
         this.material.map = this.target.texture;
         this.material.needsUpdate = true;

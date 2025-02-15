@@ -168,6 +168,7 @@ void main() {
 }`;
 var pipeline;
 (function (pipeline) {
+    pipeline.cameraMode = 'ortho';
     pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
     pipeline.dotsPerInch = 1;
     let groups;
@@ -196,14 +197,15 @@ var pipeline;
         THREE.ColorManagement.enabled = false;
         THREE.Object3D.DEFAULT_MATRIX_AUTO_UPDATE = false;
         THREE.Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
+        groups.camera = new THREE.Group;
         groups.major = new THREE.Group;
         groups.major.frustumCulled = false;
-        groups.major.matrixAutoUpdate = false;
-        groups.major.matrixWorldAutoUpdate = false;
         pipeline.scene = new THREE.Scene();
         pipeline.scene.frustumCulled = false;
+        pipeline.scene.add(groups.camera);
         pipeline.scene.add(groups.major);
-        pipeline.scene.background = new THREE.Color('#111');
+        // scene.add(new THREE.AxesHelper(100));
+        pipeline.scene.background = new THREE.Color('#333');
         pipeline.sceneShader = new THREE.Scene();
         pipeline.sceneShader.frustumCulled = false;
         pipeline.sceneShader.background = new THREE.Color('purple');
@@ -272,17 +274,25 @@ var pipeline;
         pipeline.target.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.targetMask.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.plane = new THREE.PlaneGeometry(pipeline.targetSize[0], pipeline.targetSize[1]);
-        if (pipeline.quadPost)
+        glob.rerenderGame = true;
+        if (pipeline.quadPost) // ?
             pipeline.quadPost.geometry = pipeline.plane;
-        const cameraMode = 0;
-        if (cameraMode) {
-            pipeline.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-            //camera.zoom = camera.aspect; // scales "to fit" rather than zooming out
-            pipeline.camera.position.z = 800;
+        while (groups.camera.children.length > 0)
+            groups.camera.remove(groups.camera.children[0]);
+        if (pipeline.cameraMode == 'perspective') {
+            pipeline.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            pipeline.camera.position.z = 200;
+            pipeline.camera.updateMatrix();
+            groups.camera.rotation.x = Math.PI / 12;
+            groups.camera.add(pipeline.camera);
+            groups.camera.updateMatrix();
         }
         else {
             pipeline.camera = makeOrthographicCamera(pipeline.targetSize[0], pipeline.targetSize[1]);
+            groups.camera.add(pipeline.camera);
         }
+        pipeline.camera.updateMatrix();
+        pipeline.camera.updateProjectionMatrix();
         pipeline.camera2 = makeOrthographicCamera(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.camera2.updateProjectionMatrix();
     }
