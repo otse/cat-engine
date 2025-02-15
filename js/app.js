@@ -179,7 +179,9 @@ var app;
         await rome.step();
         await hooks.emit('animationFrame', false);
         document.querySelector('rome-stats').innerHTML = `
-		fps: ${app.fps.toFixed(2)}
+		DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
+		<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
+		<br />fps: ${app.fps.toFixed(2)}
 		<br />delta: ${app.delta.toFixed(3)}
 		<br />glob.rerenderGame: ${glob.rerenderGame}
 		<br />zoom: ${zoom.actualZoom()}

@@ -158,7 +158,6 @@ void main() {
 	
 	gl_FragColor = clr;
 	gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
-
 }`;
 const vertexScreen = `
 varying vec2 vUv;
@@ -170,6 +169,7 @@ var pipeline;
 (function (pipeline) {
     pipeline.cameraMode = 'ortho';
     pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
+    pipeline.ROUND_UP_DOTS_PER_INCH = true;
     pipeline.dotsPerInch = 1;
     let groups;
     (function (groups) {
@@ -216,6 +216,8 @@ var pipeline;
         pipeline.scene.add(pipeline.ambientLight);
         if (pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
             pipeline.dotsPerInch = window.devicePixelRatio;
+            if (pipeline.ROUND_UP_DOTS_PER_INCH)
+                pipeline.dotsPerInch = Math.ceil(pipeline.dotsPerInch);
         }
         glob.dotsPerInch = pipeline.dotsPerInch;
         pipeline.target = new THREE.WebGLRenderTarget(1024, 1024, {
@@ -261,11 +263,13 @@ var pipeline;
     function onWindowResize() {
         pipeline.screenSize = [window.innerWidth, window.innerHeight];
         pipeline.screenSize = pts.floor(pipeline.screenSize);
+        // screenSize = pts.subtract(screenSize, [10, 10])
+        //screenSize = pts.even(screenSize, -1);
         pipeline.targetSize = pts.copy(pipeline.screenSize);
         if (pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
             pipeline.targetSize = pts.mult(pipeline.screenSize, pipeline.dotsPerInch);
             pipeline.targetSize = pts.floor(pipeline.targetSize);
-            pipeline.targetSize = pts.even(pipeline.targetSize, -1);
+            // targetSize = pts.even(targetSize, -1);
         }
         pipeline.renderer.setSize(pipeline.screenSize[0], pipeline.screenSize[1]);
         console.log(`

@@ -32,7 +32,7 @@ namespace pan {
 	let stick: game_object | undefined = undefined
 
 	const startWtorpos = true;
-	const funnyJumpingRpos = false;
+	const alignFullPixels = false;
 
 	var marker: game_object;
 
@@ -57,7 +57,7 @@ namespace pan {
 		marker.wtorpos();
 		marker.update();
 		// Jump to nearest full pixel
-		if (funnyJumpingRpos)
+		if (alignFullPixels)
 			rpos = pts.round(rpos);
 		set_camera();
 		//lod.gworld.update(wpos);

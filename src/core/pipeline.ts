@@ -160,9 +160,7 @@ void main() {
 	
 	gl_FragColor = clr;
 	gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
-
 }`
-
 
 const vertexScreen = `
 varying vec2 vUv;
@@ -176,6 +174,7 @@ namespace pipeline {
 	export const cameraMode: 'ortho' | 'perspective' = 'ortho';
 
 	export const DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
+	export const ROUND_UP_DOTS_PER_INCH = true;
 
 	export var dotsPerInch = 1;
 
@@ -259,6 +258,8 @@ namespace pipeline {
 
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
 			dotsPerInch = window.devicePixelRatio;
+			if (ROUND_UP_DOTS_PER_INCH)
+				dotsPerInch = Math.ceil(dotsPerInch);
 		}
 
 		glob.dotsPerInch = dotsPerInch;
@@ -311,12 +312,14 @@ namespace pipeline {
 	function onWindowResize() {
 		screenSize = [window.innerWidth, window.innerHeight];
 		screenSize = pts.floor(screenSize);
+		// screenSize = pts.subtract(screenSize, [10, 10])
+		//screenSize = pts.even(screenSize, -1);
 		targetSize = pts.copy(screenSize);
 
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
 			targetSize = pts.mult(screenSize, dotsPerInch);
 			targetSize = pts.floor(targetSize);
-			targetSize = pts.even(targetSize, -1);
+			// targetSize = pts.even(targetSize, -1);
 		}
 		renderer.setSize(screenSize[0], screenSize[1]);
 
