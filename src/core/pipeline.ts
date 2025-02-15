@@ -159,7 +159,7 @@ void main() {
 	clr = vec4(grey + saturation * (original_color - grey), 1.0);*/
 	
 	gl_FragColor = clr;
-	gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
+	// gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
 }`
 
 const vertexScreen = `
@@ -312,7 +312,6 @@ namespace pipeline {
 	function onWindowResize() {
 		screenSize = [window.innerWidth, window.innerHeight];
 		screenSize = pts.floor(screenSize);
-		// screenSize = pts.subtract(screenSize, [10, 10])
 		//screenSize = pts.even(screenSize, -1);
 		targetSize = pts.copy(screenSize);
 

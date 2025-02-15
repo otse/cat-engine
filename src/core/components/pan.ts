@@ -80,15 +80,19 @@ namespace pan {
 	function sideways() {
 		if (app.key('arrowright')) {
 			rpos[0] += 1 * glob.scale;
+			glob.rerenderGame = true;
 		}
 		if (app.key('arrowleft')) {
 			rpos[0] -= 1 * glob.scale;
+			glob.rerenderGame = true;
 		}
 		if (app.key('arrowup')) {
 			rpos[1] += 1 * glob.scale;
+			glob.rerenderGame = true;
 		}
 		if (app.key('arrowdown')) {
 			rpos[1] -= 1 * glob.scale;
+			glob.rerenderGame = true;
 		}
 	}
 

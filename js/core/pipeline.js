@@ -157,7 +157,7 @@ void main() {
 	clr = vec4(grey + saturation * (original_color - grey), 1.0);*/
 	
 	gl_FragColor = clr;
-	gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
+	// gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
 }`;
 const vertexScreen = `
 varying vec2 vUv;
@@ -263,7 +263,6 @@ var pipeline;
     function onWindowResize() {
         pipeline.screenSize = [window.innerWidth, window.innerHeight];
         pipeline.screenSize = pts.floor(pipeline.screenSize);
-        // screenSize = pts.subtract(screenSize, [10, 10])
         //screenSize = pts.even(screenSize, -1);
         pipeline.targetSize = pts.copy(pipeline.screenSize);
         if (pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {

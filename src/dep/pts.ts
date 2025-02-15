@@ -164,7 +164,7 @@ class pts {
 		return zx[0] + zx[1];
 	}
 
-	static uneven(a: vec2, n: number = -1): vec2 {
+	static make_uneven(a: vec2, n: number = -1): vec2 {
 		let b = pts.copy(a);
 		if (b[0] % 2 != 1) {
 			b[0] += n;
@@ -174,7 +174,7 @@ class pts {
 		}
 		return b;
 	}
-	static even(a: vec2, n: number = -1): vec2 {
+	static make_even(a: vec2, n: number = -1): vec2 {
 		let b = pts.copy(a);
 		if (b[0] % 2 != 0) {
 			b[0] += n;

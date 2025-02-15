@@ -67,15 +67,19 @@ var pan;
     function sideways() {
         if (app.key('arrowright')) {
             pan_1.rpos[0] += 1 * glob.scale;
+            glob.rerenderGame = true;
         }
         if (app.key('arrowleft')) {
             pan_1.rpos[0] -= 1 * glob.scale;
+            glob.rerenderGame = true;
         }
         if (app.key('arrowup')) {
             pan_1.rpos[1] += 1 * glob.scale;
+            glob.rerenderGame = true;
         }
         if (app.key('arrowdown')) {
             pan_1.rpos[1] -= 1 * glob.scale;
+            glob.rerenderGame = true;
         }
     }
     function pan() {

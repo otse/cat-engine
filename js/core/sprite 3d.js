@@ -15,6 +15,7 @@ export class sprite3d extends sprite {
             shapeTexture: './img/textures/stonemixed.jpg',
             shapeGroundTexture: './img/textures/overgrown.jpg',
             shapeSize: [10, 10],
+            bottomSort: false,
             ...data
         });
         this.data_ = this.data;
@@ -46,9 +47,9 @@ export class sprite3d extends sprite {
         this.rerender = false;
     }
     _make_target() {
-        let { spriteSize: size } = this.data;
-        size = pts.mult(size, glob.scale);
-        this.target = pipeline.makeRenderTarget(size[0], size[1]);
+        let { spriteSize } = this.data;
+        spriteSize = pts.mult(spriteSize, glob.scale);
+        this.target = pipeline.makeRenderTarget(spriteSize[0], spriteSize[1]);
     }
     _render() {
         tileform.stage.prepare(this);

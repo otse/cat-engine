@@ -123,7 +123,7 @@ class pts {
     static together(zx) {
         return zx[0] + zx[1];
     }
-    static uneven(a, n = -1) {
+    static make_uneven(a, n = -1) {
         let b = pts.copy(a);
         if (b[0] % 2 != 1) {
             b[0] += n;
@@ -133,7 +133,7 @@ class pts {
         }
         return b;
     }
-    static even(a, n = -1) {
+    static make_even(a, n = -1) {
         let b = pts.copy(a);
         if (b[0] % 2 != 0) {
             b[0] += n;

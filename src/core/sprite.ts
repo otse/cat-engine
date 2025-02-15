@@ -34,6 +34,8 @@ export class sprite {
 			spriteColor: 'white',
 			...data,
 		};
+		// Make uneven ceil fixes most misaligments
+		this.data.spriteSize = pts.make_uneven(this.data.spriteSize!, 1);
 		this.gobj = this.data.gobj;
 		this.gobj.sprite = this;
 		// this.data.spriteColor = this.gobj.data.colorOverride || 'white';
@@ -70,11 +72,11 @@ export class sprite {
 			masked: false,
 			bool: true
 		}, defines);
-		let { spriteSize: size } = this.data;
-		size = pts.mult(size!, glob.scale);
+		let { spriteSize } = this.data;
+		spriteSize = pts.mult(spriteSize!, glob.scale);
 		this.geometry = new THREE.PlaneGeometry(
-			size![0],
-			size![1], 1, 1);
+			spriteSize![0],
+			spriteSize![1], 1, 1);
 		this.mesh = new THREE.Mesh(
 			this.geometry, this.material);
 		this.update();
@@ -85,13 +87,13 @@ export class sprite {
 		this.material.color.set(this.data.spriteColor);
 		//console.log('no color?', this.data.color);
 		this.mesh.renderOrder = -gabe.wpos[1] + gabe.wpos[0];
-		let pos = gabe.rpos;
+		let pos = pts.copy(gabe.rpos);
 		// Todo the problem here was that aligning the bottom
 		// resulted in impossible problems
 		const tileSize = glob.hexSize;
 		// Todo omg
 		if (this.data.bottomSort)
-			pos = pts.add(pos, pts.divide([0, pts.mult(pts.subtract(this.data.spriteSize!, tileSize), glob.scale)[1]], 2));
+			pos[1] -= this.data.spriteSize![1] / 2;
 		//let pos = pts.add(this.gabeObject.rpos, pts.divide(this.data.size!, 2));
 		this.mesh.position.fromArray([...pos, gabe.z]);
 		this.mesh.updateMatrix();
