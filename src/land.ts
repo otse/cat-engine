@@ -31,7 +31,7 @@ namespace land {
 						tilePreset = 'cobblestone';
 					}
 					else if (point < -0.3) {
-						tilePreset = 'overgrown';
+						tilePreset = 'stonemixed';
 					}
 					const tile = new tile3d({
 						_type: 'direct',

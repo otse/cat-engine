@@ -26,7 +26,7 @@ namespace clod {
 
 	const grid_crawl_makes_chunks = true;
 
-	export var SectorSpan = 2;
+	export var SectorSpan = 4;
 
 	export var stamp = 0; // used only by server slod
 

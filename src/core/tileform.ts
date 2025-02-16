@@ -13,6 +13,10 @@ import sprite from "./sprite.js";
 
 namespace tileform {
 
+	export const SCENE_BASED_TILEFORM_POSITIONING = true;
+
+	export let ALLOW_NORMAL_MAPS = true;
+
 	export type scene_preset = 'hex' | 'wall'
 
 	// This doesn't do anything but it's a cool ide
@@ -30,13 +34,14 @@ namespace tileform {
 	}
 
 	function projectSquareHex(w: vec2): vec2 {
-		const width = 24;
-		const height = 24;
+		const tileWidth = glob.hexSize[0] - 1;
+		const tileHeight = glob.hexSize[0] - 1;
 		const x = w[0];
 		const y = -w[1];
+		const scaleFactor = tileWidth * 0.75;
 		return [
-			(x - y) * (width / 2),
-			(x + y) * (-height / 2) / 2
+			(x - y) * ((scaleFactor)),
+			(x + y) * ((-tileHeight) / 2)
 		];
 	}
 
@@ -66,6 +71,11 @@ namespace tileform {
 
 		async function preload() {
 			await pipeline.preloadTextureAsync('./img/textures/stonemixed.jpg');
+			await pipeline.preloadTextureAsync('./img/textures/stonemixednormal.jpg');
+			await pipeline.preloadTextureAsync('./img/textures/stonemixed2.jpg');
+			await pipeline.preloadTextureAsync('./img/textures/stonemixed2normal.jpg');
+			await pipeline.preloadTextureAsync('./img/textures/cobblestone3.jpg');
+			await pipeline.preloadTextureAsync('./img/textures/cobblestone3normal.jpg');
 			await pipeline.preloadTextureAsync('./img/textures/beach.jpg');
 			await pipeline.preloadTextureAsync('./img/textures/beachnormal.jpg');
 			await pipeline.preloadTextureAsync('./img/textures/sand.jpg');
@@ -85,6 +95,7 @@ namespace tileform {
 			//testLight.position.set(0, 100, 0);
 			//const helper = new THREE.PointLightHelper(testLight, 30);
 			scene = new THREE.Scene();
+			// scene.fog = new THREE.Fog( 0xcccccc, 0, 5 );
 			scene.matrixWorldAutoUpdate = true;
 			//scene.add(testLight);
 			//scene.add(helper);
@@ -125,35 +136,15 @@ namespace tileform {
 				-100, 500);
 			camera.position.set(0, 0, 1);
 			camera.rotation.set(stageCameraRotation, 0, 0);
-			// Use integer-based positioning to avoid jagged artifacts
-			/*camera.up.set(0, 0, 1);
-
-			// Use integer-based positioning to avoid jagged artifacts
-			const scaleFactor = 20;
-			camera.position.set(
-				2 * scaleFactor, // X-axis
-				-2 * scaleFactor, // Y-axis
-				1 * scaleFactor  // Z-axis (half of X & Y for 2:1 dimetric)
-			);
-
-			camera.lookAt(0, 0, 0);*/
-
-			// Translate
 			const pos3d = (pts.mult(sprite.shape3d!.pos3d, glob.scale));
 			camera.position.set(pos3d[0], pos3d[1], 0);
 			camera.updateMatrix();
-			//camera.updateMatrix();
 			while (soleGroup.children.length > 0)
 				soleGroup.remove(soleGroup.children[0]);
-			//soleGroup.add(lightsGroup);
 			soleGroup.add(sprite.shape3d!.entityGroup);
 			soleGroup.updateMatrix();
-			soleGroup.updateMatrixWorld(true);
 			scene.updateMatrix();
 			scene.updateMatrixWorld(true);
-			/*const { wpos } = sprite.gobj;
-			const projected = (pts.mult(pts.project(wpos), tfMultiplier));
-			soleGroup.position.set(projected[0], 0, projected[1]);*/
 		}
 
 		export function render() {
@@ -194,6 +185,7 @@ namespace tileform {
 			this.data = {
 				shapeTexture: './img/textures/stonemixed.jpg',
 				shapeGroundTexture: './img/textures/beachnormal.jpg',
+				shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
 				...data
 			}
 			shapes.push(this);
@@ -225,6 +217,7 @@ namespace tileform {
 		gobj: game_object,
 		shapeType?: shape_types,
 		shapeTexture?: string,
+		shapeGroundTextureNormal?: string,
 		shapeGroundTexture?: string,
 		shapeSize?: vec3,
 	}
@@ -274,8 +267,11 @@ namespace tileform {
 			geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
 			const material = new THREE.MeshPhongMaterial({
 				color: 'white',
+				specular: 'black',
 				shininess: 0,
 				map: pipeline.getTexture(this.data.shapeGroundTexture!),
+				normalScale: new THREE.Vector2(1, 1),
+				normalMap: ALLOW_NORMAL_MAPS ? pipeline.getTexture(this.data.shapeGroundTextureNormal!) : null,
 				// side: THREE.DoubleSide
 			});
 			// geometry = new THREE.PlaneGeometry(10, 10);
@@ -450,13 +446,16 @@ namespace tileform {
 			console.log(' tf light source create ');
 			this.light = new THREE.PointLight('cyan', 1, 5);
 			// this.light.decay = 2.4;
-			this.light.intensity = 5000 * glob.scale;
-			this.light.distance = 500 * glob.scale;
+			this.light.intensity = 10000 * glob.scale;
+			this.light.distance = 600 * glob.scale;
+			this.light.decay = 1.8;
+			this.light.updateMatrix();
 			this.entityGroup.add(this.light);
 			// Translate
 			this.translate();
-			this.entityGroup.position.z = 12;
+			this.entityGroup.position.z = 10;
 			this.entityGroup.updateMatrix();
+			this.entityGroup.updateMatrixWorld(true); // Bad
 			stage.lightsGroup.add(this.entityGroup);
 		}
 		protected _delete() {
@@ -471,6 +470,11 @@ namespace tileform {
 
 	function opkl() {
 		let change = false;
+		if (app.key('f3') == 1) {
+			console.log('toggle norml maps');
+			ALLOW_NORMAL_MAPS = ! ALLOW_NORMAL_MAPS;
+			change = true;
+		}
 		if (app.key('o') == 1) {
 			wallRotationX -= 1;
 			change = true;

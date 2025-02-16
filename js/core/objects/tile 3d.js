@@ -26,14 +26,17 @@ const presets = {
     default: {
         gobj: {},
         shapeGroundTexture: './img/textures/beach.jpg',
+        shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
     },
-    overgrown: {
+    stonemixed: {
         gobj: {},
-        shapeGroundTexture: './img/textures/overgrown.jpg',
+        shapeGroundTexture: './img/textures/stonemixed2.jpg',
+        shapeGroundTextureNormal: './img/textures/stonemixed2normal.jpg',
     },
     cobblestone: {
         gobj: {},
-        shapeGroundTexture: './img/textures/cobblestone2.jpg',
+        shapeGroundTexture: './img/textures/cobblestone3.jpg',
+        shapeGroundTextureNormal: './img/textures/cobblestone3normal.jpg',
     }
 };
 export default tile3d;

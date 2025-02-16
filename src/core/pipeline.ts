@@ -159,7 +159,7 @@ void main() {
 	clr = vec4(grey + saturation * (original_color - grey), 1.0);*/
 	
 	gl_FragColor = clr;
-	// gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
+	gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
 }`
 
 const vertexScreen = `
@@ -318,7 +318,7 @@ namespace pipeline {
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
 			targetSize = pts.mult(screenSize, dotsPerInch);
 			targetSize = pts.floor(targetSize);
-			// targetSize = pts.even(targetSize, -1);
+			// targetSize = pts.make_uneven(targetSize, -1);
 		}
 		renderer.setSize(screenSize[0], screenSize[1]);
 

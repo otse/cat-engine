@@ -4,6 +4,7 @@ import rome from "./rome.js";
 import pipeline from "./core/pipeline.js";
 import glob from "./dep/glob.js";
 import zoom from "./core/components/zoom.js";
+import tileform from "./core/tileform.js";
 
 namespace app {
 	window['App'] = app;
@@ -181,10 +182,11 @@ namespace app {
 		document.querySelector('rome-stats')!.innerHTML = `
 		DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
 		<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
+		<br />&#9;ALLOW_NORMAL_MAPS (f3): ${tileform.ALLOW_NORMAL_MAPS}
 		<br />fps: ${fps.toFixed(2)}
 		<br />delta: ${delta.toFixed(3)}
-		<br />glob.rerenderGame: ${glob.rerenderGame}
 		<br />zoom: ${zoom.actualZoom()}
+		<br />rerenderGame: ${glob.rerenderGame}
 		<br />cameraMode: ${pipeline.cameraMode}
 		`;
 		pipeline.render();

@@ -32,14 +32,17 @@ const presets: { [index: string]: sprite3d.literaltype } = {
 	default: {
 		gobj: {} as any,
 		shapeGroundTexture: './img/textures/beach.jpg',
+		shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
 	},
-	overgrown: {
+	stonemixed: {
 		gobj: {} as any,
-		shapeGroundTexture: './img/textures/overgrown.jpg',
+		shapeGroundTexture: './img/textures/stonemixed2.jpg',
+		shapeGroundTextureNormal: './img/textures/stonemixed2normal.jpg',
 	},
 	cobblestone: {
 		gobj: {} as any,
-		shapeGroundTexture: './img/textures/cobblestone2.jpg',
+		shapeGroundTexture: './img/textures/cobblestone3.jpg',
+		shapeGroundTextureNormal: './img/textures/cobblestone3normal.jpg',
 	}
 }
 

@@ -1,6 +1,5 @@
 import pts from "../dep/pts.js";
 import pipeline from "./pipeline.js";
-import rome from "../rome.js";
 import glob from "../dep/glob.js";
 ;
 ;
@@ -25,7 +24,7 @@ export class sprite {
         this.gobj = this.data.gobj;
         this.gobj.sprite = this;
         // this.data.spriteColor = this.gobj.data.colorOverride || 'white';
-        this.data.spriteColor = rome.sample(['purple', 'magenta', 'cyan', 'wheat', 'pink', 'salmon']);
+        // this.data.spriteColor = rome.sample(['purple', 'magenta', 'cyan', 'wheat', 'pink', 'salmon']);
         this.matrix = new THREE.Matrix3;
         this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
     }
@@ -76,7 +75,7 @@ export class sprite {
         const tileSize = glob.hexSize;
         // Todo omg
         if (this.data.bottomSort)
-            pos[1] -= this.data.spriteSize[1] / 2;
+            pos[1] += this.data.spriteSize[1] / 2;
         //let pos = pts.add(this.gabeObject.rpos, pts.divide(this.data.size!, 2));
         this.mesh.position.fromArray([...pos, gabe.z]);
         this.mesh.updateMatrix();
