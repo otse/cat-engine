@@ -4,23 +4,14 @@ import pts from "../dep/pts.js";
 import { hooks } from "../dep/hooks.js";
 import pipeline from "./pipeline.js"; // Begone!
 import toggle from "../dep/toggle.js";
-export var numbers;
-(function (numbers) {
-    numbers.chunks = [0, 0];
-    numbers.objs = [0, 0];
-    numbers.sprites = [0, 0];
-    numbers.tiles = [0, 0];
-    numbers.walls = [0, 0];
-})(numbers || (numbers = {}));
-;
 var clod;
 (function (clod) {
-    clod.size = 9;
     const chunk_coloration = false;
     const fog_of_war = false;
-    const grid_crawl_makes_chunks = true;
-    clod.SectorSpan = 4;
-    clod.stamp = 0; // used only by server slod
+    const grid_crawl_makes_chunks = false;
+    clod.SectorSpan = 3;
+    // For slod
+    // export var stamp = 0;
     function init() {
         console.log('init');
         const world = new clod.world(10);
@@ -59,9 +50,11 @@ var clod;
     }
     clod.remove = remove;
     class world {
-        // The client lod only has a single observer
-        // If you need more, decouple it then make sure that
-        // the grid does not start showing and hiding chunks
+        // By design the c lod only has a single observer
+        // If you need more grids, for filtering purposes
+        // or for creating larger or smaller skirts,
+        // decouple the grid from the world here
+        // then make sure the optional grids don't hide or show chunks 
         grid;
         arrays = [];
         constructor(useless_value) {
@@ -71,6 +64,7 @@ var clod;
             this.grid.cpos = clod.world.wtocpos(wpos);
             this.grid.ons();
             this.grid.offs();
+            this.grid.ticks();
         }
         lookup(big) {
             if (this.arrays[big[1]] == undefined)
@@ -84,14 +78,13 @@ var clod;
             return this.at(world.wtocpos(wpos));
         }
         _make(cpos) {
-            let s = this.lookup(cpos);
-            if (s)
-                return s;
-            s = this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
-            return s;
+            let ch = this.lookup(cpos);
+            if (ch)
+                return ch;
+            return this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
         }
-        static wtocpos(units) {
-            return pts.floor(pts.divide(units, clod.SectorSpan));
+        static wtocpos(w) {
+            return pts.floor(pts.divide(w, clod.SectorSpan));
         }
     }
     clod.world = world;
@@ -248,8 +241,7 @@ var clod;
                     this.visibleObjs = this.visibleObjs.concat(chunk.objs);
                 }
                 if (fog_of_war) {
-                    if (chunk.dist() == this.outside) {
-                        //console.log('brim-chunk');
+                    if (chunk.dist() >= this.outside) { // == outside or => ?
                         chunk.fog_of_war = true;
                         //sector.color = '#555555';
                     }
@@ -352,5 +344,14 @@ var clod;
         }
         util.GetMatrix = GetMatrix;
     })(util = clod.util || (clod.util = {}));
+    let numbers;
+    (function (numbers) {
+        numbers.chunks = [0, 0];
+        numbers.objs = [0, 0];
+        numbers.sprites = [0, 0];
+        numbers.tiles = [0, 0];
+        numbers.walls = [0, 0];
+    })(numbers = clod.numbers || (clod.numbers = {}));
+    ;
 })(clod || (clod = {}));
 export default clod;

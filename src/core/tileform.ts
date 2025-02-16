@@ -20,7 +20,7 @@ namespace tileform {
 	export type scene_preset = 'hex' | 'wall'
 
 	// This doesn't do anything but it's a cool ide
-	const tfStretchSpace = 1;
+	const StretchSpace = 1;
 
 	export async function init() {
 		await stage.init();
@@ -30,10 +30,18 @@ namespace tileform {
 
 	async function step() {
 		stage.step();
+		update_entities();
 		return false;
 	}
 
-	function projectSquareHex(w: vec2): vec2 {
+	function update_entities() {
+		// Updating is different from object-stepping
+		for (const entity of entities) {
+			entity.update();
+		}
+	}
+
+	function project(w: vec2): vec2 {
 		const tileWidth = glob.hexSize[0] - 1;
 		const tileHeight = glob.hexSize[0] - 1;
 		const x = w[0];
@@ -136,12 +144,12 @@ namespace tileform {
 				-100, 500);
 			camera.position.set(0, 0, 1);
 			camera.rotation.set(stageCameraRotation, 0, 0);
-			const pos3d = (pts.mult(sprite.shape3d!.pos3d, glob.scale));
+			const pos3d = (pts.mult(sprite.shape!.pos3d, glob.scale));
 			camera.position.set(pos3d[0], pos3d[1], 0);
 			camera.updateMatrix();
 			while (soleGroup.children.length > 0)
 				soleGroup.remove(soleGroup.children[0]);
-			soleGroup.add(sprite.shape3d!.entityGroup);
+			soleGroup.add(sprite.shape!.entityGroup);
 			soleGroup.updateMatrix();
 			scene.updateMatrix();
 			scene.updateMatrixWorld(true);
@@ -169,30 +177,45 @@ namespace tileform {
 		pos3d: vec2 = [0, 0]
 		constructor(readonly gobj: game_object) {
 			this.entityGroup = new THREE.Group();
-			// entities.push(this);
+			entities.push(this);
+		}
+		create() {
+			this._create();
 		}
 		delete() {
+			this.free();
 			this._delete();
 		}
 		step() {
 			this._step();
 		}
+		update() {
+			this._update();
+		}
+		free() {
+			const index = entities.indexOf(this);
+			if (index !== -1) {
+				entities.splice(index, 1);
+			}
+		}
+		protected _create() {
+		}
 		protected _delete() {
-			// entities.splice(entities.indexOf(this), 1);
 		}
 		protected _step() {
 		}
+		protected _update() {
+		}
 		protected translate() {
-			// Translate so we can take lighting sources
+			// Useful for beautiful lighting
 			const { wpos } = this.gobj;
-			this.pos3d = (pts.mult(projectSquareHex(wpos), tfStretchSpace));
-			this.entityGroup.position.set(this.pos3d[0], this.pos3d[1], 0);
+			const pos = this.pos3d = (pts.mult(project(wpos), StretchSpace));
+			this.entityGroup.position.fromArray([...pos, 0]);
 			this.entityGroup.updateMatrix();
 		}
 	}
 
 	export abstract class shape3d extends entity3d {
-		// _created
 		constructor(readonly data: shape_literal) {
 			super(data.gobj);
 			this.data = {
@@ -203,20 +226,13 @@ namespace tileform {
 			}
 			// shapes.push(this);
 		}
-		step() {
-			this._step();
-		}
-		create() {
-			this._create();
-			// this._created = true;
-		}
 		protected _create() {
 			console.warn(' empty shape create ');
 		}
 		protected override _delete() {
 			console.warn(' empty shape delete ');
 		}
-		protected _step() { }
+		protected override _step() { }
 	}
 
 	export namespace shape3d {
@@ -353,13 +369,13 @@ namespace tileform {
 			//this.hexTile.rotationGroup.updateMatrix();
 			this._step();
 		}
-		protected free() {
+		protected dispose() {
 			this.mesh.geometry.dispose();
 			this.mesh.material.dispose();
 		}
 		protected override _delete() {
+			this.dispose();
 			this.hexTile.free();
-			this.free();
 		}
 		protected override _step() {
 			this.wallRotationGroup.rotation.set(0, 0, Math.PI / wallRotationY);
@@ -448,29 +464,26 @@ namespace tileform {
 		step() {
 			this._step();
 		}
-		create() {
-			this._create();
-		}
-		protected _step() {
+		protected override _step() {
 			super._step();
+		}
+		protected override _update() {
+			// Dance the light source
 			this.light.position.x = 4;
 			this.light.updateMatrix();
-			this.entityGroup.rotation.z += (Math.PI * 2) * (0.5 * glob.delta);
+			const secondsPerRotation = 4;
+			this.entityGroup.rotation.z += (Math.PI * 2) * (1 / secondsPerRotation * glob.delta);
 			//this.entityGroup.position.x += glob.delta;
 			this.entityGroup.updateMatrix();
 			this.light.updateMatrix();
 			glob.rerender = true;
-			glob.rerenderNext = true;
 			glob.rerenderGame = true;
-			// console.log(' dance light ');
 		}
-		protected _delete() {
-			super._delete();
+		protected override _delete() {
 			console.log('remove light');
-			// Todo there's a crash here without qm
-			this.entityGroup.parent?.remove(this.entityGroup);
+			stage.lightsGroup.remove(this.entityGroup);
 		}
-		protected _create() {
+		protected override _create() {
 			console.log(' tf light source create ');
 			this.light = new THREE.PointLight('cyan', 1, 5);
 			// this.light.decay = 2.4;
@@ -491,43 +504,34 @@ namespace tileform {
 	function opkl() {
 		let change = false;
 		if (app.key('f3') == 1) {
-			console.log('toggle norml maps');
 			ALLOW_NORMAL_MAPS = !ALLOW_NORMAL_MAPS;
-			change = true;
 		}
-		if (app.key('o') == 1) {
+		else if (app.key('o') == 1) {
 			wallRotationX -= 1;
-			change = true;
 		}
-		if (app.key('p') == 1) {
+		else if (app.key('p') == 1) {
 			wallRotationX += 1;
-			change = true;
 		}
-		if (app.key('k') == 1) {
+		else if (app.key('k') == 1) {
 			wallRotationY -= 1;
-			change = true;
 		}
-		if (app.key('l') == 1) {
+		else if (app.key('l') == 1) {
 			wallRotationY += 1;
-			change = true;
 		}
-		if (app.key('v') == 1) {
+		else if (app.key('v') == 1) {
 			if (stageCameraRotation > 0)
 				stageCameraRotation -= .1;
-			change = true;
 		}
-		if (app.key('b') == 1) {
+		else if (app.key('b') == 1) {
 			stageCameraRotation += .1;
-			change = true;
 		}
-		if (!change)
+		else {
 			return;
+		}
 		glob.rerender = true;
 		rome.purgeRemake();
 		console.log(wallRotationX, wallRotationY);
 		console.log("stageCameraRotation", stageCameraRotation);
-		//scene.rotation.set(Math.PI / rotationX, Math.PI / rotationY, 0);
-		//scene.updateMatrix();
 	}
 }
 

@@ -33,10 +33,10 @@ namespace rome {
 		console.log(' init ');
 		glob.rome = rome;
 		glob.rerender = true;
-		glob.rerenderNext = false;
 		glob.rerenderGame = true;
 		glob.scale = 1;
 		glob.hexSize = [17, 9];
+		glob.gameobjects = [0, 0];
 		await preload_basic_textures();
 		await pipeline.init();
 		await tileform.init();
@@ -45,7 +45,6 @@ namespace rome {
 		world = clod.init();
 		app;
 		makeTestingChamber();
-		land.make();
 		zoom.register();
 		pan.register();
 		// new sprite({ size: [12, 8] });
@@ -77,6 +76,7 @@ namespace rome {
 	}
 
 	export function addLateGobjsBatch(gobjs: game_object[], mode: 'keep' | 'merge') {
+		// This is ununderstandable
 		for (const gobj of gobjs) {
 			if (mode === 'keep')
 				clod.addNoCreate(rome.world, gobj);
@@ -90,7 +90,7 @@ namespace rome {
 	}
 
 	export function addGobj(gobj: game_object) {
-		// Parameter injection
+		// Parameter injection?
 		clod.add(world, gobj);
 	}
 
@@ -104,10 +104,13 @@ namespace rome {
 		await pipeline.preloadTextureAsync('./img/hex/post.png', 'nearest');
 	}
 
+	let _gameObjects: game_object[] = []
+
 	export function makeTestingChamber() {
 		let gobjs: game_object[] = [];
 		function collect(gobj: game_object) {
 			gobjs.push(gobj);
+			_gameObjects.push(this);
 		}
 		collect(new tile3d({ _type: 'direct', colorOverride: 'pink', _wpos: [-1, 0, 0] }));
 		collect(new tile3d({ _type: 'direct', colorOverride: 'salmon', _wpos: [-1, -1, 0] }));
@@ -157,8 +160,8 @@ namespace rome {
 	}
 
 	export function purgeRemake() {
-		game_object._gameObjects.forEach(gobj => gobj.purge());
-		game_object._gameObjects = [];
+		_gameObjects.forEach(gobj => gobj.purge());
+		_gameObjects = [];
 		glob.rerender = true;
 		glob.rerenderGame = true;
 		makeTestingChamber();
@@ -167,22 +170,12 @@ namespace rome {
 	export function step() {
 		hooks.emit('romeComponents', 1);
 		hooks.emit('romeStep', 0);
-
-		debugCallbacks();
-
-		if (glob.rerenderNext) {
-			glob.rerenderNext = false;
-			glob.rerender = true;
-		}
-
-		// Todo fix this double update
+		debgkeys();
 		world.update(pan.wpos);
-		world.grid.ticks();
-
 		glob.rerender = false;
 	}
 
-	function debugCallbacks() {
+	function debgkeys() {
 		if (app.key('[') == 1) {
 			tileform.hex_size -= .1;
 			console.log(tileform.hex_size);

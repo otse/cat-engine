@@ -10,7 +10,7 @@ var tileform;
     tileform.SCENE_BASED_TILEFORM_POSITIONING = true;
     tileform.ALLOW_NORMAL_MAPS = true;
     // This doesn't do anything but it's a cool ide
-    const tfStretchSpace = 1;
+    const StretchSpace = 1;
     async function init() {
         await stage.init();
         hooks.addListener('romeComponents', step);
@@ -19,9 +19,16 @@ var tileform;
     tileform.init = init;
     async function step() {
         stage.step();
+        update_entities();
         return false;
     }
-    function projectSquareHex(w) {
+    function update_entities() {
+        // Updating is different from object-stepping
+        for (const entity of entities) {
+            entity.update();
+        }
+    }
+    function project(w) {
         const tileWidth = glob.hexSize[0] - 1;
         const tileHeight = glob.hexSize[0] - 1;
         const x = w[0];
@@ -109,12 +116,12 @@ var tileform;
             stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -100, 500);
             stage.camera.position.set(0, 0, 1);
             stage.camera.rotation.set(stageCameraRotation, 0, 0);
-            const pos3d = (pts.mult(sprite.shape3d.pos3d, glob.scale));
+            const pos3d = (pts.mult(sprite.shape.pos3d, glob.scale));
             stage.camera.position.set(pos3d[0], pos3d[1], 0);
             stage.camera.updateMatrix();
             while (stage.soleGroup.children.length > 0)
                 stage.soleGroup.remove(stage.soleGroup.children[0]);
-            stage.soleGroup.add(sprite.shape3d.entityGroup);
+            stage.soleGroup.add(sprite.shape.entityGroup);
             stage.soleGroup.updateMatrix();
             stage.scene.updateMatrix();
             stage.scene.updateMatrixWorld(true);
@@ -142,30 +149,45 @@ var tileform;
         constructor(gobj) {
             this.gobj = gobj;
             this.entityGroup = new THREE.Group();
-            // entities.push(this);
+            entities.push(this);
+        }
+        create() {
+            this._create();
         }
         delete() {
+            this.free();
             this._delete();
         }
         step() {
             this._step();
         }
+        update() {
+            this._update();
+        }
+        free() {
+            const index = entities.indexOf(this);
+            if (index !== -1) {
+                entities.splice(index, 1);
+            }
+        }
+        _create() {
+        }
         _delete() {
-            // entities.splice(entities.indexOf(this), 1);
         }
         _step() {
         }
+        _update() {
+        }
         translate() {
-            // Translate so we can take lighting sources
+            // Useful for beautiful lighting
             const { wpos } = this.gobj;
-            this.pos3d = (pts.mult(projectSquareHex(wpos), tfStretchSpace));
-            this.entityGroup.position.set(this.pos3d[0], this.pos3d[1], 0);
+            const pos = this.pos3d = (pts.mult(project(wpos), StretchSpace));
+            this.entityGroup.position.fromArray([...pos, 0]);
             this.entityGroup.updateMatrix();
         }
     }
     class shape3d extends entity3d {
         data;
-        // _created
         constructor(data) {
             super(data.gobj);
             this.data = data;
@@ -176,13 +198,6 @@ var tileform;
                 ...data
             };
             // shapes.push(this);
-        }
-        step() {
-            this._step();
-        }
-        create() {
-            this._create();
-            // this._created = true;
         }
         _create() {
             console.warn(' empty shape create ');
@@ -310,13 +325,13 @@ var tileform;
             //this.hexTile.rotationGroup.updateMatrix();
             this._step();
         }
-        free() {
+        dispose() {
             this.mesh.geometry.dispose();
             this.mesh.material.dispose();
         }
         _delete() {
+            this.dispose();
             this.hexTile.free();
-            this.free();
         }
         _step() {
             this.wallRotationGroup.rotation.set(0, 0, Math.PI / wallRotationY);
@@ -400,27 +415,24 @@ var tileform;
         step() {
             this._step();
         }
-        create() {
-            this._create();
-        }
         _step() {
             super._step();
+        }
+        _update() {
+            // Dance the light source
             this.light.position.x = 4;
             this.light.updateMatrix();
-            this.entityGroup.rotation.z += (Math.PI * 2) * (0.5 * glob.delta);
+            const secondsPerRotation = 4;
+            this.entityGroup.rotation.z += (Math.PI * 2) * (1 / secondsPerRotation * glob.delta);
             //this.entityGroup.position.x += glob.delta;
             this.entityGroup.updateMatrix();
             this.light.updateMatrix();
             glob.rerender = true;
-            glob.rerenderNext = true;
             glob.rerenderGame = true;
-            // console.log(' dance light ');
         }
         _delete() {
-            super._delete();
             console.log('remove light');
-            // Todo there's a crash here without qm
-            this.entityGroup.parent?.remove(this.entityGroup);
+            stage.lightsGroup.remove(this.entityGroup);
         }
         _create() {
             console.log(' tf light source create ');
@@ -443,43 +455,34 @@ var tileform;
     function opkl() {
         let change = false;
         if (app.key('f3') == 1) {
-            console.log('toggle norml maps');
             tileform.ALLOW_NORMAL_MAPS = !tileform.ALLOW_NORMAL_MAPS;
-            change = true;
         }
-        if (app.key('o') == 1) {
+        else if (app.key('o') == 1) {
             wallRotationX -= 1;
-            change = true;
         }
-        if (app.key('p') == 1) {
+        else if (app.key('p') == 1) {
             wallRotationX += 1;
-            change = true;
         }
-        if (app.key('k') == 1) {
+        else if (app.key('k') == 1) {
             wallRotationY -= 1;
-            change = true;
         }
-        if (app.key('l') == 1) {
+        else if (app.key('l') == 1) {
             wallRotationY += 1;
-            change = true;
         }
-        if (app.key('v') == 1) {
+        else if (app.key('v') == 1) {
             if (stageCameraRotation > 0)
                 stageCameraRotation -= .1;
-            change = true;
         }
-        if (app.key('b') == 1) {
+        else if (app.key('b') == 1) {
             stageCameraRotation += .1;
-            change = true;
         }
-        if (!change)
+        else {
             return;
+        }
         glob.rerender = true;
         rome.purgeRemake();
         console.log(wallRotationX, wallRotationY);
         console.log("stageCameraRotation", stageCameraRotation);
-        //scene.rotation.set(Math.PI / rotationX, Math.PI / rotationY, 0);
-        //scene.updateMatrix();
     }
 })(tileform || (tileform = {}));
 export default tileform;

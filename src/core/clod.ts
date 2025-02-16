@@ -6,29 +6,22 @@ import { hooks } from "../dep/hooks.js";
 import pipeline from "./pipeline.js"; // Begone!
 import toggle from "../dep/toggle.js";
 
-export namespace numbers {
-	export type tally = [active: number, total: number]
 
-	export var chunks: tally = [0, 0]
-	export var objs: tally = [0, 0]
-
-	export var sprites: tally = [0, 0]
-	export var tiles: tally = [0, 0]
-	export var walls: tally = [0, 0]
-};
 
 namespace clod {
-	export const size = 9;
+
+	type tally = [active: number, total: number]
 
 	const chunk_coloration = false;
 
 	const fog_of_war = false;
 
-	const grid_crawl_makes_chunks = true;
+	const grid_crawl_makes_chunks = false;
 
-	export var SectorSpan = 4;
+	export const SectorSpan = 3;
 
-	export var stamp = 0; // used only by server slod
+	// For slod
+	// export var stamp = 0;
 
 	export function init() {
 		console.log('init');
@@ -69,9 +62,11 @@ namespace clod {
 	}
 
 	export class world {
-		// The client lod only has a single observer
-		// If you need more, decouple it then make sure that
-		// the grid does not start showing and hiding chunks
+		// By design the c lod only has a single observer
+		// If you need more grids, for filtering purposes
+		// or for creating larger or smaller skirts,
+		// decouple the grid from the world here
+		// then make sure the optional grids don't hide or show chunks 
 		grid: grid
 		readonly arrays: chunk[][] = []
 		constructor(useless_value) { // Useless value
@@ -81,6 +76,7 @@ namespace clod {
 			this.grid.cpos = clod.world.wtocpos(wpos);
 			this.grid.ons();
 			this.grid.offs();
+			this.grid.ticks();
 		}
 		lookup(big: vec2): chunk | undefined {
 			if (this.arrays[big[1]] == undefined)
@@ -94,14 +90,13 @@ namespace clod {
 			return this.at(world.wtocpos(wpos));
 		}
 		protected _make(cpos): chunk {
-			let s = this.lookup(cpos);
-			if (s)
-				return s;
-			s = this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
-			return s;
+			let ch = this.lookup(cpos);
+			if (ch)
+				return ch;
+			return this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
 		}
-		static wtocpos(units: vec2 | vec3): vec2 {
-			return pts.floor(pts.divide(units, SectorSpan));
+		static wtocpos(w: vec2 | vec3): vec2 {
+			return pts.floor(pts.divide(w, SectorSpan));
 		}
 		// todo add(obj) {}
 		// todo remove(obj) {}
@@ -263,8 +258,7 @@ namespace clod {
 				}
 
 				if (fog_of_war) {
-					if (chunk.dist() == this.outside) {
-						//console.log('brim-chunk');
+					if (chunk.dist() >= this.outside) { // == outside or => ?
 						chunk.fog_of_war = true;
 						//sector.color = '#555555';
 					}
@@ -296,7 +290,8 @@ namespace clod {
 		bound: aabb2
 		expand = .5
 		constructor(
-			public readonly counts: numbers.tally = numbers.objs) {
+			public readonly counts = numbers.objs
+		) {
 			super();
 			this.counts[1]++;
 			this.id = obj.ids++;
@@ -368,6 +363,16 @@ namespace clod {
 		}
 
 	}
+
+	export namespace numbers {
+
+		export var chunks: tally = [0, 0]
+		export var objs: tally = [0, 0]
+	
+		export var sprites: tally = [0, 0]
+		export var tiles: tally = [0, 0]
+		export var walls: tally = [0, 0]
+	};
 }
 
 export default clod;

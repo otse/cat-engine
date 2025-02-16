@@ -1,4 +1,4 @@
-// inspired by gmod lua
+/// inspired by gmod lua
 export class hooks {
     static hooks = {};
     static create(name) {

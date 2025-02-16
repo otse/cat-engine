@@ -16,7 +16,7 @@ export namespace sprite3d {
 export class sprite3d extends sprite {
 	rerender
 	target
-	shape3d?: tileform.shape3d
+	shape?: tileform.shape3d
 	data_: sprite3d_joint_literal
 	constructor(
 		data: sprite3d_joint_literal
@@ -34,20 +34,20 @@ export class sprite3d extends sprite {
 	}
 	protected _delete() {
 		super._delete();
-		this.shape3d?.delete();
+		this.shape?.delete();
 	}
 	protected _create() {
 		super._create();
-		this.shape3d = tileform.shapeMaker(
+		this.shape = tileform.shapeMaker(
 			this.data_.shapeType!,
 			this.data_);
-		this.shape3d?.create();
+		this.shape?.create();
 		this._make_target();
 		this.prerender();
 	}
 	protected override _step() {
 		super._step();
-		this.shape3d?.step();
+		this.shape?.step();
 		this.prerender();
 	}
 	prerender() {

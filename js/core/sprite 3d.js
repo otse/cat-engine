@@ -7,7 +7,7 @@ import tileform from "./tileform.js";
 export class sprite3d extends sprite {
     rerender;
     target;
-    shape3d;
+    shape;
     data_;
     constructor(data) {
         super({
@@ -23,18 +23,18 @@ export class sprite3d extends sprite {
     }
     _delete() {
         super._delete();
-        this.shape3d?.delete();
+        this.shape?.delete();
     }
     _create() {
         super._create();
-        this.shape3d = tileform.shapeMaker(this.data_.shapeType, this.data_);
-        this.shape3d?.create();
+        this.shape = tileform.shapeMaker(this.data_.shapeType, this.data_);
+        this.shape?.create();
         this._make_target();
         this.prerender();
     }
     _step() {
         super._step();
-        this.shape3d?.step();
+        this.shape?.step();
         this.prerender();
     }
     prerender() {

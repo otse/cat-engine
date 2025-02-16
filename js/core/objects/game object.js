@@ -3,22 +3,20 @@ import pts from "../../dep/pts.js";
 import clod from "../clod.js";
 export class game_object extends clod.obj {
     data;
-    static _gameObjects = [];
-    // A lot of game objects are represented by an image or sprite
+    // A lot(!) of game objects are represented by an image or sprite
     sprite;
     // Rotation
     r = 0;
     // Third axis
     z = 0;
     constructor(data) {
-        super(undefined);
+        super(glob.gameobjects);
         this.data = data;
         this.wpos = pts.copy(data._wpos);
         this.z = data._wpos[2];
         this.r = data._r || 0;
         this.wtorpos();
         this.rpos = pts.floor(this.rpos);
-        game_object._gameObjects.push(this);
     }
     purge() {
         this._delete();

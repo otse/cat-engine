@@ -1,8 +1,8 @@
-// inspired by gmod lua
+/// inspired by gmod lua
 
-// hooks run in descending order
+// hooks run front to back
 
-namespace hooks {
+export namespace hooks {
 	export type func = (any) => Promise<boolean>
 }
 

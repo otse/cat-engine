@@ -5,6 +5,7 @@ import pipeline from "./core/pipeline.js";
 import glob from "./dep/glob.js";
 import zoom from "./core/components/zoom.js";
 import tileform from "./core/tileform.js";
+import clod from "./core/clod.js";
 var app;
 (function (app) {
     window['App'] = app;
@@ -187,6 +188,9 @@ var app;
 		<br />glob.rerender: ${glob.rerender}
 		<br />glob.rerenderGame: ${glob.rerenderGame}
 		<br />cameraMode: ${pipeline.cameraMode}
+		<br />objs: ${clod.numbers.objs[0]} / ${clod.numbers.objs[1]}
+		<br />gobjs: ${glob.gameobjects[0]} / ${glob.gameobjects[1]}
+		<br />chunks: ${clod.numbers.chunks[0]} / ${clod.numbers.chunks[1]}
 		`;
         pipeline.render();
         app.wheel = 0;

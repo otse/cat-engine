@@ -15,7 +15,6 @@ var pan;
     pan_1.register = register;
     async function step() {
         functions();
-        pipeline.camera.updateProjectionMatrix();
         return false;
     }
     let begin = [0, 0];
@@ -116,12 +115,11 @@ var pan;
         }
     }
     function set_camera() {
-        // let inv = pts.inv(this.rpos);
-        // ren.groups.axisSwap.position.set(inv[0], inv[1], 0);
         const rpos2 = pts.add(pan_1.rpos, pts.divide([0, glob.hexSize[1]], 2));
         pipeline.groups.camera.position.x = rpos2[0];
         pipeline.groups.camera.position.y = rpos2[1];
         pipeline.groups.camera.updateMatrix();
+        pipeline.camera.updateProjectionMatrix();
     }
 })(pan || (pan = {}));
 export default pan;

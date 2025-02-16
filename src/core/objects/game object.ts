@@ -9,21 +9,19 @@ export namespace game_object {
 }
 
 export class game_object extends clod.obj {
-	static _gameObjects: game_object[] = []
-	// A lot of game objects are represented by an image or sprite
+	// A lot(!) of game objects are represented by an image or sprite
 	sprite?: sprite
 	// Rotation
 	r = 0
 	// Third axis
 	z = 0
 	constructor(public data: game_object_literal) {
-		super(undefined);
+		super(glob.gameobjects);
 		this.wpos = pts.copy(data._wpos);
 		this.z = data._wpos[2];
 		this.r = data._r || 0;
 		this.wtorpos();
 		this.rpos = pts.floor(this.rpos);
-		game_object._gameObjects.push(this);
 	}
 	purge() {
 		this._delete();

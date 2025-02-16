@@ -6,7 +6,6 @@ import tile3d from "./core/objects/tile 3d.js";
 import wall3d from "./core/objects/wall 3d.js";
 import zoom from "./core/components/zoom.js";
 import pan from "./core/components/pan.js";
-import game_object from "./core/objects/game object.js";
 import clod from "./core/clod.js";
 import glob from "./dep/glob.js";
 import land from "./land.js";
@@ -26,10 +25,10 @@ var rome;
         console.log(' init ');
         glob.rome = rome;
         glob.rerender = true;
-        glob.rerenderNext = false;
         glob.rerenderGame = true;
         glob.scale = 1;
         glob.hexSize = [17, 9];
+        glob.gameobjects = [0, 0];
         await preload_basic_textures();
         await pipeline.init();
         await tileform.init();
@@ -38,7 +37,6 @@ var rome;
         rome.world = clod.init();
         app;
         makeTestingChamber();
-        land.make();
         zoom.register();
         pan.register();
         // new sprite({ size: [12, 8] });
@@ -68,6 +66,7 @@ var rome;
     }
     rome.addMergeOrReplace = addMergeOrReplace;
     function addLateGobjsBatch(gobjs, mode) {
+        // This is ununderstandable
         for (const gobj of gobjs) {
             if (mode === 'keep')
                 clod.addNoCreate(rome.world, gobj);
@@ -81,7 +80,7 @@ var rome;
     }
     rome.addLateGobjsBatch = addLateGobjsBatch;
     function addGobj(gobj) {
-        // Parameter injection
+        // Parameter injection?
         clod.add(rome.world, gobj);
     }
     rome.addGobj = addGobj;
@@ -94,10 +93,12 @@ var rome;
         await pipeline.preloadTextureAsync('./img/hex/wall.png', 'nearest');
         await pipeline.preloadTextureAsync('./img/hex/post.png', 'nearest');
     }
+    let _gameObjects = [];
     function makeTestingChamber() {
         let gobjs = [];
         function collect(gobj) {
             gobjs.push(gobj);
+            _gameObjects.push(this);
         }
         collect(new tile3d({ _type: 'direct', colorOverride: 'pink', _wpos: [-1, 0, 0] }));
         collect(new tile3d({ _type: 'direct', colorOverride: 'salmon', _wpos: [-1, -1, 0] }));
@@ -147,8 +148,8 @@ var rome;
     }
     rome.makeTestingChamber = makeTestingChamber;
     function purgeRemake() {
-        game_object._gameObjects.forEach(gobj => gobj.purge());
-        game_object._gameObjects = [];
+        _gameObjects.forEach(gobj => gobj.purge());
+        _gameObjects = [];
         glob.rerender = true;
         glob.rerenderGame = true;
         makeTestingChamber();
@@ -157,18 +158,12 @@ var rome;
     function step() {
         hooks.emit('romeComponents', 1);
         hooks.emit('romeStep', 0);
-        debugCallbacks();
-        if (glob.rerenderNext) {
-            glob.rerenderNext = false;
-            glob.rerender = true;
-        }
-        // Todo fix this double update
+        debgkeys();
         rome.world.update(pan.wpos);
-        rome.world.grid.ticks();
         glob.rerender = false;
     }
     rome.step = step;
-    function debugCallbacks() {
+    function debgkeys() {
         if (app.key('[') == 1) {
             tileform.hex_size -= .1;
             console.log(tileform.hex_size);
