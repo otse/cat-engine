@@ -162,12 +162,25 @@ namespace tileform {
 
 	// Unused array
 	const shapes: shape3d[] = []
+	const entities: entity3d[] = []
 
 	abstract class entity3d {
 		entityGroup
 		pos3d: vec2 = [0, 0]
 		constructor(readonly gobj: game_object) {
 			this.entityGroup = new THREE.Group();
+			// entities.push(this);
+		}
+		delete() {
+			this._delete();
+		}
+		step() {
+			this._step();
+		}
+		protected _delete() {
+			// entities.splice(entities.indexOf(this), 1);
+		}
+		protected _step() {
 		}
 		protected translate() {
 			// Translate so we can take lighting sources
@@ -188,7 +201,7 @@ namespace tileform {
 				shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
 				...data
 			}
-			shapes.push(this);
+			// shapes.push(this);
 		}
 		step() {
 			this._step();
@@ -197,13 +210,10 @@ namespace tileform {
 			this._create();
 			// this._created = true;
 		}
-		delete() {
-			this._delete();
-		}
 		protected _create() {
 			console.warn(' empty shape create ');
 		}
-		protected _delete() {
+		protected override _delete() {
 			console.warn(' empty shape delete ');
 		}
 		protected _step() { }
@@ -425,6 +435,7 @@ namespace tileform {
 	}
 
 	export class light_source extends entity3d {
+		wpos2
 		light
 		constructor(readonly data: light_source_literal) {
 			super(data.gobj);
@@ -432,15 +443,32 @@ namespace tileform {
 				radiance: 60,
 				...data
 			}
+			this.wpos2 = pts.copy(this.gobj.wpos);
+		}
+		step() {
+			this._step();
 		}
 		create() {
 			this._create();
 		}
-		delete() {
-			this._delete();
+		protected _step() {
+			super._step();
+			this.light.position.x = 4;
+			this.light.updateMatrix();
+			this.entityGroup.rotation.z += (Math.PI * 2) * (0.5 * glob.delta);
+			//this.entityGroup.position.x += glob.delta;
+			this.entityGroup.updateMatrix();
+			this.light.updateMatrix();
+			glob.rerender = true;
+			glob.rerenderNext = true;
+			glob.rerenderGame = true;
+			// console.log(' dance light ');
 		}
-		update() {
-			this._update();
+		protected _delete() {
+			super._delete();
+			console.log('remove light');
+			// Todo there's a crash here without qm
+			this.entityGroup.parent?.remove(this.entityGroup);
 		}
 		protected _create() {
 			console.log(' tf light source create ');
@@ -458,21 +486,13 @@ namespace tileform {
 			this.entityGroup.updateMatrixWorld(true); // Bad
 			stage.lightsGroup.add(this.entityGroup);
 		}
-		protected _delete() {
-			console.log('remove light');
-			// Todo there's a crash here without qm
-			this.entityGroup.parent?.remove(this.entityGroup);
-		}
-		protected _update() {
-			// this.light.intensity = 30000 * glob.scale;
-		}
 	}
 
 	function opkl() {
 		let change = false;
 		if (app.key('f3') == 1) {
 			console.log('toggle norml maps');
-			ALLOW_NORMAL_MAPS = ! ALLOW_NORMAL_MAPS;
+			ALLOW_NORMAL_MAPS = !ALLOW_NORMAL_MAPS;
 			change = true;
 		}
 		if (app.key('o') == 1) {

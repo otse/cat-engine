@@ -134,6 +134,7 @@ var tileform;
     // shapes
     // Unused array
     const shapes = [];
+    const entities = [];
     class entity3d {
         gobj;
         entityGroup;
@@ -141,6 +142,18 @@ var tileform;
         constructor(gobj) {
             this.gobj = gobj;
             this.entityGroup = new THREE.Group();
+            // entities.push(this);
+        }
+        delete() {
+            this._delete();
+        }
+        step() {
+            this._step();
+        }
+        _delete() {
+            // entities.splice(entities.indexOf(this), 1);
+        }
+        _step() {
         }
         translate() {
             // Translate so we can take lighting sources
@@ -162,7 +175,7 @@ var tileform;
                 shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
                 ...data
             };
-            shapes.push(this);
+            // shapes.push(this);
         }
         step() {
             this._step();
@@ -170,9 +183,6 @@ var tileform;
         create() {
             this._create();
             // this._created = true;
-        }
-        delete() {
-            this._delete();
         }
         _create() {
             console.warn(' empty shape create ');
@@ -376,6 +386,7 @@ var tileform;
     tileform.shape_light_bad_idea = shape_light_bad_idea;
     class light_source extends entity3d {
         data;
+        wpos2;
         light;
         constructor(data) {
             super(data.gobj);
@@ -384,15 +395,32 @@ var tileform;
                 radiance: 60,
                 ...data
             };
+            this.wpos2 = pts.copy(this.gobj.wpos);
+        }
+        step() {
+            this._step();
         }
         create() {
             this._create();
         }
-        delete() {
-            this._delete();
+        _step() {
+            super._step();
+            this.light.position.x = 4;
+            this.light.updateMatrix();
+            this.entityGroup.rotation.z += (Math.PI * 2) * (0.5 * glob.delta);
+            //this.entityGroup.position.x += glob.delta;
+            this.entityGroup.updateMatrix();
+            this.light.updateMatrix();
+            glob.rerender = true;
+            glob.rerenderNext = true;
+            glob.rerenderGame = true;
+            // console.log(' dance light ');
         }
-        update() {
-            this._update();
+        _delete() {
+            super._delete();
+            console.log('remove light');
+            // Todo there's a crash here without qm
+            this.entityGroup.parent?.remove(this.entityGroup);
         }
         _create() {
             console.log(' tf light source create ');
@@ -409,14 +437,6 @@ var tileform;
             this.entityGroup.updateMatrix();
             this.entityGroup.updateMatrixWorld(true); // Bad
             stage.lightsGroup.add(this.entityGroup);
-        }
-        _delete() {
-            console.log('remove light');
-            // Todo there's a crash here without qm
-            this.entityGroup.parent?.remove(this.entityGroup);
-        }
-        _update() {
-            // this.light.intensity = 30000 * glob.scale;
         }
     }
     tileform.light_source = light_source;

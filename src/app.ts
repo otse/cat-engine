@@ -147,19 +147,16 @@ namespace app {
 				buttons[b] = MOUSE.OFF;
 	}
 
-	export var fps = 0
-	export var delta = 0
-
 	const take_time = (() => {
 		let beginTime = (performance || Date).now(), prevTime = beginTime, frames = 0
 		return function () {
 			frames++;
 			var time = (performance || Date).now();
 			if (time >= prevTime + 1000) {
-				fps = (frames * 1000) / (time - prevTime);
+				let fps = (frames * 1000) / (time - prevTime);
 				prevTime = time;
 				frames = 0;
-				return fps;
+				glob.fps = fps;
 			}
 		}
 	})();
@@ -168,9 +165,9 @@ namespace app {
 		let last = 0;
 		return function () {
 			const now = (performance || Date).now();
-			delta = (now - last) / 1000;
+			let delta = (now - last) / 1000;
 			last = now;
-			return delta;
+			glob.delta = delta;
 		};
 	})();
 
@@ -183,10 +180,11 @@ namespace app {
 		DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
 		<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
 		<br />&#9;ALLOW_NORMAL_MAPS (f3): ${tileform.ALLOW_NORMAL_MAPS}
-		<br />fps: ${fps.toFixed(2)}
-		<br />delta: ${delta.toFixed(3)}
+		<br />fps: ${glob.fps?.toFixed(2)}
+		<br />delta: ${glob.delta?.toFixed(3)}
 		<br />zoom: ${zoom.actualZoom()}
-		<br />rerenderGame: ${glob.rerenderGame}
+		<br />glob.rerender: ${glob.rerender}
+		<br />glob.rerenderGame: ${glob.rerenderGame}
 		<br />cameraMode: ${pipeline.cameraMode}
 		`;
 		pipeline.render();

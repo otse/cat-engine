@@ -39,7 +39,8 @@ export class light extends game_object {
 		super._delete();
 	}
 	protected override _step() {
-		this.light_source.update();
+		super._step();
+		this.light_source.step();
 	}
 
 }

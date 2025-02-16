@@ -36,7 +36,8 @@ export class light extends game_object {
         super._delete();
     }
     _step() {
-        this.light_source.update();
+        super._step();
+        this.light_source.step();
     }
 }
 export default light;
