@@ -34,9 +34,8 @@ export class light extends game_object {
 		this.sprite?.create();
 	}
 	protected override _delete() {
-		// Crash w/o qm wdym
-		this.light_source?.delete();
 		super._delete();
+		this.light_source?.delete(); // Crash without question mark
 	}
 	protected override _step() {
 		super._step();

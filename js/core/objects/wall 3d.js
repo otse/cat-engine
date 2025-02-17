@@ -29,12 +29,5 @@ export class wall3d extends game_object {
         this.directionAdapter.search(['wall 3d']);
         this.sprite?.create();
     }
-    /*protected override _delete() {
-        console.log('delete');
-    }*/
-    _step() {
-        super._step();
-        this.sprite?.step();
-    }
 }
 export default wall3d;

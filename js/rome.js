@@ -93,12 +93,12 @@ var rome;
         await pipeline.preloadTextureAsync('./img/hex/wall.png', 'nearest');
         await pipeline.preloadTextureAsync('./img/hex/post.png', 'nearest');
     }
-    let _gameObjects = [];
+    let gameObjects = [];
     function makeTestingChamber() {
         let gobjs = [];
         function collect(gobj) {
             gobjs.push(gobj);
-            _gameObjects.push(this);
+            gameObjects.push(gobj);
         }
         collect(new tile3d({ _type: 'direct', colorOverride: 'pink', _wpos: [-1, 0, 0] }));
         collect(new tile3d({ _type: 'direct', colorOverride: 'salmon', _wpos: [-1, -1, 0] }));
@@ -148,8 +148,13 @@ var rome;
     }
     rome.makeTestingChamber = makeTestingChamber;
     function purgeRemake() {
-        _gameObjects.forEach(gobj => gobj.purge());
-        _gameObjects = [];
+        const chunks = clod.helpers.get_every_chunk(rome.world);
+        for (const chunk of chunks) {
+            chunk.nuke();
+        }
+        rome.world = clod.init();
+        gameObjects.forEach(gobj => { gobj.purge(); removeGobj(gobj); });
+        gameObjects = [];
         glob.rerender = true;
         glob.rerenderGame = true;
         makeTestingChamber();

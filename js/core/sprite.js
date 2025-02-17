@@ -28,19 +28,19 @@ export class sprite {
         this.matrix = new THREE.Matrix3;
         this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
     }
+    create() {
+        this._create();
+    }
+    delete() {
+        this._delete();
+    }
     step() {
         this._step();
     }
     _step() { }
-    delete() {
-        this._delete();
-    }
     _delete() {
         this.mesh.parent.remove(this.mesh);
         this.gobj.sprite = undefined;
-    }
-    create() {
-        this._create();
     }
     _create() {
         let defines = {};

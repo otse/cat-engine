@@ -128,8 +128,15 @@ namespace clod {
 			hooks.emit('sectorCreate', this);
 
 		}
+		nuke() {
+			numbers.chunks[1]--;
+			for (const obj of this.objs) {
+				obj.finalize();
+			}
+			this.objs.splice(0, this.objs.length);
+		}
 		add(obj: obj, show = true) {
-			if (!this.objs.includes(obj)) {
+			if (this.objs.includes(obj) == false) {
 				this.objs.push(obj);
 				obj.chunk = this;
 				if (this.active && show)
@@ -299,13 +306,14 @@ namespace clod {
 		finalize() {
 			// this.hide();
 			this.counts[1]--;
+			this.hide();
 		}
 		show() {
 			if (this.on())
 				return;
 			this.counts[0]++;
 			this.create();
-			this.step(); // Cursor fixed the bug
+			this.step();
 			//this.shape?.show();
 		}
 		hide() {
@@ -327,10 +335,10 @@ namespace clod {
 			this.wtorpos();
 			return pts.copy(this.rpos);
 		}
-		create() {
+		create() { // Use show() instead!
 			this._create();
 		}
-		delete() {
+		delete() { // Use hide() instead!
 			this._delete();
 		}
 		step() {
@@ -347,8 +355,20 @@ namespace clod {
 		}
 	}
 
-	export namespace util {
-		export function GetMatrix<Type>(world: world, wpos: vec2) {
+	export namespace helpers {
+		export function get_every_chunk(world: world) {
+			let chunks: chunk[] = [];
+			for (const i in world.arrays) {
+				for (const j in world.arrays[i]) {
+					if (world.arrays[i][j]) {
+						chunks.push(world.arrays[i][j]);
+					}
+				}
+			}
+			return chunks;
+		}
+
+		export function get_matrix<Type>(world: world, wpos: vec2) {
 			const directions: vec2[] = [
 				[-1, 1], [0, 1], [1, 1],
 				[-1, 0], [0, 0], [1, 0],
@@ -362,13 +382,14 @@ namespace clod {
 			return matrix;
 		}
 
+
 	}
 
 	export namespace numbers {
 
 		export var chunks: tally = [0, 0]
 		export var objs: tally = [0, 0]
-	
+
 		export var sprites: tally = [0, 0]
 		export var tiles: tally = [0, 0]
 		export var walls: tally = [0, 0]

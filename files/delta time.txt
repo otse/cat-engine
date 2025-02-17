@@ -1,0 +1,21 @@
+delta time.txt for scrubs
+the dt is inversely related to fps
+
+that is dt = 1 / fps
+
+if your fps is 30, your dt will be 0.0333 or 33.3 ms
+
+if your fps is 1, the dt will be 1
+if your fps is 2, the dt will be 0.5
+
+in other words: it is the elapsed time since the last update
+
+dt is very natural to work with because you can express speed per second
+
+if i want a ball to move 100 pixels per second, you simply write: x += 100 * dt
+
+if your pc is running very slowly, or stutters, the dt can become very large to keep up with the lag
+
+but if your pc (monitor) is super speedy, the dt will be a very small number
+
+for most computers the dt will be 0.016 (1/60 fps)

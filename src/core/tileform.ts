@@ -166,9 +166,6 @@ namespace tileform {
 	}
 	// end of stage
 
-	// shapes
-
-	// Unused array
 	const shapes: shape3d[] = []
 	const entities: entity3d[] = []
 
@@ -192,15 +189,17 @@ namespace tileform {
 		update() {
 			this._update();
 		}
-		free() {
+		private free() {
 			const index = entities.indexOf(this);
 			if (index !== -1) {
 				entities.splice(index, 1);
 			}
 		}
 		protected _create() {
+			console.warn('empty entity create');
 		}
 		protected _delete() {
+			console.warn('empty entity delete');
 		}
 		protected _step() {
 		}
@@ -224,15 +223,7 @@ namespace tileform {
 				shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
 				...data
 			}
-			// shapes.push(this);
 		}
-		protected _create() {
-			console.warn(' empty shape create ');
-		}
-		protected override _delete() {
-			console.warn(' empty shape delete ');
-		}
-		protected override _step() { }
 	}
 
 	export namespace shape3d {
@@ -258,7 +249,6 @@ namespace tileform {
 			this.entityGroup.add(this.hexTile.group);
 			// this.entityGroup.add(new THREE.AxesHelper(8));
 			this.translate();
-			// this.shapeGroup.updateMatrix();
 		}
 		protected override _delete() {
 			this.hexTile.free();
@@ -465,7 +455,6 @@ namespace tileform {
 			this._step();
 		}
 		protected override _step() {
-			super._step();
 		}
 		protected override _update() {
 			// Dance the light source

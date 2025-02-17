@@ -12,8 +12,8 @@ export class direction_adapter {
         //[]
     }
     search(types) {
-        this.matrix = game_object.SortMatrix(rome.world, this.gobj.wpos, types);
-        this.directions = game_object.GetDirections(this.matrix);
+        this.matrix = game_object.helpers.sort_matrix(rome.world, this.gobj.wpos, types);
+        this.directions = game_object.helpers.get_directions(this.matrix);
         // console.log('pos', this.gobj.wpos, this.matrix);
     }
 }

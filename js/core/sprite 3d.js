@@ -38,8 +38,8 @@ export class sprite3d extends sprite {
         this.prerender();
     }
     prerender() {
-        // If both are false guard
-        if (!this.rerender && !glob.rerender)
+        // If both are false
+        if (this.rerender == false && glob.rerender == false)
             return;
         this._render();
         this.material.map = this.target.texture;

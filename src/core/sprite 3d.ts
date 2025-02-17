@@ -51,8 +51,8 @@ export class sprite3d extends sprite {
 		this.prerender();
 	}
 	prerender() {
-		// If both are false guard
-		if (!this.rerender && !glob.rerender)
+		// If both are false
+		if (this.rerender == false && glob.rerender == false)
 			return;
 		this._render();
 		this.material.map = this.target.texture;
@@ -62,8 +62,7 @@ export class sprite3d extends sprite {
 	protected _make_target() {
 		let { spriteSize } = this.data;
 		spriteSize = pts.mult(spriteSize!, glob.scale);
-		this.target = pipeline.makeRenderTarget(
-			spriteSize![0], spriteSize![1]);
+		this.target = pipeline.makeRenderTarget(spriteSize[0], spriteSize[1]);
 	}
 	protected _render() {
 		tileform.stage.prepare(this);

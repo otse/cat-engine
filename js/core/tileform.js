@@ -138,8 +138,6 @@ var tileform;
         stage.render = render;
     })(stage = tileform.stage || (tileform.stage = {}));
     // end of stage
-    // shapes
-    // Unused array
     const shapes = [];
     const entities = [];
     class entity3d {
@@ -171,8 +169,10 @@ var tileform;
             }
         }
         _create() {
+            console.warn('empty entity create');
         }
         _delete() {
+            console.warn('empty entity delete');
         }
         _step() {
         }
@@ -197,15 +197,7 @@ var tileform;
                 shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
                 ...data
             };
-            // shapes.push(this);
         }
-        _create() {
-            console.warn(' empty shape create ');
-        }
-        _delete() {
-            console.warn(' empty shape delete ');
-        }
-        _step() { }
     }
     tileform.shape3d = shape3d;
     ;
@@ -219,7 +211,6 @@ var tileform;
             this.entityGroup.add(this.hexTile.group);
             // this.entityGroup.add(new THREE.AxesHelper(8));
             this.translate();
-            // this.shapeGroup.updateMatrix();
         }
         _delete() {
             this.hexTile.free();
@@ -416,7 +407,6 @@ var tileform;
             this._step();
         }
         _step() {
-            super._step();
         }
         _update() {
             // Dance the light source

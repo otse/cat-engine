@@ -43,19 +43,19 @@ export class sprite {
 		this.matrix = new THREE.Matrix3;
 		this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
 	}
+	create() {
+		this._create();
+	}
+	delete() {
+		this._delete();
+	}
 	step() {
 		this._step();
 	}
 	protected _step() { }
-	delete() {
-		this._delete();
-	}
 	protected _delete() {
 		this.mesh.parent.remove(this.mesh);
 		this.gobj.sprite = undefined;
-	}
-	create() {
-		this._create();
 	}
 	protected _create() {
 		let defines = {} as any;
@@ -74,11 +74,8 @@ export class sprite {
 		}, defines);
 		let { spriteSize } = this.data;
 		spriteSize = pts.mult(spriteSize!, glob.scale);
-		this.geometry = new THREE.PlaneGeometry(
-			spriteSize![0],
-			spriteSize![1], 1, 1);
-		this.mesh = new THREE.Mesh(
-			this.geometry, this.material);
+		this.geometry = new THREE.PlaneGeometry(spriteSize[0], spriteSize[1], 1, 1);
+		this.mesh = new THREE.Mesh(this.geometry, this.material);
 		this.update();
 		pipeline.groups.major.add(this.mesh);
 	}

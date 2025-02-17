@@ -37,10 +37,10 @@ export class wall3d extends game_object {
 	/*protected override _delete() {
 		console.log('delete');
 	}*/
-	protected override _step() {
-		super._step();
-		this.sprite?.step();
-	}
+	//protected override _step() {
+	//	super._step();
+	//	this.sprite?.step();
+	//}
 }
 
 export default wall3d;

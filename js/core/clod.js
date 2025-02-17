@@ -113,8 +113,15 @@ var clod;
             //console.log('sector');
             hooks.emit('sectorCreate', this);
         }
+        nuke() {
+            numbers.chunks[1]--;
+            for (const obj of this.objs) {
+                obj.finalize();
+            }
+            this.objs.splice(0, this.objs.length);
+        }
         add(obj, show = true) {
-            if (!this.objs.includes(obj)) {
+            if (this.objs.includes(obj) == false) {
                 this.objs.push(obj);
                 obj.chunk = this;
                 if (this.active && show)
@@ -279,13 +286,14 @@ var clod;
         finalize() {
             // this.hide();
             this.counts[1]--;
+            this.hide();
         }
         show() {
             if (this.on())
                 return;
             this.counts[0]++;
             this.create();
-            this.step(); // Cursor fixed the bug
+            this.step();
             //this.shape?.show();
         }
         hide() {
@@ -327,9 +335,21 @@ var clod;
         }
     }
     clod.obj = obj;
-    let util;
-    (function (util) {
-        function GetMatrix(world, wpos) {
+    let helpers;
+    (function (helpers) {
+        function get_every_chunk(world) {
+            let chunks = [];
+            for (const i in world.arrays) {
+                for (const j in world.arrays[i]) {
+                    if (world.arrays[i][j]) {
+                        chunks.push(world.arrays[i][j]);
+                    }
+                }
+            }
+            return chunks;
+        }
+        helpers.get_every_chunk = get_every_chunk;
+        function get_matrix(world, wpos) {
             const directions = [
                 [-1, 1], [0, 1], [1, 1],
                 [-1, 0], [0, 0], [1, 0],
@@ -342,8 +362,8 @@ var clod;
             });
             return matrix;
         }
-        util.GetMatrix = GetMatrix;
-    })(util = clod.util || (clod.util = {}));
+        helpers.get_matrix = get_matrix;
+    })(helpers = clod.helpers || (clod.helpers = {}));
     let numbers;
     (function (numbers) {
         numbers.chunks = [0, 0];
