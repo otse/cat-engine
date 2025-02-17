@@ -176,22 +176,8 @@ namespace app {
 		take_time();
 		take_delta();
 		await rome.step();
-		await hooks.emit('animationFrame', false);
-		document.querySelector('rome-stats')!.innerHTML = `
-		DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
-		<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
-		<br />&#9;ALLOW_NORMAL_MAPS (f3): ${tileform.ALLOW_NORMAL_MAPS}
-		<br />scale: ${glob.scale}
-		<br />fps: ${glob.fps?.toFixed(2)}
-		<br />delta: ${glob.delta?.toFixed(3)}
-		<br />zoom: ${zoom.actualZoom()}
-		<br />glob.rerender: ${glob.rerender}
-		<br />glob.rerenderGame: ${glob.rerenderGame}
-		<br />cameraMode: ${pipeline.cameraMode}
-		<br />objs: ${clod.numbers.objs[0]} / ${clod.numbers.objs[1]}
-		<br />gobjs: ${glob.gameobjects[0]} / ${glob.gameobjects[1]}
-		<br />chunks: ${clod.numbers.chunks[0]} / ${clod.numbers.chunks[1]}
-		`;
+		await hooks.emit('animationFrame', 1);
+		// await hooks.emit('animationFrame', false);
 		pipeline.render();
 		wheel = 0;
 		process_keys();

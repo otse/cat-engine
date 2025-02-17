@@ -18,7 +18,7 @@ namespace clod {
 
 	const grid_crawl_makes_chunks = false;
 
-	export const SectorSpan = 3;
+	export const chunk_span = 3;
 
 	// For slod
 	// export var stamp = 0;
@@ -96,7 +96,7 @@ namespace clod {
 			return this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
 		}
 		static wtocpos(w: vec2 | vec3): vec2 {
-			return pts.floor(pts.divide(w, SectorSpan));
+			return pts.floor(pts.divide(w, chunk_span));
 		}
 		// todo add(obj) {}
 		// todo remove(obj) {}
@@ -115,8 +115,8 @@ namespace clod {
 			super();
 			if (chunk_coloration)
 				this.color = (['lightsalmon', 'lightblue', 'beige', 'pink'])[Math.floor(Math.random() * 4)];
-			let min = pts.mult(this.cpos, SectorSpan);
-			let max = pts.add(min, [SectorSpan - 1, SectorSpan - 1]);
+			let min = pts.mult(this.cpos, chunk_span);
+			let max = pts.add(min, [chunk_span - 1, chunk_span - 1]);
 			this.small = new aabb2(max, min);
 			this.group = new THREE.Group;
 			this.group.frustumCulled = false;
@@ -130,9 +130,9 @@ namespace clod {
 		}
 		nuke() {
 			numbers.chunks[1]--;
-			for (const obj of this.objs) {
+			this.hide();
+			for (const obj of this.objs)
 				obj.finalize();
-			}
 			this.objs.splice(0, this.objs.length);
 		}
 		add(obj: obj, show = true) {
@@ -191,7 +191,7 @@ namespace clod {
 			if (this.off())
 				return;
 			numbers.chunks[0]--;
-			for (let obj of this.objs)
+			for (const obj of this.objs)
 				obj.hide();
 			pipeline.scene.remove(this.group);
 			hooks.emit('sectorHide', this);

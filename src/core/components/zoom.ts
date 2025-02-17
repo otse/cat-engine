@@ -15,7 +15,7 @@ namespace zoom {
         hooks.addListener('romeComponents', step);
     }
 
-    export function actualZoom() {
+    export function scale() {
         return zooms[level];
     }
 

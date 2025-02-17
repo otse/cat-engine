@@ -118,7 +118,7 @@ namespace pan {
 				dif = pts.divide(dif, panDivisor);
 				// necessary mods
 				dif = pts.mult(dif, pipeline.dotsPerInch);
-				dif = pts.mult(dif, zoom.actualZoom());
+				dif = pts.mult(dif, zoom.scale());
 				dif = pts.subtract(dif, before);
 				rpos = pts.inv(dif);
 			}

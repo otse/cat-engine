@@ -9,7 +9,7 @@ var clod;
     const chunk_coloration = false;
     const fog_of_war = false;
     const grid_crawl_makes_chunks = false;
-    clod.SectorSpan = 3;
+    clod.chunk_span = 3;
     // For slod
     // export var stamp = 0;
     function init() {
@@ -84,7 +84,7 @@ var clod;
             return this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
         }
         static wtocpos(w) {
-            return pts.floor(pts.divide(w, clod.SectorSpan));
+            return pts.floor(pts.divide(w, clod.chunk_span));
         }
     }
     clod.world = world;
@@ -102,8 +102,8 @@ var clod;
             this.world = world;
             if (chunk_coloration)
                 this.color = (['lightsalmon', 'lightblue', 'beige', 'pink'])[Math.floor(Math.random() * 4)];
-            let min = pts.mult(this.cpos, clod.SectorSpan);
-            let max = pts.add(min, [clod.SectorSpan - 1, clod.SectorSpan - 1]);
+            let min = pts.mult(this.cpos, clod.chunk_span);
+            let max = pts.add(min, [clod.chunk_span - 1, clod.chunk_span - 1]);
             this.small = new aabb2(max, min);
             this.group = new THREE.Group;
             this.group.frustumCulled = false;
@@ -115,9 +115,9 @@ var clod;
         }
         nuke() {
             numbers.chunks[1]--;
-            for (const obj of this.objs) {
+            this.hide();
+            for (const obj of this.objs)
                 obj.finalize();
-            }
             this.objs.splice(0, this.objs.length);
         }
         add(obj, show = true) {
@@ -173,7 +173,7 @@ var clod;
             if (this.off())
                 return;
             numbers.chunks[0]--;
-            for (let obj of this.objs)
+            for (const obj of this.objs)
                 obj.hide();
             pipeline.scene.remove(this.group);
             hooks.emit('sectorHide', this);

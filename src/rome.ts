@@ -159,6 +159,25 @@ namespace rome {
 		land.make();
 	}
 
+	function show_stats() {
+		document.querySelector('rome-stats')!.innerHTML = `
+			DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
+			<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
+			<br />&#9;ALLOW_NORMAL_MAPS (f3): ${tileform.ALLOW_NORMAL_MAPS}
+			<br />render scale (-, =): ${glob.scale}
+			<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
+			<br />glob.rerender: ${glob.rerender}
+			<br />glob.rerenderGame: ${glob.rerenderGame}
+			<!--<br />cameraMode: ${pipeline.cameraMode}-->
+			<br />chunk_span: ${clod.chunk_span} x ${clod.chunk_span}
+			<br />grid (t, g): ${world.grid.spread} / ${world.grid.outside}
+			<br />zoom scale (r, f): ${zoom.scale()}
+			<br />objs: ${clod.numbers.objs[0]} / ${clod.numbers.objs[1]}
+			<br />gobjs: ${glob.gameobjects[0]} / ${glob.gameobjects[1]}
+			<br />chunks: ${clod.numbers.chunks[0]} / ${clod.numbers.chunks[1]}
+			`;
+	}
+
 	export function purgeRemake() {
 		const chunks = clod.helpers.get_every_chunk(world);
 		for (const chunk of chunks) {
@@ -176,11 +195,18 @@ namespace rome {
 		hooks.emit('romeComponents', 1);
 		hooks.emit('romeStep', 0);
 		debgkeys();
+		show_stats();
 		world.update(pan.wpos);
 		glob.rerender = false;
 	}
 
 	function debgkeys() {
+		if (app.key('t') == 1) {
+			world.grid.shrink();
+		}
+		if (app.key('g') == 1) {
+			world.grid.grow();
+		}
 		if (app.key('[') == 1) {
 			tileform.hex_size -= .1;
 			console.log(tileform.hex_size);
