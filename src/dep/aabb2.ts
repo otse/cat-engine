@@ -20,18 +20,18 @@ class aabb2 {
 		}
 	}
 	extend(v: vec2) {
-		this.min = pts.min(this.min, v)
-		this.max = pts.max(this.max, v)
+		this.min = (pts.min(this.min, v))
+		this.max = (pts.max(this.max, v))
 	}
 	diagonal(): vec2 {
-		return pts.subtract(this.max, this.min)
+		return (pts.subtract(this.max, this.min))
 	}
 	center(): vec2 {
-		return pts.add(this.min, pts.mult(this.diagonal(), 0.5))
+		return (pts.add(this.min, pts.mult(this.diagonal(), 0.5)))
 	}
 	translate(v: vec2) {
-		this.min = pts.add(this.min, v)
-		this.max = pts.add(this.max, v)
+		this.min = (pts.add(this.min, v))
+		this.max = (pts.add(this.max, v))
 	}
 	test(b: aabb2)
 	{

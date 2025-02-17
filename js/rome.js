@@ -147,20 +147,19 @@ var rome;
         land.make();
     }
     rome.makeTestingChamber = makeTestingChamber;
-    function show_stats() {
+    function build_then_output_stats() {
         document.querySelector('rome-stats').innerHTML = `
 			DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
 			<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
 			<br />&#9;ALLOW_NORMAL_MAPS (f3): ${tileform.ALLOW_NORMAL_MAPS}
-			<br />render scale (-, =): ${glob.scale}
 			<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
+			<br />render scale (-, =): ${glob.scale}
+			<br />zoom scale (r, f): ${zoom.scale()}
+			<br />grid (t, g): ${rome.world.grid.spread} / ${rome.world.grid.outside}
 			<br />glob.rerender: ${glob.rerender}
 			<br />glob.rerenderGame: ${glob.rerenderGame}
 			<!--<br />cameraMode: ${pipeline.cameraMode}-->
 			<br />chunk_span: ${clod.chunk_span} x ${clod.chunk_span}
-			<br />grid (t, g): ${rome.world.grid.spread} / ${rome.world.grid.outside}
-			<br />zoom scale (r, f): ${zoom.scale()}
-			<br />objs: ${clod.numbers.objs[0]} / ${clod.numbers.objs[1]}
 			<br />gobjs: ${glob.gameobjects[0]} / ${glob.gameobjects[1]}
 			<br />chunks: ${clod.numbers.chunks[0]} / ${clod.numbers.chunks[1]}
 			`;
@@ -182,12 +181,19 @@ var rome;
         hooks.emit('romeComponents', 1);
         hooks.emit('romeStep', 0);
         debgkeys();
-        show_stats();
+        build_then_output_stats();
         rome.world.update(pan.wpos);
         glob.rerender = false;
     }
     rome.step = step;
     function debgkeys() {
+        if (app.key('c') == 1) {
+            const chunks = clod.helpers.get_every_chunk(rome.world);
+            console.log('chunks', chunks);
+        }
+        if (app.key('a') == 1) {
+            console.log('arrays', rome.world.arrays);
+        }
         if (app.key('t') == 1) {
             rome.world.grid.shrink();
         }

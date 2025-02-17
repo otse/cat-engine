@@ -26,11 +26,11 @@ var clod;
     }
     clod.register = register;
     function project(unit) {
-        return pts.mult(pts.project(unit), glob.scale);
+        return (pts.mult(pts.project(unit), glob.scale));
     }
     clod.project = project;
     function unproject(pixel) {
-        return pts.divide(pts.unproject(pixel), glob.scale);
+        return (pts.divide(pts.unproject(pixel), glob.scale));
     }
     clod.unproject = unproject;
     function add(world, obj) {
@@ -84,7 +84,7 @@ var clod;
             return this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
         }
         static wtocpos(w) {
-            return pts.floor(pts.divide(w, clod.chunk_span));
+            return (pts.floor(pts.divide(w, clod.chunk_span)));
         }
     }
     clod.world = world;
@@ -102,8 +102,8 @@ var clod;
             this.world = world;
             if (chunk_coloration)
                 this.color = (['lightsalmon', 'lightblue', 'beige', 'pink'])[Math.floor(Math.random() * 4)];
-            let min = pts.mult(this.cpos, clod.chunk_span);
-            let max = pts.add(min, [clod.chunk_span - 1, clod.chunk_span - 1]);
+            let min = (pts.mult(this.cpos, clod.chunk_span));
+            let max = (pts.add(min, [clod.chunk_span - 1, clod.chunk_span - 1]));
             this.small = new aabb2(max, min);
             this.group = new THREE.Group;
             this.group.frustumCulled = false;
@@ -217,7 +217,7 @@ var clod;
             // spread = -2; < 2
             for (let y = -this.spread; y < this.spread + 1; y++) {
                 for (let x = -this.spread; x < this.spread + 1; x++) {
-                    let pos = pts.add(this.cpos, [x, y]);
+                    let pos = (pts.add(this.cpos, [x, y]));
                     let chunk = grid_crawl_makes_chunks ? this.world.at(pos) : this.world.lookup(pos);
                     if (!chunk)
                         continue;
@@ -341,9 +341,7 @@ var clod;
             let chunks = [];
             for (const i in world.arrays) {
                 for (const j in world.arrays[i]) {
-                    if (world.arrays[i][j]) {
-                        chunks.push(world.arrays[i][j]);
-                    }
+                    chunks.push(world.arrays[i][j]);
                 }
             }
             return chunks;
@@ -357,7 +355,7 @@ var clod;
             ];
             let matrix = [];
             directions.forEach((pos, index) => {
-                pos = pts.add(pos, wpos);
+                pos = (pts.add(pos, wpos));
                 matrix[index] = world.atwpos(pos).stacked(pos);
             });
             return matrix;

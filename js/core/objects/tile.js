@@ -9,7 +9,7 @@ export class tile extends game_object {
             name: 'a tile',
             ...data
         });
-        this.wpos = pts.floor(this.wpos);
+        this.wpos = (pts.floor(this.wpos));
         this.data._type = 'tile';
     }
     _create() {

@@ -104,6 +104,7 @@ var tileform;
             stage.scene.add(stage.sun);
             stage.scene.add(stage.camera);
             stage.scene.updateMatrix();
+            // todo create a second renderer that has shadows enabled
         }
         // aka stage
         function prepare(sprite) {

@@ -12,6 +12,10 @@ class pts {
 		return { x: a[0], y: a[1] };
 	}
 
+	static vec2s(a: vec2): vec2s {
+		return [String(a[0]), String(a[1])];
+	}
+
 	static area_every(aabb: aabb2, callback: (pos: vec2) => any) {
 		let y = aabb.min[1];
 		for (; y <= aabb.max[1]; y++) {

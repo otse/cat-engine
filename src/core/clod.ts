@@ -38,11 +38,11 @@ namespace clod {
 	}
 
 	export function project(unit: vec2): vec2 {
-		return pts.mult(pts.project(unit), glob.scale);
+		return (pts.mult(pts.project(unit), glob.scale));
 	}
 
 	export function unproject(pixel: vec2): vec2 {
-		return pts.divide(pts.unproject(pixel), glob.scale);
+		return (pts.divide(pts.unproject(pixel), glob.scale));
 	}
 
 	export function add(world: world, obj?: obj) {
@@ -96,7 +96,7 @@ namespace clod {
 			return this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
 		}
 		static wtocpos(w: vec2 | vec3): vec2 {
-			return pts.floor(pts.divide(w, chunk_span));
+			return (pts.floor(pts.divide(w, chunk_span)));
 		}
 		// todo add(obj) {}
 		// todo remove(obj) {}
@@ -115,8 +115,8 @@ namespace clod {
 			super();
 			if (chunk_coloration)
 				this.color = (['lightsalmon', 'lightblue', 'beige', 'pink'])[Math.floor(Math.random() * 4)];
-			let min = pts.mult(this.cpos, chunk_span);
-			let max = pts.add(min, [chunk_span - 1, chunk_span - 1]);
+			let min = (pts.mult(this.cpos, chunk_span));
+			let max = (pts.add(min, [chunk_span - 1, chunk_span - 1]));
 			this.small = new aabb2(max, min);
 			this.group = new THREE.Group;
 			this.group.frustumCulled = false;
@@ -233,7 +233,7 @@ namespace clod {
 			// spread = -2; < 2
 			for (let y = -this.spread; y < this.spread + 1; y++) {
 				for (let x = -this.spread; x < this.spread + 1; x++) {
-					let pos = pts.add(this.cpos, [x, y]);
+					let pos = (pts.add(this.cpos, [x, y]));
 					let chunk = grid_crawl_makes_chunks ? this.world.at(pos) : this.world.lookup(pos);
 					if (!chunk)
 						continue;
@@ -360,9 +360,7 @@ namespace clod {
 			let chunks: chunk[] = [];
 			for (const i in world.arrays) {
 				for (const j in world.arrays[i]) {
-					if (world.arrays[i][j]) {
-						chunks.push(world.arrays[i][j]);
-					}
+					chunks.push(world.arrays[i][j]);
 				}
 			}
 			return chunks;
@@ -376,7 +374,7 @@ namespace clod {
 			];
 			let matrix: Type[][] = [];
 			directions.forEach((pos, index) => {
-				pos = pts.add(pos, wpos);
+				pos = (pts.add(pos, wpos));
 				matrix[index] = world.atwpos(pos).stacked(pos) as Type[];
 			});
 			return matrix;

@@ -57,7 +57,7 @@ namespace pan {
 		marker.update();
 		// Jump to nearest full pixel
 		if (alignFullPixels)
-			rpos = pts.round(rpos);
+			rpos = (pts.round(rpos));
 		set_camera();
 		//lod.gworld.update(wpos);
 	}
@@ -66,12 +66,12 @@ namespace pan {
 		if (stick) {
 			let wpos = stick.wpos;
 			// Todo .5 ?
-			wpos = pts.add(wpos, [.5, .5]);
-			rpos = clod.project(wpos);
+			wpos = (pts.add(wpos, [.5, .5]));
+			rpos = (clod.project(wpos));
 		}
 		else {
 			if (startWtorpos)
-				rpos = clod.project(wpos);
+				rpos = (clod.project(wpos));
 			// rpos = pts.add(rpos, clod.project([.5, .5]));
 		}
 	}
@@ -109,28 +109,28 @@ namespace pan {
 			glob.rerenderGame = true;
 			let mouse = app.mouse();
 			mouse[1] = -mouse[1];
-			let dif = pts.subtract(begin, mouse);
+			let dif = (pts.subtract(begin, mouse));
 			if (continousMode) {
-				dif = pts.divide(dif, continuousSpeed);
-				rpos = pts.add(rpos, dif);
+				dif = (pts.divide(dif, continuousSpeed));
+				rpos = (pts.add(rpos, dif));
 			}
 			else {
-				dif = pts.divide(dif, panDivisor);
+				dif = (pts.divide(dif, panDivisor));
 				// necessary mods
-				dif = pts.mult(dif, pipeline.dotsPerInch);
-				dif = pts.mult(dif, zoom.scale());
-				dif = pts.subtract(dif, before);
-				rpos = pts.inv(dif);
+				dif = (pts.mult(dif, pipeline.dotsPerInch));
+				dif = (pts.mult(dif, zoom.scale()));
+				dif = (pts.subtract(dif, before));
+				rpos = (pts.inv(dif));
 			}
 		}
 		else if (app.button(1) == -1) {
 			console.log('release');
-			rpos = pts.round(rpos);
+			rpos = (pts.round(rpos));
 		}
 	}
 
 	function set_camera() {
-		const rpos2 = pts.add(rpos, pts.divide([0, glob.hexSize[1]], 2));
+		const rpos2 = (pts.add(rpos, pts.divide([0, glob.hexSize[1]], 2)));
 		pipeline.groups.camera.position.x = rpos2[0];
 		pipeline.groups.camera.position.y = rpos2[1];
 		pipeline.groups.camera.updateMatrix();

@@ -311,13 +311,13 @@ namespace pipeline {
 
 	function onWindowResize() {
 		screenSize = [window.innerWidth, window.innerHeight];
-		screenSize = pts.floor(screenSize);
+		screenSize = (pts.floor(screenSize));
 		//screenSize = pts.even(screenSize, -1);
-		targetSize = pts.copy(screenSize);
+		targetSize = (pts.copy(screenSize));
 
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-			targetSize = pts.mult(screenSize, dotsPerInch);
-			targetSize = pts.floor(targetSize);
+			targetSize = (pts.mult(screenSize, dotsPerInch));
+			targetSize = (pts.floor(targetSize));
 			// targetSize = pts.make_uneven(targetSize, -1);
 		}
 		renderer.setSize(screenSize[0], screenSize[1]);

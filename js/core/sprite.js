@@ -20,7 +20,7 @@ export class sprite {
             ...data,
         };
         // Make uneven ceil fixes most misaligments
-        this.data.spriteSize = pts.make_uneven(this.data.spriteSize, 1);
+        this.data.spriteSize = (pts.make_uneven(this.data.spriteSize, 1));
         this.gobj = this.data.gobj;
         this.gobj.sprite = this;
         // this.data.spriteColor = this.gobj.data.colorOverride || 'white';
@@ -58,7 +58,7 @@ export class sprite {
             bool: true
         }, defines);
         let { spriteSize } = this.data;
-        spriteSize = pts.mult(spriteSize, glob.scale);
+        spriteSize = (pts.mult(spriteSize, glob.scale));
         this.geometry = new THREE.PlaneGeometry(spriteSize[0], spriteSize[1], 1, 1);
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.update();

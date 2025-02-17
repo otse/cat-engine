@@ -126,6 +126,8 @@ namespace tileform {
 
 			scene.add(camera);
 			scene.updateMatrix();
+			// todo create a second renderer that has shadows enabled
+			
 		}
 
 		// aka stage

@@ -19,18 +19,18 @@ class aabb2 {
         }
     }
     extend(v) {
-        this.min = pts.min(this.min, v);
-        this.max = pts.max(this.max, v);
+        this.min = (pts.min(this.min, v));
+        this.max = (pts.max(this.max, v));
     }
     diagonal() {
-        return pts.subtract(this.max, this.min);
+        return (pts.subtract(this.max, this.min));
     }
     center() {
-        return pts.add(this.min, pts.mult(this.diagonal(), 0.5));
+        return (pts.add(this.min, pts.mult(this.diagonal(), 0.5)));
     }
     translate(v) {
-        this.min = pts.add(this.min, v);
-        this.max = pts.add(this.max, v);
+        this.min = (pts.add(this.min, v));
+        this.max = (pts.add(this.max, v));
     }
     test(b) {
         if (this.max[0] < b.min[0] || this.min[0] > b.max[0] ||

@@ -262,12 +262,12 @@ var pipeline;
     pipeline.targetSize = [0, 0];
     function onWindowResize() {
         pipeline.screenSize = [window.innerWidth, window.innerHeight];
-        pipeline.screenSize = pts.floor(pipeline.screenSize);
+        pipeline.screenSize = (pts.floor(pipeline.screenSize));
         //screenSize = pts.even(screenSize, -1);
-        pipeline.targetSize = pts.copy(pipeline.screenSize);
+        pipeline.targetSize = (pts.copy(pipeline.screenSize));
         if (pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-            pipeline.targetSize = pts.mult(pipeline.screenSize, pipeline.dotsPerInch);
-            pipeline.targetSize = pts.floor(pipeline.targetSize);
+            pipeline.targetSize = (pts.mult(pipeline.screenSize, pipeline.dotsPerInch));
+            pipeline.targetSize = (pts.floor(pipeline.targetSize));
             // targetSize = pts.make_uneven(targetSize, -1);
         }
         pipeline.renderer.setSize(pipeline.screenSize[0], pipeline.screenSize[1]);

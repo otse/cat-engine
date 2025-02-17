@@ -5,6 +5,9 @@ class pts {
     static pt(a) {
         return { x: a[0], y: a[1] };
     }
+    static vec2s(a) {
+        return [String(a[0]), String(a[1])];
+    }
     static area_every(aabb, callback) {
         let y = aabb.min[1];
         for (; y <= aabb.max[1]; y++) {

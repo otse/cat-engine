@@ -16,7 +16,7 @@ export class game_object extends clod.obj {
         this.z = data._wpos[2];
         this.r = data._r || 0;
         this.wtorpos();
-        this.rpos = pts.floor(this.rpos);
+        this.rpos = (pts.floor(this.rpos));
     }
     purge() {
         // console.log('purge');

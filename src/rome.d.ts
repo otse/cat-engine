@@ -1,6 +1,7 @@
 declare type vec4 = [number, number, number, number];
 declare type vec3 = [number, number, number];
 declare type vec2 = [number, number];
+declare type vec2s = [string, string];
 
 declare var THREE: any;
 declare var perlin: any;

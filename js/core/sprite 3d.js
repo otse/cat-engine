@@ -48,7 +48,7 @@ export class sprite3d extends sprite {
     }
     _make_target() {
         let { spriteSize } = this.data;
-        spriteSize = pts.mult(spriteSize, glob.scale);
+        spriteSize = (pts.mult(spriteSize, glob.scale));
         this.target = pipeline.makeRenderTarget(spriteSize[0], spriteSize[1]);
     }
     _render() {
