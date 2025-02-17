@@ -182,6 +182,7 @@ var app;
 		DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
 		<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
 		<br />&#9;ALLOW_NORMAL_MAPS (f3): ${tileform.ALLOW_NORMAL_MAPS}
+		<br />scale: ${glob.scale}
 		<br />fps: ${glob.fps?.toFixed(2)}
 		<br />delta: ${glob.delta?.toFixed(3)}
 		<br />zoom: ${zoom.actualZoom()}

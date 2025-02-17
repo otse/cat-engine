@@ -31,7 +31,7 @@ var pan;
             colorOverride: 'purple',
             lonely: true,
         });
-        marker.create();
+        marker.show();
         window['panMarker'] = marker;
     }
     function functions() {

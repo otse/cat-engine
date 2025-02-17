@@ -292,7 +292,7 @@ var clod;
             if (this.on())
                 return;
             this.counts[0]++;
-            this.create();
+            this._create();
             this.step();
             //this.shape?.show();
         }
@@ -300,7 +300,7 @@ var clod;
             if (this.off())
                 return;
             this.counts[0]--;
-            this.delete();
+            this._delete();
             //this.shape?.hide();
             // console.log(' obj.hide ');
         }
@@ -315,12 +315,12 @@ var clod;
             this.wtorpos();
             return pts.copy(this.rpos);
         }
-        create() {
-            this._create();
-        }
-        delete() {
-            this._delete();
-        }
+        //create() { // Use show() instead!
+        //	this._create();
+        //}
+        // delete() { // Use hide() instead!
+        //	this._delete();
+        //}
         step() {
             this._step();
         }
