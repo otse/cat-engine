@@ -329,6 +329,9 @@ var clod;
         }
         _delete() {
         }
+        // Todo,
+        // Flag the Rpos as unclean when the Wpos is changed
+        // using getters and setters?
         _step() {
             this.wtorpos();
             this.rebound();

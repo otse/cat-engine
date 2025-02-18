@@ -349,6 +349,9 @@ namespace clod {
 		}
 		protected _delete() {
 		}
+		// Todo,
+		// Flag the Rpos as unclean when the Wpos is changed
+		// using getters and setters?
 		protected _step() {
 			this.wtorpos();
 			this.rebound();

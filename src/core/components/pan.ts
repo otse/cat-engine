@@ -10,81 +10,90 @@ import tile from "../objects/tile.js";
 import glob from "../../dep/glob.js";
 
 
-namespace pan {
+let wpos: vec2 = [0, 0];
+let rpos: vec2 = [0, 0];
 
-	export function register() {
-		hooks.addListener('romeComponents', step);
-		startup();
+let begin: vec2 = [0, 0];
+let before: vec2 = [0, 0];
+
+export class pan {
+
+	static register() {
+		hooks.addListener('romeComponents', this.step);
+		this.startup();
 	}
 
-	async function step() {
-		functions();
+	static async step() {
+		pan.do_the_math();
 		return false;
 	}
 
-	export let wpos: vec2 = [0, 0]
-	export let rpos: vec2 = [0, 0]
+	static marker: game_object;
+	static follower: game_object | undefined = undefined
 
-	let stick: game_object | undefined = undefined
+	// Make the marker move in full tiles?
+	static readonly noHalfMeasures = false;
 
-	// At the start of our functions, compute the Rpos from the Wpos
-	const rposIsAlwaysWposBased = true;
+	// Rpos be pixel-based?
+	static readonly roundRpos = false;
 
-	// The marker moves in full tiles
-	const roundWposMarker = false;
+	// Punish the player after dragging the camera?
+	static readonly dragReleaseRoundsToNearestFullPixel = false;
 
-	// Rpos will always be rounded to full game or render pixels
-	const roundRpos = true;
+	static get wpos(): vec2 {
+		return wpos;
+	}
 
-	// Punish the player after dragging the camera
-	const dragReleaseRoundsToNearestFullPixel = false;
+	static set wpos(w: vec2) {
+		wpos = w;
+		rpos = clod.project(wpos);
+	}
 
-	var marker: game_object;
+	static get rpos(): vec2 {
+		return rpos;
+	}
 
-	function startup() {
-		marker = new tile({
+	static set rpos(r: vec2) {
+		rpos = r;
+		wpos = clod.unproject(rpos);
+	}
+
+	static startup() {
+		this.marker = new tile({
 			_wpos: [0, 0, 0],
 			colorOverride: 'purple',
 			lonely: true,
 		});
-		marker.show();
-		window['panMarker'] = marker;
+		this.marker.show();
+		window['panMarker'] = this.marker;
 	}
 
-	function functions() {
-		follow();
-		pan_rpos();
-		arrow_keys();
-		if (roundRpos)
-			rpos = (pts.round(rpos));
-		// After the rpos, we always want our wpos
-		// Could be floating point
+	static do_the_math() {
+		this.follow();
+		this.pan();
+		this.arrows();
 		wpos = (clod.unproject(rpos));
-		marker.wpos = wpos;
-		if (roundWposMarker)
-			marker.wpos = (pts.round(clod.unproject(rpos)));
-		marker.wtorpos();
-		marker.update();
-		// Jump to nearest full pixel
-		
-		set_camera();
+		if (this.roundRpos)
+			rpos = (pts.round(rpos));
+		this.marker.wpos = wpos;
+		if (this.noHalfMeasures)
+			this.marker.wpos = (pts.round(this.marker.wpos));
+		this.marker.wtorpos();
+		this.marker.update();
+		this.set_camera();
+		// Archaic code from wastes
 		//lod.gworld.update(wpos);
 	}
 
-	function follow() {
-		if (stick) {
-			let wpos = stick.wpos;
+	static follow() {
+		if (this.follower) {
+			let wpos = this.follower.wpos;
 			wpos = (pts.add(wpos, [.5, .5])); // ?
 			rpos = (clod.project(wpos));
 		}
-		else {
-			if (rposIsAlwaysWposBased) {
-				rpos = (clod.project(wpos));
-			}
-		}
 	}
 
-	function arrow_keys() {
+	static arrows() {
 		if (app.key('arrowright')) {
 			rpos[0] += 1 * glob.scale;
 			glob.rerenderObjects = true;
@@ -103,10 +112,9 @@ namespace pan {
 		}
 	}
 
-	let begin: vec2 = [0, 0];
-	let before: vec2 = [0, 0];
+	static dragging = false;
 
-	function pan_rpos() {
+	static pan() {
 		const continuousMode = false;
 		const continuousSpeed = -100;
 		const panDirection = -1;
@@ -115,7 +123,10 @@ namespace pan {
 			mouse[1] = -mouse[1];
 			begin = mouse;
 			before = pts.copy(rpos);
+			this.dragging = true;
 		}
+		if (this.dragging == false)
+			return;
 		if (app.button(1) >= 1) {
 			glob.rerenderObjects = true;
 			let mouse = app.mouse();
@@ -136,12 +147,13 @@ namespace pan {
 		}
 		else if (app.button(1) == -1) {
 			console.log('release');
-			if (dragReleaseRoundsToNearestFullPixel)
+			if (this.dragReleaseRoundsToNearestFullPixel)
 				rpos = (pts.round(rpos));
+			this.dragging = false;
 		}
 	}
 
-	function set_camera() {
+	static set_camera() {
 		const rpos2 = (pts.add(rpos, pts.divide([0, glob.hexSize[1]], 2)));
 		pipeline.groups.camera.position.x = rpos2[0];
 		pipeline.groups.camera.position.y = rpos2[1];
