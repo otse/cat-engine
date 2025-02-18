@@ -25,7 +25,7 @@ var rome;
         console.log(' init ');
         glob.rome = rome;
         glob.rerender = true;
-        glob.rerenderGame = true;
+        glob.rerenderObjects = true;
         glob.scale = 1;
         glob.hexSize = [17, 9];
         glob.gameobjects = [0, 0];
@@ -157,7 +157,7 @@ var rome;
 			<br />zoom scale (r, f): ${zoom.scale()}
 			<br />grid (t, g): ${rome.world.grid.spread} / ${rome.world.grid.outside}
 			<br />glob.rerender: ${glob.rerender}
-			<br />glob.rerenderGame: ${glob.rerenderGame}
+			<br />glob.rerenderObjects: ${glob.rerenderObjects}
 			<!--<br />cameraMode: ${pipeline.cameraMode}-->
 			<br />chunk_span: ${clod.chunk_span} x ${clod.chunk_span}
 			<br />gobjs: ${glob.gameobjects[0]} / ${glob.gameobjects[1]}
@@ -173,7 +173,7 @@ var rome;
         gameObjects.forEach(gobj => { gobj.purge(); removeGobj(gobj); });
         gameObjects = [];
         glob.rerender = true;
-        glob.rerenderGame = true;
+        glob.rerenderObjects = true;
         makeTestingChamber();
     }
     rome.purgeRemake = purgeRemake;

@@ -7,23 +7,27 @@ import clod from "../clod.js";
 import tile from "../objects/tile.js";
 import glob from "../../dep/glob.js";
 var pan;
-(function (pan_1) {
+(function (pan) {
     function register() {
         hooks.addListener('romeComponents', step);
         startup();
     }
-    pan_1.register = register;
+    pan.register = register;
     async function step() {
         functions();
         return false;
     }
-    let begin = [0, 0];
-    let before = [0, 0];
-    pan_1.wpos = [0, 0];
-    pan_1.rpos = [0, 0];
+    pan.wpos = [0, 0];
+    pan.rpos = [0, 0];
     let stick = undefined;
-    const startWtorpos = true;
-    const alignFullPixels = false;
+    // At the start of our functions, compute the Rpos from the Wpos
+    const rposIsAlwaysWposBased = true;
+    // The marker moves in full tiles
+    const roundWposMarker = false;
+    // Rpos will always be rounded to full game or render pixels
+    const roundRpos = true;
+    // Punish the player after dragging the camera
+    const dragReleaseRoundsToNearestFullPixel = false;
     var marker;
     function startup() {
         marker = new tile({
@@ -36,86 +40,90 @@ var pan;
     }
     function functions() {
         follow();
-        // Pan the rpos
-        pan();
-        sideways();
-        // Make a wpos from the nearest full pixel rpos
-        pan_1.wpos = clod.unproject(pan_1.rpos);
-        marker.wpos = pan_1.wpos;
+        pan_rpos();
+        arrow_keys();
+        if (roundRpos)
+            pan.rpos = (pts.round(pan.rpos));
+        // After the rpos, we always want our wpos
+        // Could be floating point
+        pan.wpos = (clod.unproject(pan.rpos));
+        marker.wpos = pan.wpos;
+        if (roundWposMarker)
+            marker.wpos = (pts.round(clod.unproject(pan.rpos)));
         marker.wtorpos();
         marker.update();
         // Jump to nearest full pixel
-        if (alignFullPixels)
-            pan_1.rpos = (pts.round(pan_1.rpos));
         set_camera();
         //lod.gworld.update(wpos);
     }
     function follow() {
         if (stick) {
             let wpos = stick.wpos;
-            // Todo .5 ?
-            wpos = (pts.add(wpos, [.5, .5]));
-            pan_1.rpos = (clod.project(wpos));
+            wpos = (pts.add(wpos, [.5, .5])); // ?
+            pan.rpos = (clod.project(wpos));
         }
         else {
-            if (startWtorpos)
-                pan_1.rpos = (clod.project(pan_1.wpos));
-            // rpos = pts.add(rpos, clod.project([.5, .5]));
+            if (rposIsAlwaysWposBased) {
+                pan.rpos = (clod.project(pan.wpos));
+            }
         }
     }
-    function sideways() {
+    function arrow_keys() {
         if (app.key('arrowright')) {
-            pan_1.rpos[0] += 1 * glob.scale;
-            glob.rerenderGame = true;
+            pan.rpos[0] += 1 * glob.scale;
+            glob.rerenderObjects = true;
         }
         if (app.key('arrowleft')) {
-            pan_1.rpos[0] -= 1 * glob.scale;
-            glob.rerenderGame = true;
+            pan.rpos[0] -= 1 * glob.scale;
+            glob.rerenderObjects = true;
         }
         if (app.key('arrowup')) {
-            pan_1.rpos[1] += 1 * glob.scale;
-            glob.rerenderGame = true;
+            pan.rpos[1] += 1 * glob.scale;
+            glob.rerenderObjects = true;
         }
         if (app.key('arrowdown')) {
-            pan_1.rpos[1] -= 1 * glob.scale;
-            glob.rerenderGame = true;
+            pan.rpos[1] -= 1 * glob.scale;
+            glob.rerenderObjects = true;
         }
     }
-    function pan() {
-        let continousMode = false;
+    let begin = [0, 0];
+    let before = [0, 0];
+    function pan_rpos() {
+        const continuousMode = false;
         const continuousSpeed = -100;
-        const panDivisor = -1;
+        const panDirection = -1;
         if (app.button(1) == 1) {
             let mouse = app.mouse();
             mouse[1] = -mouse[1];
             begin = mouse;
-            before = pts.copy(pan_1.rpos);
+            before = pts.copy(pan.rpos);
         }
         if (app.button(1) >= 1) {
-            glob.rerenderGame = true;
+            glob.rerenderObjects = true;
             let mouse = app.mouse();
             mouse[1] = -mouse[1];
             let dif = (pts.subtract(begin, mouse));
-            if (continousMode) {
+            if (continuousMode) {
                 dif = (pts.divide(dif, continuousSpeed));
-                pan_1.rpos = (pts.add(pan_1.rpos, dif));
+                pan.rpos = (pts.add(pan.rpos, dif));
             }
             else {
-                dif = (pts.divide(dif, panDivisor));
-                // necessary mods
-                dif = (pts.mult(dif, pipeline.dotsPerInch));
+                dif = (pts.divide(dif, panDirection));
+                // Scale
+                dif = (pts.mult(dif, glob.dotsPerInch));
                 dif = (pts.mult(dif, zoom.scale()));
                 dif = (pts.subtract(dif, before));
-                pan_1.rpos = (pts.inv(dif));
+                pan.rpos = (pts.inv(dif));
             }
         }
         else if (app.button(1) == -1) {
             console.log('release');
-            pan_1.rpos = (pts.round(pan_1.rpos));
+            if (dragReleaseRoundsToNearestFullPixel)
+                pan.rpos = (pts.round(pan.rpos));
         }
     }
     function set_camera() {
-        const rpos2 = (pts.add(pan_1.rpos, pts.divide([0, glob.hexSize[1]], 2)));
+        const rpos2 = (pts.add(pan.rpos, pts.divide([0, glob.hexSize[1]], 2)));
         pipeline.groups.camera.position.x = rpos2[0];
         pipeline.groups.camera.position.y = rpos2[1];
         pipeline.groups.camera.updateMatrix();

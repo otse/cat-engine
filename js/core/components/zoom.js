@@ -20,12 +20,12 @@ var zoom;
         if (wheelEnabled && app.wheel == -1 || app.key('f') == 1) {
             console.log('app wheel');
             zoom.level = (zoom.level > 0) ? zoom.level - 1 : zoom.level;
-            glob.rerenderGame = true;
+            glob.rerenderObjects = true;
         }
         if (wheelEnabled && app.wheel == 1 || app.key('r') == 1) {
             console.log('app wheel');
             zoom.level = (zoom.level < zoom.zooms.length - 1) ? zoom.level + 1 : zoom.level;
-            glob.rerenderGame = true;
+            glob.rerenderObjects = true;
         }
         const scale = zoom.zooms[zoom.level];
         if (pipeline.cameraMode == 'perspective') {

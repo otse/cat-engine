@@ -25,12 +25,12 @@ namespace zoom {
         if (wheelEnabled && app.wheel == -1 || app.key('f') == 1) {
             console.log('app wheel');
             level = (level > 0) ? level - 1 : level;
-            glob.rerenderGame = true;
+            glob.rerenderObjects = true;
         }
         if (wheelEnabled && app.wheel == 1 || app.key('r') == 1) {
             console.log('app wheel');
             level = (level < zooms.length - 1) ? level + 1 : level;
-            glob.rerenderGame = true;
+            glob.rerenderObjects = true;
         }
         const scale = zooms[level];
         if (pipeline.cameraMode == 'perspective') {

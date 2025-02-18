@@ -419,7 +419,7 @@ var tileform;
             this.entityGroup.updateMatrix();
             this.light.updateMatrix();
             glob.rerender = true;
-            glob.rerenderGame = true;
+            glob.rerenderObjects = true;
         }
         _delete() {
             console.log('remove light');
