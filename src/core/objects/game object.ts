@@ -42,7 +42,7 @@ export class game_object extends clod.obj {
 	}
 }
 
-// Messy
+// Nessy
 export namespace game_object {
 	export namespace helpers {
 		export function sort_matrix(world: clod.world, wpos: vec2, types: string[]) {

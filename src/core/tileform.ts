@@ -5,6 +5,7 @@ import glob from "../dep/glob.js";
 import { hooks } from "../dep/hooks.js";
 import pts from "../dep/pts.js";
 import rome from "../rome.js";
+import pan from "./components/pan.js";
 import direction_adapter from "./direction adapter.js";
 import game_object from "./objects/game object.js";
 import pipeline from "./pipeline.js";
@@ -13,7 +14,17 @@ import sprite from "./sprite.js";
 
 namespace tileform {
 
-	export const SCENE_BASED_TILEFORM_POSITIONING = true;
+	// this switch was going to make lighting "more perspective"
+	// the idea was NOT simple:
+	// right now, light is uniform and the camera sits right on top of the tile
+	// this switch was going to make the the camera sit in the middle of the view
+	// (where it should be, so not on top of a tile like default)
+	// then change the scene offset so the viewport centers on the tile
+	// with this change, lighting should reflect more realistically
+	// yes, lights will offset along with the scene
+	// in short this change should make lighting appear
+	// more 3d on the horizontal as well not just on the vertical
+	export const lightingModeUniform = false;
 
 	export let ALLOW_NORMAL_MAPS = true;
 
@@ -70,6 +81,9 @@ namespace tileform {
 
 		export function step() {
 			opkl();
+			// Testing new lighting mode
+			glob.rerender = true;
+			glob.rerenderObjects = true;
 		}
 
 		export async function init() {
@@ -115,19 +129,19 @@ namespace tileform {
 			scene.add(soleGroup);
 			scene.add(lightsGroup);
 			scene.updateMatrix();
-			ambient = new THREE.AmbientLight('white', 1);
+			ambient = new THREE.AmbientLight('white', Math.PI / 2);
 			scene.add(ambient);
-			const sunDistance = 2;
-			sun = new THREE.DirectionalLight('white', Math.PI / 3);
+			const sunDistance = 20;
+			sun = new THREE.DirectionalLight('white', Math.PI / 6);
 			sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
 			sun.updateMatrix();
-			// scene.add(new THREE.AxesHelper(5));
+			scene.add(new THREE.AxesHelper(5));
 			scene.add(sun);
 
 			scene.add(camera);
 			scene.updateMatrix();
 			// todo create a second renderer that has shadows enabled
-			
+
 		}
 
 		// aka stage
@@ -146,9 +160,22 @@ namespace tileform {
 				-100, 500);
 			camera.position.set(0, 0, 1);
 			camera.rotation.set(stageCameraRotation, 0, 0);
-			const pos3d = (pts.mult(sprite.shape!.pos3d, glob.scale));
-			camera.position.set(pos3d[0], pos3d[1], 0);
-			camera.updateMatrix();
+			if (lightingModeUniform) {
+				const pos3d = (pts.mult(sprite.shape!.pos3d, glob.scale));
+				camera.position.set(pos3d[0], pos3d[1], 0);
+				camera.updateMatrix();
+			}
+			else {
+				camera.position.set(pan.rpos[0], pan.rpos[1], 0);
+				camera.updateMatrix();
+				let offset = pts.copy(sprite.shape!.pos3d);
+				offset = (pts.subtract(pan.rpos, offset));
+				scene.position.set(offset[0], offset[1], 0);
+				scene.updateMatrix();
+				sun.updateMatrix();
+				sun.updateMatrixWorld();
+
+			}
 			while (soleGroup.children.length > 0)
 				soleGroup.remove(soleGroup.children[0]);
 			soleGroup.add(sprite.shape!.entityGroup);
@@ -285,8 +312,8 @@ namespace tileform {
 			geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
 			const material = new THREE.MeshPhongMaterial({
 				color: 'white',
-				specular: 'black',
-				shininess: 0,
+				specular: 'white',
+				shininess: 100,
 				map: pipeline.getTexture(this.data.shapeGroundTexture!),
 				normalScale: new THREE.Vector2(1, 1),
 				normalMap: ALLOW_NORMAL_MAPS ? pipeline.getTexture(this.data.shapeGroundTextureNormal!) : null,
@@ -381,41 +408,41 @@ namespace tileform {
 		const size = shapeSize!;
 		const geometries: any[] = [];
 		// Hack!
-		const directionAdapter = (wall.data.gobj as any).directionAdapter as direction_adapter;
+		const da = (wall.data.gobj as any).directionAdapter as direction_adapter;
 		//console.log('shape wall create!', directionAdapter.directions);
-		if (!directionAdapter) {
+		if (!da) {
 			console.warn(' no direction adapter for wallmaker');
 			return;
 		}
 		let geometry;
-		if (directionAdapter.directions.includes('north')) {
+		if (da.has_direction('north')) {
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
 			geometry.translate(size[0] / 4, size[1] / 4, 0);
 			geometries.push(geometry);
 		}
-		if (directionAdapter.directions.includes('east')) {
+		if (da.has_direction('east')) {
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
 			geometry.translate(-size[0] / 4, size[1] / 4, 0);
 			geometries.push(geometry);
 		}
-		if (directionAdapter.directions.includes('south')) {
+		if (da.has_direction('south')) {
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
 			geometry.translate(-size[0] / 4, size[1] / 4, 0);
 			geometries.push(geometry);
 		}
-		if (directionAdapter.directions.includes('west')) {
+		if (da.has_direction('west')) {
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
 			geometry.translate(-size[0] / 4, -size[1] / 4, 0);
 			geometries.push(geometry);
 		}
-		if (directionAdapter.directions.includes('north') &&
-			directionAdapter.directions.includes('aest') ||
-			directionAdapter.directions.includes('east') &&
-			directionAdapter.directions.includes('south') ||
-			directionAdapter.directions.includes('south') &&
-			directionAdapter.directions.includes('west') ||
-			directionAdapter.directions.includes('west') &&
-			directionAdapter.directions.includes('north')
+		if (da.has_direction('north') &&
+			da.has_direction('aest') ||
+			da.has_direction('east') &&
+			da.has_direction('south') ||
+			da.has_direction('south') &&
+			da.has_direction('west') ||
+			da.has_direction('west') &&
+			da.has_direction('north')
 		) {
 			// Middle piece!
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
@@ -460,6 +487,9 @@ namespace tileform {
 		}
 		protected override _update() {
 			// Dance the light source
+			glob.rerender = true;
+			glob.rerenderObjects = true;
+			return;
 			this.light.position.x = 4;
 			this.light.updateMatrix();
 			const secondsPerRotation = 4;

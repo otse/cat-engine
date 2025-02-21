@@ -12,4 +12,53 @@ so this...is not a massoschistic simulation at all. the game is just tough. you'
 
 eye: half-life. i will try to explain what is happening in my head right now.
 
-what do you explore in half-life 2? dry canals made of concrete, old dams, large drain pipes, maintenance tunnels, flood tunnels, large infrastructures like docks, large depots, empty barns at the coutnryside and abandoned cottages at the coastal. it's all industrial.
+what do you explore in half-life 2? dry canals made of concrete, old dams, large drain pipes, maintenance tunnels, flood tunnels, large infrastructures like docks, large depots, empty barns at the countryside and abandoned cottages at the coastal. it's all industrial.
+
+items in cyber game:
+
+but first of all what did fallout do wrong? do i want to constantly take drugs? do i?
+
+what other games out there want you to constantly take mind-altering drugs? that's right, very few. because it's obscene.
+
+most rpgs work like this: i equip this armor because it rocks. it has stats (passive). this gives me poison resistance. i wea1r it (passive).
+
+when were stat-potions ever a good idea? what games have stat-altering potions other than health and mana?
+
+what first person shooters want you to take damage potions so your gun hits 33% harder? when am i going to want to think that that is a thing?
+
+with all that said here is a possible item economy for a ruddy hex game:
+
+carton of milk (poisonous)
+plasma cutter
+up-stim
+spalk-er
+antimicrobial
+stimulants
+rations
+signature powder
+energy cell
+ar clip
+ar bullets
+sticky sensor
+sticky camera
+sound lure
+steel knitting pin
+tech bracer
+tech watch
+function watch
+grip gloves
+chem stick
+smokes
+lighter
+pda
+interface cable
+jack-in
+low-tech radar
+basic pulse detector
+tech-detector
+electric tape
+
+following the industrial landscape of half-life here is the game's roadmap:
+
+act 1:
+countryside, forests, hills, empty barns, abandoned substations, empty landhouses

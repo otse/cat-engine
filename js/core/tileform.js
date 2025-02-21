@@ -4,10 +4,21 @@ import glob from "../dep/glob.js";
 import { hooks } from "../dep/hooks.js";
 import pts from "../dep/pts.js";
 import rome from "../rome.js";
+import pan from "./components/pan.js";
 import pipeline from "./pipeline.js";
 var tileform;
 (function (tileform) {
-    tileform.SCENE_BASED_TILEFORM_POSITIONING = true;
+    // this switch was going to make lighting "more perspective"
+    // the idea was NOT simple:
+    // right now, light is uniform and the camera sits right on top of the tile
+    // this switch was going to make the the camera sit in the middle of the view
+    // (where it should be, so not on top of a tile like default)
+    // then change the scene offset so the viewport centers on the tile
+    // with this change, lighting should reflect more realistically
+    // yes, lights will offset along with the scene
+    // in short this change should make lighting appear
+    // more 3d on the horizontal as well not just on the vertical
+    tileform.lightingModeUniform = false;
     tileform.ALLOW_NORMAL_MAPS = true;
     // This doesn't do anything but it's a cool ide
     const StretchSpace = 1;
@@ -50,6 +61,9 @@ var tileform;
     (function (stage) {
         function step() {
             opkl();
+            // Testing new lighting mode
+            glob.rerender = true;
+            glob.rerenderObjects = true;
         }
         stage.step = step;
         async function init() {
@@ -94,13 +108,13 @@ var tileform;
             stage.scene.add(stage.soleGroup);
             stage.scene.add(stage.lightsGroup);
             stage.scene.updateMatrix();
-            stage.ambient = new THREE.AmbientLight('white', 1);
+            stage.ambient = new THREE.AmbientLight('white', Math.PI / 2);
             stage.scene.add(stage.ambient);
-            const sunDistance = 2;
-            stage.sun = new THREE.DirectionalLight('white', Math.PI / 3);
+            const sunDistance = 20;
+            stage.sun = new THREE.DirectionalLight('white', Math.PI / 6);
             stage.sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
             stage.sun.updateMatrix();
-            // scene.add(new THREE.AxesHelper(5));
+            stage.scene.add(new THREE.AxesHelper(5));
             stage.scene.add(stage.sun);
             stage.scene.add(stage.camera);
             stage.scene.updateMatrix();
@@ -117,9 +131,21 @@ var tileform;
             stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -100, 500);
             stage.camera.position.set(0, 0, 1);
             stage.camera.rotation.set(stageCameraRotation, 0, 0);
-            const pos3d = (pts.mult(sprite.shape.pos3d, glob.scale));
-            stage.camera.position.set(pos3d[0], pos3d[1], 0);
-            stage.camera.updateMatrix();
+            if (tileform.lightingModeUniform) {
+                const pos3d = (pts.mult(sprite.shape.pos3d, glob.scale));
+                stage.camera.position.set(pos3d[0], pos3d[1], 0);
+                stage.camera.updateMatrix();
+            }
+            else {
+                stage.camera.position.set(pan.rpos[0], pan.rpos[1], 0);
+                stage.camera.updateMatrix();
+                let offset = pts.copy(sprite.shape.pos3d);
+                offset = (pts.subtract(pan.rpos, offset));
+                stage.scene.position.set(offset[0], offset[1], 0);
+                stage.scene.updateMatrix();
+                stage.sun.updateMatrix();
+                stage.sun.updateMatrixWorld();
+            }
             while (stage.soleGroup.children.length > 0)
                 stage.soleGroup.remove(stage.soleGroup.children[0]);
             stage.soleGroup.add(sprite.shape.entityGroup);
@@ -247,8 +273,8 @@ var tileform;
             geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
             const material = new THREE.MeshPhongMaterial({
                 color: 'white',
-                specular: 'black',
-                shininess: 0,
+                specular: 'white',
+                shininess: 100,
                 map: pipeline.getTexture(this.data.shapeGroundTexture),
                 normalScale: new THREE.Vector2(1, 1),
                 normalMap: tileform.ALLOW_NORMAL_MAPS ? pipeline.getTexture(this.data.shapeGroundTextureNormal) : null,
@@ -337,41 +363,41 @@ var tileform;
         const size = shapeSize;
         const geometries = [];
         // Hack!
-        const directionAdapter = wall.data.gobj.directionAdapter;
+        const da = wall.data.gobj.directionAdapter;
         //console.log('shape wall create!', directionAdapter.directions);
-        if (!directionAdapter) {
+        if (!da) {
             console.warn(' no direction adapter for wallmaker');
             return;
         }
         let geometry;
-        if (directionAdapter.directions.includes('north')) {
+        if (da.has_direction('north')) {
             geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
             geometry.translate(size[0] / 4, size[1] / 4, 0);
             geometries.push(geometry);
         }
-        if (directionAdapter.directions.includes('east')) {
+        if (da.has_direction('east')) {
             geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
             geometry.translate(-size[0] / 4, size[1] / 4, 0);
             geometries.push(geometry);
         }
-        if (directionAdapter.directions.includes('south')) {
+        if (da.has_direction('south')) {
             geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
             geometry.translate(-size[0] / 4, size[1] / 4, 0);
             geometries.push(geometry);
         }
-        if (directionAdapter.directions.includes('west')) {
+        if (da.has_direction('west')) {
             geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
             geometry.translate(-size[0] / 4, -size[1] / 4, 0);
             geometries.push(geometry);
         }
-        if (directionAdapter.directions.includes('north') &&
-            directionAdapter.directions.includes('aest') ||
-            directionAdapter.directions.includes('east') &&
-                directionAdapter.directions.includes('south') ||
-            directionAdapter.directions.includes('south') &&
-                directionAdapter.directions.includes('west') ||
-            directionAdapter.directions.includes('west') &&
-                directionAdapter.directions.includes('north')) {
+        if (da.has_direction('north') &&
+            da.has_direction('aest') ||
+            da.has_direction('east') &&
+                da.has_direction('south') ||
+            da.has_direction('south') &&
+                da.has_direction('west') ||
+            da.has_direction('west') &&
+                da.has_direction('north')) {
             // Middle piece!
             geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
             geometry.translate(-size[0] / 4, size[1] / 4, 0);
@@ -411,6 +437,9 @@ var tileform;
         }
         _update() {
             // Dance the light source
+            glob.rerender = true;
+            glob.rerenderObjects = true;
+            return;
             this.light.position.x = 4;
             this.light.updateMatrix();
             const secondsPerRotation = 4;

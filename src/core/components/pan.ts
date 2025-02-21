@@ -154,7 +154,7 @@ export class pan {
 	}
 
 	static set_camera() {
-		const rpos2 = (pts.add(rpos, pts.divide([0, glob.hexSize[1]], 2)));
+		const rpos2 = rpos;//(pts.add(rpos, pts.divide([0, glob.hexSize[1]], 2)));
 		pipeline.groups.camera.position.x = rpos2[0];
 		pipeline.groups.camera.position.y = rpos2[1];
 		pipeline.groups.camera.updateMatrix();

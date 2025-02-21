@@ -14,19 +14,27 @@ export namespace direction_adapter {
 	
 };
 
+/// the DA is used for creating cascading geometries
+
+// it doesn't adapt to directions but helps with adapting to directions
+
 export class direction_adapter {
 	target
-	shape3d?: tileform.shape3d
+	readonly shape3d?: tileform.shape3d
 	matrix: game_object[][]
-	directions: (string | null)[]
+	protected directions: (string | null)[]
 	constructor(readonly gobj: game_object) {
-		//[]
+		// []
 	}
 	search(types: string[]) {
 		this.matrix = game_object.helpers.sort_matrix(rome.world, this.gobj.wpos, types);
 		this.directions = game_object.helpers.get_directions(this.matrix);
 		// console.log('pos', this.gobj.wpos, this.matrix);
 	}
+	has_direction(dir: string) {
+		return this.directions.includes(dir);
+	}
+	stagger
 }
 
 export default direction_adapter;

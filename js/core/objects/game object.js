@@ -36,7 +36,7 @@ export class game_object extends clod.obj {
         this.sprite?.step();
     }
 }
-// Messy
+// Nessy
 (function (game_object) {
     let helpers;
     (function (helpers) {
