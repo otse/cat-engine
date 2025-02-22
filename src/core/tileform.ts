@@ -30,7 +30,7 @@ namespace tileform {
 	// i managed to create a sun that doesn't render uniformly
 	// setting this is nice but requires reprerenders 
 	// previously called NON_UNIFORM_SUN
-	export let SUN_CAMERA = true;
+	export let SUN_CAMERA = false;
 
 	// this switch enables lights to "act more 3d"
 	// by raising them when they're further from the camera
@@ -41,7 +41,7 @@ namespace tileform {
 	export let ALLOW_NORMAL_MAPS = true;
 
 	// defines the size of the sun orb
-	const sunDistance = 30;
+	const sunDistance = 20;
 
 	// This doesn't do anything but it's a cool ide
 	const StretchSpace = 1;
@@ -146,7 +146,7 @@ namespace tileform {
 			scene.updateMatrix();
 			ambient = new THREE.AmbientLight('white', Math.PI / 2);
 			scene.add(ambient);
-			sun = new THREE.DirectionalLight('wheat', Math.PI / 8);
+			sun = new THREE.DirectionalLight('lavender', Math.PI / 8);
 			scene.add(sun);
 			scene.add(sun.target);
 
@@ -338,8 +338,8 @@ namespace tileform {
 			geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
 			const material = new THREE.MeshPhongMaterial({
 				color: 'white',
-				specular: 'white',
-				shininess: 10,
+				specular: 'lavender',
+				shininess: 7,
 				map: pipeline.getTexture(this.data.shapeGroundTexture!),
 				normalScale: new THREE.Vector2(1, 1),
 				normalMap: ALLOW_NORMAL_MAPS ? pipeline.getTexture(this.data.shapeGroundTextureNormal!) : null,
