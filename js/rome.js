@@ -11,6 +11,7 @@ import glob from "./dep/glob.js";
 import land from "./land.js";
 import romanlike from "./romanlike/romanlike.js";
 import light from "./core/objects/light.js";
+import pts from "./dep/pts.js";
 var rome;
 (function (rome) {
     function sample(a) {
@@ -134,6 +135,7 @@ var rome;
         collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [5, 3, 0] }));
         // collect(new tile({ _type: 'direct', _wpos: [4, 2, 0] }));
         collect(new light({ _type: 'direct', _wpos: [2, 3, 0] }));
+        collect(new light({ _type: 'direct', _wpos: [-11, 6, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [1, 2, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [1, 3, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [1, 4, 0] }));
@@ -144,7 +146,8 @@ var rome;
         // collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
         // collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
         addLateGobjsBatch(gobjs, 'keep');
-        land.make();
+        // land.make();
+        land.fill();
     }
     rome.makeTestingChamber = makeTestingChamber;
     function build_then_output_stats() {
@@ -162,6 +165,7 @@ var rome;
 			<br />chunk_span: ${clod.chunk_span} x ${clod.chunk_span}
 			<br />gobjs: ${glob.gameobjects[0]} / ${glob.gameobjects[1]}
 			<br />chunks: ${clod.numbers.chunks[0]} / ${clod.numbers.chunks[1]}
+			<br />pan wpos: ${pts.to_string_fixed(pan.wpos)}
 			`;
     }
     function purgeRemake() {

@@ -37,5 +37,24 @@ var land;
         rome.addLateGobjsBatch(gobjs, 'merge');
     }
     land.make = make;
+    function fill() {
+        const gobjs = [];
+        const baseWidth = 100;
+        const baseHeight = 100;
+        const width = 10;
+        const height = 10;
+        for (let y = 0; y < baseWidth; y++) {
+            for (let x = 0; x < baseHeight; x++) {
+                let tilePreset = rome.sample(['default', 'cobblestone', 'stonemixed']);
+                const tile = new tile3d({
+                    _type: 'direct',
+                    _wpos: [(-baseWidth / 2) + x, (-baseHeight / 2) + y, 0]
+                }, tilePreset);
+                gobjs.push(tile);
+            }
+        }
+        rome.addLateGobjsBatch(gobjs, 'merge');
+    }
+    land.fill = fill;
 })(land || (land = {}));
 export default land;

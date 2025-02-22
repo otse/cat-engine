@@ -24,7 +24,17 @@ namespace tileform {
 	// yes, lights will offset along with the scene
 	// in short this change should make lighting appear
 	// more 3d on the horizontal as well not just on the vertical
-	export const lightingModeUniform = false;
+	export const lightingModeUniform = true;
+
+	// using some fidgety math based entirely on trial and error
+	// i managed to create a sun that doesn't render uniformly
+	// setting this is nice but requires reprerenders 
+	export const nonUniformSun = true;
+
+	// this switch enables lights to "act more 3d"
+	// by raising them when they're further from the camera
+	// will require reprerenders every frame
+	export const lyftLightSourcesFromCamera = true;
 
 	export let ALLOW_NORMAL_MAPS = true;
 
@@ -52,9 +62,11 @@ namespace tileform {
 		}
 	}
 
+	// Light sources seem to scatter towards the south east
+	// May be this functions fault
 	function project(w: vec2): vec2 {
-		const tileWidth = glob.hexSize[0] - 1;
-		const tileHeight = glob.hexSize[0] - 1;
+		const tileWidth = glob.hexSize[0];
+		const tileHeight = glob.hexSize[0];
 		const x = w[0];
 		const y = -w[1];
 		const scaleFactor = tileWidth * 0.75;
@@ -131,11 +143,12 @@ namespace tileform {
 			scene.updateMatrix();
 			ambient = new THREE.AmbientLight('white', Math.PI / 2);
 			scene.add(ambient);
+			sun = new THREE.DirectionalLight('white', Math.PI / 8);
 			const sunDistance = 20;
-			sun = new THREE.DirectionalLight('white', Math.PI / 6);
 			sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
 			sun.updateMatrix();
 			scene.add(new THREE.AxesHelper(5));
+			scene.add(sun.target);
 			scene.add(sun);
 
 			scene.add(camera);
@@ -158,23 +171,31 @@ namespace tileform {
 				size[1] / 2,
 				size[1] / - 2,
 				-100, 500);
-			camera.position.set(0, 0, 1);
+			camera.position.set(0, 0, 0);
 			camera.rotation.set(stageCameraRotation, 0, 0);
+			if (nonUniformSun) {
+				// Random math to handle 3d sunlight
+				const pos3d = (pts.mult(sprite.shape!.pos3d, glob.scale));
+				const sunDistance = 20;
+				let offset = (pts.subtract(pan.rpos, pos3d));
+				sun.position.set(offset[0], offset[1], sunDistance);
+				sun.target.position.set(0, -pan.rpos[1], 0);
+				sun.updateMatrix();
+				sun.target.updateMatrix();
+			}
 			if (lightingModeUniform) {
 				const pos3d = (pts.mult(sprite.shape!.pos3d, glob.scale));
 				camera.position.set(pos3d[0], pos3d[1], 0);
 				camera.updateMatrix();
 			}
 			else {
+				// 3d lighting mode "experimental"
 				camera.position.set(pan.rpos[0], pan.rpos[1], 0);
 				camera.updateMatrix();
-				let offset = pts.copy(sprite.shape!.pos3d);
-				offset = (pts.subtract(pan.rpos, offset));
+				const pos3d = pts.copy(sprite.shape!.pos3d);
+				let offset = (pts.subtract(pan.rpos, pos3d));
 				scene.position.set(offset[0], offset[1], 0);
-				scene.updateMatrix();
-				sun.updateMatrix();
-				sun.updateMatrixWorld();
-
+				scene.updateMatrix()
 			}
 			while (soleGroup.children.length > 0)
 				soleGroup.remove(soleGroup.children[0]);
@@ -313,7 +334,7 @@ namespace tileform {
 			const material = new THREE.MeshPhongMaterial({
 				color: 'white',
 				specular: 'white',
-				shininess: 100,
+				shininess: 10,
 				map: pipeline.getTexture(this.data.shapeGroundTexture!),
 				normalScale: new THREE.Vector2(1, 1),
 				normalMap: ALLOW_NORMAL_MAPS ? pipeline.getTexture(this.data.shapeGroundTextureNormal!) : null,
@@ -483,13 +504,17 @@ namespace tileform {
 		step() {
 			this._step();
 		}
+		lyft(pos: vec2) {
+			// Experimental
+			this.entityGroup.position.z += 1;
+		}
 		protected override _step() {
 		}
 		protected override _update() {
 			// Dance the light source
 			glob.rerender = true;
 			glob.rerenderObjects = true;
-			return;
+			//return;
 			this.light.position.x = 4;
 			this.light.updateMatrix();
 			const secondsPerRotation = 4;
@@ -517,7 +542,7 @@ namespace tileform {
 			this.translate();
 			this.entityGroup.position.z = 10;
 			this.entityGroup.updateMatrix();
-			this.entityGroup.updateMatrixWorld(true); // Bad
+			// this.entityGroup.updateMatrixWorld(true); // Bad
 			stage.lightsGroup.add(this.entityGroup);
 		}
 	}
