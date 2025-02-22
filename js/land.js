@@ -45,7 +45,7 @@ var land;
         const height = 10;
         for (let y = 0; y < baseWidth; y++) {
             for (let x = 0; x < baseHeight; x++) {
-                let tilePreset = rome.sample(['default', 'cobblestone', 'stonemixed']);
+                let tilePreset = 'default'; // rome.sample(['default', 'cobblestone', 'stonemixed']);
                 const tile = new tile3d({
                     _type: 'direct',
                     _wpos: [(-baseWidth / 2) + x, (-baseHeight / 2) + y, 0]

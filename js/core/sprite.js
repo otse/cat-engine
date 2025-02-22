@@ -4,6 +4,7 @@ import glob from "../dep/glob.js";
 ;
 ;
 // A sprite uses a per-material UV transform
+// Needs "cleaning"
 export class sprite {
     data;
     gobj;

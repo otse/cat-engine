@@ -8,13 +8,13 @@ export class tile3d extends game_object {
             name: 'a tile 3d',
             ...data
         });
-        this.preset = presets[preset] || presets['default'];
+        this.preset = preset;
         this.data._type = 'tile 3d';
     }
     _create() {
         new sprite3d({
-            ...this.preset,
             gobj: this,
+            groundPreset: this.preset,
             spriteSize: glob.hexSize,
             shapeSize: [1, 1, 1],
             shapeType: 'hex',
@@ -22,21 +22,4 @@ export class tile3d extends game_object {
         this.sprite?.create();
     }
 }
-const presets = {
-    default: {
-        gobj: {},
-        shapeGroundTexture: './img/textures/beach.jpg',
-        shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
-    },
-    stonemixed: {
-        gobj: {},
-        shapeGroundTexture: './img/textures/stonemixed2.jpg',
-        shapeGroundTextureNormal: './img/textures/stonemixed2normal.jpg',
-    },
-    cobblestone: {
-        gobj: {},
-        shapeGroundTexture: './img/textures/cobblestone3.jpg',
-        shapeGroundTextureNormal: './img/textures/cobblestone3normal.jpg',
-    }
-};
 export default tile3d;

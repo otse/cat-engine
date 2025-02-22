@@ -146,8 +146,8 @@ var rome;
         // collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
         // collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
         addLateGobjsBatch(gobjs, 'keep');
-        // land.make();
-        land.fill();
+        land.make();
+        // land.fill();
     }
     rome.makeTestingChamber = makeTestingChamber;
     function build_then_output_stats() {

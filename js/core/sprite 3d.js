@@ -10,12 +10,15 @@ export class sprite3d extends sprite {
     shape;
     data_;
     constructor(data) {
+        let groundPreset = sprite3d.groundPresets[data.groundPreset || 'default'];
         super({
             shapeType: 'nothing',
             shapeTexture: './img/textures/stonemixed.jpg',
-            shapeGroundTexture: './img/textures/overgrown.jpg',
+            shapeGroundTexture: './img/textures/stonemixed.jpg',
+            shapeGroundTextureNormal: './img/textures/stonemixednormal.jpg',
             shapeSize: [10, 10],
             bottomSort: false,
+            ...groundPreset,
             ...data
         });
         this.data_ = this.data;
@@ -56,4 +59,25 @@ export class sprite3d extends sprite {
         tileform.stage.render();
     }
 }
+// this data should be owned by the game
+// and maybe attached to glob. or us a hooks?
+(function (sprite3d) {
+    sprite3d.groundPresets = {
+        default: {
+            gobj: {},
+            shapeGroundTexture: './img/textures/beach.jpg',
+            shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
+        },
+        stonemixed: {
+            gobj: {},
+            shapeGroundTexture: './img/textures/stonemixed2.jpg',
+            shapeGroundTextureNormal: './img/textures/stonemixed2normal.jpg',
+        },
+        cobblestone: {
+            gobj: {},
+            shapeGroundTexture: './img/textures/cobblestone3.jpg',
+            shapeGroundTextureNormal: './img/textures/cobblestone3normal.jpg',
+        }
+    };
+})(sprite3d || (sprite3d = {}));
 export default sprite3d;

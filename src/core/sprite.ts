@@ -19,6 +19,8 @@ export namespace sprite {
 
 // A sprite uses a per-material UV transform
 
+// Needs "cleaning"
+
 export class sprite {
 	gobj: game_object
 	matrix

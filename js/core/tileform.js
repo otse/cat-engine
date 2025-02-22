@@ -22,7 +22,7 @@ var tileform;
     // using some fidgety math based entirely on trial and error
     // i managed to create a sun that doesn't render uniformly
     // setting this is nice but requires reprerenders 
-    tileform.nonUniformSun = true;
+    tileform.nonUniformSun = false;
     // this switch enables lights to "act more 3d"
     // by raising them when they're further from the camera
     // will require reprerenders every frame
@@ -97,7 +97,7 @@ var tileform;
             await pipeline.preloadTextureAsync('./img/textures/cobblestone2.jpg');
             await pipeline.preloadTextureAsync('./img/textures/basaltcliffs.jpg');
             await pipeline.preloadTextureAsync('./img/textures/cliffs.jpg');
-            await pipeline.preloadTextureAsync('./img/textures/overgrown.jpg');
+            // await pipeline.preloadTextureAsync('./img/textures/overgrown.jpg');
             //await pipeline.loadTextureAsync('./img/textures/bricks.jpg');
         }
         async function boot() {
@@ -240,7 +240,7 @@ var tileform;
             this.data = data;
             this.data = {
                 shapeTexture: './img/textures/stonemixed.jpg',
-                shapeGroundTexture: './img/textures/beachnormal.jpg',
+                shapeGroundTexture: './img/textures/stonemixed2.jpg',
                 shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
                 ...data
             };
@@ -464,7 +464,7 @@ var tileform;
             glob.rerender = true;
             glob.rerenderObjects = true;
             //return;
-            this.light.position.x = 4;
+            this.light.position.x = 3;
             this.light.updateMatrix();
             const secondsPerRotation = 4;
             this.entityGroup.rotation.z += (Math.PI * 2) * (1 / secondsPerRotation * glob.delta);
@@ -482,7 +482,7 @@ var tileform;
             console.log(' tf light source create ');
             this.light = new THREE.PointLight('cyan', 1, 5);
             // this.light.decay = 2.4;
-            this.light.intensity = 10000 * glob.scale;
+            this.light.intensity = 1000 * glob.scale;
             this.light.distance = 600 * glob.scale;
             this.light.decay = 1.8;
             this.light.updateMatrix();
