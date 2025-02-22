@@ -22,12 +22,16 @@ var tileform;
     // using some fidgety math based entirely on trial and error
     // i managed to create a sun that doesn't render uniformly
     // setting this is nice but requires reprerenders 
-    tileform.nonUniformSun = false;
+    // previously called NON_UNIFORM_SUN
+    tileform.SUN_CAMERA = true;
     // this switch enables lights to "act more 3d"
     // by raising them when they're further from the camera
     // will require reprerenders every frame
     tileform.lyftLightSourcesFromCamera = true;
+    // like it says dude
     tileform.ALLOW_NORMAL_MAPS = true;
+    // defines the size of the sun orb
+    const sunDistance = 30;
     // This doesn't do anything but it's a cool ide
     const StretchSpace = 1;
     async function init() {
@@ -120,13 +124,9 @@ var tileform;
             stage.scene.updateMatrix();
             stage.ambient = new THREE.AmbientLight('white', Math.PI / 2);
             stage.scene.add(stage.ambient);
-            stage.sun = new THREE.DirectionalLight('white', Math.PI / 8);
-            const sunDistance = 20;
-            stage.sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
-            stage.sun.updateMatrix();
-            stage.scene.add(new THREE.AxesHelper(5));
-            stage.scene.add(stage.sun.target);
+            stage.sun = new THREE.DirectionalLight('wheat', Math.PI / 8);
             stage.scene.add(stage.sun);
+            stage.scene.add(stage.sun.target);
             stage.scene.add(stage.camera);
             stage.scene.updateMatrix();
             // todo create a second renderer that has shadows enabled
@@ -142,13 +142,19 @@ var tileform;
             stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -100, 500);
             stage.camera.position.set(0, 0, 0);
             stage.camera.rotation.set(stageCameraRotation, 0, 0);
-            if (tileform.nonUniformSun) {
-                // Random math to handle 3d sunlight
+            if (tileform.SUN_CAMERA) {
+                // This math was a lot of trial and error
+                // But makes sunlight more 3d
                 const pos3d = (pts.mult(sprite.shape.pos3d, glob.scale));
-                const sunDistance = 20;
                 let offset = (pts.subtract(pan.rpos, pos3d));
                 stage.sun.position.set(offset[0], offset[1], sunDistance);
                 stage.sun.target.position.set(0, -pan.rpos[1], 0);
+                stage.sun.updateMatrix();
+                stage.sun.target.updateMatrix();
+            }
+            else {
+                stage.sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
+                stage.sun.target.position.set(0, 0, 0);
                 stage.sun.updateMatrix();
                 stage.sun.target.updateMatrix();
             }
@@ -480,9 +486,9 @@ var tileform;
         }
         _create() {
             console.log(' tf light source create ');
-            this.light = new THREE.PointLight('cyan', 1, 5);
+            this.light = new THREE.PointLight('blue', 1, 5);
             // this.light.decay = 2.4;
-            this.light.intensity = 1000 * glob.scale;
+            this.light.intensity = 5000 * glob.scale;
             this.light.distance = 600 * glob.scale;
             this.light.decay = 1.8;
             this.light.updateMatrix();
@@ -500,6 +506,9 @@ var tileform;
         let change = false;
         if (app.key('f3') == 1) {
             tileform.ALLOW_NORMAL_MAPS = !tileform.ALLOW_NORMAL_MAPS;
+        }
+        else if (app.key('f4') == 1) {
+            tileform.SUN_CAMERA = !tileform.SUN_CAMERA;
         }
         else if (app.key('o') == 1) {
             wallRotationX -= 1;

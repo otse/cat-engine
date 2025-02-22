@@ -29,16 +29,19 @@ namespace tileform {
 	// using some fidgety math based entirely on trial and error
 	// i managed to create a sun that doesn't render uniformly
 	// setting this is nice but requires reprerenders 
-	export const nonUniformSun = false;
+	// previously called NON_UNIFORM_SUN
+	export let SUN_CAMERA = true;
 
 	// this switch enables lights to "act more 3d"
 	// by raising them when they're further from the camera
 	// will require reprerenders every frame
 	export const lyftLightSourcesFromCamera = true;
 
+	// like it says dude
 	export let ALLOW_NORMAL_MAPS = true;
 
-	export type scene_preset = 'hex' | 'wall'
+	// defines the size of the sun orb
+	const sunDistance = 30;
 
 	// This doesn't do anything but it's a cool ide
 	const StretchSpace = 1;
@@ -143,13 +146,9 @@ namespace tileform {
 			scene.updateMatrix();
 			ambient = new THREE.AmbientLight('white', Math.PI / 2);
 			scene.add(ambient);
-			sun = new THREE.DirectionalLight('white', Math.PI / 8);
-			const sunDistance = 20;
-			sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
-			sun.updateMatrix();
-			scene.add(new THREE.AxesHelper(5));
-			scene.add(sun.target);
+			sun = new THREE.DirectionalLight('wheat', Math.PI / 8);
 			scene.add(sun);
+			scene.add(sun.target);
 
 			scene.add(camera);
 			scene.updateMatrix();
@@ -173,13 +172,19 @@ namespace tileform {
 				-100, 500);
 			camera.position.set(0, 0, 0);
 			camera.rotation.set(stageCameraRotation, 0, 0);
-			if (nonUniformSun) {
-				// Random math to handle 3d sunlight
+			if (SUN_CAMERA) {
+				// This math was a lot of trial and error
+				// But makes sunlight more 3d
 				const pos3d = (pts.mult(sprite.shape!.pos3d, glob.scale));
-				const sunDistance = 20;
 				let offset = (pts.subtract(pan.rpos, pos3d));
 				sun.position.set(offset[0], offset[1], sunDistance);
 				sun.target.position.set(0, -pan.rpos[1], 0);
+				sun.updateMatrix();
+				sun.target.updateMatrix();
+			}
+			else {
+				sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
+				sun.target.position.set(0, 0, 0);
 				sun.updateMatrix();
 				sun.target.updateMatrix();
 			}
@@ -531,9 +536,9 @@ namespace tileform {
 		}
 		protected override _create() {
 			console.log(' tf light source create ');
-			this.light = new THREE.PointLight('cyan', 1, 5);
+			this.light = new THREE.PointLight('blue', 1, 5);
 			// this.light.decay = 2.4;
-			this.light.intensity = 1000 * glob.scale;
+			this.light.intensity = 5000 * glob.scale;
 			this.light.distance = 600 * glob.scale;
 			this.light.decay = 1.8;
 			this.light.updateMatrix();
@@ -551,6 +556,9 @@ namespace tileform {
 		let change = false;
 		if (app.key('f3') == 1) {
 			ALLOW_NORMAL_MAPS = !ALLOW_NORMAL_MAPS;
+		}
+		else if (app.key('f4') == 1) {
+			SUN_CAMERA = !SUN_CAMERA;
 		}
 		else if (app.key('o') == 1) {
 			wallRotationX -= 1;
