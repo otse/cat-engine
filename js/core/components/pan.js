@@ -28,14 +28,14 @@ export class pan {
     // Punish the player after dragging the camera?
     static dragReleaseRoundsToNearestFullPixel = false;
     static get wpos() {
-        return wpos;
+        return pts.copy(wpos);
     }
     static set wpos(w) {
         wpos = w;
         rpos = clod.project(wpos);
     }
     static get rpos() {
-        return rpos;
+        return pts.copy(rpos);
     }
     static set rpos(r) {
         rpos = r;

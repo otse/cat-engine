@@ -21,9 +21,6 @@ export class tile3d extends game_object {
 		});
 		this.sprite?.create();
 	}
-	/*protected override _delete() {
-		console.log('delete');
-	}*/
 }
 
 

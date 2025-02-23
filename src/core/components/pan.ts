@@ -41,7 +41,7 @@ export class pan {
 	static readonly dragReleaseRoundsToNearestFullPixel = false;
 
 	static get wpos(): vec2 {
-		return wpos;
+		return pts.copy(wpos);
 	}
 
 	static set wpos(w: vec2) {
@@ -50,7 +50,7 @@ export class pan {
 	}
 
 	static get rpos(): vec2 {
-		return rpos;
+		return pts.copy(rpos);
 	}
 
 	static set rpos(r: vec2) {

@@ -14,37 +14,33 @@ import sprite from "./sprite.js";
 
 namespace tileform {
 
-	// this switch was going to make lighting "more perspective"
-	// the idea was NOT simple:
 	// right now, light is uniform and the camera sits right on top of the tile
-	// this switch was going to make the the camera sit in the middle of the view
-	// (where it should be, so not on top of a tile like default)
-	// then change the scene offset so the viewport centers on the tile
-	// with this change, lighting should reflect more realistically
-	// yes, lights will offset along with the scene
-	// in short this change should make lighting appear
-	// more 3d on the horizontal as well not just on the vertical
-	export const lightingModeUniform = true;
+	// instead of putting the camera at pan.rpos then offsetting the scene
+	// just leave to true
+	export const PUT_CAMERA_ON_TILE = true;
 
-	// using some fidgety math based entirely on trial and error
+	// using math based entirely on trial and error
 	// i managed to create a sun that doesn't render uniformly
-	// setting this is nice but requires reprerenders 
-	// previously called NON_UNIFORM_SUN
+	// setting this is nice but requires reprerenders
 	export let SUN_CAMERA = false;
 
 	// this switch enables lights to "act more 3d"
-	// by raising them when they're further from the camera
-	// will require reprerenders every frame
-	export const lyftLightSourcesFromCamera = true;
+	// by raising individual lights the further they are from the camera
+	// this is just an idea and doesn't work yet
+	export const lyftLightSourcesFromCamera = false;
 
-	// like it says dude
+	// like it says this toggles the beau ti ful relief maps
 	export let ALLOW_NORMAL_MAPS = true;
 
-	// defines the size of the sun orb
-	const sunDistance = 20;
+	// i know directional lights are supposed to cast light uniformly
+	// but they actually act more like giant point lights
+	// but this setting defines the size of the sun orb
+	const sunDistance = 40;
 
-	// This doesn't do anything but it's a cool ide
-	const StretchSpace = 1;
+	// the idea was to create a spread between tiles
+	// so that the lighting would behave better
+	// don't use
+	const stretchSpace = 1;
 
 	export async function init() {
 		await stage.init();
@@ -188,7 +184,7 @@ namespace tileform {
 				sun.updateMatrix();
 				sun.target.updateMatrix();
 			}
-			if (lightingModeUniform) {
+			if (PUT_CAMERA_ON_TILE) {
 				const pos3d = (pts.mult(sprite.shape!.pos3d, glob.scale));
 				camera.position.set(pos3d[0], pos3d[1], 0);
 				camera.updateMatrix();
@@ -263,7 +259,7 @@ namespace tileform {
 		protected translate() {
 			// Useful for beautiful lighting
 			const { wpos } = this.gobj;
-			const pos = this.pos3d = (pts.mult(project(wpos), StretchSpace));
+			const pos = this.pos3d = (pts.mult(project(wpos), stretchSpace));
 			this.entityGroup.position.fromArray([...pos, 0]);
 			this.entityGroup.updateMatrix();
 		}

@@ -172,6 +172,7 @@ namespace rome {
 			<br />render scale (-, =): ${glob.scale}
 			<br />zoom scale (r, f): ${zoom.scale()}
 			<br />grid (t, g): ${world.grid.spread} / ${world.grid.outside}
+			<br />hex size ([, ]): ${tileform.hex_size}
 			<br />glob.rerender: ${glob.rerender}
 			<br />glob.rerenderObjects: ${glob.rerenderObjects}
 			<!--<br />cameraMode: ${pipeline.cameraMode}-->

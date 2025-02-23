@@ -8,32 +8,28 @@ import pan from "./components/pan.js";
 import pipeline from "./pipeline.js";
 var tileform;
 (function (tileform) {
-    // this switch was going to make lighting "more perspective"
-    // the idea was NOT simple:
     // right now, light is uniform and the camera sits right on top of the tile
-    // this switch was going to make the the camera sit in the middle of the view
-    // (where it should be, so not on top of a tile like default)
-    // then change the scene offset so the viewport centers on the tile
-    // with this change, lighting should reflect more realistically
-    // yes, lights will offset along with the scene
-    // in short this change should make lighting appear
-    // more 3d on the horizontal as well not just on the vertical
-    tileform.lightingModeUniform = true;
-    // using some fidgety math based entirely on trial and error
+    // instead of putting the camera at pan.rpos then offsetting the scene
+    // just leave to true
+    tileform.PUT_CAMERA_ON_TILE = true;
+    // using math based entirely on trial and error
     // i managed to create a sun that doesn't render uniformly
-    // setting this is nice but requires reprerenders 
-    // previously called NON_UNIFORM_SUN
+    // setting this is nice but requires reprerenders
     tileform.SUN_CAMERA = false;
     // this switch enables lights to "act more 3d"
-    // by raising them when they're further from the camera
-    // will require reprerenders every frame
-    tileform.lyftLightSourcesFromCamera = true;
-    // like it says dude
+    // by raising individual lights the further they are from the camera
+    // this is just an idea and doesn't work yet
+    tileform.lyftLightSourcesFromCamera = false;
+    // like it says this toggles the beau ti ful relief maps
     tileform.ALLOW_NORMAL_MAPS = true;
-    // defines the size of the sun orb
-    const sunDistance = 20;
-    // This doesn't do anything but it's a cool ide
-    const StretchSpace = 1;
+    // i know directional lights are supposed to cast light uniformly
+    // but they actually act more like giant point lights
+    // but this setting defines the size of the sun orb
+    const sunDistance = 40;
+    // the idea was to create a spread between tiles
+    // so that the lighting would behave better
+    // don't use
+    const stretchSpace = 1;
     async function init() {
         await stage.init();
         hooks.addListener('romeComponents', step);
@@ -158,7 +154,7 @@ var tileform;
                 stage.sun.updateMatrix();
                 stage.sun.target.updateMatrix();
             }
-            if (tileform.lightingModeUniform) {
+            if (tileform.PUT_CAMERA_ON_TILE) {
                 const pos3d = (pts.mult(sprite.shape.pos3d, glob.scale));
                 stage.camera.position.set(pos3d[0], pos3d[1], 0);
                 stage.camera.updateMatrix();
@@ -234,7 +230,7 @@ var tileform;
         translate() {
             // Useful for beautiful lighting
             const { wpos } = this.gobj;
-            const pos = this.pos3d = (pts.mult(project(wpos), StretchSpace));
+            const pos = this.pos3d = (pts.mult(project(wpos), stretchSpace));
             this.entityGroup.position.fromArray([...pos, 0]);
             this.entityGroup.updateMatrix();
         }

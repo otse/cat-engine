@@ -21,10 +21,11 @@ export class sprite3d extends sprite {
 	constructor(
 		data: sprite3d_joint_literal
 	) {
-		let groundPreset = sprite3d.groundPresets[data.groundPreset || 'default'];
+		let groundPreset = sprite3d.groundPresets[data.groundPreset!];
 		super({
 			shapeType: 'nothing',
 			shapeTexture: './img/textures/stonemixed.jpg',
+			// Find a nice checkers texture
 			shapeGroundTexture: './img/textures/stonemixed.jpg',
 			shapeGroundTextureNormal: './img/textures/stonemixednormal.jpg',
 			shapeSize: [10, 10],
