@@ -4,5 +4,9 @@ var romanlike;
         console.log(' game/romanlike ');
     }
     romanlike.init = init;
+    function register() {
+        console.log(' game/romanlike ');
+    }
+    romanlike.register = register;
 })(romanlike || (romanlike = {}));
 export default romanlike;

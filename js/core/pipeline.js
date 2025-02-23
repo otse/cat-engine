@@ -175,7 +175,7 @@ var pipeline;
     (function (groups) {
     })(groups = pipeline.groups || (pipeline.groups = {}));
     function render() {
-        if (glob.rerenderObjects) {
+        if (glob.dirtyObjects) {
             if (app.key('z') == 1)
                 pipeline.materialPost.uniforms.compression.value = !pipeline.materialPost.uniforms.compression.value;
             //renderer.setRenderTarget(targetMask);
@@ -188,12 +188,12 @@ var pipeline;
         pipeline.renderer.setRenderTarget(null);
         pipeline.renderer.clear();
         pipeline.renderer.render(pipeline.sceneShader, pipeline.camera2);
-        glob.rerenderObjects = false;
+        glob.dirtyObjects = false;
     }
     pipeline.render = render;
     function init() {
         console.log('pipeline init');
-        glob.rerenderObjects = true;
+        glob.dirtyObjects = true;
         THREE.ColorManagement.enabled = false;
         THREE.Object3D.DEFAULT_MATRIX_AUTO_UPDATE = false;
         THREE.Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
@@ -277,7 +277,7 @@ var pipeline;
         pipeline.target.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.targetMask.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.plane = new THREE.PlaneGeometry(pipeline.targetSize[0], pipeline.targetSize[1]);
-        glob.rerenderObjects = true;
+        glob.dirtyObjects = true;
         if (pipeline.quadPost) // ?
             pipeline.quadPost.geometry = pipeline.plane;
         while (groups.camera.children.length > 0)

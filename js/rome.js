@@ -25,8 +25,8 @@ var rome;
     async function init() {
         console.log(' init ');
         glob.rome = rome;
-        glob.rerender = true;
-        glob.rerenderObjects = true;
+        glob.reprerender = true;
+        glob.dirtyObjects = true;
         glob.scale = 1;
         glob.hexSize = [17, 9];
         glob.gameobjects = [0, 0];
@@ -45,13 +45,13 @@ var rome;
     }
     rome.init = init;
     function addMergeOrReplace(target) {
-        const chunk = rome.world.atwpos(target.wpos);
+        const chunk = rome.world.chunkatwpos(target.wpos);
         const stacked = chunk.stacked(target.wpos);
         let merged = false;
         for (const gobj of stacked) {
             if (gobj.data._type == 'wall 3d') {
                 const wall_ = gobj;
-                wall_.data;
+                //wall_.data.
                 console.log(' already wll here ');
                 merged = true;
                 // console.warn('boo');
@@ -161,8 +161,8 @@ var rome;
 			<br />zoom scale (r, f): ${zoom.scale()}
 			<br />grid (t, g): ${rome.world.grid.spread} / ${rome.world.grid.outside}
 			<br />hex size ([, ]): ${tileform.hex_size}
-			<br />glob.rerender: ${glob.rerender}
-			<br />glob.rerenderObjects: ${glob.rerenderObjects}
+			<br />glob.reprerender: ${glob.reprerender}
+			<br />glob.dirtyObjects: ${glob.dirtyObjects}
 			<!--<br />cameraMode: ${pipeline.cameraMode}-->
 			<br />chunk_span: ${clod.chunk_span} x ${clod.chunk_span}
 			<br />gobjs: ${glob.gameobjects[0]} / ${glob.gameobjects[1]}
@@ -178,8 +178,8 @@ var rome;
         rome.world = clod.init();
         gameObjects.forEach(gobj => { gobj.purge(); removeGobj(gobj); });
         gameObjects = [];
-        glob.rerender = true;
-        glob.rerenderObjects = true;
+        glob.reprerender = true;
+        glob.dirtyObjects = true;
         makeTestingChamber();
     }
     rome.purgeRemake = purgeRemake;
@@ -189,7 +189,7 @@ var rome;
         debgkeys();
         build_then_output_stats();
         rome.world.update(pan.wpos);
-        glob.rerender = false;
+        glob.reprerender = false;
     }
     rome.step = step;
     function debgkeys() {
@@ -202,9 +202,13 @@ var rome;
         }
         if (app.key('t') == 1) {
             rome.world.grid.shrink();
+            glob.reprerender = true;
+            glob.dirtyObjects = true;
         }
         if (app.key('g') == 1) {
             rome.world.grid.grow();
+            glob.reprerender = true;
+            glob.dirtyObjects = true;
         }
         if (app.key('[') == 1) {
             tileform.hex_size -= .1;

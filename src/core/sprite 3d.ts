@@ -11,10 +11,11 @@ export interface sprite3d_joint_literal extends sprite.literal, tileform.shape3d
 
 export namespace sprite3d {
 	export type literaltype = sprite3d['data_'];
+	export type literal = literaltype;
 };
 
 export class sprite3d extends sprite {
-	rerender
+	reprerender
 	target
 	shape?: tileform.shape3d
 	data_: sprite3d_joint_literal
@@ -34,7 +35,7 @@ export class sprite3d extends sprite {
 			...data
 		});
 		this.data_ = this.data as sprite3d_joint_literal;
-		this.rerender = true;
+		this.reprerender = true;
 	}
 	protected _delete() {
 		super._delete();
@@ -56,12 +57,12 @@ export class sprite3d extends sprite {
 	}
 	prerender() {
 		// If both are false
-		if (this.rerender == false && glob.rerender == false)
+		if (this.reprerender == false && glob.reprerender == false)
 			return;
 		this._render();
 		this.material.map = this.target.texture;
 		this.material.needsUpdate = true;
-		this.rerender = false;
+		this.reprerender = false;
 	}
 	protected _make_target() {
 		let { spriteSize } = this.data;

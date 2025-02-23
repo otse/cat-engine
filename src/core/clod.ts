@@ -48,13 +48,13 @@ namespace clod {
 	export function add(world: world, obj?: obj) {
 		if (!obj)
 			return;
-		world.atwpos(obj.wpos).add(obj);
+		world.chunkatwpos(obj.wpos).add(obj);
 	}
 
 	export function addNoCreate(world: world, obj?: obj) {
 		if (!obj)
 			return;
-		world.atwpos(obj.wpos).add(obj, false);
+		world.chunkatwpos(obj.wpos).add(obj, false);
 	}
 
 	export function remove(obj: obj) {
@@ -86,7 +86,7 @@ namespace clod {
 		at(cpos: vec2): chunk {
 			return this.lookup(cpos) || this._make(cpos);
 		}
-		atwpos(wpos: vec2 | vec3): chunk {
+		chunkatwpos(wpos: vec2 | vec3): chunk {
 			return this.at(world.wtocpos(wpos));
 		}
 		protected _make(cpos): chunk {
@@ -125,7 +125,7 @@ namespace clod {
 			world.arrays[this.cpos[1]][this.cpos[0]] = this;
 			//console.log('sector');
 
-			hooks.emit('sectorCreate', this);
+			hooks.emit('chunkCreate', this);
 
 		}
 		nuke() {
@@ -164,7 +164,7 @@ namespace clod {
 		static swap(obj: obj) {
 			// Call me whenever you move
 			let oldChunk = obj.chunk!;
-			let newChunk = oldChunk.world.atwpos(/*pts.round(*/obj.wpos/*)*/);
+			let newChunk = oldChunk.world.chunkatwpos(/*pts.round(*/obj.wpos/*)*/);
 			// the pts.round causes an impossible to find bug
 			if (oldChunk != newChunk) {
 				oldChunk.remove(obj);
@@ -174,7 +174,7 @@ namespace clod {
 			}
 		}
 		tick() {
-			hooks.emit('sectorTick', this);
+			hooks.emit('chunkTick', this);
 			//for (let obj of this.objs)
 			//	obj.tick();
 		}
@@ -185,7 +185,7 @@ namespace clod {
 			for (const obj of this.objs)
 				obj.show();
 			pipeline.scene.add(this.group);
-			hooks.emit('sectorShow', this);
+			hooks.emit('chunkShow', this);
 		}
 		hide() {
 			if (this.off())
@@ -194,7 +194,7 @@ namespace clod {
 			for (const obj of this.objs)
 				obj.hide();
 			pipeline.scene.remove(this.group);
-			hooks.emit('sectorHide', this);
+			hooks.emit('chunkHide', this);
 		}
 		dist() {
 			return pts.distsimple(this.cpos, this.world.grid.cpos);
@@ -226,8 +226,8 @@ namespace clod {
 			this.spread--;
 			this.outside--;
 		}
-		visible(sector: chunk) {
-			return sector.dist() < this.spread;
+		visible(chunk: chunk) {
+			return chunk.dist() < this.spread;
 		}
 		ons() {
 			// spread = -2; < 2
@@ -378,7 +378,7 @@ namespace clod {
 			let matrix: Type[][] = [];
 			directions.forEach((pos, index) => {
 				pos = (pts.add(pos, wpos));
-				matrix[index] = world.atwpos(pos).stacked(pos) as Type[];
+				matrix[index] = world.chunkatwpos(pos).stacked(pos) as Type[];
 			});
 			return matrix;
 		}

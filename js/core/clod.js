@@ -36,13 +36,13 @@ var clod;
     function add(world, obj) {
         if (!obj)
             return;
-        world.atwpos(obj.wpos).add(obj);
+        world.chunkatwpos(obj.wpos).add(obj);
     }
     clod.add = add;
     function addNoCreate(world, obj) {
         if (!obj)
             return;
-        world.atwpos(obj.wpos).add(obj, false);
+        world.chunkatwpos(obj.wpos).add(obj, false);
     }
     clod.addNoCreate = addNoCreate;
     function remove(obj) {
@@ -74,7 +74,7 @@ var clod;
         at(cpos) {
             return this.lookup(cpos) || this._make(cpos);
         }
-        atwpos(wpos) {
+        chunkatwpos(wpos) {
             return this.at(world.wtocpos(wpos));
         }
         _make(cpos) {
@@ -111,7 +111,7 @@ var clod;
             numbers.chunks[1]++;
             world.arrays[this.cpos[1]][this.cpos[0]] = this;
             //console.log('sector');
-            hooks.emit('sectorCreate', this);
+            hooks.emit('chunkCreate', this);
         }
         nuke() {
             numbers.chunks[1]--;
@@ -146,7 +146,7 @@ var clod;
         static swap(obj) {
             // Call me whenever you move
             let oldChunk = obj.chunk;
-            let newChunk = oldChunk.world.atwpos(/*pts.round(*/ obj.wpos /*)*/);
+            let newChunk = oldChunk.world.chunkatwpos(/*pts.round(*/ obj.wpos /*)*/);
             // the pts.round causes an impossible to find bug
             if (oldChunk != newChunk) {
                 oldChunk.remove(obj);
@@ -156,7 +156,7 @@ var clod;
             }
         }
         tick() {
-            hooks.emit('sectorTick', this);
+            hooks.emit('chunkTick', this);
             //for (let obj of this.objs)
             //	obj.tick();
         }
@@ -167,7 +167,7 @@ var clod;
             for (const obj of this.objs)
                 obj.show();
             pipeline.scene.add(this.group);
-            hooks.emit('sectorShow', this);
+            hooks.emit('chunkShow', this);
         }
         hide() {
             if (this.off())
@@ -176,7 +176,7 @@ var clod;
             for (const obj of this.objs)
                 obj.hide();
             pipeline.scene.remove(this.group);
-            hooks.emit('sectorHide', this);
+            hooks.emit('chunkHide', this);
         }
         dist() {
             return pts.distsimple(this.cpos, this.world.grid.cpos);
@@ -210,8 +210,8 @@ var clod;
             this.spread--;
             this.outside--;
         }
-        visible(sector) {
-            return sector.dist() < this.spread;
+        visible(chunk) {
+            return chunk.dist() < this.spread;
         }
         ons() {
             // spread = -2; < 2
@@ -359,7 +359,7 @@ var clod;
             let matrix = [];
             directions.forEach((pos, index) => {
                 pos = (pts.add(pos, wpos));
-                matrix[index] = world.atwpos(pos).stacked(pos);
+                matrix[index] = world.chunkatwpos(pos).stacked(pos);
             });
             return matrix;
         }

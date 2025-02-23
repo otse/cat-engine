@@ -96,19 +96,19 @@ export class pan {
 	static arrows() {
 		if (app.key('arrowright')) {
 			rpos[0] += 1 * glob.scale;
-			glob.rerenderObjects = true;
+			glob.dirtyObjects = true;
 		}
 		if (app.key('arrowleft')) {
 			rpos[0] -= 1 * glob.scale;
-			glob.rerenderObjects = true;
+			glob.dirtyObjects = true;
 		}
 		if (app.key('arrowup')) {
 			rpos[1] += 1 * glob.scale;
-			glob.rerenderObjects = true;
+			glob.dirtyObjects = true;
 		}
 		if (app.key('arrowdown')) {
 			rpos[1] -= 1 * glob.scale;
-			glob.rerenderObjects = true;
+			glob.dirtyObjects = true;
 		}
 	}
 
@@ -128,7 +128,7 @@ export class pan {
 		if (this.dragging == false)
 			return;
 		if (app.button(1) >= 1) {
-			glob.rerenderObjects = true;
+			glob.dirtyObjects = true;
 			let mouse = app.mouse();
 			mouse[1] = -mouse[1];
 			let dif = (pts.subtract(begin, mouse));

@@ -5,7 +5,7 @@ import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 ;
 export class sprite3d extends sprite {
-    rerender;
+    reprerender;
     target;
     shape;
     data_;
@@ -23,7 +23,7 @@ export class sprite3d extends sprite {
             ...data
         });
         this.data_ = this.data;
-        this.rerender = true;
+        this.reprerender = true;
     }
     _delete() {
         super._delete();
@@ -43,12 +43,12 @@ export class sprite3d extends sprite {
     }
     prerender() {
         // If both are false
-        if (this.rerender == false && glob.rerender == false)
+        if (this.reprerender == false && glob.reprerender == false)
             return;
         this._render();
         this.material.map = this.target.texture;
         this.material.needsUpdate = true;
-        this.rerender = false;
+        this.reprerender = false;
     }
     _make_target() {
         let { spriteSize } = this.data;

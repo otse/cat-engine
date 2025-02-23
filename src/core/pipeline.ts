@@ -203,7 +203,7 @@ namespace pipeline {
 
 	export function render() {
 
-		if (glob.rerenderObjects) {
+		if (glob.dirtyObjects) {
 			if (app.key('z') == 1)
 				materialPost.uniforms.compression.value = !materialPost.uniforms.compression.value;
 
@@ -220,7 +220,7 @@ namespace pipeline {
 		renderer.clear();
 		renderer.render(sceneShader, camera2);
 
-		glob.rerenderObjects = false;
+		glob.dirtyObjects = false;
 	}
 
 	export var plane
@@ -228,7 +228,7 @@ namespace pipeline {
 	export function init() {
 		console.log('pipeline init')
 
-		glob.rerenderObjects = true;
+		glob.dirtyObjects = true;
 
 		THREE.ColorManagement.enabled = false;
 		THREE.Object3D.DEFAULT_MATRIX_AUTO_UPDATE = false;
@@ -331,7 +331,7 @@ namespace pipeline {
 
 		plane = new THREE.PlaneGeometry(targetSize[0], targetSize[1]);
 
-		glob.rerenderObjects = true;
+		glob.dirtyObjects = true;
 
 		if (quadPost) // ?
 			quadPost.geometry = plane;

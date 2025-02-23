@@ -4,6 +4,8 @@ import glob from "../../dep/glob.js";
 import direction_adapter from "../direction adapter.js";
 export class wall3d extends game_object {
     directionAdapter;
+    sprite3dliteral;
+    // sprite3dLiteral?: sprite3d // why declare
     constructor(data) {
         super({
             name: 'a wall 3d',
@@ -24,7 +26,7 @@ export class wall3d extends game_object {
             // spriteColor: 'magenta',
             shapeSize: [16, 16, 10],
             shapeType: 'wall',
-            shapeTexture: './img/textures/basaltcliffs.jpg',
+            ...this.sprite3dliteral,
         });
         this.directionAdapter.search(['wall 3d']);
         this.sprite?.create();

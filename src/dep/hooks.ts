@@ -1,6 +1,6 @@
 /// inspired by gmod lua
 
-// hooks run front to back
+// hooks run front to back - descending
 
 export namespace hooks {
 	export type func = (any) => Promise<boolean>

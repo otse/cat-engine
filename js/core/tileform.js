@@ -72,8 +72,8 @@ var tileform;
         function step() {
             opkl();
             // Testing new lighting mode
-            glob.rerender = true;
-            glob.rerenderObjects = true;
+            //glob.reprerender = true;
+            //glob.dirtyObjects = true;
         }
         stage.step = step;
         async function init() {
@@ -82,6 +82,7 @@ var tileform;
         }
         stage.init = init;
         async function preload() {
+            await pipeline.preloadTextureAsync('./img/textures/water.jpg');
             await pipeline.preloadTextureAsync('./img/textures/stonemixed.jpg');
             await pipeline.preloadTextureAsync('./img/textures/stonemixednormal.jpg');
             await pipeline.preloadTextureAsync('./img/textures/stonemixed2.jpg');
@@ -463,9 +464,9 @@ var tileform;
         }
         _update() {
             // Dance the light source
-            glob.rerender = true;
-            glob.rerenderObjects = true;
-            //return;
+            //glob.reprerender = true;
+            //glob.dirtyObjects = true;
+            return;
             this.light.position.x = 3;
             this.light.updateMatrix();
             const secondsPerRotation = 4;
@@ -473,8 +474,8 @@ var tileform;
             //this.entityGroup.position.x += glob.delta;
             this.entityGroup.updateMatrix();
             this.light.updateMatrix();
-            glob.rerender = true;
-            glob.rerenderObjects = true;
+            glob.reprerender = true;
+            glob.dirtyObjects = true;
         }
         _delete() {
             console.log('remove light');
@@ -528,7 +529,6 @@ var tileform;
         else {
             return;
         }
-        glob.rerender = true;
         rome.purgeRemake();
         console.log(wallRotationX, wallRotationY);
         console.log("stageCameraRotation", stageCameraRotation);

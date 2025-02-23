@@ -33,8 +33,8 @@ namespace rome {
 	export async function init() {
 		console.log(' init ');
 		glob.rome = rome;
-		glob.rerender = true;
-		glob.rerenderObjects = true;
+		glob.reprerender = true;
+		glob.dirtyObjects = true;
 		glob.scale = 1;
 		glob.hexSize = [17, 9];
 		glob.gameobjects = [0, 0];
@@ -53,13 +53,13 @@ namespace rome {
 	}
 
 	export function addMergeOrReplace(target: game_object) {
-		const chunk = world.atwpos(target.wpos);
+		const chunk = world.chunkatwpos(target.wpos);
 		const stacked = chunk.stacked(target.wpos) as game_object[];
 		let merged = false;
 		for (const gobj of stacked) {
 			if (gobj.data._type! == 'wall 3d') {
 				const wall_ = gobj as wall3d;
-				wall_.data
+				//wall_.data.
 				console.log(' already wll here ');
 				merged = true;
 				// console.warn('boo');
@@ -173,8 +173,8 @@ namespace rome {
 			<br />zoom scale (r, f): ${zoom.scale()}
 			<br />grid (t, g): ${world.grid.spread} / ${world.grid.outside}
 			<br />hex size ([, ]): ${tileform.hex_size}
-			<br />glob.rerender: ${glob.rerender}
-			<br />glob.rerenderObjects: ${glob.rerenderObjects}
+			<br />glob.reprerender: ${glob.reprerender}
+			<br />glob.dirtyObjects: ${glob.dirtyObjects}
 			<!--<br />cameraMode: ${pipeline.cameraMode}-->
 			<br />chunk_span: ${clod.chunk_span} x ${clod.chunk_span}
 			<br />gobjs: ${glob.gameobjects[0]} / ${glob.gameobjects[1]}
@@ -191,8 +191,8 @@ namespace rome {
 		world = clod.init();
 		gameObjects.forEach(gobj => { gobj.purge(); removeGobj(gobj); });
 		gameObjects = [];
-		glob.rerender = true;
-		glob.rerenderObjects = true;
+		glob.reprerender = true;
+		glob.dirtyObjects = true;
 		makeTestingChamber();
 	}
 
@@ -202,7 +202,7 @@ namespace rome {
 		debgkeys();
 		build_then_output_stats();
 		world.update(pan.wpos);
-		glob.rerender = false;
+		glob.reprerender = false;
 	}
 
 	function debgkeys() {
@@ -216,9 +216,13 @@ namespace rome {
 		}
 		if (app.key('t') == 1) {
 			world.grid.shrink();
+			glob.reprerender = true;
+			glob.dirtyObjects = true;
 		}
 		if (app.key('g') == 1) {
 			world.grid.grow();
+			glob.reprerender = true;
+			glob.dirtyObjects = true;
 		}
 		if (app.key('[') == 1) {
 			tileform.hex_size -= .1;

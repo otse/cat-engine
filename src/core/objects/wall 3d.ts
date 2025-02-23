@@ -6,7 +6,8 @@ import direction_adapter from "../direction adapter.js";
 
 export class wall3d extends game_object {
 	directionAdapter: direction_adapter
-	declare sprite?: sprite3d // why declare
+	sprite3dliteral?: sprite3d.literaltype
+	// sprite3dLiteral?: sprite3d // why declare
 
 	constructor(data: game_object_literal) {
 		super({
@@ -28,7 +29,7 @@ export class wall3d extends game_object {
 			// spriteColor: 'magenta',
 			shapeSize: [16, 16, 10],
 			shapeType: 'wall',
-			shapeTexture: './img/textures/basaltcliffs.jpg',
+			...this.sprite3dliteral,
 		});
 		this.directionAdapter.search(['wall 3d']);
 		this.sprite?.create();
