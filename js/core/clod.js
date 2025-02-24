@@ -137,7 +137,7 @@ var clod;
             }
         }
         // Get all things at one point
-        objsatwpos(wpos) {
+        objectsatwpos(wpos) {
             const stack = [];
             for (const obj of this.objs)
                 if (pts.equals(pts.round(wpos), pts.round(obj.wpos)))
@@ -360,7 +360,7 @@ var clod;
             let matrix = [];
             directions.forEach((pos, index) => {
                 pos = (pts.add(pos, wpos));
-                matrix[index] = world.chunkatwpos(pos).objsatwpos(pos);
+                matrix[index] = world.chunkatwpos(pos).objectsatwpos(pos);
             });
             return matrix;
         }

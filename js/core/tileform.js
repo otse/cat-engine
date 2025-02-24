@@ -483,9 +483,9 @@ var tileform;
         }
         _create() {
             console.log(' tf light source create ');
-            this.light = new THREE.PointLight('blue', 1, 5);
+            this.light = new THREE.PointLight('white', 1, 5);
             // this.light.decay = 2.4;
-            this.light.intensity = 5000 * glob.scale;
+            this.light.intensity = 1000 * glob.scale;
             this.light.distance = 600 * glob.scale;
             this.light.decay = 1.8;
             this.light.updateMatrix();

@@ -11,8 +11,6 @@ export class wall3d extends game_object {
         });
         this.data._type = 'wall 3d';
         this.directionAdapter = new direction_adapter(this);
-        // This code runs after _create
-        // because the super adds this object to the clod
     }
     _create() {
         new sprite3d({
@@ -21,7 +19,7 @@ export class wall3d extends game_object {
             // spriteColor: 'magenta',
             shapeSize: [16, 16, 10],
             shapeType: 'wall',
-            groundPreset: 'stonemixed',
+            groundPreset: 'water',
             ...this.sprite3dliteral,
         });
         this.directionAdapter.search(['wall 3d']);

@@ -152,7 +152,7 @@ namespace clod {
 			}
 		}
 		// Get all things at one point
-		objsatwpos(wpos: vec2) {
+		objectsatwpos(wpos: vec2) {
 			const stack: obj[] = [];
 			for (const obj of this.objs)
 				if (pts.equals(
@@ -379,7 +379,7 @@ namespace clod {
 			let matrix: Type[][] = [];
 			directions.forEach((pos, index) => {
 				pos = (pts.add(pos, wpos));
-				matrix[index] = world.chunkatwpos(pos).objsatwpos(pos) as Type[];
+				matrix[index] = world.chunkatwpos(pos).objectsatwpos(pos) as Type[];
 			});
 			return matrix;
 		}

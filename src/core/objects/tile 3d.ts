@@ -10,6 +10,9 @@ export class tile3d extends game_object {
 			name: 'a tile 3d',
 			...data
 		});
+		this.sprite3dliteral = {
+			groundPreset: preset
+		} as sprite3d.literaltype;
 		this.data._type = 'tile 3d';
 	}
 	protected override _create() {

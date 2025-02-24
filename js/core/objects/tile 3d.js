@@ -9,6 +9,9 @@ export class tile3d extends game_object {
             ...data
         });
         this.preset = preset;
+        this.sprite3dliteral = {
+            groundPreset: preset
+        };
         this.data._type = 'tile 3d';
     }
     _create() {

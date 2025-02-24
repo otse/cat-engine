@@ -56,7 +56,7 @@ namespace land {
 				}
 			}
 		}
-		world_manager.addMerge(gobjs, 1);
+		world_manager.addMergeLot(gobjs, 1);
 	}
 
 	export function test_fill() {
@@ -75,7 +75,7 @@ namespace land {
 				gobjs.push(tile);
 			}
 		}
-		world_manager.addMerge(gobjs, 1);
+		world_manager.addMergeLot(gobjs, 1);
 	}
 
 	export function make_bodies_of_water() {

@@ -11,7 +11,8 @@ export class sprite3d extends sprite {
     shape;
     data_;
     constructor(data) {
-        let groundPreset = game.groundPresets[data.groundPreset];
+        const groundPreset = game.groundPresets[data.groundPreset];
+        //console.log(' ground pre ', groundPreset);
         super({
             shapeType: 'nothing',
             shapeTexture: './img/textures/stonemixed.jpg',
@@ -20,8 +21,8 @@ export class sprite3d extends sprite {
             shapeGroundTextureNormal: './img/textures/stonemixednormal.jpg',
             shapeSize: [10, 10],
             bottomSort: false,
+            ...data,
             ...groundPreset,
-            ...data
         });
         this.data_ = this.data;
         this.reprerender = true;

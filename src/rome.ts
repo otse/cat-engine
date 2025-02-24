@@ -110,7 +110,7 @@ namespace rome {
 		collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [1, 8, 0] }));
 		// collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
 		// collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
-		world_manager.addMerge(gobjs, 2);
+		world_manager.addMergeLot(gobjs, 1);
 		// land.fill();
 	}
 
@@ -140,8 +140,6 @@ namespace rome {
 		for (const chunk of chunks) {
 			chunk.nuke();
 		}
-		gameObjects.forEach(gobj => { gobj.purge(); world_manager.removeGobj(gobj); });
-		gameObjects = [];
 		glob.reprerender = true;
 		glob.dirtyObjects = true;
 		world_manager.init();

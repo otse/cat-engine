@@ -48,7 +48,7 @@ var land;
                 }
             }
         }
-        world_manager.addMerge(gobjs, 1);
+        world_manager.addMergeLot(gobjs, 1);
     }
     land.make = make;
     function test_fill() {
@@ -67,7 +67,7 @@ var land;
                 gobjs.push(tile);
             }
         }
-        world_manager.addMerge(gobjs, 1);
+        world_manager.addMergeLot(gobjs, 1);
     }
     land.test_fill = test_fill;
     function make_bodies_of_water() {
