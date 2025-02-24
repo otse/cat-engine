@@ -546,6 +546,8 @@ namespace tileform {
 			this.entityGroup.updateMatrix();
 			// this.entityGroup.updateMatrixWorld(true); // Bad
 			stage.lightsGroup.add(this.entityGroup);
+			glob.reprerender = true;
+			glob.dirtyObjects = true;
 		}
 	}
 

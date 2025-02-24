@@ -1,7 +1,9 @@
-import clod from "./core/clod.js";
-import game_object from "./core/objects/game object.js";
-import tile3d from "./core/objects/tile 3d.js";
-import rome from "./rome.js";
+import clod from "../core/clod.js";
+import game_object from "../core/objects/game object.js";
+import tile3d from "../core/objects/tile 3d.js";
+import game from "./game.js";
+import rome from "../rome.js";
+import world_manager from "../core/world manager.js";
 
 /// generates land
 
@@ -9,7 +11,7 @@ import rome from "./rome.js";
 
 namespace land {
 	export function init() {
-
+		// Does nothing!
 	}
 
 	class perlin_area {
@@ -49,12 +51,12 @@ namespace land {
 					const tile = new tile3d({
 						_type: 'direct',
 						_wpos: [(-populate[0] / 2) + x, (-populate[1] / 2) + y, 0]
-					}, tilePreset);
+					}, tilePreset as game.groundPreset);
 					gobjs.push(tile);
 				}
 			}
 		}
-		rome.addLateGobjsBatch(gobjs, 'merge');
+		world_manager.addMerge(gobjs, 1);
 	}
 
 	export function test_fill() {
@@ -69,11 +71,11 @@ namespace land {
 				const tile = new tile3d({
 					_type: 'direct',
 					_wpos: [(-baseWidth / 2) + x, (-baseHeight / 2) + y, 0]
-				}, tilePreset);
+				}, tilePreset as game.groundPreset);
 				gobjs.push(tile);
 			}
 		}
-		rome.addLateGobjsBatch(gobjs, 'merge');
+		world_manager.addMerge(gobjs, 1);
 	}
 
 	export function make_bodies_of_water() {

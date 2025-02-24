@@ -4,28 +4,24 @@ import glob from "../../dep/glob.js";
 import direction_adapter from "../direction adapter.js";
 export class wall3d extends game_object {
     directionAdapter;
-    sprite3dliteral;
-    // sprite3dLiteral?: sprite3d // why declare
     constructor(data) {
         super({
             name: 'a wall 3d',
             ...data,
         });
         this.data._type = 'wall 3d';
+        this.directionAdapter = new direction_adapter(this);
         // This code runs after _create
         // because the super adds this object to the clod
     }
     _create() {
-        this.directionAdapter = new direction_adapter(this);
-        // Had to move the DA to the creator, because the super constructor
-        // would add the object to the CLOD who would call CREATE
-        // before we instantiated our adapter
         new sprite3d({
             gobj: this,
             spriteSize: [glob.hexSize[0] * 2, glob.hexSize[1] * 4],
             // spriteColor: 'magenta',
             shapeSize: [16, 16, 10],
             shapeType: 'wall',
+            groundPreset: 'stonemixed',
             ...this.sprite3dliteral,
         });
         this.directionAdapter.search(['wall 3d']);

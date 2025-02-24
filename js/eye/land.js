@@ -1,10 +1,11 @@
-import tile3d from "./core/objects/tile 3d.js";
-import game from "./eye/game.js";
+import tile3d from "../core/objects/tile 3d.js";
+import world_manager from "../core/world manager.js";
 /// generates land
 // https://github.com/josephg/noisejs
 var land;
 (function (land) {
     function init() {
+        // Does nothing!
     }
     land.init = init;
     class perlin_area {
@@ -47,7 +48,7 @@ var land;
                 }
             }
         }
-        game.addMerge(gobjs, 1);
+        world_manager.addMerge(gobjs, 1);
     }
     land.make = make;
     function test_fill() {
@@ -66,7 +67,7 @@ var land;
                 gobjs.push(tile);
             }
         }
-        game.addMerge(gobjs, 1);
+        world_manager.addMerge(gobjs, 1);
     }
     land.test_fill = test_fill;
     function make_bodies_of_water() {

@@ -13,10 +13,12 @@ import pan from "./core/components/pan.js";
 import game_object from "./core/objects/game object.js";
 import clod from "./core/clod.js";
 import glob from "./dep/glob.js";
-import land from "./land.js";
-import romanlike from "./romanlike/romanlike.js";
+import land from "./eye/land.js";
+import romanlike from "./eye/romanlike.js";
 import light from "./core/objects/light.js";
 import pts from "./dep/pts.js";
+import game from "./eye/game.js";
+import world_manager from "./core/world manager.js";
 
 namespace rome {
 
@@ -27,8 +29,6 @@ namespace rome {
 	export function clamp(val, min, max) {
 		return val > max ? max : val < min ? min : val;
 	}
-
-	export var world: clod.world;
 
 	export async function init() {
 		console.log(' init ');
@@ -42,61 +42,14 @@ namespace rome {
 		await pipeline.init();
 		await tileform.init();
 		romanlike.init();
-		land.init();
-		world = clod.init();
+		world_manager.init();
+		game.init();
 		app;
 		makeTestingChamber();
 		zoom.register();
 		pan.register();
 		// new sprite({ size: [12, 8] });
 		// What might this do
-	}
-
-	export function addMergeOrReplace(target: game_object) {
-		const chunk = world.chunkatwpos(target.wpos);
-		const stacked = chunk.stacked(target.wpos) as game_object[];
-		let merged = false;
-		for (const gobj of stacked) {
-			if (gobj.data._type! == 'wall 3d') {
-				const wall_ = gobj as wall3d;
-				//wall_.data.
-				console.log(' already wll here ');
-				merged = true;
-				// console.warn('boo');
-			}
-			else if (
-				gobj.data._type! == 'wall' ||
-				gobj.data._type! == 'tile'
-			) {
-				merged = true;
-			}
-		}
-		if (!merged) {
-			clod.addNoCreate(rome.world, target);
-		}
-	}
-
-	export function addLateGobjsBatch(gobjs: game_object[], mode: 'keep' | 'merge') {
-		// This is ununderstandable
-		for (const gobj of gobjs) {
-			if (mode === 'keep')
-				clod.addNoCreate(rome.world, gobj);
-			else if (mode === 'merge')
-				addMergeOrReplace(gobj);
-		}
-		for (const gobj of gobjs) {
-			if (gobj.chunk?.active)
-				gobj.show();
-		}
-	}
-
-	export function addGobj(gobj: game_object) {
-		// Parameter injection?
-		clod.add(world, gobj);
-	}
-
-	export function removeGobj(gobj: game_object) {
-		clod.remove(gobj);
 	}
 
 	async function preload_basic_textures() {
@@ -113,7 +66,7 @@ namespace rome {
 			gobjs.push(gobj);
 			gameObjects.push(gobj);
 		}
-		collect(new tile3d({ _type: 'direct', colorOverride: 'pink', _wpos: [-1, 0, 0] }));
+		collect(new tile3d({ _type: 'direct', colorOverride: 'pink', _wpos: [-1, 0, 0] }, 'cobblestone'));
 		collect(new tile3d({ _type: 'direct', colorOverride: 'salmon', _wpos: [-1, -1, 0] }));
 		collect(new tile3d({ _type: 'direct', colorOverride: 'cyan', _wpos: [0, -1, 0] }));
 		collect(new tile3d({ _type: 'direct', colorOverride: 'yellow', _wpos: [-1, 1, 0] }));
@@ -157,8 +110,7 @@ namespace rome {
 		collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [1, 8, 0] }));
 		// collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
 		// collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
-		addLateGobjsBatch(gobjs, 'keep');
-		land.make();
+		world_manager.addMerge(gobjs, 2);
 		// land.fill();
 	}
 
@@ -171,7 +123,7 @@ namespace rome {
 			<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
 			<br />render scale (-, =): ${glob.scale}
 			<br />zoom scale (r, f): ${zoom.scale()}
-			<br />grid (t, g): ${world.grid.spread} / ${world.grid.outside}
+			<br />grid (t, g): ${world_manager.world.grid.spread} / ${world_manager.world.grid.outside}
 			<br />hex size ([, ]): ${tileform.hex_size}
 			<br />glob.reprerender: ${glob.reprerender}
 			<br />glob.dirtyObjects: ${glob.dirtyObjects}
@@ -184,43 +136,46 @@ namespace rome {
 	}
 
 	export function purgeRemake() {
-		const chunks = clod.helpers.get_every_chunk(world);
+		const chunks = clod.helpers.get_every_chunk(world_manager.world);
 		for (const chunk of chunks) {
 			chunk.nuke();
 		}
-		world = clod.init();
-		gameObjects.forEach(gobj => { gobj.purge(); removeGobj(gobj); });
+		gameObjects.forEach(gobj => { gobj.purge(); world_manager.removeGobj(gobj); });
 		gameObjects = [];
 		glob.reprerender = true;
 		glob.dirtyObjects = true;
+		world_manager.init();
+		world_manager.repopulate();
+		game.repopulate();
 		makeTestingChamber();
 	}
 
 	export function step() {
 		hooks.emit('romeComponents', 1);
 		hooks.emit('romeStep', 0);
-		debgkeys();
+		keys();
 		build_then_output_stats();
-		world.update(pan.wpos);
+		world_manager.update();
+		game.update();
 		glob.reprerender = false;
 	}
 
-	function debgkeys() {
-		
+	function keys() {
+
 		if (app.key('c') == 1) {
-			const chunks = clod.helpers.get_every_chunk(world);
+			const chunks = clod.helpers.get_every_chunk(world_manager.world);
 			console.log('chunks', chunks);
 		}
 		if (app.key('a') == 1) {
-			console.log('arrays', world.arrays);
+			console.log('arrays', world_manager.world.arrays);
 		}
 		if (app.key('t') == 1) {
-			world.grid.shrink();
+			world_manager.world.grid.shrink();
 			glob.reprerender = true;
 			glob.dirtyObjects = true;
 		}
 		if (app.key('g') == 1) {
-			world.grid.grow();
+			world_manager.world.grid.grow();
 			glob.reprerender = true;
 			glob.dirtyObjects = true;
 		}

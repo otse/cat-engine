@@ -51,7 +51,8 @@ namespace clod {
 		world.chunkatwpos(obj.wpos).add(obj);
 	}
 
-	export function addNoCreate(world: world, obj?: obj) {
+	export function addWait(world: world, obj?: obj) {
+		// So we wait til all objs are lodded
 		if (!obj)
 			return;
 		world.chunkatwpos(obj.wpos).add(obj, false);
@@ -151,7 +152,7 @@ namespace clod {
 			}
 		}
 		// Get all things at one point
-		stacked(wpos: vec2) {
+		objsatwpos(wpos: vec2) {
 			const stack: obj[] = [];
 			for (const obj of this.objs)
 				if (pts.equals(
@@ -378,7 +379,7 @@ namespace clod {
 			let matrix: Type[][] = [];
 			directions.forEach((pos, index) => {
 				pos = (pts.add(pos, wpos));
-				matrix[index] = world.chunkatwpos(pos).stacked(pos) as Type[];
+				matrix[index] = world.chunkatwpos(pos).objsatwpos(pos) as Type[];
 			});
 			return matrix;
 		}

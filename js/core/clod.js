@@ -39,12 +39,13 @@ var clod;
         world.chunkatwpos(obj.wpos).add(obj);
     }
     clod.add = add;
-    function addNoCreate(world, obj) {
+    function addWait(world, obj) {
+        // So we wait til all objs are lodded
         if (!obj)
             return;
         world.chunkatwpos(obj.wpos).add(obj, false);
     }
-    clod.addNoCreate = addNoCreate;
+    clod.addWait = addWait;
     function remove(obj) {
         obj.chunk?.remove(obj);
     }
@@ -136,7 +137,7 @@ var clod;
             }
         }
         // Get all things at one point
-        stacked(wpos) {
+        objsatwpos(wpos) {
             const stack = [];
             for (const obj of this.objs)
                 if (pts.equals(pts.round(wpos), pts.round(obj.wpos)))
@@ -359,7 +360,7 @@ var clod;
             let matrix = [];
             directions.forEach((pos, index) => {
                 pos = (pts.add(pos, wpos));
-                matrix[index] = world.chunkatwpos(pos).stacked(pos);
+                matrix[index] = world.chunkatwpos(pos).objsatwpos(pos);
             });
             return matrix;
         }
