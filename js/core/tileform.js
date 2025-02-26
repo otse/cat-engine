@@ -119,7 +119,7 @@ var tileform;
             stage.scene.add(stage.soleGroup);
             stage.scene.add(stage.lightsGroup);
             stage.scene.updateMatrix();
-            stage.ambient = new THREE.AmbientLight('white', Math.PI / 2);
+            stage.ambient = new THREE.AmbientLight('white', Math.PI / 1);
             stage.scene.add(stage.ambient);
             stage.sun = new THREE.DirectionalLight('lavender', Math.PI / 8);
             stage.scene.add(stage.sun);
@@ -414,7 +414,7 @@ var tileform;
             geometries.push(geometry);
         }
         if (da.has_direction('north') &&
-            da.has_direction('aest') ||
+            da.has_direction('east') ||
             da.has_direction('east') &&
                 da.has_direction('south') ||
             da.has_direction('south') &&
@@ -483,7 +483,7 @@ var tileform;
         }
         _create() {
             console.log(' tf light source create ');
-            this.light = new THREE.PointLight('white', 1, 5);
+            this.light = new THREE.PointLight('cyan', 1, 5);
             // this.light.decay = 2.4;
             this.light.intensity = 1000 * glob.scale;
             this.light.distance = 600 * glob.scale;

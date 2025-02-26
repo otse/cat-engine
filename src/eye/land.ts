@@ -31,10 +31,16 @@ namespace land {
 		}
 	}
 
-	export function make() {
+	export function repopulate() {
+		make();
+		make_staggered_lake();
+		make_non_staggered_lake();
+	}
+
+	function make() {
 		// woo
 		noise.seed(28); // 1 to 65536
-		const gobjs: game_object[] = [];
+		const objects: game_object[] = [];
 		const populate = [100, 100];
 		const area = new perlin_area(28, [10, 10]);
 		for (let y = 0; y < populate[0]; y++) {
@@ -52,11 +58,43 @@ namespace land {
 						_type: 'direct',
 						_wpos: [(-populate[0] / 2) + x, (-populate[1] / 2) + y, 0]
 					}, tilePreset as game.groundPreset);
-					gobjs.push(tile);
+					objects.push(tile);
 				}
 			}
 		}
-		world_manager.addMergeLot(gobjs, 1);
+		world_manager.addMergeLot(objects, 1);
+	}
+
+	function make_staggered_lake() {
+		const objects: game_object[] = [];
+		const size = [5, 5];
+		const pos = [8, 8];
+		for (let y = pos[1]; y < pos[1] + size[1]; y++) {
+			for (let x = pos[0]; x < pos[0] + size[0]; x++) {
+				const tile = new tile3d({
+					_type: 'direct',
+					_wpos: [x, y, 0]
+				}, 'water');
+				objects.push(tile);
+			}
+		}
+		world_manager.addMergeLot(objects, 2);
+	}
+
+	function make_non_staggered_lake() {
+		const objects: game_object[] = [];
+		const size = [5, 5];
+		const pos = [8, 0];
+		for (let y = pos[1]; y < pos[1] + size[1]; y++) {
+			for (let x = pos[0]; x < pos[0] + size[0]; x++) {
+				const tile = new tile3d({
+					_type: 'direct',
+					_wpos: [x, y, 0]
+				}, 'water');
+				objects.push(tile);
+			}
+		}
+		world_manager.addMergeLot(objects, 2);
 	}
 
 	export function test_fill() {

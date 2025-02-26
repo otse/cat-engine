@@ -1,9 +1,9 @@
 import pts from "./pts.js"
 
 enum TEST {
-    Outside,
-    Inside,
-    Overlap
+	Outside,
+	Inside,
+	Overlap
 }
 
 class aabb2 {
@@ -33,8 +33,7 @@ class aabb2 {
 		this.min = (pts.add(this.min, v))
 		this.max = (pts.add(this.max, v))
 	}
-	test(b: aabb2)
-	{
+	test(b: aabb2) {
 		if (this.max[0] < b.min[0] || this.min[0] > b.max[0] ||
 			this.max[1] < b.min[1] || this.min[1] > b.max[1])
 			return 0
@@ -42,6 +41,13 @@ class aabb2 {
 			this.min[1] <= b.min[1] && this.max[1] >= b.max[1])
 			return 1
 		return 2
+	}
+	on_each(func: (pos) => {}) {
+		for (let y = this.min[1]; y < this.max[1]; y++) {
+			for (let x = this.min[0]; x < this.max[0]; x++) {
+				func([x, y])
+			}
+		}
 	}
 }
 

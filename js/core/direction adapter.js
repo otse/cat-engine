@@ -21,6 +21,5 @@ export class direction_adapter {
     has_direction(dir) {
         return this.directions.includes(dir);
     }
-    stagger;
 }
 export default direction_adapter;

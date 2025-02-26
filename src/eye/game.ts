@@ -29,7 +29,7 @@ export namespace game {
 
 	export function init() {
 		land.init();
-		land.make();
+		repopulate();
 	}
 
 	export function update() {
@@ -37,7 +37,7 @@ export namespace game {
 	}
 
 	export function repopulate() {
-		land.make();
+		land.repopulate();
 	}	
 
 }

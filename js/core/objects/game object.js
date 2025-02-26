@@ -38,15 +38,19 @@ export class game_object extends clod.obj {
         this.sprite?.step();
     }
 }
-// Nessy
+// Contains TypeScript stuff, beware!
 (function (game_object) {
     let helpers;
     (function (helpers) {
+        function get_matrix(world, wpos) {
+            return clod.helpers.get_matrix(world, wpos);
+        }
+        helpers.get_matrix = get_matrix;
         function sort_matrix(world, wpos, types) {
-            const matrix = clod.helpers.get_matrix(world, wpos);
-            return matrix.map(column => column.filter(obj => types.includes(obj.data._type)));
+            return get_matrix(world, wpos).map(column => column.filter(obj => types.includes(obj.data._type)));
         }
         helpers.sort_matrix = sort_matrix;
+        //export type direction = 'northwest' | 'north' | 'northeast' | 'west' | 'center' | 'east' | 'southwest' | 'south' | 'southeast'
         function get_directions(matrix) {
             const directions = [
                 'northwest', 'north', 'northeast',

@@ -21,7 +21,7 @@ export var game;
     };
     function init() {
         land.init();
-        land.make();
+        repopulate();
     }
     game.init = init;
     function update() {
@@ -29,7 +29,7 @@ export var game;
     }
     game.update = update;
     function repopulate() {
-        land.make();
+        land.repopulate();
     }
     game.repopulate = repopulate;
 })(game || (game = {}));

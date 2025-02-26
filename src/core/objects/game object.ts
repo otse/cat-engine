@@ -14,7 +14,7 @@ export class game_object extends clod.obj {
 	sprite?: sprite
 	// Lots of game objects make sprite3ds so here's an initialization object
 	sprite3dliteral?: sprite3d.literaltype
-	
+
 	// Rotation
 	r = 0
 	// Third axis
@@ -46,22 +46,31 @@ export class game_object extends clod.obj {
 	}
 }
 
-// Nessy
+// Contains TypeScript stuff, beware!
 export namespace game_object {
 	export namespace helpers {
-		export function sort_matrix(world: clod.world, wpos: vec2, types: string[]) {
-			const matrix = clod.helpers.get_matrix<game_object>(world, wpos);
-			return matrix.map(column => column.filter(obj => types.includes(obj.data._type!)));
+
+		export function get_matrix(world: clod.world, wpos: vec2) {
+			return clod.helpers.get_matrix<game_object>(world, wpos);
 		}
+
+		export function sort_matrix(world: clod.world, wpos: vec2, types: string[]) {
+			return get_matrix(world, wpos).map(column => column.filter(obj => types.includes(obj.data._type!)));
+		}
+
+		//export type direction = 'northwest' | 'north' | 'northeast' | 'west' | 'center' | 'east' | 'southwest' | 'south' | 'southeast'
 
 		export function get_directions(matrix: game_object[][]) {
 			const directions = [
 				'northwest', 'north', 'northeast',
 				'west', 'center', 'east',
 				'southwest', 'south', 'southeast'
-			];
+			] as const;
 			return directions.map((dir, index) => matrix[index].length > 0 ? dir : null);
 		}
+		
+		export type directions = ReturnType<typeof get_directions>;
+		export type direction = directions[number];
 	}
 }
 

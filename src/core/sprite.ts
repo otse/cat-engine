@@ -14,7 +14,7 @@ interface sprite_literal {
 };
 
 export namespace sprite {
-	export type literal = sprite['data'];
+	export type literal = sprite_literal
 };
 
 // A sprite uses a per-material UV transform
@@ -40,7 +40,7 @@ export class sprite {
 		this.data.spriteSize = (pts.make_uneven(this.data.spriteSize!, 1));
 		this.gobj = this.data.gobj;
 		this.gobj.sprite = this;
-		// this.data.spriteColor = this.gobj.data.colorOverride || 'white';
+		this.data.spriteColor = this.gobj.data.colorOverride || 'white';
 		// this.data.spriteColor = rome.sample(['purple', 'magenta', 'cyan', 'wheat', 'pink', 'salmon']);
 		this.matrix = new THREE.Matrix3;
 		this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);

@@ -83,7 +83,7 @@ var rome;
         collect(new tile({ _type: 'direct', _wpos: [5, 0, 0] }));
         collect(new tile({ _type: 'direct', _wpos: [6, 0, 0] }));
         collect(new tile({ _type: 'direct', _wpos: [7, 0, 0] }));*/
-        collect(new wall3d({ _type: 'direct', _wpos: [2, 1, 0] }));
+        collect(new wall3d({ _type: 'direct', colorOverride: 'green', _wpos: [2, 1, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [3, 1, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [3, 2, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [3, 3, 0] }));

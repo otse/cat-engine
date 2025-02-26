@@ -41,5 +41,12 @@ class aabb2 {
             return 1;
         return 2;
     }
+    on_each(func) {
+        for (let y = this.min[1]; y < this.max[1]; y++) {
+            for (let x = this.min[0]; x < this.max[0]; x++) {
+                func([x, y]);
+            }
+        }
+    }
 }
 export default aabb2;

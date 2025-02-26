@@ -1,5 +1,6 @@
 import pan from "./components/pan.js";
 import clod from "./clod.js";
+import glob from "../dep/glob.js";
 /// 🌍 WorldManager (clean and direct)
 var mergeMode;
 (function (mergeMode) {
@@ -8,9 +9,10 @@ var mergeMode;
     mergeMode[mergeMode["replace"] = 2] = "replace";
 })(mergeMode || (mergeMode = {}));
 class world_manager {
-    static world; // Todo glob.world
+    static world;
     static init() {
         this.world = clod.init();
+        glob.world = this.world;
     }
     static update() {
         this.world.update(pan.wpos);
@@ -27,43 +29,40 @@ class world_manager {
     static removeGobj(gobj) {
         clod.remove(gobj);
     }
-    static merge_difficult(target) {
+    // These are the most normal mergers,
+    // like when you put a wall on a tile,
+    // or a tile on a wall
+    static merge_ideally(target) {
         let objects = this.getObjectsAt(target);
-        let merged = false;
-        for (let seated of objects) {
-            if (seated.data._type == 'wall 3d' &&
+        let needsAdding = false;
+        for (let object of objects) {
+            // Rare situation where we want to adapt a wall 3d to a tile 3d
+            if (object.data._type == 'wall 3d' &&
                 target.data._type == 'tile 3d') {
-                seated.sprite3dliteral = {
-                    ...seated.sprite3dliteral,
-                    ...target.sprite3dliteral,
-                    shapeType: 'wall',
-                    gobj: target,
-                    groundPreset: 'water'
-                };
-                console.log(' water! ', seated.data._type, target.data._type);
-                merged = true;
-            }
-            else if (seated.data._type == 'tile 3d' &&
-                target.data._type == 'wall 3d') {
-                const sprite3dliteral = {
-                    //...seated.sprite3dliteral!,
-                    ...target.sprite3dliteral,
-                    gobj: target,
-                    shapeType: 'wall',
-                    // groundPreset: 'water',
+                object.sprite3dliteral = {
+                    ...object.sprite3dliteral,
                     groundPreset: target.sprite3dliteral?.groundPreset,
                 };
-                console.log('remoev!');
-                clod.remove(seated);
-                target.sprite3dliteral = sprite3dliteral;
-                merged = false;
+                console.log(' water! ', object.data._type, target.data._type);
+                needsAdding = true;
             }
-            else if (seated.data._type == 'wall' ||
-                seated.data._type == 'tile') {
-                merged = true;
+            // When we put a wall 3d onto a tile 3d
+            // but want to keep the ground
+            else if (object.data._type == 'tile 3d' &&
+                target.data._type == 'wall 3d') {
+                target.sprite3dliteral = {
+                    ...target.sprite3dliteral,
+                    groundPreset: object.sprite3dliteral?.groundPreset,
+                };
+                clod.remove(object);
+                needsAdding = false;
+            }
+            else if (object.data._type == 'wall' ||
+                object.data._type == 'tile') {
+                needsAdding = true;
             }
         }
-        if (!merged) {
+        if (!needsAdding) {
             clod.addWait(world_manager.world, target);
         }
     }
@@ -80,7 +79,7 @@ class world_manager {
         // this saves a render but requires this merge function
         for (const gobj of gobjs) {
             if (mode === mergeMode.merge)
-                this.merge_difficult(gobj);
+                this.merge_ideally(gobj);
             else if (mode === mergeMode.replace)
                 this._replace(gobj);
             else if (mode === mergeMode.dont)

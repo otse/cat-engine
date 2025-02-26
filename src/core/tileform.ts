@@ -141,7 +141,7 @@ namespace tileform {
 			scene.add(soleGroup);
 			scene.add(lightsGroup);
 			scene.updateMatrix();
-			ambient = new THREE.AmbientLight('white', Math.PI / 2);
+			ambient = new THREE.AmbientLight('white', Math.PI / 1);
 			scene.add(ambient);
 			sun = new THREE.DirectionalLight('lavender', Math.PI / 8);
 			scene.add(sun);
@@ -459,7 +459,7 @@ namespace tileform {
 			geometries.push(geometry);
 		}
 		if (da.has_direction('north') &&
-			da.has_direction('aest') ||
+			da.has_direction('east') ||
 			da.has_direction('east') &&
 			da.has_direction('south') ||
 			da.has_direction('south') &&
@@ -533,7 +533,7 @@ namespace tileform {
 		}
 		protected override _create() {
 			console.log(' tf light source create ');
-			this.light = new THREE.PointLight('white', 1, 5);
+			this.light = new THREE.PointLight('cyan', 1, 5);
 			// this.light.decay = 2.4;
 			this.light.intensity = 1000 * glob.scale;
 			this.light.distance = 600 * glob.scale;
