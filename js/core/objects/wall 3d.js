@@ -16,10 +16,10 @@ export class wall3d extends game_object {
         new sprite3d({
             gobj: this,
             spriteSize: [glob.hexSize[0] * 2, glob.hexSize[1] * 4],
+            sprite3dGroundPreset: 'water',
             // spriteColor: 'magenta',
             shapeSize: [16, 16, 10],
             shapeType: 'wall',
-            groundPreset: 'water',
             ...this.sprite3dliteral,
         });
         this.directionAdapter.search(['wall 3d']);

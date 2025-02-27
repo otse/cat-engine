@@ -41,7 +41,7 @@ class world_manager {
                 target.data._type == 'tile 3d') {
                 object.sprite3dliteral = {
                     ...object.sprite3dliteral,
-                    groundPreset: target.sprite3dliteral?.groundPreset,
+                    sprite3dGroundPreset: target.sprite3dliteral?.sprite3dGroundPreset,
                 };
                 console.log(' water! ', object.data._type, target.data._type);
                 needsAdding = true;
@@ -52,7 +52,7 @@ class world_manager {
                 target.data._type == 'wall 3d') {
                 target.sprite3dliteral = {
                     ...target.sprite3dliteral,
-                    groundPreset: object.sprite3dliteral?.groundPreset,
+                    sprite3dGroundPreset: object.sprite3dliteral?.sprite3dGroundPreset,
                 };
                 clod.remove(object);
                 needsAdding = false;

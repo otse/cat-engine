@@ -1,3 +1,4 @@
+import area2 from "./area2.js";
 import pts from "./pts.js";
 var TEST;
 (function (TEST) {
@@ -9,13 +10,23 @@ class aabb2 {
     static TEST = TEST;
     min;
     max;
-    static dupe(bb) {
-        return new aabb2(bb.min, bb.max);
+    static dupe(aabb) {
+        return new aabb2(aabb.min, aabb.max);
     }
     constructor(a, b) {
         this.min = this.max = [...a];
         if (b) {
             this.extend(b);
+        }
+    }
+    to_area() {
+        return new area2(this);
+    }
+    iterate_points(func) {
+        for (let y = this.min[1]; y < this.max[1]; y++) {
+            for (let x = this.min[0]; x < this.max[0]; x++) {
+                func([x, y]);
+            }
         }
     }
     extend(v) {
@@ -40,13 +51,6 @@ class aabb2 {
             this.min[1] <= b.min[1] && this.max[1] >= b.max[1])
             return 1;
         return 2;
-    }
-    on_each(func) {
-        for (let y = this.min[1]; y < this.max[1]; y++) {
-            for (let x = this.min[0]; x < this.max[0]; x++) {
-                func([x, y]);
-            }
-        }
     }
 }
 export default aabb2;

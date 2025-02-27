@@ -7,7 +7,7 @@ import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 
 export interface sprite3d_joint_literal extends sprite.literal, tileform.shape3d.literal {
-	groundPreset?: game.groundPreset;
+	sprite3dGroundPreset?: game.groundPreset;
 }
 
 export namespace sprite3d {
@@ -22,7 +22,7 @@ export class sprite3d extends sprite {
 	constructor(
 		data: sprite3d_joint_literal
 	) {
-		const groundPreset = game.groundPresets[data.groundPreset!];
+		const groundPreset = game.groundPresets[data.sprite3dGroundPreset!];
 		//console.log(' ground pre ', groundPreset);
 		super({
 			shapeType: 'nothing',

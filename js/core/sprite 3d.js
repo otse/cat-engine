@@ -11,7 +11,7 @@ export class sprite3d extends sprite {
     shape;
     data_;
     constructor(data) {
-        const groundPreset = game.groundPresets[data.groundPreset];
+        const groundPreset = game.groundPresets[data.sprite3dGroundPreset];
         //console.log(' ground pre ', groundPreset);
         super({
             shapeType: 'nothing',

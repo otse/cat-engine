@@ -53,7 +53,7 @@ class world_manager {
 			) {
 				object.sprite3dliteral = {
 					...object.sprite3dliteral!,
-					groundPreset: target.sprite3dliteral?.groundPreset,
+					sprite3dGroundPreset: target.sprite3dliteral?.sprite3dGroundPreset,
 				};
 				console.log(' water! ', object.data._type, target.data._type);
 				needsAdding = true;
@@ -66,7 +66,7 @@ class world_manager {
 			) {
 				target.sprite3dliteral = {
 					...target.sprite3dliteral!,
-					groundPreset: object.sprite3dliteral?.groundPreset,
+					sprite3dGroundPreset: object.sprite3dliteral?.sprite3dGroundPreset,
 				};
 				clod.remove(object);
 				needsAdding = false;

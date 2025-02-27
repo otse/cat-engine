@@ -14,6 +14,8 @@ export class game_object extends clod.obj {
 	sprite?: sprite
 	// Lots of game objects make sprite3ds so here's an initialization object
 	sprite3dliteral?: sprite3d.literaltype
+	// Add user data
+	extra: object = {}
 
 	// Rotation
 	r = 0

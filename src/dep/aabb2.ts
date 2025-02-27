@@ -1,3 +1,4 @@
+import area2 from "./area2.js"
 import pts from "./pts.js"
 
 enum TEST {
@@ -10,13 +11,23 @@ class aabb2 {
 	static readonly TEST = TEST
 	min: vec2
 	max: vec2
-	static dupe(bb: aabb2) {
-		return new aabb2(bb.min, bb.max)
+	static dupe(aabb: aabb2) {
+		return new aabb2(aabb.min, aabb.max)
 	}
 	constructor(a: vec2, b: vec2) {
 		this.min = this.max = <vec2>[...a]
 		if (b) {
 			this.extend(b)
+		}
+	}
+	to_area(): area2 {
+		return new area2(this);
+	}
+	iterate_points(func: (pos: vec2) => void) {
+		for (let y = this.min[1]; y < this.max[1]; y++) {
+			for (let x = this.min[0]; x < this.max[0]; x++) {
+				func([x, y]);
+			}
 		}
 	}
 	extend(v: vec2) {
@@ -41,13 +52,6 @@ class aabb2 {
 			this.min[1] <= b.min[1] && this.max[1] >= b.max[1])
 			return 1
 		return 2
-	}
-	on_each(func: (pos) => {}) {
-		for (let y = this.min[1]; y < this.max[1]; y++) {
-			for (let x = this.min[0]; x < this.max[0]; x++) {
-				func([x, y])
-			}
-		}
 	}
 }
 

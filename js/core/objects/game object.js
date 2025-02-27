@@ -7,6 +7,8 @@ export class game_object extends clod.obj {
     sprite;
     // Lots of game objects make sprite3ds so here's an initialization object
     sprite3dliteral;
+    // Add user data
+    extra = {};
     // Rotation
     r = 0;
     // Third axis

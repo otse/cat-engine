@@ -1,5 +1,7 @@
 import tile3d from "../core/objects/tile 3d.js";
 import world_manager from "../core/world manager.js";
+import aabb2 from "../dep/aabb2.js";
+import pts from "../dep/pts.js";
 /// generates land
 // https://github.com/josephg/noisejs
 var land;
@@ -58,32 +60,33 @@ var land;
     }
     function make_staggered_lake() {
         const objects = [];
+        const pos = [8, 0];
         const size = [5, 5];
-        const pos = [8, 8];
-        for (let y = pos[1]; y < pos[1] + size[1]; y++) {
-            for (let x = pos[0]; x < pos[0] + size[0]; x++) {
-                const tile = new tile3d({
-                    _type: 'direct',
-                    _wpos: [x, y, 0]
-                }, 'water');
-                objects.push(tile);
-            }
-        }
+        const aabb = new aabb2(pos, pts.add(pos, size));
+        const staggeredArea = aabb.to_area();
+        // staggeredArea._stagger();
+        staggeredArea.iterate_points((pos) => {
+            const tile = new tile3d({
+                _type: 'direct',
+                _wpos: [pos[0], pos[1], 0]
+            }, 'water');
+            objects.push(tile);
+        });
         world_manager.addMergeLot(objects, 2);
     }
     function make_non_staggered_lake() {
         const objects = [];
+        const pos = [8, 8];
         const size = [5, 5];
-        const pos = [8, 0];
-        for (let y = pos[1]; y < pos[1] + size[1]; y++) {
-            for (let x = pos[0]; x < pos[0] + size[0]; x++) {
-                const tile = new tile3d({
-                    _type: 'direct',
-                    _wpos: [x, y, 0]
-                }, 'water');
-                objects.push(tile);
-            }
-        }
+        const aabb = new aabb2(pos, pts.add(pos, size));
+        const area = aabb.to_area();
+        area.iterate_points((pos) => {
+            const tile = new tile3d({
+                _type: 'direct',
+                _wpos: [pos[0], pos[1], 0]
+            }, 'water');
+            objects.push(tile);
+        });
         world_manager.addMergeLot(objects, 2);
     }
     function test_fill() {
