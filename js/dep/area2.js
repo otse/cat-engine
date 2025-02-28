@@ -10,7 +10,7 @@ class area2 {
         this.base = base;
         this._extract();
     }
-    iterate_points(func) {
+    do(func) {
         for (let i = 0; i < this.points.length; i++) {
             func(this.points[i]);
         }

@@ -2,6 +2,7 @@ import tile3d from "../core/objects/tile 3d.js";
 import world_manager from "../core/world manager.js";
 import aabb2 from "../dep/aabb2.js";
 import pts from "../dep/pts.js";
+import staggered_area from "../core/staggered area.js";
 /// generates land
 // https://github.com/josephg/noisejs
 var land;
@@ -63,9 +64,9 @@ var land;
         const pos = [8, 0];
         const size = [5, 5];
         const aabb = new aabb2(pos, pts.add(pos, size));
-        const staggeredArea = aabb.to_area();
+        const staggeredArea = new staggered_area(aabb.to_area());
         // staggeredArea._stagger();
-        staggeredArea.iterate_points((pos) => {
+        staggeredArea.do((pos) => {
             const tile = new tile3d({
                 _type: 'direct',
                 _wpos: [pos[0], pos[1], 0]
@@ -80,7 +81,7 @@ var land;
         const size = [5, 5];
         const aabb = new aabb2(pos, pts.add(pos, size));
         const area = aabb.to_area();
-        area.iterate_points((pos) => {
+        area.do((pos) => {
             const tile = new tile3d({
                 _type: 'direct',
                 _wpos: [pos[0], pos[1], 0]

@@ -73,9 +73,9 @@ namespace land {
 		const pos = [8, 0] as vec2;
 		const size = [5, 5] as vec2;
 		const aabb = new aabb2(pos, pts.add(pos, size));
-		const staggeredArea = aabb.to_area();
+		const staggeredArea = new staggered_area(aabb.to_area());
 		// staggeredArea._stagger();
-		staggeredArea.iterate_points((pos) => {
+		staggeredArea.do((pos) => {
 			const tile = new tile3d({
 				_type: 'direct',
 				_wpos: [pos[0], pos[1], 0]
@@ -91,7 +91,7 @@ namespace land {
 		const size = [5, 5] as vec2;
 		const aabb = new aabb2(pos, pts.add(pos, size));
 		const area = aabb.to_area();
-		area.iterate_points((pos) => {
+		area.do((pos) => {
 			const tile = new tile3d({
 				_type: 'direct',
 				_wpos: [pos[0], pos[1], 0]

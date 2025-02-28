@@ -22,7 +22,7 @@ class aabb2 {
     to_area() {
         return new area2(this);
     }
-    iterate_points(func) {
+    do(func) {
         for (let y = this.min[1]; y < this.max[1]; y++) {
             for (let x = this.min[0]; x < this.max[0]; x++) {
                 func([x, y]);

@@ -12,7 +12,7 @@ class area2 {
 	constructor(readonly base: aabb2) {
 		this._extract();
 	}
-	iterate_points(func: (pos: vec2) => void) {
+	do(func: (pos: vec2) => void) {
 		for (let i = 0; i < this.points.length; i++) {
 			func(this.points[i]);
 		}
