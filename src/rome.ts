@@ -101,7 +101,7 @@ namespace rome {
 		// collect(new tile({ _type: 'direct', _wpos: [4, 2, 0] }));
 		collect(new light({ _type: 'direct', _wpos: [2, 3, 0] }));
 		collect(new light({ _type: 'direct', _wpos: [-11, 6, 0] }));
-		collect(new light({ _type: 'direct', _wpos: [10, 2, 0] }));
+		collect(new light({ _type: 'direct', _wpos: [9, 2, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [1, 2, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [1, 3, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [1, 4, 0] }));

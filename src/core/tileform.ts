@@ -451,18 +451,22 @@ namespace tileform {
 		) {
 			geometry = new THREE.BoxGeometry(size[0], size[1] / 2, size[2]);
 			geometry.translate(size[0] / 2, -size[1] / 4, 0);
+			geometry.translate(-size[0] / 2, size[1] / 4, 0);
 			geometries.push(geometry);
 		}
 		if (adapter.tile_occupied('south')) {
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
 			geometry.translate(-size[0] / 4, -size[1] / 4, 0);
-			geometries.push(geometry);
+			geometry.translate(-size[0] / 2, size[1] / 4, 0);
+			//geometries.push(geometry);
 		}
 		if (adapter.tile_occupied('northwest') &&
 			adapter.tile_occupied('east')) {
 			// stagger
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
 			geometry.translate(size[0] / 1.46, -size[1] / 4, 0);
+			geometry.translate(-size[0] / 2, size[1] / 4, 0);
+
 			geometries.push(geometry);
 		}
 		if (adapter.tile_occupied('west') &&
@@ -470,6 +474,8 @@ namespace tileform {
 			// stagger
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
 			geometry.translate(size[0] / 4, -size[1] / 4, 0);
+			geometry.translate(-size[0] / 2, size[1] / 4, 0);
+
 			geometries.push(geometry);
 		}
 		/*if (adapter.tile_occupied('east')) {
