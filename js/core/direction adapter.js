@@ -18,14 +18,14 @@ export class direction_adapter {
         this.directions = game_object.helpers.get_directions(this.matrix);
         // console.log('pos', this.gobj.wpos, this.matrix);
     }
-    has_direction(dir) {
-        return this.directions.includes(dir);
+    tile_occupied(direction) {
+        return this.directions.includes(direction);
     }
-    has_matrix(dir) {
-        return this.directions.includes(dir);
+    has_matrix(direction) {
+        return this.directions.includes(direction);
     }
-    index_of_direction(dir) {
-        return this.directions.indexOf(dir);
+    index_of_direction(direction) {
+        return this.directions.indexOf(direction);
     }
 }
 export default direction_adapter;

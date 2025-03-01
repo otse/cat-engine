@@ -14,8 +14,6 @@ export class game_object extends clod.obj {
 	sprite?: sprite
 	// Lots of game objects make sprite3ds so here's an initialization object
 	sprite3dliteral: sprite3d.literal = { gobj: this }
-	// Add user data
-	extra: object = {}
 
 	// Rotation
 	r = 0
@@ -23,6 +21,12 @@ export class game_object extends clod.obj {
 	z = 0
 	constructor(public data: game_object.literal) {
 		super(glob.gameobjects);
+		this.data = {
+			name: 'a game object',
+			// _wpos: [0, 0, 0],
+			extra: {},
+			...data
+		};
 		this.wpos = pts.copy(data._wpos);
 		this.z = data._wpos[2];
 		this.r = data._r || 0;

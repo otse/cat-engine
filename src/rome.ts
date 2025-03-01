@@ -101,6 +101,7 @@ namespace rome {
 		// collect(new tile({ _type: 'direct', _wpos: [4, 2, 0] }));
 		collect(new light({ _type: 'direct', _wpos: [2, 3, 0] }));
 		collect(new light({ _type: 'direct', _wpos: [-11, 6, 0] }));
+		collect(new light({ _type: 'direct', _wpos: [10, 2, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [1, 2, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [1, 3, 0] }));
 		collect(new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [1, 4, 0] }));
@@ -120,6 +121,7 @@ namespace rome {
 			<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
 			<br />&#9;ALLOW_NORMAL_MAPS (f3): ${tileform.ALLOW_NORMAL_MAPS}
 			<br />&#9;SUN_CAMERA (f4): ${tileform.SUN_CAMERA}
+			<br />dither, color correction (d, z): ${pipeline.dithering}, ${pipeline.compression}
 			<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
 			<br />render scale (-, =): ${glob.scale}
 			<br />zoom scale (r, f): ${zoom.scale()}

@@ -174,15 +174,17 @@ var pipeline;
     pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
     pipeline.ROUND_UP_DOTS_PER_INCH = true;
     pipeline.dotsPerInch = 1;
+    pipeline.dithering = false;
+    pipeline.compression = true;
     let groups;
     (function (groups) {
     })(groups = pipeline.groups || (pipeline.groups = {}));
     function render() {
+        if (app.key('z') == 1)
+            pipeline.materialPost.uniforms.compression.value = pipeline.compression = !pipeline.compression;
+        if (app.key('d') == 1)
+            pipeline.materialPost.uniforms.dithering.value = pipeline.dithering = !pipeline.dithering;
         if (glob.dirtyObjects) {
-            if (app.key('z') == 1)
-                pipeline.materialPost.uniforms.compression.value = !pipeline.materialPost.uniforms.compression.value;
-            if (app.key('d') == 1)
-                pipeline.materialPost.uniforms.dithering.value = !pipeline.materialPost.uniforms.dithering.value;
             //renderer.setRenderTarget(targetMask);
             //renderer.clear();
             //renderer.render(sceneMask, camera);
@@ -250,8 +252,8 @@ var pipeline;
         pipeline.materialPost = new THREE.ShaderMaterial({
             uniforms: {
                 tDiffuse: { value: pipeline.target.texture },
-                compression: { value: 0 },
-                dithering: { value: 0 }
+                compression: { value: pipeline.compression },
+                dithering: { value: pipeline.dithering }
             },
             vertexShader: vertexScreen,
             fragmentShader: fragmentPost,

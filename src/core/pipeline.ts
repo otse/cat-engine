@@ -180,6 +180,8 @@ namespace pipeline {
 	export const ROUND_UP_DOTS_PER_INCH = true;
 
 	export var dotsPerInch = 1;
+	export var dithering = false;
+	export var compression = true;
 
 	export namespace groups {
 		export var camera
@@ -206,11 +208,12 @@ namespace pipeline {
 
 	export function render() {
 
+		if (app.key('z') == 1)
+			materialPost.uniforms.compression.value = compression = !compression;
+		if (app.key('d') == 1)
+			materialPost.uniforms.dithering.value = dithering = !dithering;
+
 		if (glob.dirtyObjects) {
-			if (app.key('z') == 1)
-				materialPost.uniforms.compression.value = !materialPost.uniforms.compression.value;
-			if (app.key('d') == 1)
-				materialPost.uniforms.dithering.value = !materialPost.uniforms.dithering.value;
 
 			//renderer.setRenderTarget(targetMask);
 			//renderer.clear();
@@ -298,8 +301,8 @@ namespace pipeline {
 		materialPost = new THREE.ShaderMaterial({
 			uniforms: {
 				tDiffuse: { value: target.texture },
-				compression: { value: 0 },
-				dithering: { value: 0 }
+				compression: { value: compression },
+				dithering: { value: dithering }
 			},
 			vertexShader: vertexScreen,
 			fragmentShader: fragmentPost,

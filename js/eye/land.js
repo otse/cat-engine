@@ -67,12 +67,12 @@ var land;
         const aabb = new aabb2(pos, pts.add(pos, size));
         const staggeredArea = new staggered_area(aabb2.area(aabb));
         // staggeredArea._stagger();
-        staggeredArea.do((obj) => {
-            if (obj.isBorder) {
+        staggeredArea.do((point) => {
+            if (point.isBorder) {
                 const wall = new wall3d({
                     _type: 'direct',
-                    _wpos: [obj.pos[0], obj.pos[1], 0],
-                    extra: obj,
+                    _wpos: [point.pos[0], point.pos[1], 0],
+                    extra: { staggerData: point },
                     // colorOverride: 'green'
                 });
                 objects.push(wall);
@@ -80,7 +80,7 @@ var land;
             else {
                 const tile = new tile3d({
                     _type: 'direct',
-                    _wpos: [obj.pos[0], obj.pos[1], 0]
+                    _wpos: [point.pos[0], point.pos[1], 0]
                 }, 'water');
                 objects.push(tile);
             }

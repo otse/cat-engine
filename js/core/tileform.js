@@ -244,7 +244,7 @@ var tileform;
             super(data.gobj);
             this.data = data;
             this.data = {
-                shapeTexture: './img/textures/stonemixed.jpg',
+                shapeTexture: './img/textures/cobblestone3.jpg',
                 shapeTextureNormal: './img/textures/stonemixednormal.jpg',
                 shapeGroundTexture: './img/textures/beachnormal.jpg',
                 shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
@@ -262,7 +262,7 @@ var tileform;
         _create() {
             this.hexTile = new hex_tile(this.data);
             this.entityGroup.add(this.hexTile.group);
-            // this.entityGroup.add(new THREE.AxesHelper(8));
+            this.entityGroup.add(new THREE.AxesHelper(8));
             this.translate();
         }
         _delete() {
@@ -350,7 +350,8 @@ var tileform;
                 // color: this.data.gabeObject.data.colorOverride || 'white',
                 // opacity: 0.8,
                 transparent: true,
-                map: pipeline.getTexture(this.data.shapeTexture)
+                map: pipeline.getTexture(this.data.shapeTexture),
+                normalMap: tileform.ALLOW_NORMAL_MAPS ? pipeline.getTexture(this.data.shapeTextureNormal) : null
             });
             // Make the merged geometries mesh
             const { shapeSize } = this.data;
@@ -390,45 +391,60 @@ var tileform;
         const size = shapeSize;
         const geometries = [];
         // Hack!
-        const da = wall.data.gobj.directionAdapter;
-        //console.log('shape wall create!', directionAdapter.directions);
-        if (!da) {
-            console.warn(' no direction adapter for wallmaker');
+        const wall3d = wall.data.gobj;
+        const adapter = wall3d.wallAdapter;
+        const staggerData = wall3d.data.extra.staggerData;
+        if (!adapter) {
+            console.warn(' no direction adapter for wallmaker ');
             return;
         }
         let geometry;
-        if (da.has_direction('north')) {
+        if (adapter.tile_occupied('north')) {
+            geometry = new THREE.BoxGeometry(size[0], size[1] / 2, size[2]);
+            geometry.translate(size[0] / 2, -size[1] / 4, 0);
+            geometries.push(geometry);
+        }
+        if (adapter.tile_occupied('south')) {
             geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
-            geometry.translate(size[0] / 4, size[1] / 4, 0);
-            geometries.push(geometry);
-        }
-        if (da.has_direction('east')) {
-            geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2] * 2);
-            geometry.translate(-size[0] / 4, size[1] / 4, 0);
-            geometries.push(geometry);
-        }
-        if (da.has_direction('south')) {
-            geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
-            geometry.translate(-size[0] / 4, size[1] / 4, 0);
-            geometries.push(geometry);
-        }
-        if (da.has_direction('west')) {
-            geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2] * 2);
             geometry.translate(-size[0] / 4, -size[1] / 4, 0);
             geometries.push(geometry);
         }
-        if (da.has_direction('north') &&
-            da.has_direction('east') ||
-            da.has_direction('east') &&
-                da.has_direction('south') ||
-            da.has_direction('south') &&
-                da.has_direction('west') ||
-            da.has_direction('west') &&
-                da.has_direction('north')) {
-            // Middle piece!
+        if (adapter.tile_occupied('northwest') &&
+            adapter.tile_occupied('east')) {
+            // stagger
+            geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
+            geometry.translate(size[0] / 1.46, -size[1] / 4, 0);
+            geometries.push(geometry);
+        }
+        if (adapter.tile_occupied('west') &&
+            adapter.tile_occupied('southeast')) {
+            // stagger
+            geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
+            geometry.translate(size[0] / 4, -size[1] / 4, 0);
+            geometries.push(geometry);
+        }
+        /*if (adapter.tile_occupied('east')) {
             geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
             geometry.translate(-size[0] / 4, size[1] / 4, 0);
             geometries.push(geometry);
+        }*/
+        /*if (adapter.tile_occupied('west')) {
+            geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
+            geometry.translate(-size[0] / 4, -size[1] / 4, 0);
+            geometries.push(geometry);
+        }*/
+        if (adapter.tile_occupied('north') &&
+            adapter.tile_occupied('east') ||
+            adapter.tile_occupied('east') &&
+                adapter.tile_occupied('south') ||
+            adapter.tile_occupied('south') &&
+                adapter.tile_occupied('west') ||
+            adapter.tile_occupied('west') &&
+                adapter.tile_occupied('north')) {
+            // Middle piece!
+            geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
+            geometry.translate(-size[0] / 4, size[1] / 4, 0);
+            // geometries.push(geometry);
         }
         if (!geometries.length)
             return;
@@ -470,7 +486,7 @@ var tileform;
             // Dance the light source
             //glob.reprerender = true;
             //glob.dirtyObjects = true;
-            return;
+            //return;
             this.light.position.x = 3;
             this.light.updateMatrix();
             const secondsPerRotation = 4;

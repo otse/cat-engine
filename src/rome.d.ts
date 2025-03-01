@@ -16,8 +16,12 @@ interface game_object_literal {
 	_r?: number
 	colorOverride?: string
 	name?: string
-	extra?: any
+	extra?: extra_t
 	lonely?: boolean
+}
+
+interface extra_t {
+	staggerData?
 }
 
 declare class game_object {}

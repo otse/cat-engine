@@ -68,8 +68,8 @@ class world_manager {
                 // object.sprite3dliteral!.groundPreset = 'water';
             }
             // Rare situation where we want to adapt a wall 3d to a tile 3d
-            if (object.data._type == 'wall 3d' &&
-                target.data._type == 'tile 3d') {
+            if (target.data._type == 'tile 3d' &&
+                object.data._type == 'wall 3d') {
                 object.sprite3dliteral = {
                     ...object.sprite3dliteral,
                     groundPreset: target.sprite3dliteral?.groundPreset,
@@ -79,11 +79,11 @@ class world_manager {
             }
             // When we put a wall 3d onto a tile 3d
             // but want to keep the ground
-            else if (object.data._type == 'tile 3d' &&
-                target.data._type == 'wall 3d') {
+            else if (target.data._type == 'wall 3d' &&
+                object.data._type == 'tile 3d') {
                 target.sprite3dliteral = {
                     ...target.sprite3dliteral,
-                    groundPreset: object.sprite3dliteral?.groundPreset,
+                    // groundPreset: object.sprite3dliteral?.groundPreset,
                 };
                 console.log('replace respect');
                 clod.remove(object);

@@ -16,12 +16,12 @@ class staggered_area extends area2 {
             let x_ = 0;
             let shift = 0;
             for (let x = this.base.min[0]; x < this.base.max[0]; x++) {
-                x_++;
-                if (x_ % 2 === 0) {
+                if (x_++ % 2 === 1) {
                     shift += 1;
                 }
                 const isBorder = x === this.base.min[0] || x === this.base.max[0] - 1 || y === this.base.min[1] || y === this.base.max[1] - 1;
-                this.points.push({ pos: [x, y - shift], isBorder });
+                const isUneven = x_ % 2 === 0;
+                this.points.push({ pos: [x, y - shift], isBorder, isUneven });
             }
         }
     }

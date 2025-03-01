@@ -5,25 +5,24 @@ import glob from "../../dep/glob.js";
 import direction_adapter from "../direction adapter.js";
 
 export class wall3d extends game_object {
-	directionAdapter: direction_adapter
-
+	wallAdapter: direction_adapter
 	constructor(data: game_object_literal) {
 		super({
 			name: 'a wall 3d',
 			...data,
 		});
 		this.data._type = 'wall 3d';
-		this.sprite3dliteral.groundPreset = 'default';
-		this.directionAdapter = new direction_adapter(this);
+		this.sprite3dliteral.groundPreset = 'water';
+		this.wallAdapter = new direction_adapter(this);
 	}
 	protected override _create() {
 		new sprite3d({
 			gobj: this,
-			spriteSize: [glob.hexSize[0] * 2, glob.hexSize[1] * 4],
+			spriteSize: [glob.hexSize[0] * 2, glob.hexSize[1] * 5],
 			shapeSize: [16, 16, 10],
 			shapeType: 'wall'
 		});
-		this.directionAdapter.search(['wall 3d']);
+		this.wallAdapter.search(['wall 3d']);
 		this.sprite?.create();
 	}
 }
