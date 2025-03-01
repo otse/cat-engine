@@ -319,7 +319,7 @@ var tileform;
         }
     }
     function shapeMaker(type, data) {
-        console.log('shapeMaker', data);
+        // console.log('shapeMaker', data);
         let shape;
         switch (type) {
             case 'nothing':

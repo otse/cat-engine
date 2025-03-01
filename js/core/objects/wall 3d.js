@@ -10,13 +10,13 @@ export class wall3d extends game_object {
             ...data,
         });
         this.data._type = 'wall 3d';
+        this.sprite3dliteral.groundPreset = 'default';
         this.directionAdapter = new direction_adapter(this);
     }
     _create() {
         new sprite3d({
             gobj: this,
             spriteSize: [glob.hexSize[0] * 2, glob.hexSize[1] * 4],
-            groundPreset: 'water',
             shapeSize: [16, 16, 10],
             shapeType: 'wall'
         });

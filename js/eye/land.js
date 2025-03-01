@@ -73,7 +73,7 @@ var land;
                     _type: 'direct',
                     _wpos: [obj.pos[0], obj.pos[1], 0],
                     extra: obj,
-                    colorOverride: 'green'
+                    // colorOverride: 'green'
                 });
                 objects.push(wall);
             }
@@ -93,10 +93,10 @@ var land;
         const size = [5, 5];
         const aabb = new aabb2(pos, pts.add(pos, size));
         const area = aabb2.area(aabb);
-        area.do((pos) => {
+        area.do((obj) => {
             const tile = new tile3d({
                 _type: 'direct',
-                _wpos: [pos[0], pos[1], 0]
+                _wpos: [obj.pos[0], obj.pos[1], 0]
             }, 'water');
             objects.push(tile);
         });

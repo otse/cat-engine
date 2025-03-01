@@ -12,11 +12,12 @@ export class sprite3d extends sprite {
     data_;
     shapedata_;
     constructor(data) {
-        let groundData = game.groundPresets[data.groundPreset];
+        let groundData = game.groundPresets[data.gobj.sprite3dliteral?.groundPreset || data.groundPreset];
         super({
             bottomSort: false,
             ...data,
             ...groundData,
+            ...data.gobj.sprite3dliteral
         });
         this.reprerender = true;
         this.data_ = this.data;
@@ -28,7 +29,7 @@ export class sprite3d extends sprite {
     }
     _create() {
         super._create();
-        console.log(this);
+        //console.log(this);
         this.shape = tileform.shapeMaker(this.shapedata_.shapeType, this.shapedata_);
         this.shape?.create();
         this._make_target();

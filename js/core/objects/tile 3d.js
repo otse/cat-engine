@@ -9,12 +9,12 @@ export class tile3d extends game_object {
             ...data
         });
         this.preset = preset;
+        this.sprite3dliteral.groundPreset = preset;
         this.data._type = 'tile 3d';
     }
     _create() {
         new sprite3d({
             gobj: this,
-            groundPreset: this.preset,
             spriteSize: glob.hexSize,
             shapeSize: [1, 1, 1],
             shapeType: 'hex',

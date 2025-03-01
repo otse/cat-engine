@@ -365,8 +365,7 @@ namespace tileform {
 	export type shape_modifiers = 'regular' | 'concave' | 'convex' | 'north' | 'east' | 'south' | 'west'
 
 	export function shapeMaker(type: shape_types, data: shape_literal) {
-		console.log('shapeMaker', data);
-		
+		// console.log('shapeMaker', data);
 		let shape: shape3d | undefined;
 		switch (type) {
 			case 'nothing':

@@ -59,12 +59,13 @@ class world_manager {
     // or a tile on a wall
     static merge_ideally(target) {
         let objects = this.getObjectsAt(target);
-        let needsAdding = false;
+        let needsAdding = true;
         for (let object of objects) {
             if (object.data._type == 'tile 3d' &&
                 target.data._type == 'tile 3d') {
+                needsAdding = false;
                 // Ideally just ignore our newly tiles
-                object.sprite3dliteral.groundPreset = 'water';
+                // object.sprite3dliteral!.groundPreset = 'water';
             }
             // Rare situation where we want to adapt a wall 3d to a tile 3d
             if (object.data._type == 'wall 3d' &&
@@ -74,7 +75,7 @@ class world_manager {
                     groundPreset: target.sprite3dliteral?.groundPreset,
                 };
                 console.log(' water! ', object.data._type, target.data._type);
-                needsAdding = true;
+                needsAdding = false;
             }
             // When we put a wall 3d onto a tile 3d
             // but want to keep the ground
@@ -84,15 +85,16 @@ class world_manager {
                     ...target.sprite3dliteral,
                     groundPreset: object.sprite3dliteral?.groundPreset,
                 };
+                console.log('replace respect');
                 clod.remove(object);
-                needsAdding = false;
+                needsAdding = true;
             }
             else if (object.data._type == 'wall' ||
                 object.data._type == 'tile') {
                 needsAdding = true;
             }
         }
-        if (!needsAdding) {
+        if (needsAdding) {
             clod.addWait(world_manager.world, target);
         }
     }

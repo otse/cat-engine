@@ -13,7 +13,7 @@ export class game_object extends clod.obj {
 	// A lot(!) of game objects are represented by an image or sprite
 	sprite?: sprite
 	// Lots of game objects make sprite3ds so here's an initialization object
-	sprite3dliteral?: sprite3d.literal = { gobj: this }
+	sprite3dliteral: sprite3d.literal = { gobj: this }
 	// Add user data
 	extra: object = {}
 
