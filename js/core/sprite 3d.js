@@ -10,22 +10,17 @@ export class sprite3d extends sprite {
     target;
     shape;
     data_;
+    shapedata_;
     constructor(data) {
-        const groundPreset = game.groundPresets[data.sprite3dGroundPreset];
-        //console.log(' ground pre ', groundPreset);
+        let groundData = game.groundPresets[data.groundPreset];
         super({
-            shapeType: 'nothing',
-            shapeTexture: './img/textures/stonemixed.jpg',
-            // Find a nice checkers texture
-            shapeGroundTexture: './img/textures/stonemixed.jpg',
-            shapeGroundTextureNormal: './img/textures/stonemixednormal.jpg',
-            shapeSize: [10, 10],
             bottomSort: false,
             ...data,
-            ...groundPreset,
+            ...groundData,
         });
-        this.data_ = this.data;
         this.reprerender = true;
+        this.data_ = this.data;
+        this.shapedata_ = this.data;
     }
     _delete() {
         super._delete();
@@ -33,7 +28,8 @@ export class sprite3d extends sprite {
     }
     _create() {
         super._create();
-        this.shape = tileform.shapeMaker(this.data_.shapeType, this.data_);
+        console.log(this);
+        this.shape = tileform.shapeMaker(this.shapedata_.shapeType, this.shapedata_);
         this.shape?.create();
         this._make_target();
         this.prerender();

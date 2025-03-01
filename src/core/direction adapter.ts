@@ -24,7 +24,7 @@ export class direction_adapter {
 	target
 	readonly shape3d?: tileform.shape3d
 	matrix: game_object[][]
-	protected directions: game_object.helpers.directions
+	directions: game_object.helpers.directions
 	constructor(readonly gobj: game_object) {
 		// []
 	}
@@ -35,6 +35,12 @@ export class direction_adapter {
 	}
 	has_direction(dir: game_object.helpers.direction) {
 		return this.directions.includes(dir);
+	}
+	has_matrix(dir: game_object.helpers.direction) {
+		return this.directions.includes(dir);
+	}
+	index_of_direction(dir: game_object.helpers.direction): number {
+		return this.directions.indexOf(dir);
 	}
 }
 

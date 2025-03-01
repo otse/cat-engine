@@ -130,6 +130,7 @@ vec3 dither8x8(vec2 position, vec3 color) {
 float saturation = 2.0;
 
 uniform int compression;
+uniform int dithering;
 
 // 24 is best
 // 32 is nice
@@ -159,7 +160,9 @@ void main() {
 	clr = vec4(grey + saturation * (original_color - grey), 1.0);*/
 	
 	gl_FragColor = clr;
-	gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
+	if (dithering == 1) {
+		gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
+	}
 }`
 
 const vertexScreen = `
@@ -206,6 +209,8 @@ namespace pipeline {
 		if (glob.dirtyObjects) {
 			if (app.key('z') == 1)
 				materialPost.uniforms.compression.value = !materialPost.uniforms.compression.value;
+			if (app.key('d') == 1)
+				materialPost.uniforms.dithering.value = !materialPost.uniforms.dithering.value;
 
 			//renderer.setRenderTarget(targetMask);
 			//renderer.clear();
@@ -293,7 +298,8 @@ namespace pipeline {
 		materialPost = new THREE.ShaderMaterial({
 			uniforms: {
 				tDiffuse: { value: target.texture },
-				compression: { value: 0 }
+				compression: { value: 0 },
+				dithering: { value: 0 }
 			},
 			vertexShader: vertexScreen,
 			fragmentShader: fragmentPost,

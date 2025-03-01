@@ -6,14 +6,14 @@ import sprite from "../sprite.js";
 import sprite3d from "../sprite 3d.js";
 
 export namespace game_object {
-	export type literalType = game_object['data'];
+	export type literal = game_object_literal;
 }
 
 export class game_object extends clod.obj {
 	// A lot(!) of game objects are represented by an image or sprite
 	sprite?: sprite
 	// Lots of game objects make sprite3ds so here's an initialization object
-	sprite3dliteral?: sprite3d.literaltype
+	sprite3dliteral?: sprite3d.literal = { gobj: this }
 	// Add user data
 	extra: object = {}
 
@@ -21,7 +21,7 @@ export class game_object extends clod.obj {
 	r = 0
 	// Third axis
 	z = 0
-	constructor(public data: game_object_literal) {
+	constructor(public data: game_object.literal) {
 		super(glob.gameobjects);
 		this.wpos = pts.copy(data._wpos);
 		this.z = data._wpos[2];
@@ -70,7 +70,7 @@ export namespace game_object {
 			] as const;
 			return directions.map((dir, index) => matrix[index].length > 0 ? dir : null);
 		}
-		
+
 		export type directions = ReturnType<typeof get_directions>;
 		export type direction = directions[number];
 	}

@@ -6,37 +6,32 @@ import pipeline from "./pipeline.js";
 import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 
-export interface sprite3d_joint_literal extends sprite.literal, tileform.shape3d.literal {
-	sprite3dGroundPreset?: game.groundPreset;
+export interface sprite3dliteral extends sprite.literal, tileform.shape3d.literal {
+	groundPreset?: game.groundPreset
 }
 
 export namespace sprite3d {
-	export type literaltype = sprite3d_joint_literal;
+	export type literal = sprite3dliteral;
 };
 
 export class sprite3d extends sprite {
 	reprerender
 	target
 	shape?: tileform.shape3d
-	data_: sprite3d_joint_literal
+	data_: sprite3dliteral
+	shapedata_: tileform.shape3d.literal
 	constructor(
-		data: sprite3d_joint_literal
+		data: sprite3dliteral
 	) {
-		const groundPreset = game.groundPresets[data.sprite3dGroundPreset!];
-		//console.log(' ground pre ', groundPreset);
+		let groundData = game.groundPresets[data.groundPreset!];
 		super({
-			shapeType: 'nothing',
-			shapeTexture: './img/textures/stonemixed.jpg',
-			// Find a nice checkers texture
-			shapeGroundTexture: './img/textures/stonemixed.jpg',
-			shapeGroundTextureNormal: './img/textures/stonemixednormal.jpg',
-			shapeSize: [10, 10],
 			bottomSort: false,
 			...data,
-			...groundPreset,
-		});
-		this.data_ = this.data as sprite3d_joint_literal;
+			...groundData,
+		} as sprite3d.literal);
 		this.reprerender = true;
+		this.data_ = this.data;
+		this.shapedata_ = this.data;
 	}
 	protected _delete() {
 		super._delete();
@@ -44,9 +39,11 @@ export class sprite3d extends sprite {
 	}
 	protected _create() {
 		super._create();
+		console.log(this);
+		
 		this.shape = tileform.shapeMaker(
-			this.data_.shapeType!,
-			this.data_);
+			this.shapedata_!.shapeType!,
+			this.shapedata_!);
 		this.shape?.create();
 		this._make_target();
 		this.prerender();

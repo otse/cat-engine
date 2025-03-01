@@ -137,7 +137,7 @@ var clod;
             }
         }
         // Get all things at one point
-        objectsatwpos(wpos) {
+        objsatwpos(wpos) {
             const stack = [];
             for (const obj of this.objs)
                 if (pts.equals(pts.round(wpos), pts.round(obj.wpos)))
@@ -351,7 +351,8 @@ var clod;
             return chunks;
         }
         helpers.get_every_chunk = get_every_chunk;
-        function get_matrix(world, wpos) {
+        // Build a directional "matrix" of game objects
+        function get_matrix(world, center) {
             const directions = [
                 [-1, 1], [0, 1], [1, 1],
                 [-1, 0], [0, 0], [1, 0],
@@ -359,8 +360,8 @@ var clod;
             ];
             let matrix = [];
             directions.forEach((pos, index) => {
-                pos = (pts.add(pos, wpos));
-                matrix[index] = world.chunkatwpos(pos).objectsatwpos(pos);
+                pos = (pts.add(pos, center));
+                matrix[index] = world.chunkatwpos(pos).objsatwpos(pos);
             });
             return matrix;
         }

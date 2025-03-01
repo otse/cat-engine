@@ -104,6 +104,7 @@ namespace tileform {
 
 		async function preload() {
 			await pipeline.preloadTextureAsync('./img/textures/water.jpg');
+			await pipeline.preloadTextureAsync('./img/textures/overgrown_x.jpg');
 			await pipeline.preloadTextureAsync('./img/textures/stonemixed.jpg');
 			await pipeline.preloadTextureAsync('./img/textures/stonemixednormal.jpg');
 			await pipeline.preloadTextureAsync('./img/textures/stonemixed2.jpg');
@@ -131,6 +132,8 @@ namespace tileform {
 			scene = new THREE.Scene();
 			// scene.fog = new THREE.Fog( 0xcccccc, 0, 5 );
 			scene.matrixWorldAutoUpdate = true;
+			//scene.add(new THREE.AxesHelper(8));
+
 			//scene.add(testLight);
 			//scene.add(helper);
 			// scene.background = new THREE.Color('purple');
@@ -141,9 +144,9 @@ namespace tileform {
 			scene.add(soleGroup);
 			scene.add(lightsGroup);
 			scene.updateMatrix();
-			ambient = new THREE.AmbientLight('white', Math.PI / 1);
+			ambient = new THREE.AmbientLight('white', Math.PI / 2);
 			scene.add(ambient);
-			sun = new THREE.DirectionalLight('lavender', Math.PI / 8);
+			sun = new THREE.DirectionalLight('lavender', Math.PI / 3);
 			scene.add(sun);
 			scene.add(sun.target);
 
@@ -180,7 +183,7 @@ namespace tileform {
 				sun.target.updateMatrix();
 			}
 			else {
-				sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
+				sun.position.set(-sunDistance, -sunDistance * 2, sunDistance);
 				sun.target.position.set(0, 0, 0);
 				sun.updateMatrix();
 				sun.target.updateMatrix();
@@ -271,7 +274,8 @@ namespace tileform {
 			super(data.gobj);
 			this.data = {
 				shapeTexture: './img/textures/stonemixed.jpg',
-				shapeGroundTexture: './img/textures/stonemixed2.jpg',
+				shapeTextureNormal: './img/textures/stonemixednormal.jpg',
+				shapeGroundTexture: './img/textures/beachnormal.jpg',
 				shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
 				...data
 			}
@@ -279,13 +283,14 @@ namespace tileform {
 	}
 
 	export namespace shape3d {
-		export type literal = shape3d['data'];
+		export type literal = shape_literal;
 	};
 
 	export interface shape_literal {
 		gobj: game_object,
 		shapeType?: shape_types,
 		shapeTexture?: string,
+		shapeTextureNormal?: string,
 		shapeGroundTexture?: string,
 		shapeGroundTextureNormal?: string,
 		shapeSize?: vec3,
@@ -360,6 +365,8 @@ namespace tileform {
 	export type shape_modifiers = 'regular' | 'concave' | 'convex' | 'north' | 'east' | 'south' | 'west'
 
 	export function shapeMaker(type: shape_types, data: shape_literal) {
+		console.log('shapeMaker', data);
+		
 		let shape: shape3d | undefined;
 		switch (type) {
 			case 'nothing':
@@ -444,7 +451,7 @@ namespace tileform {
 			geometries.push(geometry);
 		}
 		if (da.has_direction('east')) {
-			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2] * 2);
 			geometry.translate(-size[0] / 4, size[1] / 4, 0);
 			geometries.push(geometry);
 		}
@@ -454,7 +461,7 @@ namespace tileform {
 			geometries.push(geometry);
 		}
 		if (da.has_direction('west')) {
-			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2] * 2);
 			geometry.translate(-size[0] / 4, -size[1] / 4, 0);
 			geometries.push(geometry);
 		}

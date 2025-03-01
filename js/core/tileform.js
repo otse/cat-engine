@@ -83,6 +83,7 @@ var tileform;
         stage.init = init;
         async function preload() {
             await pipeline.preloadTextureAsync('./img/textures/water.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/overgrown_x.jpg');
             await pipeline.preloadTextureAsync('./img/textures/stonemixed.jpg');
             await pipeline.preloadTextureAsync('./img/textures/stonemixednormal.jpg');
             await pipeline.preloadTextureAsync('./img/textures/stonemixed2.jpg');
@@ -109,6 +110,7 @@ var tileform;
             stage.scene = new THREE.Scene();
             // scene.fog = new THREE.Fog( 0xcccccc, 0, 5 );
             stage.scene.matrixWorldAutoUpdate = true;
+            //scene.add(new THREE.AxesHelper(8));
             //scene.add(testLight);
             //scene.add(helper);
             // scene.background = new THREE.Color('purple');
@@ -119,9 +121,9 @@ var tileform;
             stage.scene.add(stage.soleGroup);
             stage.scene.add(stage.lightsGroup);
             stage.scene.updateMatrix();
-            stage.ambient = new THREE.AmbientLight('white', Math.PI / 1);
+            stage.ambient = new THREE.AmbientLight('white', Math.PI / 2);
             stage.scene.add(stage.ambient);
-            stage.sun = new THREE.DirectionalLight('lavender', Math.PI / 8);
+            stage.sun = new THREE.DirectionalLight('lavender', Math.PI / 3);
             stage.scene.add(stage.sun);
             stage.scene.add(stage.sun.target);
             stage.scene.add(stage.camera);
@@ -150,7 +152,7 @@ var tileform;
                 stage.sun.target.updateMatrix();
             }
             else {
-                stage.sun.position.set(-sunDistance / 6, sunDistance / 4, sunDistance);
+                stage.sun.position.set(-sunDistance, -sunDistance * 2, sunDistance);
                 stage.sun.target.position.set(0, 0, 0);
                 stage.sun.updateMatrix();
                 stage.sun.target.updateMatrix();
@@ -243,7 +245,8 @@ var tileform;
             this.data = data;
             this.data = {
                 shapeTexture: './img/textures/stonemixed.jpg',
-                shapeGroundTexture: './img/textures/stonemixed2.jpg',
+                shapeTextureNormal: './img/textures/stonemixednormal.jpg',
+                shapeGroundTexture: './img/textures/beachnormal.jpg',
                 shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
                 ...data
             };
@@ -316,6 +319,7 @@ var tileform;
         }
     }
     function shapeMaker(type, data) {
+        console.log('shapeMaker', data);
         let shape;
         switch (type) {
             case 'nothing':
@@ -399,7 +403,7 @@ var tileform;
             geometries.push(geometry);
         }
         if (da.has_direction('east')) {
-            geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
+            geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2] * 2);
             geometry.translate(-size[0] / 4, size[1] / 4, 0);
             geometries.push(geometry);
         }
@@ -409,7 +413,7 @@ var tileform;
             geometries.push(geometry);
         }
         if (da.has_direction('west')) {
-            geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
+            geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2] * 2);
             geometry.translate(-size[0] / 4, -size[1] / 4, 0);
             geometries.push(geometry);
         }

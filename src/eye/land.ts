@@ -7,6 +7,8 @@ import world_manager from "../core/world manager.js";
 import aabb2 from "../dep/aabb2.js";
 import pts from "../dep/pts.js";
 import staggered_area from "../core/staggered area.js";
+import wall3d from "../core/objects/wall 3d.js";
+import area2 from "../dep/area2.js";
 
 /// generates land
 
@@ -73,16 +75,27 @@ namespace land {
 		const pos = [8, 0] as vec2;
 		const size = [5, 5] as vec2;
 		const aabb = new aabb2(pos, pts.add(pos, size));
-		const staggeredArea = new staggered_area(aabb.to_area());
+		const staggeredArea = new staggered_area(aabb2.area(aabb));
 		// staggeredArea._stagger();
-		staggeredArea.do((pos) => {
-			const tile = new tile3d({
-				_type: 'direct',
-				_wpos: [pos[0], pos[1], 0]
-			}, 'water');
-			objects.push(tile);
+		staggeredArea.do((obj: area2.pointt) => {
+			if (obj.isBorder) {
+				const wall = new wall3d({
+					_type: 'direct',
+					_wpos: [obj.pos[0], obj.pos[1], 0],
+					extra: obj,
+					colorOverride: 'green'
+				});
+				objects.push(wall);
+			}
+			else {
+				const tile = new tile3d({
+					_type: 'direct',
+					_wpos: [obj.pos[0], obj.pos[1], 0]
+				}, 'water');
+				objects.push(tile);
+			}
 		});
-		world_manager.addMergeLot(objects, 2);
+		world_manager.addMergeLot(objects, 1);
 	}
 
 	function make_non_staggered_lake() {
@@ -90,7 +103,7 @@ namespace land {
 		const pos = [8, 8] as vec2;
 		const size = [5, 5] as vec2;
 		const aabb = new aabb2(pos, pts.add(pos, size));
-		const area = aabb.to_area();
+		const area = aabb2.area(aabb);
 		area.do((pos) => {
 			const tile = new tile3d({
 				_type: 'direct',

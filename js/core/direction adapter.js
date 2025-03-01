@@ -21,5 +21,11 @@ export class direction_adapter {
     has_direction(dir) {
         return this.directions.includes(dir);
     }
+    has_matrix(dir) {
+        return this.directions.includes(dir);
+    }
+    index_of_direction(dir) {
+        return this.directions.indexOf(dir);
+    }
 }
 export default direction_adapter;

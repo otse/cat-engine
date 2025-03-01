@@ -28,7 +28,7 @@ class world_manager {
 
 	static getObjectsAt(target: game_object) {
 		const { wpos: pos } = target;
-		return world_manager.world.chunkatwpos(pos).objectsatwpos(pos) as game_object[];
+		return world_manager.world.chunkatwpos(pos).objsatwpos(pos) as game_object[];
 	}
 
 	static addGobj(gobj: game_object) {
@@ -37,50 +37,6 @@ class world_manager {
 
 	static removeGobj(gobj: game_object) {
 		clod.remove(gobj);
-	}
-
-	// These are the most normal mergers,
-	// like when you put a wall on a tile,
-	// or a tile on a wall
-	static merge_ideally(target: game_object) {
-		let objects = this.getObjectsAt(target);
-		let needsAdding = false;
-		for (let object of objects) {
-			// Rare situation where we want to adapt a wall 3d to a tile 3d
-			if (
-				object.data._type == 'wall 3d' &&
-				target.data._type == 'tile 3d'
-			) {
-				object.sprite3dliteral = {
-					...object.sprite3dliteral!,
-					sprite3dGroundPreset: target.sprite3dliteral?.sprite3dGroundPreset,
-				};
-				console.log(' water! ', object.data._type, target.data._type);
-				needsAdding = true;
-			}
-			// When we put a wall 3d onto a tile 3d
-			// but want to keep the ground
-			else if (
-				object.data._type == 'tile 3d' &&
-				target.data._type == 'wall 3d'
-			) {
-				target.sprite3dliteral = {
-					...target.sprite3dliteral!,
-					sprite3dGroundPreset: object.sprite3dliteral?.sprite3dGroundPreset,
-				};
-				clod.remove(object);
-				needsAdding = false;
-			}
-			else if (
-				object.data._type == 'wall' ||
-				object.data._type == 'tile'
-			) {
-				needsAdding = true;
-			}
-		}
-		if (!needsAdding) {
-			clod.addWait(world_manager.world, target);
-		}
 	}
 
 	static _replace(target: game_object) {
@@ -110,6 +66,58 @@ class world_manager {
 				gobj.show();
 		}
 	}
+
+	// These are the most normal mergers,
+	// like when you put a wall on a tile,
+	// or a tile on a wall
+	static merge_ideally(target: game_object) {
+		let objects = this.getObjectsAt(target);
+		let needsAdding = false;
+		for (let object of objects) {
+			if (
+				object.data._type == 'tile 3d' &&
+				target.data._type == 'tile 3d'
+			) {
+				// Ideally just ignore our newly tiles
+				object.sprite3dliteral!.groundPreset = 'water';
+			}
+			// Rare situation where we want to adapt a wall 3d to a tile 3d
+			if (
+				object.data._type == 'wall 3d' &&
+				target.data._type == 'tile 3d'
+			) {
+				object.sprite3dliteral = {
+					...object.sprite3dliteral!,
+					groundPreset: target.sprite3dliteral?.groundPreset,
+				};
+				console.log(' water! ', object.data._type, target.data._type);
+				needsAdding = true;
+			}
+			// When we put a wall 3d onto a tile 3d
+			// but want to keep the ground
+			else if (
+				object.data._type == 'tile 3d' &&
+				target.data._type == 'wall 3d'
+			) {
+				target.sprite3dliteral = {
+					...target.sprite3dliteral!,
+					groundPreset: object.sprite3dliteral?.groundPreset,
+				};
+				clod.remove(object);
+				needsAdding = false;
+			}
+			else if (
+				object.data._type == 'wall' ||
+				object.data._type == 'tile'
+			) {
+				needsAdding = true;
+			}
+		}
+		if (!needsAdding) {
+			clod.addWait(world_manager.world, target);
+		}
+	}
+
 }
 
 export default world_manager;

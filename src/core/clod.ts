@@ -152,7 +152,7 @@ namespace clod {
 			}
 		}
 		// Get all things at one point
-		objectsatwpos(wpos: vec2) {
+		objsatwpos(wpos: vec2) {
 			const stack: obj[] = [];
 			for (const obj of this.objs)
 				if (pts.equals(
@@ -370,7 +370,8 @@ namespace clod {
 			return chunks;
 		}
 
-		export function get_matrix<Type>(world: world, wpos: vec2) {
+		// Build a directional "matrix" of game objects
+		export function get_matrix<Type>(world: world, center: vec2) {
 			const directions: vec2[] = [
 				[-1, 1], [0, 1], [1, 1],
 				[-1, 0], [0, 0], [1, 0],
@@ -378,8 +379,8 @@ namespace clod {
 			];
 			let matrix: Type[][] = [];
 			directions.forEach((pos, index) => {
-				pos = (pts.add(pos, wpos));
-				matrix[index] = world.chunkatwpos(pos).objectsatwpos(pos) as Type[];
+				pos = (pts.add(pos, center));
+				matrix[index] = world.chunkatwpos(pos).objsatwpos(pos) as Type[];
 			});
 			return matrix;
 		}

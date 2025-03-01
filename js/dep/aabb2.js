@@ -13,20 +13,13 @@ class aabb2 {
     static dupe(aabb) {
         return new aabb2(aabb.min, aabb.max);
     }
+    static area(aabb) {
+        return new area2(aabb);
+    }
     constructor(a, b) {
         this.min = this.max = [...a];
         if (b) {
             this.extend(b);
-        }
-    }
-    to_area() {
-        return new area2(this);
-    }
-    do(func) {
-        for (let y = this.min[1]; y < this.max[1]; y++) {
-            for (let x = this.min[0]; x < this.max[0]; x++) {
-                func([x, y]);
-            }
         }
     }
     extend(v) {
