@@ -191,6 +191,7 @@ namespace pipeline {
 	export const ENABLE_SCENE3 = false;
 
 	export var dotsPerInch = 1;
+	
 	export var dithering = false;
 	export var compression = true;
 
@@ -215,8 +216,8 @@ namespace pipeline {
 	export var ambientLight
 	export var directionalLight
 
-	export var materialBg
 	export var material2
+	export var material3
 
 	export var quad2
 	export var quad3
@@ -241,6 +242,9 @@ namespace pipeline {
 			renderer.setRenderTarget(null);
 		}
 		else {
+            camera2.scale.set(0.5, 0.5, 0.5);
+            camera2.updateMatrix();
+
 			renderer.setRenderTarget(target2);
 		}
 		renderer.clear();
@@ -331,34 +335,8 @@ namespace pipeline {
 		window.addEventListener('resize', onWindowResize, false);
 		(window as any).pipeline = pipeline;
 
-		material2 = new THREE.ShaderMaterial({
-			uniforms: {
-				tDiffuse: { value: target.texture },
-				compression: { value: compression },
-				dithering: { value: dithering }
-			},
-			vertexShader: vertexScreen,
-			fragmentShader: fragment2,
-			depthTest: false,
-			depthWrite: false
-		});
-		onWindowResize();
-		quad2 = new THREE.Mesh(plane, material2);
-		scene2.add(quad2);
 
-		if (ENABLE_SCENE3) {
-			let material3 = new THREE.ShaderMaterial({
-				uniforms: {
-					tDiffuse: { value: target2.texture },
-				},
-				vertexShader: vertexScreen,
-				fragmentShader: fragment3,
-				depthTest: false,
-				depthWrite: false
-			});
-			let quad3 = new THREE.Mesh(plane, material3);
-			scene3.add(quad3);
-		}
+		onWindowResize();
 	}
 
 	export var screenSize: vec2 = [0, 0];
@@ -385,15 +363,40 @@ namespace pipeline {
 		target2?.setSize(targetSize[0], targetSize[1]);
 		targetMask.setSize(targetSize[0], targetSize[1]);
 
+		plane?.dispose();
 		plane = new THREE.PlaneGeometry(targetSize[0], targetSize[1]);
 
 		glob.dirtyObjects = true;
 
-		if (quad2)
-			quad2.geometry = plane;
+		material2?.dispose();
+		material2 = new THREE.ShaderMaterial({
+			uniforms: {
+				tDiffuse: { value: target.texture },
+				compression: { value: compression },
+				dithering: { value: dithering }
+			},
+			vertexShader: vertexScreen,
+			fragmentShader: fragment2,
+			depthTest: false,
+			depthWrite: false
+		});
+		quad2 = new THREE.Mesh(plane, material2);
+		scene2.add(quad2);
 
-		if (quad3)
-			quad3.geometry = plane;
+		if (ENABLE_SCENE3) {
+			material3?.dispose();
+			material3 = new THREE.ShaderMaterial({
+				uniforms: {
+					tDiffuse: { value: target2.texture },
+				},
+				vertexShader: vertexScreen,
+				fragmentShader: fragment3,
+				depthTest: false,
+				depthWrite: false
+			});
+			quad3 = new THREE.Mesh(plane, material3);
+			scene3.add(quad3);
+		}
 
 		while (groups.camera.children.length > 0)
 			groups.camera.remove(groups.camera.children[0]);

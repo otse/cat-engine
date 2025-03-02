@@ -56,7 +56,7 @@ export class pan {
         this.arrows();
         wpos = (clod.unproject(rpos));
         if (this.roundRpos)
-            rpos = (pts.round(rpos));
+            rpos = (pts.floor(rpos));
         this.marker.wpos = wpos;
         if (this.noHalfMeasures)
             this.marker.wpos = (pts.round(this.marker.wpos));

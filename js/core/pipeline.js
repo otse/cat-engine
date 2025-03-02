@@ -205,6 +205,8 @@ var pipeline;
             pipeline.renderer.setRenderTarget(null);
         }
         else {
+            pipeline.camera2.scale.set(0.5, 0.5, 0.5);
+            pipeline.camera2.updateMatrix();
             pipeline.renderer.setRenderTarget(pipeline.target2);
         }
         pipeline.renderer.clear();
@@ -276,33 +278,7 @@ var pipeline;
         document.body.appendChild(pipeline.renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);
         window.pipeline = pipeline;
-        pipeline.material2 = new THREE.ShaderMaterial({
-            uniforms: {
-                tDiffuse: { value: pipeline.target.texture },
-                compression: { value: pipeline.compression },
-                dithering: { value: pipeline.dithering }
-            },
-            vertexShader: vertexScreen,
-            fragmentShader: fragment2,
-            depthTest: false,
-            depthWrite: false
-        });
         onWindowResize();
-        pipeline.quad2 = new THREE.Mesh(pipeline.plane, pipeline.material2);
-        pipeline.scene2.add(pipeline.quad2);
-        if (pipeline.ENABLE_SCENE3) {
-            let material3 = new THREE.ShaderMaterial({
-                uniforms: {
-                    tDiffuse: { value: pipeline.target2.texture },
-                },
-                vertexShader: vertexScreen,
-                fragmentShader: fragment3,
-                depthTest: false,
-                depthWrite: false
-            });
-            let quad3 = new THREE.Mesh(pipeline.plane, material3);
-            pipeline.scene3.add(quad3);
-        }
     }
     pipeline.init = init;
     pipeline.screenSize = [0, 0];
@@ -324,12 +300,37 @@ var pipeline;
         pipeline.target.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.target2?.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.targetMask.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
+        pipeline.plane?.dispose();
         pipeline.plane = new THREE.PlaneGeometry(pipeline.targetSize[0], pipeline.targetSize[1]);
         glob.dirtyObjects = true;
-        if (pipeline.quad2)
-            pipeline.quad2.geometry = pipeline.plane;
-        if (pipeline.quad3)
-            pipeline.quad3.geometry = pipeline.plane;
+        pipeline.material2?.dispose();
+        pipeline.material2 = new THREE.ShaderMaterial({
+            uniforms: {
+                tDiffuse: { value: pipeline.target.texture },
+                compression: { value: pipeline.compression },
+                dithering: { value: pipeline.dithering }
+            },
+            vertexShader: vertexScreen,
+            fragmentShader: fragment2,
+            depthTest: false,
+            depthWrite: false
+        });
+        pipeline.quad2 = new THREE.Mesh(pipeline.plane, pipeline.material2);
+        pipeline.scene2.add(pipeline.quad2);
+        if (pipeline.ENABLE_SCENE3) {
+            pipeline.material3?.dispose();
+            pipeline.material3 = new THREE.ShaderMaterial({
+                uniforms: {
+                    tDiffuse: { value: pipeline.target2.texture },
+                },
+                vertexShader: vertexScreen,
+                fragmentShader: fragment3,
+                depthTest: false,
+                depthWrite: false
+            });
+            pipeline.quad3 = new THREE.Mesh(pipeline.plane, pipeline.material3);
+            pipeline.scene3.add(pipeline.quad3);
+        }
         while (groups.camera.children.length > 0)
             groups.camera.remove(groups.camera.children[0]);
         if (pipeline.cameraMode == 'perspective') {
