@@ -1,5 +1,7 @@
 import aabb2 from "./aabb2.js";
 
+/// When you want to iterate an aabb2 you come here
+
 interface point {
 	pos: vec2,
 	isBorder: boolean,

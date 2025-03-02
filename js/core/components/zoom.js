@@ -27,15 +27,16 @@ var zoom;
             zoom.level = (zoom.level < zoom.zooms.length - 1) ? zoom.level + 1 : zoom.level;
             glob.dirtyObjects = true;
         }
+        const camera = pipeline.ENABLE_SCENE3 ? pipeline.camera3 : pipeline.camera;
         const scale = zoom.zooms[zoom.level];
         if (pipeline.cameraMode == 'perspective') {
             pipeline.camera.position.z = (5 - zoom.level) * 40 || 10;
         }
         else {
-            pipeline.camera.scale.set(scale, scale, scale);
+            camera.scale.set(scale, scale, scale);
         }
-        pipeline.camera.updateMatrix();
-        pipeline.camera.updateProjectionMatrix();
+        camera.updateMatrix();
+        camera.updateProjectionMatrix();
         return false;
     }
 })(zoom || (zoom = {}));

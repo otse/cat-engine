@@ -102,7 +102,7 @@ class world_manager {
 			) {
 				target.sprite3dliteral = {
 					...target.sprite3dliteral!,
-					// groundPreset: object.sprite3dliteral?.groundPreset,
+					groundPreset: object.sprite3dliteral?.groundPreset,
 				};
 				console.log('replace respect');
 				clod.remove(object);

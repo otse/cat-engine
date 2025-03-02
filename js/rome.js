@@ -110,6 +110,7 @@ var rome;
         document.querySelector('rome-stats').innerHTML = `
 			DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
 			<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
+			<br />&#9;ENABLE_SCENE3: ${pipeline.ENABLE_SCENE3}
 			<br />&#9;ALLOW_NORMAL_MAPS (f3): ${tileform.ALLOW_NORMAL_MAPS}
 			<br />&#9;SUN_CAMERA (f4): ${tileform.SUN_CAMERA}
 			<br />dither, color correction (d, z): ${pipeline.dithering}, ${pipeline.compression}
@@ -124,7 +125,7 @@ var rome;
 			<br />chunk_span: ${clod.chunk_span} x ${clod.chunk_span}
 			<br />gobjs: ${glob.gameobjects[0]} / ${glob.gameobjects[1]}
 			<br />chunks: ${clod.numbers.chunks[0]} / ${clod.numbers.chunks[1]}
-			<br />pan wpos: ${pts.to_string_fixed(pan.wpos)}
+			<br />pan wpos, rpos: ${pts.to_string_fixed(pan.wpos)} ${pts.to_string_fixed(pan.rpos)}
 			`;
     }
     function purgeRemake() {

@@ -83,7 +83,7 @@ class world_manager {
                 object.data._type == 'tile 3d') {
                 target.sprite3dliteral = {
                     ...target.sprite3dliteral,
-                    // groundPreset: object.sprite3dliteral?.groundPreset,
+                    groundPreset: object.sprite3dliteral?.groundPreset,
                 };
                 console.log('replace respect');
                 clod.remove(object);

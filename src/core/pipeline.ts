@@ -9,7 +9,7 @@ void main() {
 	gl_FragColor = vec4( 0.5, 0.5, 0.5, 1.0 );
 }`
 
-const fragmentPost = `
+const fragment2 = `
 float luma(vec3 color) {
 	return dot(color, vec3(0.299, 0.587, 0.114));
 	//return dot(color, vec3(0.5, 0.5, 0.5));
@@ -165,6 +165,15 @@ void main() {
 	}
 }`
 
+const fragment3 = `
+varying vec2 vUv;
+uniform sampler2D tDiffuse;
+void main() {
+	vec4 clr = texture2D( tDiffuse, vUv );
+	// clr.rgb = mix(clr.rgb, vec3(1.0, 0, 0), 0.5);
+	gl_FragColor = clr;
+}`
+
 const vertexScreen = `
 varying vec2 vUv;
 void main() {
@@ -179,6 +188,8 @@ namespace pipeline {
 	export const DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
 	export const ROUND_UP_DOTS_PER_INCH = true;
 
+	export const ENABLE_SCENE3 = false;
+
 	export var dotsPerInch = 1;
 	export var dithering = false;
 	export var compression = true;
@@ -188,13 +199,16 @@ namespace pipeline {
 		export var major
 	}
 	export var scene
-	export var sceneShader
+	export var scene2
+	export var scene3
 	export var sceneMask
 
 	export var camera
 	export var camera2
+	export var camera3
 
 	export var target
+	export var target2
 	export var targetMask
 	export var renderer
 
@@ -202,31 +216,41 @@ namespace pipeline {
 	export var directionalLight
 
 	export var materialBg
-	export var materialPost
+	export var material2
 
-	export var quadPost
+	export var quad2
+	export var quad3
 
 	export function render() {
 
 		if (app.key('z') == 1)
-			materialPost.uniforms.compression.value = compression = !compression;
+			material2.uniforms.compression.value = compression = !compression;
 		if (app.key('d') == 1)
-			materialPost.uniforms.dithering.value = dithering = !dithering;
+			material2.uniforms.dithering.value = dithering = !dithering;
 
 		if (glob.dirtyObjects) {
-
 			//renderer.setRenderTarget(targetMask);
 			//renderer.clear();
 			//renderer.render(sceneMask, camera);
-
-			renderer.setRenderTarget(target); // target
+			renderer.setRenderTarget(target);
 			renderer.clear();
 			renderer.render(scene, camera);
 		}
 
-		renderer.setRenderTarget(null);
+		if (!ENABLE_SCENE3) {
+			renderer.setRenderTarget(null);
+		}
+		else {
+			renderer.setRenderTarget(target2);
+		}
 		renderer.clear();
-		renderer.render(sceneShader, camera2);
+		renderer.render(scene2, camera2);
+
+		if (ENABLE_SCENE3) {
+			renderer.setRenderTarget(null);
+			renderer.clear();
+			renderer.render(scene3, camera3);
+		}
 
 		glob.dirtyObjects = false;
 	}
@@ -253,10 +277,15 @@ namespace pipeline {
 		// scene.add(new THREE.AxesHelper(100));
 		scene.background = new THREE.Color('#333');
 
-		sceneShader = new THREE.Scene();
-		sceneShader.frustumCulled = false;
-		sceneShader.background = new THREE.Color('purple');
-		sceneShader.add(new THREE.AmbientLight('white', Math.PI / 1));
+		scene2 = new THREE.Scene();
+		scene2.frustumCulled = false;
+		scene2.background = new THREE.Color('green');
+		scene2.add(new THREE.AmbientLight('white', Math.PI / 1));
+
+		scene3 = new THREE.Scene();
+		scene3.frustumCulled = false;
+		scene3.background = new THREE.Color('purple');
+		scene3.add(new THREE.AmbientLight('white', Math.PI / 1));
 
 		sceneMask = new THREE.Scene();
 		sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
@@ -279,6 +308,9 @@ namespace pipeline {
 			colorSpace: THREE.NoColorSpace,
 			generateMipmaps: false,
 		});
+		if (ENABLE_SCENE3) {
+			target2 = target.clone();
+		}
 		targetMask = target.clone();
 
 		renderer = new THREE.WebGLRenderer({
@@ -297,22 +329,36 @@ namespace pipeline {
 		document.body.appendChild(renderer.domElement);
 
 		window.addEventListener('resize', onWindowResize, false);
+		(window as any).pipeline = pipeline;
 
-		materialPost = new THREE.ShaderMaterial({
+		material2 = new THREE.ShaderMaterial({
 			uniforms: {
 				tDiffuse: { value: target.texture },
 				compression: { value: compression },
 				dithering: { value: dithering }
 			},
 			vertexShader: vertexScreen,
-			fragmentShader: fragmentPost,
+			fragmentShader: fragment2,
 			depthTest: false,
 			depthWrite: false
 		});
 		onWindowResize();
-		quadPost = new THREE.Mesh(plane, materialPost);
-		sceneShader.add(quadPost);
-		(window as any).pipeline = pipeline;
+		quad2 = new THREE.Mesh(plane, material2);
+		scene2.add(quad2);
+
+		if (ENABLE_SCENE3) {
+			let material3 = new THREE.ShaderMaterial({
+				uniforms: {
+					tDiffuse: { value: target2.texture },
+				},
+				vertexShader: vertexScreen,
+				fragmentShader: fragment3,
+				depthTest: false,
+				depthWrite: false
+			});
+			let quad3 = new THREE.Mesh(plane, material3);
+			scene3.add(quad3);
+		}
 	}
 
 	export var screenSize: vec2 = [0, 0];
@@ -336,14 +382,18 @@ namespace pipeline {
 		      new is ${pts.to_string(targetSize)}`);
 
 		target.setSize(targetSize[0], targetSize[1]);
+		target2?.setSize(targetSize[0], targetSize[1]);
 		targetMask.setSize(targetSize[0], targetSize[1]);
 
 		plane = new THREE.PlaneGeometry(targetSize[0], targetSize[1]);
 
 		glob.dirtyObjects = true;
 
-		if (quadPost) // ?
-			quadPost.geometry = plane;
+		if (quad2)
+			quad2.geometry = plane;
+
+		if (quad3)
+			quad3.geometry = plane;
 
 		while (groups.camera.children.length > 0)
 			groups.camera.remove(groups.camera.children[0]);
@@ -366,6 +416,9 @@ namespace pipeline {
 
 		camera2 = makeOrthographicCamera(targetSize[0], targetSize[1]);
 		camera2.updateProjectionMatrix();
+
+		camera3 = makeOrthographicCamera(targetSize[0], targetSize[1]);
+		camera3.updateProjectionMatrix();
 	}
 
 	let mem = []

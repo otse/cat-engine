@@ -36,7 +36,7 @@ namespace tileform {
 	// i know directional lights are supposed to cast light uniformly
 	// but they actually act more like giant point lights
 	// but this setting defines the size of the sun orb
-	const sunDistance = 40;
+	const sunDistance = 20;
 
 	// the idea was to create a spread between tiles
 	// so that the lighting would behave better
@@ -176,6 +176,8 @@ namespace tileform {
 			if (SUN_CAMERA) {
 				// This math was a lot of trial and error
 				// But makes sunlight more 3d
+				glob.reprerender = true;
+				glob.dirtyObjects = true;
 				const pos3d = (pts.mult(sprite.shape!.pos3d, glob.scale));
 				let offset = (pts.subtract(pan.rpos, pos3d));
 				sun.position.set(offset[0], offset[1], sunDistance);
@@ -305,7 +307,7 @@ namespace tileform {
 		protected override _create() {
 			this.hexTile = new hex_tile(this.data);
 			this.entityGroup.add(this.hexTile.group);
-			this.entityGroup.add(new THREE.AxesHelper(8));
+			// this.entityGroup.add(new THREE.AxesHelper(8));
 			this.translate();
 		}
 		protected override _delete() {
@@ -450,22 +452,20 @@ namespace tileform {
 		if (adapter.tile_occupied('north')
 		) {
 			geometry = new THREE.BoxGeometry(size[0], size[1] / 2, size[2]);
-			geometry.translate(size[0] / 2, -size[1] / 4, 0);
-			geometry.translate(-size[0] / 2, size[1] / 4, 0);
+			geometry.translate(0, 0, 0);
 			geometries.push(geometry);
 		}
 		if (adapter.tile_occupied('south')) {
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
 			geometry.translate(-size[0] / 4, -size[1] / 4, 0);
-			geometry.translate(-size[0] / 2, size[1] / 4, 0);
 			//geometries.push(geometry);
 		}
 		if (adapter.tile_occupied('northwest') &&
 			adapter.tile_occupied('east')) {
 			// stagger
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
-			geometry.translate(size[0] / 1.46, -size[1] / 4, 0);
-			geometry.translate(-size[0] / 2, size[1] / 4, 0);
+			geometry.translate(size[0] / 1.46, 0, 0);
+			geometry.translate(-size[0] / 2, 0, 0);
 
 			geometries.push(geometry);
 		}
@@ -473,8 +473,7 @@ namespace tileform {
 			adapter.tile_occupied('southeast')) {
 			// stagger
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
-			geometry.translate(size[0] / 4, -size[1] / 4, 0);
-			geometry.translate(-size[0] / 2, size[1] / 4, 0);
+			geometry.translate(-size[0] / 4, 0, 0);
 
 			geometries.push(geometry);
 		}
@@ -566,8 +565,8 @@ namespace tileform {
 			console.log(' tf light source create ');
 			this.light = new THREE.PointLight('cyan', 1, 5);
 			// this.light.decay = 2.4;
-			this.light.intensity = 1000 * glob.scale;
-			this.light.distance = 600 * glob.scale;
+			this.light.intensity = 1000 * (glob.scale * 2);
+			this.light.distance = 600 * (glob.scale * 2);
 			this.light.decay = 1.8;
 			this.light.updateMatrix();
 			this.entityGroup.add(this.light);

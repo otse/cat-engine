@@ -7,7 +7,7 @@ varying vec2 vUv;
 void main() {
 	gl_FragColor = vec4( 0.5, 0.5, 0.5, 1.0 );
 }`;
-const fragmentPost = `
+const fragment2 = `
 float luma(vec3 color) {
 	return dot(color, vec3(0.299, 0.587, 0.114));
 	//return dot(color, vec3(0.5, 0.5, 0.5));
@@ -162,6 +162,14 @@ void main() {
 		gl_FragColor.rgb = dither4x4(gl_FragCoord.xy, gl_FragColor.rgb);
 	}
 }`;
+const fragment3 = `
+varying vec2 vUv;
+uniform sampler2D tDiffuse;
+void main() {
+	vec4 clr = texture2D( tDiffuse, vUv );
+	// clr.rgb = mix(clr.rgb, vec3(1.0, 0, 0), 0.5);
+	gl_FragColor = clr;
+}`;
 const vertexScreen = `
 varying vec2 vUv;
 void main() {
@@ -173,6 +181,7 @@ var pipeline;
     pipeline.cameraMode = 'ortho';
     pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
     pipeline.ROUND_UP_DOTS_PER_INCH = true;
+    pipeline.ENABLE_SCENE3 = false;
     pipeline.dotsPerInch = 1;
     pipeline.dithering = false;
     pipeline.compression = true;
@@ -181,20 +190,30 @@ var pipeline;
     })(groups = pipeline.groups || (pipeline.groups = {}));
     function render() {
         if (app.key('z') == 1)
-            pipeline.materialPost.uniforms.compression.value = pipeline.compression = !pipeline.compression;
+            pipeline.material2.uniforms.compression.value = pipeline.compression = !pipeline.compression;
         if (app.key('d') == 1)
-            pipeline.materialPost.uniforms.dithering.value = pipeline.dithering = !pipeline.dithering;
+            pipeline.material2.uniforms.dithering.value = pipeline.dithering = !pipeline.dithering;
         if (glob.dirtyObjects) {
             //renderer.setRenderTarget(targetMask);
             //renderer.clear();
             //renderer.render(sceneMask, camera);
-            pipeline.renderer.setRenderTarget(pipeline.target); // target
+            pipeline.renderer.setRenderTarget(pipeline.target);
             pipeline.renderer.clear();
             pipeline.renderer.render(pipeline.scene, pipeline.camera);
         }
-        pipeline.renderer.setRenderTarget(null);
+        if (!pipeline.ENABLE_SCENE3) {
+            pipeline.renderer.setRenderTarget(null);
+        }
+        else {
+            pipeline.renderer.setRenderTarget(pipeline.target2);
+        }
         pipeline.renderer.clear();
-        pipeline.renderer.render(pipeline.sceneShader, pipeline.camera2);
+        pipeline.renderer.render(pipeline.scene2, pipeline.camera2);
+        if (pipeline.ENABLE_SCENE3) {
+            pipeline.renderer.setRenderTarget(null);
+            pipeline.renderer.clear();
+            pipeline.renderer.render(pipeline.scene3, pipeline.camera3);
+        }
         glob.dirtyObjects = false;
     }
     pipeline.render = render;
@@ -213,10 +232,14 @@ var pipeline;
         pipeline.scene.add(groups.major);
         // scene.add(new THREE.AxesHelper(100));
         pipeline.scene.background = new THREE.Color('#333');
-        pipeline.sceneShader = new THREE.Scene();
-        pipeline.sceneShader.frustumCulled = false;
-        pipeline.sceneShader.background = new THREE.Color('purple');
-        pipeline.sceneShader.add(new THREE.AmbientLight('white', Math.PI / 1));
+        pipeline.scene2 = new THREE.Scene();
+        pipeline.scene2.frustumCulled = false;
+        pipeline.scene2.background = new THREE.Color('green');
+        pipeline.scene2.add(new THREE.AmbientLight('white', Math.PI / 1));
+        pipeline.scene3 = new THREE.Scene();
+        pipeline.scene3.frustumCulled = false;
+        pipeline.scene3.background = new THREE.Color('purple');
+        pipeline.scene3.add(new THREE.AmbientLight('white', Math.PI / 1));
         pipeline.sceneMask = new THREE.Scene();
         pipeline.sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
         pipeline.ambientLight = new THREE.AmbientLight('white', Math.PI / 1);
@@ -234,6 +257,9 @@ var pipeline;
             colorSpace: THREE.NoColorSpace,
             generateMipmaps: false,
         });
+        if (pipeline.ENABLE_SCENE3) {
+            pipeline.target2 = pipeline.target.clone();
+        }
         pipeline.targetMask = pipeline.target.clone();
         pipeline.renderer = new THREE.WebGLRenderer({
             antialias: false,
@@ -249,21 +275,34 @@ var pipeline;
         //renderer.setClearAlpha(1.0);
         document.body.appendChild(pipeline.renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);
-        pipeline.materialPost = new THREE.ShaderMaterial({
+        window.pipeline = pipeline;
+        pipeline.material2 = new THREE.ShaderMaterial({
             uniforms: {
                 tDiffuse: { value: pipeline.target.texture },
                 compression: { value: pipeline.compression },
                 dithering: { value: pipeline.dithering }
             },
             vertexShader: vertexScreen,
-            fragmentShader: fragmentPost,
+            fragmentShader: fragment2,
             depthTest: false,
             depthWrite: false
         });
         onWindowResize();
-        pipeline.quadPost = new THREE.Mesh(pipeline.plane, pipeline.materialPost);
-        pipeline.sceneShader.add(pipeline.quadPost);
-        window.pipeline = pipeline;
+        pipeline.quad2 = new THREE.Mesh(pipeline.plane, pipeline.material2);
+        pipeline.scene2.add(pipeline.quad2);
+        if (pipeline.ENABLE_SCENE3) {
+            let material3 = new THREE.ShaderMaterial({
+                uniforms: {
+                    tDiffuse: { value: pipeline.target2.texture },
+                },
+                vertexShader: vertexScreen,
+                fragmentShader: fragment3,
+                depthTest: false,
+                depthWrite: false
+            });
+            let quad3 = new THREE.Mesh(pipeline.plane, material3);
+            pipeline.scene3.add(quad3);
+        }
     }
     pipeline.init = init;
     pipeline.screenSize = [0, 0];
@@ -283,11 +322,14 @@ var pipeline;
 		window inner ${pts.to_string(pipeline.screenSize)}\n
 		      new is ${pts.to_string(pipeline.targetSize)}`);
         pipeline.target.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
+        pipeline.target2?.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.targetMask.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.plane = new THREE.PlaneGeometry(pipeline.targetSize[0], pipeline.targetSize[1]);
         glob.dirtyObjects = true;
-        if (pipeline.quadPost) // ?
-            pipeline.quadPost.geometry = pipeline.plane;
+        if (pipeline.quad2)
+            pipeline.quad2.geometry = pipeline.plane;
+        if (pipeline.quad3)
+            pipeline.quad3.geometry = pipeline.plane;
         while (groups.camera.children.length > 0)
             groups.camera.remove(groups.camera.children[0]);
         if (pipeline.cameraMode == 'perspective') {
@@ -306,6 +348,8 @@ var pipeline;
         pipeline.camera.updateProjectionMatrix();
         pipeline.camera2 = makeOrthographicCamera(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.camera2.updateProjectionMatrix();
+        pipeline.camera3 = makeOrthographicCamera(pipeline.targetSize[0], pipeline.targetSize[1]);
+        pipeline.camera3.updateProjectionMatrix();
     }
     let mem = [];
     async function preloadTextureAsync(file, mode = 'linear') {

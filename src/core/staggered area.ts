@@ -1,5 +1,4 @@
-/// Todo rename this to a function that takes a square area
-// and then staggers it somehow
+/// Made for Used By hex walls
 
 import area2 from "../dep/area2.js";
 
