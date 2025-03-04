@@ -126,7 +126,7 @@ var tileform;
             stage.sun = new THREE.DirectionalLight('lavender', Math.PI / 3);
             stage.scene.add(stage.sun);
             stage.scene.add(stage.sun.target);
-            stage.scene.add(stage.camera);
+            //scene.add(camera);
             stage.scene.updateMatrix();
             // todo create a second renderer that has shadows enabled
         }
@@ -264,7 +264,7 @@ var tileform;
         _create() {
             this.hexTile = new hex_tile(this.data);
             this.entityGroup.add(this.hexTile.group);
-            // this.entityGroup.add(new THREE.AxesHelper(8));
+            this.entityGroup.add(new THREE.AxesHelper(12));
             this.translate();
         }
         _delete() {
@@ -367,6 +367,7 @@ var tileform;
             this.wallRotationGroup.position.z = shapeSize[2];
             this.entityGroup.add(this.wallRotationGroup);
             this.entityGroup.add(this.hexTile.group);
+            this.entityGroup.add(new THREE.AxesHelper(12));
             // Translate so we can take lighting sources
             this.translate();
             //this.hexTile.rotationGroup.position.set(0, 0, 0);
@@ -393,6 +394,7 @@ var tileform;
         const size = shapeSize;
         const geometries = [];
         // Hack!
+        const magic = 1.46;
         const wall3d = wall.data.gobj;
         const adapter = wall3d.wallAdapter;
         const staggerData = wall3d.data.extra.staggerData;
@@ -401,6 +403,30 @@ var tileform;
             return;
         }
         let geometry;
+        if (adapter.tile_occupied('northwest') &&
+            adapter.tile_occupied('east')) {
+            // Ofsetted stagger
+            // Tiles above and to the lower right
+            geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
+            geometry.translate(size[0] / magic, 0, 0);
+            geometry.translate(-size[0] / 2, 0, 0);
+            // geometry.translate(-size[0], 0, 0);
+            if (staggerData?.isNorth) {
+                geometry.translate(-size[0] / 3, 0, 0);
+            }
+            geometries.push(geometry);
+        }
+        else if (adapter.tile_occupied('west') &&
+            adapter.tile_occupied('southeast')) {
+            // Inward stagger
+            // Tiles to the top left and to the bottom
+            geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
+            geometry.translate(-size[0] / 4, 0, 0);
+            if (staggerData?.isNorth) {
+                geometry.translate(-size[0] / 3, 0, 0);
+            }
+            geometries.push(geometry);
+        }
         if (adapter.tile_occupied('north')) {
             geometry = new THREE.BoxGeometry(size[0], size[1] / 2, size[2]);
             geometry.translate(0, 0, 0);
@@ -408,23 +434,8 @@ var tileform;
         }
         if (adapter.tile_occupied('south')) {
             geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
-            geometry.translate(-size[0] / 4, -size[1] / 4, 0);
-            //geometries.push(geometry);
-        }
-        if (adapter.tile_occupied('northwest') &&
-            adapter.tile_occupied('east')) {
-            // stagger
-            geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
-            geometry.translate(size[0] / 1.46, 0, 0);
-            geometry.translate(-size[0] / 2, 0, 0);
-            geometries.push(geometry);
-        }
-        if (adapter.tile_occupied('west') &&
-            adapter.tile_occupied('southeast')) {
-            // stagger
-            geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
             geometry.translate(-size[0] / 4, 0, 0);
-            geometries.push(geometry);
+            // geometries.push(geometry);
         }
         /*if (adapter.tile_occupied('east')) {
             geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);

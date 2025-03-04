@@ -37,7 +37,7 @@ var land;
         // woo
         noise.seed(28); // 1 to 65536
         const objects = [];
-        const populate = [100, 100];
+        const populate = [20, 20];
         const area = new perlin_area(28, [10, 10]);
         for (let y = 0; y < populate[0]; y++) {
             for (let x = 0; x < populate[1]; x++) {

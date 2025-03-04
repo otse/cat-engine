@@ -84,13 +84,14 @@ var rome;
         collect(new tile({ _type: 'direct', _wpos: [6, 0, 0] }));
         collect(new tile({ _type: 'direct', _wpos: [7, 0, 0] }));*/
         collect(new wall3d({ _type: 'direct', colorOverride: 'green', _wpos: [2, 1, 0] }));
+        collect(new wall3d({ _type: 'direct', colorOverride: 'lavender', _wpos: [2, 3, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [3, 1, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [3, 2, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [3, 3, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'red', _wpos: [4, 3, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [5, 3, 0] }));
         // collect(new tile({ _type: 'direct', _wpos: [4, 2, 0] }));
-        collect(new light({ _type: 'direct', _wpos: [2, 3, 0] }));
+        collect(new light({ _type: 'direct', _wpos: [2, 2, 0] }));
         collect(new light({ _type: 'direct', _wpos: [-11, 6, 0] }));
         collect(new light({ _type: 'direct', _wpos: [9, 2, 0] }));
         collect(new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [1, 2, 0] }));
@@ -125,7 +126,7 @@ var rome;
 			<br />chunk_span: ${clod.chunk_span} x ${clod.chunk_span}
 			<br />gobjs: ${glob.gameobjects[0]} / ${glob.gameobjects[1]}
 			<br />chunks: ${clod.numbers.chunks[0]} / ${clod.numbers.chunks[1]}
-			<br />pan wpos, rpos: ${pts.to_string_fixed(pan.wpos)} ${pts.to_string_fixed(pan.rpos)}
+			<br />pan wpos, rpos: ${pts.to_string_fixed(pan.wpos)} (${pts.to_string_fixed(pan.rpos)})
 			`;
     }
     function purgeRemake() {

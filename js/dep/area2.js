@@ -21,7 +21,11 @@ class area2 {
             for (let x = this.base.min[0]; x < this.base.max[0]; x++) {
                 const isBorder = x === this.base.min[0] || x === this.base.max[0] - 1 || y === this.base.min[1] || y === this.base.max[1] - 1;
                 const isUneven = x_++ % 2 === 1;
-                this.points.push({ pos: [x, y], isBorder, isUneven });
+                const isNorth = y === this.base.min[1];
+                const isEast = x === this.base.max[0] - 1;
+                const isSouth = y === this.base.max[1] - 1;
+                const isWest = x === this.base.min[0];
+                this.points.push({ pos: [x, y], isBorder, isNorth, isEast, isSouth, isWest });
             }
         }
     }
