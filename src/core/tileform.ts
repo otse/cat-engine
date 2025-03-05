@@ -437,19 +437,37 @@ namespace tileform {
 		}
 	}
 
-	function wallMaker(wall: shape_wall, material) {
-		let { shapeSize } = wall.data;
+	function wallMaker(shape: shape_wall, material) {
+		let { shapeSize } = shape.data;
 		const size = shapeSize!;
-		const geometries: any[] = [];
-		const objects = new THREE.Group();
-		// Hack!
-		const magic = 1.46;
-		const wall3d = wall.data.gobj as wall3d;
+		const group = new THREE.Group();
+		const gobj = shape.data.gobj;
+		const wall3d = gobj as wall3d;
 		const adapter = wall3d.wallAdapter;
 		const staggerData = wall3d.data.extra!.staggerData as staggered_area.typee;
 		if (!adapter) {
 			console.warn(' no direction adapter for wallmaker ');
 			return;
+		}
+		const interpol = (
+			gobj: game_object,
+			to: game_object.helpers.direction,
+			from: game_object.helpers.direction) => {
+			const fromObjects = adapter.get_all_objects_at(from);
+			const toObjects = adapter.get_all_objects_at(to);
+
+			const fromObject = fromObjects![0];
+			const toObject = toObjects![0];
+
+			const ourPosition = project(gobj.wpos);
+			const fromPosition = project(fromObject.wpos);
+			const toPosition = project(toObject.wpos);
+
+			let midX = ((fromPosition[0] + toPosition[0]) / 2) - ourPosition[0];
+			let midY = ((fromPosition[1] + toPosition[1]) / 2) - ourPosition[1];
+
+			const midPoint = [midX, midY, 0];
+			return midPoint;
 		}
 		let geometry, mesh;
 		// Ofsetted stagger
@@ -457,39 +475,16 @@ namespace tileform {
 		if (adapter.tile_occupied('northwest') &&
 			adapter.tile_occupied('east')) {
 
-			const northwesternObjects = adapter.get_all_objects_at('northwest');
-			const easternObjects = adapter.get_all_objects_at('east');
-
-			console.log('northwesternObjects', northwesternObjects);
-			console.log('easternObjects', easternObjects);
-
-			const northwesternWall = northwesternObjects![0];
-			const easternWall = easternObjects![0];
-
-			const ourPosition = project(wall3d.wpos);
-			const northwesternWallPosition = project(northwesternWall.wpos);
-			const easternWallPosition = project(easternWall.wpos);
-
-			let midX = (northwesternWallPosition[0] + easternWallPosition[0]) / 2 - ourPosition[0];
-			let midY = (northwesternWallPosition[1] + easternWallPosition[1]) / 2 - ourPosition[1];
-			const midPoint = [midX, midY, 0];
-
-			//midX += size[0] / 4;
-
-			console.log('midPoint', midPoint);
+			if (staggerData?.isNorth) {
+			}
+			const point = interpol(wall3d, 'northwest', 'east');
 
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
-			//geometry.translate(size[0] / magic, 0, 0);
-			//geometry.translate(-size[0] / 2, 0, 0);
-			// geometry.translate(-size[0], 0, 0);
-			if (staggerData?.isNorth) {
-				geometry.translate(-size[0] / 3, 0, 0);
-			}
 			mesh = new THREE.Mesh(geometry, material);
 			//mesh.position.set(-size[0] / 2 + size[0] / magic, 0, 0);
-			mesh.position.set(midX, midY, 0);
+			mesh.position.set(point[0], point[1], 0);
 			mesh.updateMatrix();
-			objects.add(mesh);
+			group.add(mesh);
 		}
 		// Inward stagger
 		// Tiles to the top left and to the bottom
@@ -497,26 +492,26 @@ namespace tileform {
 			adapter.tile_occupied('west') &&
 			adapter.tile_occupied('southeast')) {
 
-			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
-			// geometry.translate(-size[0] / 4, 0, 0);
 			if (staggerData?.isNorth) {
-				geometry.translate(-size[0] / 3, 0, 0);
 			}
+			const point = interpol(wall3d, 'west', 'southeast');
+
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
 			mesh = new THREE.Mesh(geometry, material);
-			mesh.position.set(-size[0] / 4, 0, 0);
+			//mesh.position.set(point[0], point[1], 0);
 			mesh.updateMatrix();
-			objects.add(mesh);
+			group.add(mesh);
 		}
 		if (adapter.tile_occupied('north')
 		) {
 			geometry = new THREE.BoxGeometry(size[0], size[1] / 2, size[2]);
 			geometry.translate(0, 0, 0);
 			mesh = new THREE.Mesh(geometry, material);
-			objects.add(mesh);
+			group.add(mesh);
 		}
 		if (adapter.tile_occupied('south')) {
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
-			geometry.translate(-size[0] / 4, 0, 0);
+			// geometry.translate(-size[0] / 4, 0, 0);
 			// geometries.push(geometry);
 		}
 		/*if (adapter.tile_occupied('east')) {
@@ -548,7 +543,7 @@ namespace tileform {
 		//	return;
 		//const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries);
 		//return mergedGeometry;
-		return objects;
+		return group;
 	}
 
 	export class shape_light_bad_idea extends shape3d {
