@@ -112,8 +112,10 @@ var rome;
 			DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
 			<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
 			<br />&#9;ENABLE_SCENE3: ${pipeline.ENABLE_SCENE3}
+			<br />&#9;TOP_DOWN_MODE (space bar): ${tileform.TOP_DOWN_MODE}
 			<br />&#9;ALLOW_NORMAL_MAPS (f3): ${tileform.ALLOW_NORMAL_MAPS}
 			<br />&#9;SUN_CAMERA (f4): ${tileform.SUN_CAMERA}
+			<br />&#9;glob hexSize (f4): ${pts.to_string_fixed(glob.hexSize)}
 			<br />dither, color correction (d, z): ${pipeline.dithering}, ${pipeline.compression}
 			<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
 			<br />render scale (-, =): ${glob.scale}
@@ -130,6 +132,7 @@ var rome;
 			`;
     }
     function purgeRemake() {
+        console.warn(' purgeRemake ');
         const chunks = clod.helpers.get_every_chunk(world_manager.world);
         for (const chunk of chunks) {
             chunk.nuke();
@@ -153,6 +156,17 @@ var rome;
     }
     rome.step = step;
     function keys() {
+        if (app.key('-') == 1) {
+            if (glob.scale > 1)
+                glob.scale -= 1;
+            console.log(glob.scale);
+            purgeRemake();
+        }
+        if (app.key('=') == 1) {
+            glob.scale += 1;
+            console.log(glob.scale);
+            purgeRemake();
+        }
         if (app.key('c') == 1) {
             const chunks = clod.helpers.get_every_chunk(world_manager.world);
             console.log('chunks', chunks);
@@ -178,37 +192,6 @@ var rome;
         if (app.key(']') == 1) {
             tileform.hex_size += .1;
             console.log(tileform.hex_size);
-            purgeRemake();
-        }
-        if (app.key('-') == 1) {
-            if (glob.scale > 1)
-                glob.scale -= 1;
-            console.log(glob.scale);
-            purgeRemake();
-        }
-        if (app.key('=') == 1) {
-            glob.scale += 1;
-            console.log(glob.scale);
-            purgeRemake();
-        }
-        if (app.key(',') == 1) {
-            tileform.HexRotationY -= .005;
-            console.log(tileform.HexRotationY);
-            purgeRemake();
-        }
-        if (app.key('.') == 1) {
-            tileform.HexRotationY += .005;
-            console.log(tileform.HexRotationY);
-            purgeRemake();
-        }
-        if (app.key('n') == 1) {
-            tileform.HexRotationX -= .01;
-            console.log(tileform.HexRotationX);
-            purgeRemake();
-        }
-        if (app.key('m') == 1) {
-            tileform.HexRotationX += .01;
-            console.log(tileform.HexRotationX);
             purgeRemake();
         }
     }

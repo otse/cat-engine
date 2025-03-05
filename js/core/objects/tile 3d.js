@@ -1,4 +1,4 @@
-import glob from "../../dep/glob.js";
+import glob from "./../../dep/glob.js";
 import game_object from "./game object.js";
 import sprite3d from "../sprite 3d.js";
 export class tile3d extends game_object {

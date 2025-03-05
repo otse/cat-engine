@@ -1,4 +1,4 @@
 // a global object
-var glob = {};
+var glob = window['glob'] || {};
 window['glob'] = glob;
 export default glob;

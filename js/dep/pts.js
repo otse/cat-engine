@@ -1,6 +1,6 @@
 import glob from "./glob.js";
 ;
-glob.hexSize = [10, 10];
+// glob.hexSize = [10, 10];
 class pts {
     static pt(a) {
         return { x: a[0], y: a[1] };

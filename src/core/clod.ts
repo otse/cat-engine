@@ -1,5 +1,5 @@
 import aabb2 from "../dep/aabb2.js";
-import glob from "../dep/glob.js";
+import glob from "./../dep/glob.js";
 import pts from "../dep/pts.js";
 import { hooks } from "../dep/hooks.js";
 
@@ -38,6 +38,7 @@ namespace clod {
 	}
 
 	export function project(unit: vec2): vec2 {
+		console.log('project glob size', glob.hexSize)
 		return (pts.mult(pts.project(unit), glob.scale));
 	}
 
@@ -132,8 +133,9 @@ namespace clod {
 		nuke() {
 			numbers.chunks[1]--;
 			this.hide();
-			for (const obj of this.objs)
+			for (const obj of this.objs) {
 				obj.finalize();
+			}
 			this.objs.splice(0, this.objs.length);
 		}
 		add(obj: obj, show = true) {

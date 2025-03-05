@@ -1,6 +1,6 @@
 import game_object from "./game object.js";
 import sprite from "../sprite.js";
-import glob from "../../dep/glob.js";
+import glob from "./../../dep/glob.js";
 // Legacy just use wall 3d
 export class wall extends game_object {
     constructor(data) {

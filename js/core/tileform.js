@@ -1,6 +1,6 @@
 /// This poorly named component turns basic 3d shapes into sprites
 import app from "../app.js";
-import glob from "../dep/glob.js";
+import glob from "./../dep/glob.js";
 import { hooks } from "../dep/hooks.js";
 import pts from "../dep/pts.js";
 import rome from "../rome.js";
@@ -22,6 +22,10 @@ var tileform;
     tileform.lyftLightSourcesFromCamera = false;
     // like it says this toggles the beau ti ful relief maps
     tileform.ALLOW_NORMAL_MAPS = true;
+    // once i realized the projection function pretended that tiles were dimetric
+    // but could be uniform hexagons, this only sets the stage camera to top down,
+    // then sets the global hex size to equal width and height
+    tileform.TOP_DOWN_MODE = false;
     // i know directional lights are supposed to cast light uniformly
     // but they actually act more like giant point lights
     // but this setting defines the size of the sun orb
@@ -63,10 +67,7 @@ var tileform;
     let stage;
     (function (stage) {
     })(stage = tileform.stage || (tileform.stage = {}));
-    tileform.HexRotationX = 0.6135987755982989;
-    tileform.HexRotationY = 1.045;
     let stageCameraRotation = 0.9471975511965977;
-    let wallRotationX = -1;
     let wallRotationY = 6;
     (function (stage) {
         function step() {
@@ -303,11 +304,13 @@ var tileform;
                 color: 'white',
                 specular: 'lavender',
                 shininess: 7,
-                map: pipeline.getTexture(this.data.shapeGroundTexture),
                 normalScale: new THREE.Vector2(1, 1),
-                normalMap: tileform.ALLOW_NORMAL_MAPS ? pipeline.getTexture(this.data.shapeGroundTextureNormal) : null,
+                map: pipeline.getTexture(this.data.shapeGroundTexture),
+                normalMap: pipeline.getTexture(this.data.shapeGroundTextureNormal),
                 // side: THREE.DoubleSide
             });
+            if (!tileform.ALLOW_NORMAL_MAPS)
+                material.normalMap = null;
             // geometry = new THREE.PlaneGeometry(10, 10);
             // Now do the grouping
             this.group = new THREE.Group();
@@ -340,32 +343,26 @@ var tileform;
     // boring wall geometries
     class shape_wall extends shape3d {
         hexTile;
-        wallRotationGroup;
-        mesh;
+        rotationGroup;
+        wallGroups;
+        wallMaterial;
         constructor(data) {
             super(data);
         }
         _create() {
-            const geometry = wallMaker(this);
-            //const geometry = new THREE.SphereGeometry(8, 8, 8);
-            const material = new THREE.MeshPhongMaterial({
-                // color: this.data.gabeObject.data.colorOverride || 'white',
-                // opacity: 0.8,
-                transparent: true,
-                map: pipeline.getTexture(this.data.shapeTexture),
-                normalMap: tileform.ALLOW_NORMAL_MAPS ? pipeline.getTexture(this.data.shapeTextureNormal) : null
-            });
-            // Make the merged geometries mesh
             const { shapeSize } = this.data;
-            this.mesh = new THREE.Mesh(geometry, material);
-            this.mesh.updateMatrix();
-            // Make the base plate
+            const material = new THREE.MeshPhongMaterial({
+                map: pipeline.getTexture(this.data.shapeTexture),
+                normalMap: pipeline.getTexture(this.data.shapeTextureNormal)
+            });
+            if (!tileform.ALLOW_NORMAL_MAPS)
+                material.normalMap = null;
+            this.wallGroups = wallMaker(this, material);
             this.hexTile = new hex_tile(this.data);
-            // Set up rotations
-            this.wallRotationGroup = new THREE.Group();
-            this.wallRotationGroup.add(this.mesh);
-            this.wallRotationGroup.position.z = shapeSize[2];
-            this.entityGroup.add(this.wallRotationGroup);
+            this.rotationGroup = new THREE.Group();
+            this.rotationGroup.add(this.wallGroups);
+            this.rotationGroup.position.z = shapeSize[2];
+            this.entityGroup.add(this.rotationGroup);
             this.entityGroup.add(this.hexTile.group);
             this.entityGroup.add(new THREE.AxesHelper(12));
             // Translate so we can take lighting sources
@@ -373,26 +370,28 @@ var tileform;
             //this.hexTile.rotationGroup.position.set(0, 0, 0);
             //this.hexTile.rotationGroup.updateMatrix();
             this._step();
+            this.wallMaterial = material;
         }
         dispose() {
-            this.mesh.geometry.dispose();
-            this.mesh.material.dispose();
+            //this.wallGroups.geometry.dispose();
+            this.wallMaterial.dispose();
         }
         _delete() {
             this.dispose();
             this.hexTile.free();
         }
         _step() {
-            this.wallRotationGroup.rotation.set(0, 0, Math.PI / wallRotationY);
-            this.wallRotationGroup.updateMatrix();
+            this.rotationGroup.rotation.set(0, 0, Math.PI / wallRotationY);
+            this.rotationGroup.updateMatrix();
             this.entityGroup.updateMatrix();
         }
     }
     tileform.shape_wall = shape_wall;
-    function wallMaker(wall) {
+    function wallMaker(wall, material) {
         let { shapeSize } = wall.data;
         const size = shapeSize;
         const geometries = [];
+        const objects = new THREE.Group();
         // Hack!
         const magic = 1.46;
         const wall3d = wall.data.gobj;
@@ -402,35 +401,57 @@ var tileform;
             console.warn(' no direction adapter for wallmaker ');
             return;
         }
-        let geometry;
+        let geometry, mesh;
+        // Ofsetted stagger
+        // Tiles above and to the lower right
         if (adapter.tile_occupied('northwest') &&
             adapter.tile_occupied('east')) {
-            // Ofsetted stagger
-            // Tiles above and to the lower right
+            const northwesternObjects = adapter.get_all_objects_at('northwest');
+            const easternObjects = adapter.get_all_objects_at('east');
+            console.log('northwesternObjects', northwesternObjects);
+            console.log('easternObjects', easternObjects);
+            const northwesternWall = northwesternObjects[0];
+            const easternWall = easternObjects[0];
+            const ourPosition = project(wall3d.wpos);
+            const northwesternWallPosition = project(northwesternWall.wpos);
+            const easternWallPosition = project(easternWall.wpos);
+            let midX = (northwesternWallPosition[0] + easternWallPosition[0]) / 2 - ourPosition[0];
+            let midY = (northwesternWallPosition[1] + easternWallPosition[1]) / 2 - ourPosition[1];
+            const midPoint = [midX, midY, 0];
+            //midX += size[0] / 4;
+            console.log('midPoint', midPoint);
             geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
-            geometry.translate(size[0] / magic, 0, 0);
-            geometry.translate(-size[0] / 2, 0, 0);
+            //geometry.translate(size[0] / magic, 0, 0);
+            //geometry.translate(-size[0] / 2, 0, 0);
             // geometry.translate(-size[0], 0, 0);
             if (staggerData?.isNorth) {
                 geometry.translate(-size[0] / 3, 0, 0);
             }
-            geometries.push(geometry);
+            mesh = new THREE.Mesh(geometry, material);
+            //mesh.position.set(-size[0] / 2 + size[0] / magic, 0, 0);
+            mesh.position.set(midX, midY, 0);
+            mesh.updateMatrix();
+            objects.add(mesh);
         }
+        // Inward stagger
+        // Tiles to the top left and to the bottom
         else if (adapter.tile_occupied('west') &&
             adapter.tile_occupied('southeast')) {
-            // Inward stagger
-            // Tiles to the top left and to the bottom
             geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
-            geometry.translate(-size[0] / 4, 0, 0);
+            // geometry.translate(-size[0] / 4, 0, 0);
             if (staggerData?.isNorth) {
                 geometry.translate(-size[0] / 3, 0, 0);
             }
-            geometries.push(geometry);
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(-size[0] / 4, 0, 0);
+            mesh.updateMatrix();
+            objects.add(mesh);
         }
         if (adapter.tile_occupied('north')) {
             geometry = new THREE.BoxGeometry(size[0], size[1] / 2, size[2]);
             geometry.translate(0, 0, 0);
-            geometries.push(geometry);
+            mesh = new THREE.Mesh(geometry, material);
+            objects.add(mesh);
         }
         if (adapter.tile_occupied('south')) {
             geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
@@ -460,10 +481,11 @@ var tileform;
             geometry.translate(-size[0] / 4, size[1] / 4, 0);
             // geometries.push(geometry);
         }
-        if (!geometries.length)
-            return;
-        const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries);
-        return mergedGeometry;
+        //if (!geometries.length)
+        //	return;
+        //const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries);
+        //return mergedGeometry;
+        return objects;
     }
     class shape_light_bad_idea extends shape3d {
         light;
@@ -536,18 +558,22 @@ var tileform;
     }
     tileform.light_source = light_source;
     function opkl() {
-        let change = false;
-        if (app.key('f3') == 1) {
+        if (app.key(' ') == 1) {
+            tileform.TOP_DOWN_MODE = !tileform.TOP_DOWN_MODE;
+            if (tileform.TOP_DOWN_MODE) {
+                stageCameraRotation = 0;
+                glob.hexSize = [17, 17];
+            }
+            else {
+                stageCameraRotation = 0.9471975511965977;
+                glob.hexSize = [17, 9];
+            }
+        }
+        else if (app.key('f3') == 1) {
             tileform.ALLOW_NORMAL_MAPS = !tileform.ALLOW_NORMAL_MAPS;
         }
         else if (app.key('f4') == 1) {
             tileform.SUN_CAMERA = !tileform.SUN_CAMERA;
-        }
-        else if (app.key('o') == 1) {
-            wallRotationX -= 1;
-        }
-        else if (app.key('p') == 1) {
-            wallRotationX += 1;
         }
         else if (app.key('k') == 1) {
             wallRotationY -= 1;
@@ -566,7 +592,7 @@ var tileform;
             return;
         }
         rome.purgeRemake();
-        console.log(wallRotationX, wallRotationY);
+        console.log(wallRotationY);
         console.log("stageCameraRotation", stageCameraRotation);
     }
 })(tileform || (tileform = {}));

@@ -1,6 +1,6 @@
 import game_object from "./game object.js";
 import sprite from "../sprite.js";
-import glob from "../../dep/glob.js";
+import glob from "./../../dep/glob.js";
 import pts from "../../dep/pts.js";
 // Legacy just use tile 3d
 export class tile extends game_object {

@@ -1,4 +1,4 @@
-import glob from "../../dep/glob.js";
+import glob from "./../../dep/glob.js";
 import pts from "../../dep/pts.js";
 import clod from "../clod.js";
 export class game_object extends clod.obj {

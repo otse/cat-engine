@@ -33,6 +33,12 @@ export class direction_adapter {
 		this.directions = game_object.helpers.get_directions(this.matrix);
 		// console.log('pos', this.gobj.wpos, this.matrix);
 	}
+	get_all_objects_at(direction: game_object.helpers.direction) {
+		const i = this.directions.indexOf(direction);
+		if (i !== -1) {
+			return this.matrix[i];
+		}
+	}
 	tile_occupied(direction: game_object.helpers.direction) {
 		return this.directions.includes(direction);
 	}

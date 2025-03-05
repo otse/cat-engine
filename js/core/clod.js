@@ -1,5 +1,5 @@
 import aabb2 from "../dep/aabb2.js";
-import glob from "../dep/glob.js";
+import glob from "./../dep/glob.js";
 import pts from "../dep/pts.js";
 import { hooks } from "../dep/hooks.js";
 import pipeline from "./pipeline.js"; // Begone!
@@ -26,6 +26,7 @@ var clod;
     }
     clod.register = register;
     function project(unit) {
+        console.log('project glob size', glob.hexSize);
         return (pts.mult(pts.project(unit), glob.scale));
     }
     clod.project = project;
@@ -117,8 +118,9 @@ var clod;
         nuke() {
             numbers.chunks[1]--;
             this.hide();
-            for (const obj of this.objs)
+            for (const obj of this.objs) {
                 obj.finalize();
+            }
             this.objs.splice(0, this.objs.length);
         }
         add(obj, show = true) {

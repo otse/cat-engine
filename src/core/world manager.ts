@@ -2,7 +2,7 @@ import pan from "./components/pan.js";
 import clod from "./clod.js";
 import game_object from "./objects/game object.js";
 import sprite3d from "./sprite 3d.js";
-import glob from "../dep/glob.js";
+import glob from "./../dep/glob.js";
 
 /// 🌍 WorldManager (clean and direct)
 
@@ -14,8 +14,7 @@ class world_manager {
 	static world: clod.world;
 
 	static init() {
-		this.world = clod.init();
-		glob.world = this.world;
+		this.world = glob.world = clod.init();
 	}
 
 	static update() {

@@ -1,4 +1,4 @@
-import glob from "../dep/glob.js";
+import glob from "./../dep/glob.js";
 import pts from "../dep/pts.js";
 import game from "../eye/game.js";
 import pipeline from "./pipeline.js";

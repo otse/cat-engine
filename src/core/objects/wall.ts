@@ -1,7 +1,7 @@
 import clod from "../clod.js";
 import game_object from "./game object.js";
 import sprite from "../sprite.js";
-import glob from "../../dep/glob.js";
+import glob from "./../../dep/glob.js";
 
 // Legacy just use wall 3d
 

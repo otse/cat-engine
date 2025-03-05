@@ -1,4 +1,4 @@
-import glob from "../../dep/glob.js";
+import glob from "./../../dep/glob.js";
 import game_object from "./game object.js";
 import tileform from "../tileform.js";
 import sprite from "../sprite.js";

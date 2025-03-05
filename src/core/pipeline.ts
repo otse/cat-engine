@@ -1,5 +1,5 @@
 import app from '../app.js';
-import glob from '../dep/glob.js';
+import glob from './../dep/glob.js';
 import pts from '../dep/pts.js';
 
 const fragmentBackdrop = `
@@ -191,7 +191,7 @@ namespace pipeline {
 	export const ENABLE_SCENE3 = false;
 
 	export var dotsPerInch = 1;
-	
+
 	export var dithering = false;
 	export var compression = true;
 
@@ -238,14 +238,14 @@ namespace pipeline {
 			renderer.render(scene, camera);
 		}
 
-		if (!ENABLE_SCENE3) {
-			renderer.setRenderTarget(null);
-		}
-		else {
-            camera2.scale.set(0.5, 0.5, 0.5);
-            camera2.updateMatrix();
+		if (ENABLE_SCENE3) {
+			camera2.scale.set(0.5, 0.5, 0.5);
+			camera2.updateMatrix();
 
 			renderer.setRenderTarget(target2);
+		}
+		else {
+			renderer.setRenderTarget(null);
 		}
 		renderer.clear();
 		renderer.render(scene2, camera2);

@@ -1,7 +1,7 @@
 
 import game_object from "./game object.js";
 import sprite3d from "../sprite 3d.js";
-import glob from "../../dep/glob.js";
+import glob from "./../../dep/glob.js";
 import direction_adapter from "../direction adapter.js";
 
 export class wall3d extends game_object {

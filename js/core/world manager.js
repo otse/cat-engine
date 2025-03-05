@@ -1,6 +1,6 @@
 import pan from "./components/pan.js";
 import clod from "./clod.js";
-import glob from "../dep/glob.js";
+import glob from "./../dep/glob.js";
 /// 🌍 WorldManager (clean and direct)
 var mergeMode;
 (function (mergeMode) {
@@ -11,8 +11,7 @@ var mergeMode;
 class world_manager {
     static world;
     static init() {
-        this.world = clod.init();
-        glob.world = this.world;
+        this.world = glob.world = clod.init();
     }
     static update() {
         this.world.update(pan.wpos);

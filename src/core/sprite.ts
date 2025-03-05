@@ -3,7 +3,7 @@ import game_object from "./objects/game object.js";
 import clod from "./clod.js";
 import pipeline from "./pipeline.js";
 import rome from "../rome.js";
-import glob from "../dep/glob.js";
+import glob from "./../dep/glob.js";
 
 interface sprite_literal {
 	gobj: game_object,
@@ -41,7 +41,7 @@ export class sprite {
 		this.gobj = this.data.gobj;
 		this.gobj.sprite = this;
 		this.data.spriteColor = this.gobj.data.colorOverride || 'white';
-		// this.data.spriteColor = rome.sample(['purple', 'magenta', 'cyan', 'wheat', 'pink', 'salmon']);
+		this.data.spriteColor = rome.sample(['purple', 'magenta', 'cyan', 'wheat', 'pink', 'salmon']);
 		this.matrix = new THREE.Matrix3;
 		this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
 	}

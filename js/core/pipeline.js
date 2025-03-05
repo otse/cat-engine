@@ -1,5 +1,5 @@
 import app from '../app.js';
-import glob from '../dep/glob.js';
+import glob from './../dep/glob.js';
 import pts from '../dep/pts.js';
 const fragmentBackdrop = `
 varying vec2 vUv;
@@ -201,13 +201,13 @@ var pipeline;
             pipeline.renderer.clear();
             pipeline.renderer.render(pipeline.scene, pipeline.camera);
         }
-        if (!pipeline.ENABLE_SCENE3) {
-            pipeline.renderer.setRenderTarget(null);
-        }
-        else {
+        if (pipeline.ENABLE_SCENE3) {
             pipeline.camera2.scale.set(0.5, 0.5, 0.5);
             pipeline.camera2.updateMatrix();
             pipeline.renderer.setRenderTarget(pipeline.target2);
+        }
+        else {
+            pipeline.renderer.setRenderTarget(null);
         }
         pipeline.renderer.clear();
         pipeline.renderer.render(pipeline.scene2, pipeline.camera2);

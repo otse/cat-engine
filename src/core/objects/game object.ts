@@ -1,5 +1,5 @@
 
-import glob from "../../dep/glob.js";
+import glob from "./../../dep/glob.js";
 import pts from "../../dep/pts.js";
 import clod from "../clod.js";
 import sprite from "../sprite.js";

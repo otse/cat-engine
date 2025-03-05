@@ -5,7 +5,7 @@ export interface Pt { x: number; y: number };
 
 type both = vec2 | vec3;
 
-glob.hexSize = [10, 10];
+// glob.hexSize = [10, 10];
 
 class pts {
 	static pt(a: vec2): Pt {
