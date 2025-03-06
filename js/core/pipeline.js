@@ -181,7 +181,7 @@ var pipeline;
     pipeline.cameraMode = 'ortho';
     pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
     pipeline.ROUND_UP_DOTS_PER_INCH = true;
-    pipeline.ENABLE_SCENE3 = false;
+    pipeline.ENABLE_SCENE3 = true;
     pipeline.dotsPerInch = 1;
     pipeline.dithering = false;
     pipeline.compression = true;

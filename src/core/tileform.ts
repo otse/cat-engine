@@ -37,8 +37,10 @@ namespace tileform {
 	// once i realized the projection function pretended that tiles were dimetric
 	// but could be uniform hexagons, this only sets the stage camera to top down,
 	// then sets the global hex size to equal width and height
-	export var TOP_DOWN_MODE = false
+	export var TOP_DOWN_MODE = false;
 
+	// beautiful red green blues
+	export var RENDER_AXES = true;
 
 	// i know directional lights are supposed to cast light uniformly
 	// but they actually act more like giant point lights
@@ -69,11 +71,10 @@ namespace tileform {
 		}
 	}
 
-	// Light sources seem to scatter towards the south east
-	// May be this functions fault
-	function project(w: vec2): vec2 {
-		const tileWidth = glob.hexSize[0];
-		const tileHeight = glob.hexSize[0];
+	// This function does almost nothing! It doesn't matter where we project apparently
+	function project_linear_space(w: vec2): vec2 {
+		const tileWidth = glob.hexSize[0] - 1;
+		const tileHeight = glob.hexSize[0] - 1;
 		const x = w[0];
 		const y = -w[1];
 		const scaleFactor = tileWidth * 0.75;
@@ -269,7 +270,7 @@ namespace tileform {
 		protected translate() {
 			// Useful for beautiful lighting
 			const { wpos } = this.gobj;
-			const pos = this.pos3d = (pts.mult(project(wpos), stretchSpace));
+			const pos = this.pos3d = (pts.mult(project_linear_space(wpos), stretchSpace));
 			this.entityGroup.position.fromArray([...pos, 0]);
 			this.entityGroup.updateMatrix();
 		}
@@ -281,8 +282,8 @@ namespace tileform {
 			this.data = {
 				shapeTexture: './img/textures/cobblestone3.jpg',
 				shapeTextureNormal: './img/textures/stonemixednormal.jpg',
-				shapeGroundTexture: './img/textures/beachnormal.jpg',
-				shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
+				shapeGroundTexture: './img/textures/stonemixed2.jpg',
+				shapeGroundTextureNormal: './img/textures/stonemixed2normal.jpg',
 				...data
 			}
 		}
@@ -310,7 +311,8 @@ namespace tileform {
 		protected override _create() {
 			this.hexTile = new hex_tile(this.data);
 			this.entityGroup.add(this.hexTile.group);
-			this.entityGroup.add(new THREE.AxesHelper(12));
+			if (RENDER_AXES)
+				this.entityGroup.add(new THREE.AxesHelper(12));
 			this.translate();
 		}
 		protected override _delete() {
@@ -394,7 +396,7 @@ namespace tileform {
 	export class shape_wall extends shape3d {
 		hexTile: hex_tile
 		rotationGroup
-		wallGroups
+		wallGroup
 		wallMaterial
 		constructor(data: shape_literal) {
 			super(data);
@@ -402,19 +404,21 @@ namespace tileform {
 		protected override _create() {
 			const { shapeSize } = this.data;
 			const material = new THREE.MeshPhongMaterial({
+				color: 'red',
 				map: pipeline.getTexture(this.data.shapeTexture!),
 				normalMap: pipeline.getTexture(this.data.shapeTextureNormal!)
 			});
 			if (!ALLOW_NORMAL_MAPS)
 				material.normalMap = null;
-			this.wallGroups = wallMaker(this, material);
 			this.hexTile = new hex_tile(this.data);
+			this.wallGroup = wallMaker(this, material);
 			this.rotationGroup = new THREE.Group();
-			this.rotationGroup.add(this.wallGroups);
+			this.rotationGroup.add(this.wallGroup);
 			this.rotationGroup.position.z = shapeSize![2];
 			this.entityGroup.add(this.rotationGroup);
 			this.entityGroup.add(this.hexTile.group);
-			this.entityGroup.add(new THREE.AxesHelper(12));
+			if (RENDER_AXES)
+				this.entityGroup.add(new THREE.AxesHelper(12));
 			// Translate so we can take lighting sources
 			this.translate();
 			//this.hexTile.rotationGroup.position.set(0, 0, 0);
@@ -459,30 +463,35 @@ namespace tileform {
 			const fromObject = fromObjects![0];
 			const toObject = toObjects![0];
 
-			const ourPosition = project(gobj.wpos);
-			const fromPosition = project(fromObject.wpos);
-			const toPosition = project(toObject.wpos);
+			const ourPosition = project_linear_space(gobj.wpos);
+
+			const fromPosition = project_linear_space(fromObject.wpos);
+			const toPosition = project_linear_space(toObject.wpos);
 
 			let midX = ((fromPosition[0] + toPosition[0]) / 2) - ourPosition[0];
 			let midY = ((fromPosition[1] + toPosition[1]) / 2) - ourPosition[1];
 
-			const midPoint = [midX, midY, 0];
+			let midPoint = [midX, midY] as vec2;
+			midPoint = pts.round(midPoint);
 			return midPoint;
 		}
 		let geometry, mesh;
-		// Ofsetted stagger
+		// Outward stagger
 		// Tiles above and to the lower right
 		if (adapter.tile_occupied('northwest') &&
 			adapter.tile_occupied('east')) {
 
+			let point = interpol(wall3d, 'northwest', 'east');
 			if (staggerData?.isNorth) {
+				//point = pts.add(point, [-size[1] / 2, 0]);
 			}
-			const point = interpol(wall3d, 'northwest', 'east');
-
-			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
+			point = pts.add(point, [-3, -4]);
+			geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
 			mesh = new THREE.Mesh(geometry, material);
 			//mesh.position.set(-size[0] / 2 + size[0] / magic, 0, 0);
 			mesh.position.set(point[0], point[1], 0);
+			mesh.rotation.set(0, 0, Math.PI / 2);
+
 			mesh.updateMatrix();
 			group.add(mesh);
 		}
@@ -492,27 +501,33 @@ namespace tileform {
 			adapter.tile_occupied('west') &&
 			adapter.tile_occupied('southeast')) {
 
+			let point = [0, 0] as vec2;
 			if (staggerData?.isNorth) {
+				//point = pts.add(point, [-size[1] / 2, 0]);
 			}
-			const point = interpol(wall3d, 'west', 'southeast');
-
-			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
+			// let point = interpol(wall3d, 'west', 'southeast');
+			point = pts.add(point, [-4, -4]);
+			geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
 			mesh = new THREE.Mesh(geometry, material);
-			//mesh.position.set(point[0], point[1], 0);
+			mesh.position.set(point[0], point[1], 0);
+			mesh.rotation.set(0, 0, Math.PI / 2);
 			mesh.updateMatrix();
 			group.add(mesh);
 		}
 		if (adapter.tile_occupied('north')
 		) {
-			geometry = new THREE.BoxGeometry(size[0], size[1] / 2, size[2]);
-			geometry.translate(0, 0, 0);
+			geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
+			// geometry.translate(0, 0, 0);
 			mesh = new THREE.Mesh(geometry, material);
+			// mesh.rotation.set(0, 0, Math.PI / 2);
 			group.add(mesh);
 		}
 		if (adapter.tile_occupied('south')) {
-			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
-			// geometry.translate(-size[0] / 4, 0, 0);
-			// geometries.push(geometry);
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
+			mesh = new THREE.Mesh(geometry, material);
+			mesh.position.set(-size[0] / 4, 0, 0);
+			mesh.updateMatrix();
+			group.add(mesh);
 		}
 		/*if (adapter.tile_occupied('east')) {
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1] / 2, size[2]);
@@ -629,12 +644,17 @@ namespace tileform {
 				stageCameraRotation = 0.9471975511965977;
 				glob.hexSize = [17, 9];
 			}
+			// Our wpos is still correct, but our rpos is now outdated
+			pan.rpos = pts.project(pan.wpos);
 		}
 		else if (app.key('f3') == 1) {
 			ALLOW_NORMAL_MAPS = !ALLOW_NORMAL_MAPS;
 		}
 		else if (app.key('f4') == 1) {
 			SUN_CAMERA = !SUN_CAMERA;
+		}
+		else if (app.key('a') == 1) {
+			RENDER_AXES = !RENDER_AXES;
 		}
 		else if (app.key('k') == 1) {
 			wallRotationY -= 1;

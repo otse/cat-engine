@@ -188,7 +188,7 @@ namespace pipeline {
 	export const DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
 	export const ROUND_UP_DOTS_PER_INCH = true;
 
-	export const ENABLE_SCENE3 = false;
+	export const ENABLE_SCENE3 = true;
 
 	export var dotsPerInch = 1;
 

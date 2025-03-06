@@ -26,6 +26,7 @@ export class sprite3d extends sprite {
     _delete() {
         super._delete();
         this.shape?.delete();
+        this.target?.dispose();
     }
     _create() {
         super._create();

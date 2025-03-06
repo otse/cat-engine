@@ -38,7 +38,6 @@ namespace clod {
 	}
 
 	export function project(unit: vec2): vec2 {
-		console.log('project glob size', glob.hexSize)
 		return (pts.mult(pts.project(unit), glob.scale));
 	}
 

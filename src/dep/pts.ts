@@ -58,9 +58,9 @@ class pts {
 
 	// static readonly hexSize: vec2 = [17, 9];
 
-	static project(w: vec2): vec2 {
-		const tileWidth = glob.hexSize[0] - 1;
-		const tileHeight = glob.hexSize[1] - 1;
+	static project(w: vec2, size = glob.hexSize): vec2 {
+		const tileWidth = size[0] - 1;
+		const tileHeight = size[1] - 1;
 		const x = w[0];
 		const y = -w[1]; // Invert Y to match the hex grid behavior.
 		const scaleFactor = tileWidth * 0.75;  // This corresponds to the scaling factor in project function

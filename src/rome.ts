@@ -122,6 +122,7 @@ namespace rome {
 			<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
 			<br />&#9;ENABLE_SCENE3: ${pipeline.ENABLE_SCENE3}
 			<br />&#9;TOP_DOWN_MODE (space bar): ${tileform.TOP_DOWN_MODE}
+			<br />&#9;RENDER_AXES (a): ${tileform.RENDER_AXES}
 			<br />&#9;ALLOW_NORMAL_MAPS (f3): ${tileform.ALLOW_NORMAL_MAPS}
 			<br />&#9;SUN_CAMERA (f4): ${tileform.SUN_CAMERA}
 			<br />&#9;glob hexSize (f4): ${pts.to_string_fixed(glob.hexSize)}
@@ -143,7 +144,7 @@ namespace rome {
 
 	export function purgeRemake() {
 		console.warn(' purgeRemake ');
-		
+
 		const chunks = clod.helpers.get_every_chunk(world_manager.world);
 		for (const chunk of chunks) {
 			chunk.nuke();
@@ -170,11 +171,15 @@ namespace rome {
 		if (app.key('-') == 1) {
 			if (glob.scale > 1)
 				glob.scale -= 1;
+			// Our wpos is still correct, but our rpos is now outdated
+			pan.rpos = pts.mult(pts.project(pan.wpos), glob.scale);
 			console.log(glob.scale);
 			purgeRemake();
 		}
 		if (app.key('=') == 1) {
 			glob.scale += 1;
+			// Our wpos is still correct, but our rpos is now outdated
+			pan.rpos = pts.mult(pts.project(pan.wpos), glob.scale);
 			console.log(glob.scale);
 			purgeRemake();
 		}
@@ -205,7 +210,7 @@ namespace rome {
 			console.log(tileform.hex_size);
 			purgeRemake();
 		}
-		
+
 
 	}
 

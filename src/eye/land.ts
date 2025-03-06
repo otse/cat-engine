@@ -38,7 +38,7 @@ namespace land {
 
 	export function repopulate() {
 		make();
-		make_staggered_lake();
+		make_staggered_building();
 		make_non_staggered_lake();
 	}
 
@@ -46,7 +46,7 @@ namespace land {
 		// woo
 		noise.seed(28); // 1 to 65536
 		const objects: game_object[] = [];
-		const populate = [20, 20];
+		const populate = [100, 100];
 		const area = new perlin_area(28, [10, 10]);
 		for (let y = 0; y < populate[0]; y++) {
 			for (let x = 0; x < populate[1]; x++) {
@@ -70,7 +70,7 @@ namespace land {
 		world_manager.addMergeLot(objects, 1);
 	}
 
-	function make_staggered_lake() {
+	function make_staggered_building() {
 		const objects: game_object[] = [];
 		const pos = [8, 0] as vec2;
 		const size = [5, 5] as vec2;
@@ -91,7 +91,7 @@ namespace land {
 				const tile = new tile3d({
 					_type: 'direct',
 					_wpos: [point.pos[0], point.pos[1], 0]
-				}, 'water');
+				}, 'default');
 				objects.push(tile);
 			}
 		});
@@ -104,12 +104,22 @@ namespace land {
 		const size = [5, 5] as vec2;
 		const aabb = new aabb2(pos, pts.add(pos, size));
 		const area = aabb2.area(aabb);
-		area.do((obj: area2.areaPoint) => {
-			const tile = new tile3d({
-				_type: 'direct',
-				_wpos: [obj.pos[0], obj.pos[1], 0]
-			}, 'water');
-			objects.push(tile);
+		area.do((point: area2.areaPoint) => {
+			if (point.isBorder) {
+				const wall = new wall3d({
+					_type: 'direct',
+					_wpos: [point.pos[0], point.pos[1], 0]
+					// colorOverride: 'green'
+				});
+				objects.push(wall);
+			}
+			else {
+				const tile = new tile3d({
+					_type: 'direct',
+					_wpos: [point.pos[0], point.pos[1], 0]
+				}, 'water');
+				objects.push(tile);
+			}
 		});
 		world_manager.addMergeLot(objects, 2);
 	}

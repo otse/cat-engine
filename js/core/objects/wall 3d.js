@@ -17,7 +17,7 @@ export class wall3d extends game_object {
         new sprite3d({
             gobj: this,
             spriteSize: [glob.hexSize[0] * 2, glob.hexSize[1] * 5],
-            shapeSize: [16, 16, 10],
+            shapeSize: [16, 8, 10],
             shapeType: 'wall'
         });
         this.wallAdapter.search(['wall 3d']);

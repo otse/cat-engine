@@ -26,7 +26,6 @@ var clod;
     }
     clod.register = register;
     function project(unit) {
-        console.log('project glob size', glob.hexSize);
         return (pts.mult(pts.project(unit), glob.scale));
     }
     clod.project = project;

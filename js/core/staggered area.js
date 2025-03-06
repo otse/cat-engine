@@ -30,5 +30,7 @@ class staggered_area extends area2 {
             }
         }
     }
+    _tell_size() {
+    }
 }
 export default staggered_area;

@@ -35,11 +35,12 @@ export class sprite3d extends sprite {
 		this.data_ = this.data;
 		this.shapedata_ = this.data;
 	}
-	protected _delete() {
+	protected override _delete() {
 		super._delete();
 		this.shape?.delete();
+		this.target?.dispose();
 	}
-	protected _create() {
+	protected override _create() {
 		super._create();
 		//console.log(this);
 		this.shape = tileform.shapeMaker(
