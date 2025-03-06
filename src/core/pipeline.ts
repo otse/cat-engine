@@ -188,7 +188,7 @@ namespace pipeline {
 	export const DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
 	export const ROUND_UP_DOTS_PER_INCH = true;
 
-	export const ENABLE_SCENE3 = true;
+	export const USE_SCENE3 = true;
 
 	export var dotsPerInch = 1;
 
@@ -238,7 +238,7 @@ namespace pipeline {
 			renderer.render(scene, camera);
 		}
 
-		if (ENABLE_SCENE3) {
+		if (USE_SCENE3) {
 			camera2.scale.set(0.5, 0.5, 0.5);
 			camera2.updateMatrix();
 
@@ -250,7 +250,7 @@ namespace pipeline {
 		renderer.clear();
 		renderer.render(scene2, camera2);
 
-		if (ENABLE_SCENE3) {
+		if (USE_SCENE3) {
 			renderer.setRenderTarget(null);
 			renderer.clear();
 			renderer.render(scene3, camera3);
@@ -312,7 +312,7 @@ namespace pipeline {
 			colorSpace: THREE.NoColorSpace,
 			generateMipmaps: false,
 		});
-		if (ENABLE_SCENE3) {
+		if (USE_SCENE3) {
 			target2 = target.clone();
 		}
 		targetMask = target.clone();
@@ -383,7 +383,7 @@ namespace pipeline {
 		quad2 = new THREE.Mesh(plane, material2);
 		scene2.add(quad2);
 
-		if (ENABLE_SCENE3) {
+		if (USE_SCENE3) {
 			material3?.dispose();
 			material3 = new THREE.ShaderMaterial({
 				uniforms: {

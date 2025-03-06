@@ -1,5 +1,6 @@
 import pts from "../dep/pts.js";
 import pipeline from "./pipeline.js";
+import rome from "../rome.js";
 import glob from "./../dep/glob.js";
 ;
 ;
@@ -25,7 +26,8 @@ export class sprite {
         this.gobj = this.data.gobj;
         this.gobj.sprite = this;
         // this.data.spriteColor = this.gobj.data.colorOverride || 'white';
-        // this.data.spriteColor = rome.sample(['purple', 'magenta', 'cyan', 'wheat', 'pink', 'salmon']);
+        if (glob.randomSpriteColor)
+            this.data.spriteColor = rome.sample(['purple', 'magenta', 'cyan', 'wheat', 'pink', 'salmon']);
         this.matrix = new THREE.Matrix3;
         this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
     }

@@ -181,7 +181,7 @@ var pipeline;
     pipeline.cameraMode = 'ortho';
     pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
     pipeline.ROUND_UP_DOTS_PER_INCH = true;
-    pipeline.ENABLE_SCENE3 = true;
+    pipeline.USE_SCENE3 = true;
     pipeline.dotsPerInch = 1;
     pipeline.dithering = false;
     pipeline.compression = true;
@@ -201,7 +201,7 @@ var pipeline;
             pipeline.renderer.clear();
             pipeline.renderer.render(pipeline.scene, pipeline.camera);
         }
-        if (pipeline.ENABLE_SCENE3) {
+        if (pipeline.USE_SCENE3) {
             pipeline.camera2.scale.set(0.5, 0.5, 0.5);
             pipeline.camera2.updateMatrix();
             pipeline.renderer.setRenderTarget(pipeline.target2);
@@ -211,7 +211,7 @@ var pipeline;
         }
         pipeline.renderer.clear();
         pipeline.renderer.render(pipeline.scene2, pipeline.camera2);
-        if (pipeline.ENABLE_SCENE3) {
+        if (pipeline.USE_SCENE3) {
             pipeline.renderer.setRenderTarget(null);
             pipeline.renderer.clear();
             pipeline.renderer.render(pipeline.scene3, pipeline.camera3);
@@ -259,7 +259,7 @@ var pipeline;
             colorSpace: THREE.NoColorSpace,
             generateMipmaps: false,
         });
-        if (pipeline.ENABLE_SCENE3) {
+        if (pipeline.USE_SCENE3) {
             pipeline.target2 = pipeline.target.clone();
         }
         pipeline.targetMask = pipeline.target.clone();
@@ -317,7 +317,7 @@ var pipeline;
         });
         pipeline.quad2 = new THREE.Mesh(pipeline.plane, pipeline.material2);
         pipeline.scene2.add(pipeline.quad2);
-        if (pipeline.ENABLE_SCENE3) {
+        if (pipeline.USE_SCENE3) {
             pipeline.material3?.dispose();
             pipeline.material3 = new THREE.ShaderMaterial({
                 uniforms: {

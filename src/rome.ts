@@ -35,6 +35,7 @@ namespace rome {
 		glob.rome = rome;
 		glob.reprerender = true;
 		glob.dirtyObjects = true;
+		glob.randomSpriteColor = false;
 		glob.scale = 1;
 		glob.hexSize = [17, 9];
 		glob.gameobjects = [0, 0];
@@ -120,20 +121,24 @@ namespace rome {
 		document.querySelector('rome-stats')!.innerHTML = `
 			DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
 			<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
-			<br />&#9;ENABLE_SCENE3: ${pipeline.ENABLE_SCENE3}
-			<br />&#9;TOP_DOWN_MODE (space bar): ${tileform.TOP_DOWN_MODE}
-			<br />&#9;RENDER_AXES (a): ${tileform.RENDER_AXES}
-			<br />&#9;ALLOW_NORMAL_MAPS (f3): ${tileform.ALLOW_NORMAL_MAPS}
-			<br />&#9;SUN_CAMERA (f4): ${tileform.SUN_CAMERA}
-			<br />&#9;glob hexSize (f4): ${pts.to_string_fixed(glob.hexSize)}
+			<br />&#9;USE_SCENE3: ${pipeline.USE_SCENE3}
+			<br />--
+			<br />&#9;TOGGLE_TOP_DOWN_MODE (f1): ${tileform.TOGGLE_TOP_DOWN_MODE}
+			<br />&#9;TOGGLE_RENDER_AXES (f2): ${tileform.TOGGLE_RENDER_AXES}
+			<br />&#9;TOGGLE_NORMAL_MAPS (f3): ${tileform.TOGGLE_NORMAL_MAPS}
+			<br />&#9;TOGGLE_SUN_CAMERA (f4): ${tileform.TOGGLE_SUN_CAMERA}
+			<br />--
+			<br />&#9;randomSpriteColor (h): ${glob.randomSpriteColor}
 			<br />dither, color correction (d, z): ${pipeline.dithering}, ${pipeline.compression}
-			<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
 			<br />render scale (-, =): ${glob.scale}
 			<br />zoom scale (r, f): ${zoom.scale()}
 			<br />grid (t, g): ${world_manager.world.grid.spread} / ${world_manager.world.grid.outside}
 			<br />hex size ([, ]): ${tileform.hex_size}
+			<br />--
+			<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
 			<br />glob.reprerender: ${glob.reprerender}
 			<br />glob.dirtyObjects: ${glob.dirtyObjects}
+			<br />&#9;hexSize: ${pts.to_string_fixed(glob.hexSize)}
 			<!--<br />cameraMode: ${pipeline.cameraMode}-->
 			<br />chunk_span: ${clod.chunk_span} x ${clod.chunk_span}
 			<br />gobjs: ${glob.gameobjects[0]} / ${glob.gameobjects[1]}
@@ -168,6 +173,10 @@ namespace rome {
 	}
 
 	function keys() {
+		if (app.key('h') == 1) {
+			glob.randomSpriteColor = !glob.randomSpriteColor;
+			purgeRemake();
+		}
 		if (app.key('-') == 1) {
 			if (glob.scale > 1)
 				glob.scale -= 1;

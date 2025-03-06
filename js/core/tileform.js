@@ -15,19 +15,19 @@ var tileform;
     // using math based entirely on trial and error
     // i managed to create a sun that doesn't render uniformly
     // setting this is nice but requires reprerenders
-    tileform.SUN_CAMERA = false;
+    tileform.TOGGLE_SUN_CAMERA = false;
     // this switch enables lights to "act more 3d"
     // by raising individual lights the further they are from the camera
     // this is just an idea and doesn't work yet
     tileform.lyftLightSourcesFromCamera = false;
     // like it says this toggles the beau ti ful relief maps
-    tileform.ALLOW_NORMAL_MAPS = true;
+    tileform.TOGGLE_NORMAL_MAPS = true;
     // once i realized the projection function pretended that tiles were dimetric
     // but could be uniform hexagons, this only sets the stage camera to top down,
     // then sets the global hex size to equal width and height
-    tileform.TOP_DOWN_MODE = false;
+    tileform.TOGGLE_TOP_DOWN_MODE = false;
     // beautiful red green blues
-    tileform.RENDER_AXES = true;
+    tileform.TOGGLE_RENDER_AXES = false;
     // i know directional lights are supposed to cast light uniformly
     // but they actually act more like giant point lights
     // but this setting defines the size of the sun orb
@@ -143,7 +143,7 @@ var tileform;
             stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -100, 500);
             stage.camera.position.set(0, 0, 0);
             stage.camera.rotation.set(stageCameraRotation, 0, 0);
-            if (tileform.SUN_CAMERA) {
+            if (tileform.TOGGLE_SUN_CAMERA) {
                 // This math was a lot of trial and error
                 // But makes sunlight more 3d
                 glob.reprerender = true;
@@ -266,7 +266,7 @@ var tileform;
         _create() {
             this.hexTile = new hex_tile(this.data);
             this.entityGroup.add(this.hexTile.group);
-            if (tileform.RENDER_AXES)
+            if (tileform.TOGGLE_RENDER_AXES)
                 this.entityGroup.add(new THREE.AxesHelper(12));
             this.translate();
         }
@@ -311,7 +311,7 @@ var tileform;
                 normalMap: pipeline.getTexture(this.data.shapeGroundTextureNormal),
                 // side: THREE.DoubleSide
             });
-            if (!tileform.ALLOW_NORMAL_MAPS)
+            if (!tileform.TOGGLE_NORMAL_MAPS)
                 material.normalMap = null;
             // geometry = new THREE.PlaneGeometry(10, 10);
             // Now do the grouping
@@ -354,20 +354,20 @@ var tileform;
         _create() {
             const { shapeSize } = this.data;
             const material = new THREE.MeshPhongMaterial({
-                color: 'red',
+                // color: 'red',
                 map: pipeline.getTexture(this.data.shapeTexture),
                 normalMap: pipeline.getTexture(this.data.shapeTextureNormal)
             });
-            if (!tileform.ALLOW_NORMAL_MAPS)
+            if (!tileform.TOGGLE_NORMAL_MAPS)
                 material.normalMap = null;
             this.hexTile = new hex_tile(this.data);
             this.wallGroup = wallMaker(this, material);
             this.rotationGroup = new THREE.Group();
             this.rotationGroup.add(this.wallGroup);
-            this.rotationGroup.position.z = shapeSize[2];
+            this.rotationGroup.position.z = shapeSize[2] / 2;
             this.entityGroup.add(this.rotationGroup);
             this.entityGroup.add(this.hexTile.group);
-            if (tileform.RENDER_AXES)
+            if (tileform.TOGGLE_RENDER_AXES)
                 this.entityGroup.add(new THREE.AxesHelper(12));
             // Translate so we can take lighting sources
             this.translate();
@@ -445,7 +445,9 @@ var tileform;
             }
             // let point = interpol(wall3d, 'west', 'southeast');
             point = pts.add(point, [-4, -4]);
-            geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
+            point = pts.add(point, [0, 4]);
+            geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
+            // material.color = new THREE.Color('red');
             mesh = new THREE.Mesh(geometry, material);
             mesh.position.set(point[0], point[1], 0);
             mesh.rotation.set(0, 0, Math.PI / 2);
@@ -566,9 +568,9 @@ var tileform;
     }
     tileform.light_source = light_source;
     function opkl() {
-        if (app.key(' ') == 1) {
-            tileform.TOP_DOWN_MODE = !tileform.TOP_DOWN_MODE;
-            if (tileform.TOP_DOWN_MODE) {
+        if (app.key('f1') == 1) {
+            tileform.TOGGLE_TOP_DOWN_MODE = !tileform.TOGGLE_TOP_DOWN_MODE;
+            if (tileform.TOGGLE_TOP_DOWN_MODE) {
                 stageCameraRotation = 0;
                 glob.hexSize = [17, 17];
             }
@@ -579,14 +581,14 @@ var tileform;
             // Our wpos is still correct, but our rpos is now outdated
             pan.rpos = pts.project(pan.wpos);
         }
+        else if (app.key('f2') == 1) {
+            tileform.TOGGLE_RENDER_AXES = !tileform.TOGGLE_RENDER_AXES;
+        }
         else if (app.key('f3') == 1) {
-            tileform.ALLOW_NORMAL_MAPS = !tileform.ALLOW_NORMAL_MAPS;
+            tileform.TOGGLE_NORMAL_MAPS = !tileform.TOGGLE_NORMAL_MAPS;
         }
         else if (app.key('f4') == 1) {
-            tileform.SUN_CAMERA = !tileform.SUN_CAMERA;
-        }
-        else if (app.key('a') == 1) {
-            tileform.RENDER_AXES = !tileform.RENDER_AXES;
+            tileform.TOGGLE_SUN_CAMERA = !tileform.TOGGLE_SUN_CAMERA;
         }
         else if (app.key('k') == 1) {
             wallRotationY -= 1;

@@ -37,7 +37,11 @@ var app;
             keys[key] = keys[key] ? KEY.AGAIN : KEY.PRESS;
         else if ('keyup' == event.type)
             keys[key] = KEY.UP;
-        if (event.keyCode == 114)
+        if (event.keyCode == 112 ||
+            event.keyCode == 113 ||
+            event.keyCode == 114 ||
+            event.keyCode == 115 ||
+            event.keyCode == 116)
             event.preventDefault();
     }
     app.onkeys = onkeys;

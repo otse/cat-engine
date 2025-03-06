@@ -27,7 +27,7 @@ var zoom;
             zoom.level = (zoom.level < zoom.zooms.length - 1) ? zoom.level + 1 : zoom.level;
             glob.dirtyObjects = true;
         }
-        const camera = pipeline.ENABLE_SCENE3 ? pipeline.camera3 : pipeline.camera;
+        const camera = pipeline.USE_SCENE3 ? pipeline.camera3 : pipeline.camera;
         const scale = zoom.zooms[zoom.level];
         if (pipeline.cameraMode == 'perspective') {
             pipeline.camera.position.z = (5 - zoom.level) * 40 || 10;

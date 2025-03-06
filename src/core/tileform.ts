@@ -24,7 +24,7 @@ namespace tileform {
 	// using math based entirely on trial and error
 	// i managed to create a sun that doesn't render uniformly
 	// setting this is nice but requires reprerenders
-	export let SUN_CAMERA = false;
+	export let TOGGLE_SUN_CAMERA = false;
 
 	// this switch enables lights to "act more 3d"
 	// by raising individual lights the further they are from the camera
@@ -32,15 +32,15 @@ namespace tileform {
 	export const lyftLightSourcesFromCamera = false;
 
 	// like it says this toggles the beau ti ful relief maps
-	export let ALLOW_NORMAL_MAPS = true;
+	export let TOGGLE_NORMAL_MAPS = true;
 
 	// once i realized the projection function pretended that tiles were dimetric
 	// but could be uniform hexagons, this only sets the stage camera to top down,
 	// then sets the global hex size to equal width and height
-	export var TOP_DOWN_MODE = false;
+	export var TOGGLE_TOP_DOWN_MODE = false;
 
 	// beautiful red green blues
-	export var RENDER_AXES = true;
+	export var TOGGLE_RENDER_AXES = false;
 
 	// i know directional lights are supposed to cast light uniformly
 	// but they actually act more like giant point lights
@@ -177,7 +177,7 @@ namespace tileform {
 				-100, 500);
 			camera.position.set(0, 0, 0);
 			camera.rotation.set(stageCameraRotation, 0, 0);
-			if (SUN_CAMERA) {
+			if (TOGGLE_SUN_CAMERA) {
 				// This math was a lot of trial and error
 				// But makes sunlight more 3d
 				glob.reprerender = true;
@@ -311,7 +311,7 @@ namespace tileform {
 		protected override _create() {
 			this.hexTile = new hex_tile(this.data);
 			this.entityGroup.add(this.hexTile.group);
-			if (RENDER_AXES)
+			if (TOGGLE_RENDER_AXES)
 				this.entityGroup.add(new THREE.AxesHelper(12));
 			this.translate();
 		}
@@ -355,7 +355,7 @@ namespace tileform {
 				normalMap: pipeline.getTexture(this.data.shapeGroundTextureNormal!),
 				// side: THREE.DoubleSide
 			});
-			if (!ALLOW_NORMAL_MAPS)
+			if (!TOGGLE_NORMAL_MAPS)
 				material.normalMap = null;
 			// geometry = new THREE.PlaneGeometry(10, 10);
 			// Now do the grouping
@@ -404,20 +404,20 @@ namespace tileform {
 		protected override _create() {
 			const { shapeSize } = this.data;
 			const material = new THREE.MeshPhongMaterial({
-				color: 'red',
+				// color: 'red',
 				map: pipeline.getTexture(this.data.shapeTexture!),
 				normalMap: pipeline.getTexture(this.data.shapeTextureNormal!)
 			});
-			if (!ALLOW_NORMAL_MAPS)
+			if (!TOGGLE_NORMAL_MAPS)
 				material.normalMap = null;
 			this.hexTile = new hex_tile(this.data);
 			this.wallGroup = wallMaker(this, material);
 			this.rotationGroup = new THREE.Group();
 			this.rotationGroup.add(this.wallGroup);
-			this.rotationGroup.position.z = shapeSize![2];
+			this.rotationGroup.position.z = shapeSize![2] / 2;
 			this.entityGroup.add(this.rotationGroup);
 			this.entityGroup.add(this.hexTile.group);
-			if (RENDER_AXES)
+			if (TOGGLE_RENDER_AXES)
 				this.entityGroup.add(new THREE.AxesHelper(12));
 			// Translate so we can take lighting sources
 			this.translate();
@@ -507,7 +507,9 @@ namespace tileform {
 			}
 			// let point = interpol(wall3d, 'west', 'southeast');
 			point = pts.add(point, [-4, -4]);
-			geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
+			point = pts.add(point, [0, 4]);
+			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
+			// material.color = new THREE.Color('red');
 			mesh = new THREE.Mesh(geometry, material);
 			mesh.position.set(point[0], point[1], 0);
 			mesh.rotation.set(0, 0, Math.PI / 2);
@@ -635,9 +637,9 @@ namespace tileform {
 	}
 
 	function opkl() {
-		if (app.key(' ') == 1) {
-			TOP_DOWN_MODE = !TOP_DOWN_MODE;
-			if (TOP_DOWN_MODE) {
+		if (app.key('f1') == 1) {
+			TOGGLE_TOP_DOWN_MODE = !TOGGLE_TOP_DOWN_MODE;
+			if (TOGGLE_TOP_DOWN_MODE) {
 				stageCameraRotation = 0;
 				glob.hexSize = [17, 17];
 			} else {
@@ -647,14 +649,14 @@ namespace tileform {
 			// Our wpos is still correct, but our rpos is now outdated
 			pan.rpos = pts.project(pan.wpos);
 		}
+		else if (app.key('f2') == 1) {
+			TOGGLE_RENDER_AXES = !TOGGLE_RENDER_AXES;
+		}
 		else if (app.key('f3') == 1) {
-			ALLOW_NORMAL_MAPS = !ALLOW_NORMAL_MAPS;
+			TOGGLE_NORMAL_MAPS = !TOGGLE_NORMAL_MAPS;
 		}
 		else if (app.key('f4') == 1) {
-			SUN_CAMERA = !SUN_CAMERA;
-		}
-		else if (app.key('a') == 1) {
-			RENDER_AXES = !RENDER_AXES;
+			TOGGLE_SUN_CAMERA = !TOGGLE_SUN_CAMERA;
 		}
 		else if (app.key('k') == 1) {
 			wallRotationY -= 1;

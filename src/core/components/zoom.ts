@@ -32,7 +32,7 @@ namespace zoom {
             level = (level < zooms.length - 1) ? level + 1 : level;
             glob.dirtyObjects = true;
         }
-        const camera = pipeline.ENABLE_SCENE3 ? pipeline.camera3 : pipeline.camera;
+        const camera = pipeline.USE_SCENE3 ? pipeline.camera3 : pipeline.camera;
         const scale = zooms[level];
         if (pipeline.cameraMode == 'perspective') {
             pipeline.camera.position.z = (5 - level) * 40 || 10;
