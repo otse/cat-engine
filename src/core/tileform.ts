@@ -89,7 +89,7 @@ namespace tileform {
 		export let spotlight: sprite3d | undefined
 	}
 
-	let stageCameraRotation = 0.986;
+	let stageCameraRotation = 0.98;
 
 	let wallRotationY = 6;
 

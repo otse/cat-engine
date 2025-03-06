@@ -68,7 +68,7 @@ var tileform;
     let stage;
     (function (stage) {
     })(stage = tileform.stage || (tileform.stage = {}));
-    let stageCameraRotation = 0.986;
+    let stageCameraRotation = 0.98;
     let wallRotationY = 6;
     (function (stage) {
         function step() {
