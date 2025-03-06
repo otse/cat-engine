@@ -24,7 +24,7 @@ export class pan {
     // Make the marker move in full tiles?
     static noHalfMeasures = false;
     // Rpos be pixel-based?
-    static roundRpos = false;
+    static roundRpos = true;
     // Punish the player after dragging the camera?
     static dragReleaseRoundsToNearestFullPixel = false;
     static get wpos() {
@@ -131,7 +131,9 @@ export class pan {
         }
     }
     static set_camera() {
-        const rpos2 = rpos; //(pts.add(rpos, pts.divide([0, glob.hexSize[1]], 2)));
+        let rpos2 = rpos; //(pts.add(rpos, pts.divide([0, glob.hexSize[1]], 2)));
+        if (pipeline.USE_SCENE3)
+            rpos2 = pts.make_even(rpos2, 1);
         pipeline.groups.camera.position.x = rpos2[0];
         pipeline.groups.camera.position.y = rpos2[1];
         pipeline.groups.camera.updateMatrix();

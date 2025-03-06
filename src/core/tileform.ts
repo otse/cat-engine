@@ -89,7 +89,7 @@ namespace tileform {
 		export let spotlight: sprite3d | undefined
 	}
 
-	let stageCameraRotation = 0.9471975511965977;
+	let stageCameraRotation = 0.986;
 
 	let wallRotationY = 6;
 
@@ -412,6 +412,8 @@ namespace tileform {
 				material.normalMap = null;
 			this.hexTile = new hex_tile(this.data);
 			this.wallGroup = wallMaker(this, material);
+			this.wallGroup.position.set(5, 4, 0); // Push it up
+			this.wallGroup.updateMatrix();
 			this.rotationGroup = new THREE.Group();
 			this.rotationGroup.add(this.wallGroup);
 			this.rotationGroup.position.z = shapeSize![2] / 2;
@@ -506,8 +508,7 @@ namespace tileform {
 				//point = pts.add(point, [-size[1] / 2, 0]);
 			}
 			// let point = interpol(wall3d, 'west', 'southeast');
-			point = pts.add(point, [-4, -4]);
-			point = pts.add(point, [0, 4]);
+			point = pts.add(point, [-4, 0]);
 			geometry = new THREE.BoxGeometry(size[0] / 2, size[1], size[2]);
 			// material.color = new THREE.Color('red');
 			mesh = new THREE.Mesh(geometry, material);
@@ -647,7 +648,7 @@ namespace tileform {
 				glob.hexSize = [17, 9];
 			}
 			// Our wpos is still correct, but our rpos is now outdated
-			pan.rpos = pts.project(pan.wpos);
+			pan.rpos = pts.mult(pts.project(pan.wpos), glob.scale);
 		}
 		else if (app.key('f2') == 1) {
 			TOGGLE_RENDER_AXES = !TOGGLE_RENDER_AXES;
@@ -666,10 +667,10 @@ namespace tileform {
 		}
 		else if (app.key('v') == 1) {
 			if (stageCameraRotation > 0)
-				stageCameraRotation -= .1;
+				stageCameraRotation -= .01;
 		}
 		else if (app.key('b') == 1) {
-			stageCameraRotation += .1;
+			stageCameraRotation += .01;
 		}
 		else {
 			return;

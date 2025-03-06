@@ -183,7 +183,7 @@ var pipeline;
     pipeline.ROUND_UP_DOTS_PER_INCH = true;
     pipeline.USE_SCENE3 = true;
     pipeline.dotsPerInch = 1;
-    pipeline.dithering = false;
+    pipeline.dithering = true;
     pipeline.compression = true;
     let groups;
     (function (groups) {
