@@ -31,6 +31,7 @@ var rome;
         glob.randomSpriteColor = false;
         glob.scale = 1;
         glob.hexSize = [17, 9];
+        glob.hexSize = [17, 17]; // Monolith
         glob.gameobjects = [0, 0];
         glob.sample = rome.sample;
         await preload_basic_textures();
