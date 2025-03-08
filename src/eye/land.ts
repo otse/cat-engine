@@ -1,8 +1,6 @@
-import clod from "../core/clod.js";
 import game_object from "../core/objects/game object.js";
 import tile3d from "../core/objects/tile 3d.js";
 import game from "./game.js";
-import rome from "../rome.js";
 import world_manager from "../core/world manager.js";
 import aabb2 from "../dep/aabb2.js";
 import pts from "../dep/pts.js";

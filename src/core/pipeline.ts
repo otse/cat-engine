@@ -188,16 +188,17 @@ namespace pipeline {
 	export const DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
 	export const ROUND_UP_DOTS_PER_INCH = true;
 
-	export const USE_SCENE3 = true;
+	export const USE_SCENE3 = false;
 
 	export var dotsPerInch = 1;
 
-	export var dithering = true;
+	export var dithering = false;
 	export var compression = true;
 
 	export namespace groups {
 		export var camera
-		export var major
+		export var sprites
+		export var monolith
 	}
 	export var scene
 	export var scene2
@@ -267,17 +268,20 @@ namespace pipeline {
 		glob.dirtyObjects = true;
 
 		THREE.ColorManagement.enabled = false;
-		THREE.Object3D.DEFAULT_MATRIX_AUTO_UPDATE = false;
+		THREE.Object3D.DEFAULT_MATRIX_AUTO_UPDATE = true;
 		THREE.Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		groups.camera = new THREE.Group;
-		groups.major = new THREE.Group;
-		groups.major.frustumCulled = false;
+		groups.sprites = new THREE.Group;
+		groups.sprites.visible = false;
+		groups.sprites.frustumCulled = false;
+		groups.monolith = new THREE.Group;
 
 		scene = new THREE.Scene();
 		scene.frustumCulled = false;
 		scene.add(groups.camera);
-		scene.add(groups.major);
+		scene.add(groups.sprites);
+		scene.add(groups.monolith);
 		// scene.add(new THREE.AxesHelper(100));
 		scene.background = new THREE.Color('#333');
 
@@ -413,6 +417,7 @@ namespace pipeline {
 		else {
 			camera = makeOrthographicCamera(targetSize[0], targetSize[1]);
 			groups.camera.add(camera);
+			groups.camera.add(new THREE.AxesHelper(20));
 		}
 		camera.updateMatrix();
 		camera.updateProjectionMatrix();

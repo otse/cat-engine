@@ -135,6 +135,8 @@ var tileform;
         // aka stage
         function prepare(sprite) {
             stage.scene.scale.set(glob.scale, glob.scale, glob.scale);
+            // Monolith doesn't add shapes to its stage renderer
+            return;
             //scene.updateMatrix();
             //scene.updateMatrixWorld(true); // Wonky
             stage.spotlight = sprite;
@@ -184,6 +186,8 @@ var tileform;
         }
         stage.prepare = prepare;
         function render() {
+            // Monolith doesn't render objects to textures
+            return;
             // Todo: stage renderer doesn't render anything so use default
             glob.renderer.setRenderTarget(stage.spotlight.target);
             glob.renderer.clear();
@@ -194,7 +198,6 @@ var tileform;
         stage.render = render;
     })(stage = tileform.stage || (tileform.stage = {}));
     // end of stage
-    const shapes = [];
     const entities = [];
     class entity3d {
         gobj;
@@ -205,12 +208,20 @@ var tileform;
             this.entityGroup = new THREE.Group();
             entities.push(this);
         }
+        _monolithAdd() {
+            pipeline.groups.monolith.add(this.entityGroup);
+        }
+        _monolithRemove() {
+            pipeline.groups.monolith.remove(this.entityGroup);
+        }
         create() {
             this._create();
+            this._monolithAdd();
         }
         delete() {
             this.free();
             this._delete();
+            this._monolithRemove();
         }
         step() {
             this._step();

@@ -35,7 +35,7 @@ export class pan {
 	static readonly noHalfMeasures = false;
 
 	// Rpos be pixel-based?
-	static readonly roundRpos = true;
+	static readonly roundRpos = false;
 
 	// Punish the player after dragging the camera?
 	static readonly dragReleaseRoundsToNearestFullPixel = false;

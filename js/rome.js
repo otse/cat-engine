@@ -32,6 +32,7 @@ var rome;
         glob.scale = 1;
         glob.hexSize = [17, 9];
         glob.gameobjects = [0, 0];
+        glob.sample = rome.sample;
         await preload_basic_textures();
         await pipeline.init();
         await tileform.init();
@@ -110,7 +111,8 @@ var rome;
     rome.makeTestingChamber = makeTestingChamber;
     function build_then_output_stats() {
         document.querySelector('rome-stats').innerHTML = `
-			DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
+			rogue - monolith git branch
+			<br />DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
 			<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
 			<br />&#9;USE_SCENE3: ${pipeline.USE_SCENE3}
 			<br />--

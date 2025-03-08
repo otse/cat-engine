@@ -164,16 +164,18 @@ namespace tileform {
 		// aka stage
 		export function prepare(sprite: sprite3d) {
 			scene.scale.set(glob.scale, glob.scale, glob.scale);
+			// Monolith doesn't add shapes to its stage renderer
+			return;
 			//scene.updateMatrix();
 			//scene.updateMatrixWorld(true); // Wonky
 			spotlight = sprite;
 			let { spriteSize: size } = sprite.data;
 			size = (pts.mult(size!, glob.scale));
 			camera = new THREE.OrthographicCamera(
-				size[0] / - 2,
-				size[0] / 2,
-				size[1] / 2,
-				size[1] / - 2,
+				size![0] / - 2,
+				size![0] / 2,
+				size![1] / 2,
+				size![1] / - 2,
 				-100, 500);
 			camera.position.set(0, 0, 0);
 			camera.rotation.set(stageCameraRotation, 0, 0);
@@ -218,6 +220,8 @@ namespace tileform {
 		}
 
 		export function render() {
+			// Monolith doesn't render objects to textures
+			return;
 			// Todo: stage renderer doesn't render anything so use default
 			glob.renderer.setRenderTarget(spotlight!.target);
 			glob.renderer.clear();
@@ -228,7 +232,6 @@ namespace tileform {
 	}
 	// end of stage
 
-	const shapes: shape3d[] = []
 	const entities: entity3d[] = []
 
 	abstract class entity3d {
@@ -238,12 +241,20 @@ namespace tileform {
 			this.entityGroup = new THREE.Group();
 			entities.push(this);
 		}
+		private _monolithAdd() {
+			pipeline.groups.monolith.add(this.entityGroup);
+		}
+		private _monolithRemove() {
+			pipeline.groups.monolith.remove(this.entityGroup);
+		}
 		create() {
 			this._create();
+			this._monolithAdd();
 		}
 		delete() {
 			this.free();
 			this._delete();
+			this._monolithRemove();
 		}
 		step() {
 			this._step();

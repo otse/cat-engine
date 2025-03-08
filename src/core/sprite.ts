@@ -2,7 +2,6 @@ import pts from "../dep/pts.js";
 import game_object from "./objects/game object.js";
 import clod from "./clod.js";
 import pipeline from "./pipeline.js";
-import rome from "../rome.js";
 import glob from "./../dep/glob.js";
 
 interface sprite_literal {
@@ -42,7 +41,7 @@ export class sprite {
 		this.gobj.sprite = this;
 		// this.data.spriteColor = this.gobj.data.colorOverride || 'white';
 		if (glob.randomSpriteColor)
-			this.data.spriteColor = rome.sample(['purple', 'magenta', 'cyan', 'wheat', 'pink', 'salmon']);
+			this.data.spriteColor = glob.sample(['purple', 'magenta', 'cyan', 'wheat', 'pink', 'salmon']);
 		this.matrix = new THREE.Matrix3;
 		this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
 	}
@@ -80,7 +79,7 @@ export class sprite {
 		this.geometry = new THREE.PlaneGeometry(spriteSize[0], spriteSize[1], 1, 1);
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
 		this.update();
-		pipeline.groups.major.add(this.mesh);
+		pipeline.groups.sprites.add(this.mesh);
 	}
 	update() {
 		const { gobj: gabe } = this;

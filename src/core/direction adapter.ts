@@ -1,8 +1,4 @@
-import game from "../eye/game.js";
-import rome from "../rome.js";
-import clod from "./clod.js";
 import game_object from "./objects/game object.js";
-import pipeline from "./pipeline.js";
 import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 import world_manager from "./world manager.js";
