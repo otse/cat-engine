@@ -141,6 +141,8 @@ export class pan {
 				// Scale
 				dif = (pts.mult(dif, glob.dotsPerInch));
 				dif = (pts.mult(dif, zoom.scale()));
+				if (pipeline.USE_SCENE3)
+					dif = (pts.divide(dif, 2));
 				dif = (pts.subtract(dif, before));
 				rpos = (pts.inv(dif));
 			}

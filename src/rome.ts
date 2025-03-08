@@ -136,11 +136,11 @@ namespace rome {
 			<br />hex size ([, ]): ${tileform.hex_size}
 			<br />--
 			<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
-			<br />glob.reprerender: ${glob.reprerender}
-			<br />glob.dirtyObjects: ${glob.dirtyObjects}
-			<br />&#9;hexSize: ${pts.to_string_fixed(glob.hexSize)}
+			<br />reprerender: ${glob.reprerender}
+			<br />dirtyObjects: ${glob.dirtyObjects}
+			<br />&#9;hex size (q, a): ${pts.to_string_fixed(glob.hexSize)}
 			<!--<br />cameraMode: ${pipeline.cameraMode}-->
-			<br />chunk_span: ${clod.chunk_span} x ${clod.chunk_span}
+			<br />chunk span size: ${clod.chunk_span} x ${clod.chunk_span}
 			<br />gobjs: ${glob.gameobjects[0]} / ${glob.gameobjects[1]}
 			<br />chunks: ${clod.numbers.chunks[0]} / ${clod.numbers.chunks[1]}
 			<br />pan wpos, rpos: ${pts.to_string_fixed(pan.wpos)} (${pts.to_string_fixed(pan.rpos)})

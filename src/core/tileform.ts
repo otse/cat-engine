@@ -644,7 +644,7 @@ namespace tileform {
 				stageCameraRotation = 0;
 				glob.hexSize = [17, 17];
 			} else {
-				stageCameraRotation = 0.9471975511965977;
+				stageCameraRotation = 0.98;
 				glob.hexSize = [17, 9];
 			}
 			// Our wpos is still correct, but our rpos is now outdated
@@ -671,6 +671,12 @@ namespace tileform {
 		}
 		else if (app.key('b') == 1) {
 			stageCameraRotation += .01;
+		}
+		else if (app.key('q') == 1) {
+			glob.hexSize = pts.add(glob.hexSize, [0, 1]);
+		}
+		else if (app.key('a') == 1) {
+			glob.hexSize = pts.add(glob.hexSize, [0, -1]);
 		}
 		else {
 			return;
