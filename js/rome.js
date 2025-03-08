@@ -30,9 +30,10 @@ var rome;
         glob.dirtyObjects = true;
         glob.randomSpriteColor = false;
         glob.scale = 1;
+        glob.cameraRotation = 0.98;
         glob.hexSize = [17, 9];
-        glob.hexSize = [17, 17]; // Monolith
-        glob.gameobjects = [0, 0];
+        glob.hexSize = [17, 15]; // Monolith
+        glob.gobjsCounter = [0, 0];
         glob.sample = rome.sample;
         await preload_basic_textures();
         await pipeline.init();
@@ -135,7 +136,7 @@ var rome;
 			<br />&#9;hex size (q, a): ${pts.to_string_fixed(glob.hexSize)}
 			<!--<br />cameraMode: ${pipeline.cameraMode}-->
 			<br />chunk span size: ${clod.chunk_span} x ${clod.chunk_span}
-			<br />gobjs: ${glob.gameobjects[0]} / ${glob.gameobjects[1]}
+			<br />gobjs: ${glob.gobjsCounter[0]} / ${glob.gobjsCounter[1]}
 			<br />chunks: ${clod.numbers.chunks[0]} / ${clod.numbers.chunks[1]}
 			<br />pan wpos, rpos: ${pts.to_string_fixed(pan.wpos)} (${pts.to_string_fixed(pan.rpos)})
 			`;

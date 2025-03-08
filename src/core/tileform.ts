@@ -281,7 +281,7 @@ namespace tileform {
 		protected translate() {
 			// Useful for beautiful lighting
 			const { wpos } = this.gobj;
-			const pos = this.pos3d = (pts.mult(project_linear_space(wpos), stretchSpace));
+			const pos = this.pos3d = pts.project(wpos);// (pts.mult(project_linear_space(wpos), stretchSpace));
 			this.entityGroup.position.fromArray([...pos, 0]);
 			this.entityGroup.updateMatrix();
 		}
@@ -652,14 +652,10 @@ namespace tileform {
 		if (app.key('f1') == 1) {
 			TOGGLE_TOP_DOWN_MODE = !TOGGLE_TOP_DOWN_MODE;
 			if (TOGGLE_TOP_DOWN_MODE) {
-				stageCameraRotation = 0;
-				glob.hexSize = [17, 17];
+				glob.cameraRotation = 0;
 			} else {
-				stageCameraRotation = 0.98;
-				glob.hexSize = [17, 9];
+				glob.cameraRotation = 0.98;
 			}
-			// Our wpos is still correct, but our rpos is now outdated
-			pan.rpos = pts.mult(pts.project(pan.wpos), glob.scale);
 		}
 		else if (app.key('f2') == 1) {
 			TOGGLE_RENDER_AXES = !TOGGLE_RENDER_AXES;

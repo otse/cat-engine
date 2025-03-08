@@ -181,7 +181,7 @@ var pipeline;
     pipeline.cameraMode = 'ortho';
     pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
     pipeline.ROUND_UP_DOTS_PER_INCH = true;
-    pipeline.USE_SCENE3 = false;
+    pipeline.USE_SCENE3 = true;
     pipeline.dotsPerInch = 1;
     pipeline.dithering = false;
     pipeline.compression = true;
@@ -219,6 +219,10 @@ var pipeline;
         glob.dirtyObjects = false;
     }
     pipeline.render = render;
+    function purge() {
+        onWindowResize();
+    }
+    pipeline.purge = purge;
     function init() {
         console.log('pipeline init');
         glob.dirtyObjects = true;
@@ -348,6 +352,7 @@ var pipeline;
             pipeline.camera = makeOrthographicCamera(pipeline.targetSize[0], pipeline.targetSize[1]);
             groups.camera.add(pipeline.camera);
             groups.camera.add(new THREE.AxesHelper(20));
+            groups.camera.rotation.x = glob.cameraRotation;
         }
         pipeline.camera.updateMatrix();
         pipeline.camera.updateProjectionMatrix();

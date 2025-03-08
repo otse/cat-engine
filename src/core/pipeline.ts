@@ -188,7 +188,7 @@ namespace pipeline {
 	export const DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
 	export const ROUND_UP_DOTS_PER_INCH = true;
 
-	export const USE_SCENE3 = false;
+	export const USE_SCENE3 = true;
 
 	export var dotsPerInch = 1;
 
@@ -262,6 +262,10 @@ namespace pipeline {
 
 	export var plane
 
+	export function purge() {
+		onWindowResize();
+	}
+	
 	export function init() {
 		console.log('pipeline init')
 
@@ -418,6 +422,7 @@ namespace pipeline {
 			camera = makeOrthographicCamera(targetSize[0], targetSize[1]);
 			groups.camera.add(camera);
 			groups.camera.add(new THREE.AxesHelper(20));
+			groups.camera.rotation.x = glob.cameraRotation;
 		}
 		camera.updateMatrix();
 		camera.updateProjectionMatrix();

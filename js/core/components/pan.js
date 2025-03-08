@@ -24,7 +24,7 @@ export class pan {
     // Make the marker move in full tiles?
     static noHalfMeasures = false;
     // Rpos be pixel-based?
-    static roundRpos = false;
+    static roundRpos = true;
     // Punish the player after dragging the camera?
     static dragReleaseRoundsToNearestFullPixel = false;
     static get wpos() {
