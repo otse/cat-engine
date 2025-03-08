@@ -25,12 +25,12 @@ namespace zoom {
         if (wheelEnabled && app.wheel == -1 || app.key('f') == 1) {
             console.log('app wheel');
             level = (level > 0) ? level - 1 : level;
-            glob.dirtyObjects = true;
+            glob.dirtyobjects = true;
         }
         if (wheelEnabled && app.wheel == 1 || app.key('r') == 1) {
             console.log('app wheel');
             level = (level < zooms.length - 1) ? level + 1 : level;
-            glob.dirtyObjects = true;
+            glob.dirtyobjects = true;
         }
         const camera = pipeline.USE_SCENE3 ? pipeline.camera3 : pipeline.camera;
         const scale = zooms[level];

@@ -73,8 +73,8 @@ namespace tileform {
 
 	// This function does almost nothing! It doesn't matter where we project apparently
 	function project_linear_space(w: vec2): vec2 {
-		const tileWidth = glob.hexSize[0] - 1;
-		const tileHeight = glob.hexSize[0] - 1;
+		const tileWidth = glob.hexsize[0] - 1;
+		const tileHeight = glob.hexsize[0] - 1;
 		const x = w[0];
 		const y = -w[1];
 		const scaleFactor = tileWidth * 0.75;
@@ -99,7 +99,7 @@ namespace tileform {
 			opkl();
 			// Testing new lighting mode
 			//glob.reprerender = true;
-			//glob.dirtyObjects = true;
+			//glob.dirtyobjects = true;
 		}
 
 		export async function init() {
@@ -183,7 +183,7 @@ namespace tileform {
 				// This math was a lot of trial and error
 				// But makes sunlight more 3d
 				glob.reprerender = true;
-				glob.dirtyObjects = true;
+				glob.dirtyobjects = true;
 				const pos3d = (pts.mult(sprite.shape!.pos3d, glob.scale));
 				let offset = (pts.subtract(pan.rpos, pos3d));
 				sun.position.set(offset[0], offset[1], sunDistance);
@@ -612,7 +612,7 @@ namespace tileform {
 		protected override _update() {
 			// Dance the light source
 			//glob.reprerender = true;
-			//glob.dirtyObjects = true;
+			//glob.dirtyobjects = true;
 			//return;
 			this.light.position.x = 3;
 			this.light.updateMatrix();
@@ -622,7 +622,7 @@ namespace tileform {
 			this.entityGroup.updateMatrix();
 			this.light.updateMatrix();
 			glob.reprerender = true;
-			glob.dirtyObjects = true;
+			glob.dirtyobjects = true;
 		}
 		protected override _delete() {
 			console.log('remove light');
@@ -644,7 +644,7 @@ namespace tileform {
 			// this.entityGroup.updateMatrixWorld(true); // Bad
 			stage.lightsGroup.add(this.entityGroup);
 			glob.reprerender = true;
-			glob.dirtyObjects = true;
+			glob.dirtyobjects = true;
 		}
 	}
 
@@ -652,9 +652,9 @@ namespace tileform {
 		if (app.key('f1') == 1) {
 			TOGGLE_TOP_DOWN_MODE = !TOGGLE_TOP_DOWN_MODE;
 			if (TOGGLE_TOP_DOWN_MODE) {
-				glob.cameraRotation = 0;
+				glob.camerarotationx = 0;
 			} else {
-				glob.cameraRotation = 0.98;
+				glob.camerarotationx = 0.98;
 			}
 		}
 		else if (app.key('f2') == 1) {
@@ -680,10 +680,10 @@ namespace tileform {
 			stageCameraRotation += .01;
 		}
 		else if (app.key('q') == 1) {
-			glob.hexSize = pts.add(glob.hexSize, [0, 1]);
+			glob.hexsize = pts.add(glob.hexsize, [0, 1]);
 		}
 		else if (app.key('a') == 1) {
-			glob.hexSize = pts.add(glob.hexSize, [0, -1]);
+			glob.hexsize = pts.add(glob.hexsize, [0, -1]);
 		}
 		else {
 			return;

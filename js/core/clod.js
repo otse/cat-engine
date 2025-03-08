@@ -312,6 +312,7 @@ var clod;
         }
         wtorpos() {
             this.rpos = (clod.project(this.wpos));
+            this.rpos = pts.floor(this.rpos);
         }
         rtospos() {
             this.wtorpos();

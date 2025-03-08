@@ -14,7 +14,7 @@ export class wall extends game_object {
         new sprite({
             gobj: this,
             bottomSort: true,
-            spriteSize: [glob.hexSize[0], 21],
+            spriteSize: [glob.hexsize[0], 21],
             spriteImage: 'hex/wall.png',
             spriteColor: 'blue'
         });

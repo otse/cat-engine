@@ -16,7 +16,7 @@ export class tile3d extends game_object {
 	protected override _create() {
 		new sprite3d({
 			gobj: this,
-			spriteSize: glob.hexSize,
+			spriteSize: glob.hexsize,
 			shapeSize: [1, 1, 1],
 			shapeType: 'hex',
 		});

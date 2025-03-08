@@ -34,13 +34,14 @@ namespace rome {
 		console.log(' init ');
 		glob.rome = rome;
 		glob.reprerender = true;
-		glob.dirtyObjects = true;
-		glob.randomSpriteColor = false;
+		glob.dirtyobjects = true;
+		glob.randomspritecolor = false;
 		glob.scale = 1;
-		glob.cameraRotation = 0.98;
-		glob.hexSize = [17, 9];
-		glob.hexSize = [17, 15]; // Monolith
-		glob.gobjsCounter = [0, 0];
+		glob.camerarotationx = 0.98;
+		glob.hexsize = [17, 9];
+		glob.hexsize = [17, 15]; // Monolith
+		glob.camerarpos = [0, 0];
+		glob.gobjscount = [0, 0];
 		glob.sample = rome.sample;
 		await preload_basic_textures();
 		await pipeline.init();
@@ -132,7 +133,7 @@ namespace rome {
 			<br />&#9;TOGGLE_NORMAL_MAPS (f3): ${tileform.TOGGLE_NORMAL_MAPS}
 			<br />&#9;TOGGLE_SUN_CAMERA (f4): ${tileform.TOGGLE_SUN_CAMERA}
 			<br />--
-			<br />&#9;randomSpriteColor (h): ${glob.randomSpriteColor}
+			<br />&#9;randomSpriteColor (h): ${glob.randomspritecolor}
 			<br />dither, color correction (d, z): ${pipeline.dithering}, ${pipeline.compression}
 			<br />render scale (-, =): ${glob.scale}
 			<br />zoom scale (r, f): ${zoom.scale()}
@@ -141,11 +142,11 @@ namespace rome {
 			<br />--
 			<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
 			<br />reprerender: ${glob.reprerender}
-			<br />dirtyObjects: ${glob.dirtyObjects}
-			<br />&#9;hex size (q, a): ${pts.to_string_fixed(glob.hexSize)}
+			<br />dirtyObjects: ${glob.dirtyobjects}
+			<br />&#9;hex size (q, a): ${pts.to_string_fixed(glob.hexsize)}
 			<!--<br />cameraMode: ${pipeline.cameraMode}-->
 			<br />chunk span size: ${clod.chunk_span} x ${clod.chunk_span}
-			<br />gobjs: ${glob.gobjsCounter[0]} / ${glob.gobjsCounter[1]}
+			<br />gobjs: ${glob.gobjscount[0]} / ${glob.gobjscount[1]}
 			<br />chunks: ${clod.numbers.chunks[0]} / ${clod.numbers.chunks[1]}
 			<br />pan wpos, rpos: ${pts.to_string_fixed(pan.wpos)} (${pts.to_string_fixed(pan.rpos)})
 			`;
@@ -153,13 +154,13 @@ namespace rome {
 
 	export function purgeRemake() {
 		console.warn(' purgeRemake ');
-
 		const chunks = clod.helpers.get_every_chunk(world_manager.world);
 		for (const chunk of chunks) {
 			chunk.nuke();
 		}
 		glob.reprerender = true;
-		glob.dirtyObjects = true;
+		glob.dirtyobjects = true;
+		pipeline.purge();
 		world_manager.init();
 		world_manager.repopulate();
 		game.repopulate();
@@ -178,7 +179,7 @@ namespace rome {
 
 	function keys() {
 		if (app.key('h') == 1) {
-			glob.randomSpriteColor = !glob.randomSpriteColor;
+			glob.randomspritecolor = !glob.randomspritecolor;
 			purgeRemake();
 		}
 		if (app.key('-') == 1) {
@@ -206,12 +207,12 @@ namespace rome {
 		if (app.key('t') == 1) {
 			world_manager.world.grid.shrink();
 			glob.reprerender = true;
-			glob.dirtyObjects = true;
+			glob.dirtyobjects = true;
 		}
 		if (app.key('g') == 1) {
 			world_manager.world.grid.grow();
 			glob.reprerender = true;
-			glob.dirtyObjects = true;
+			glob.dirtyobjects = true;
 		}
 		if (app.key('[') == 1) {
 			tileform.hex_size -= .1;

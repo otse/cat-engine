@@ -230,7 +230,7 @@ namespace pipeline {
 		if (app.key('d') == 1)
 			material2.uniforms.dithering.value = dithering = !dithering;
 
-		if (glob.dirtyObjects) {
+		if (glob.dirtyobjects) {
 			//renderer.setRenderTarget(targetMask);
 			//renderer.clear();
 			//renderer.render(sceneMask, camera);
@@ -257,7 +257,7 @@ namespace pipeline {
 			renderer.render(scene3, camera3);
 		}
 
-		glob.dirtyObjects = false;
+		glob.dirtyobjects = false;
 	}
 
 	export var plane
@@ -269,7 +269,7 @@ namespace pipeline {
 	export function init() {
 		console.log('pipeline init')
 
-		glob.dirtyObjects = true;
+		glob.dirtyobjects = true;
 
 		THREE.ColorManagement.enabled = false;
 		THREE.Object3D.DEFAULT_MATRIX_AUTO_UPDATE = true;
@@ -374,7 +374,7 @@ namespace pipeline {
 		plane?.dispose();
 		plane = new THREE.PlaneGeometry(targetSize[0], targetSize[1]);
 
-		glob.dirtyObjects = true;
+		glob.dirtyobjects = true;
 
 		material2?.dispose();
 		material2 = new THREE.ShaderMaterial({
@@ -422,7 +422,7 @@ namespace pipeline {
 			camera = makeOrthographicCamera(targetSize[0], targetSize[1]);
 			groups.camera.add(camera);
 			groups.camera.add(new THREE.AxesHelper(20));
-			groups.camera.rotation.x = glob.cameraRotation;
+			groups.camera.rotation.x = glob.camerarotationx;
 		}
 		camera.updateMatrix();
 		camera.updateProjectionMatrix();

@@ -30,7 +30,7 @@ export class sprite {
 		public readonly data: sprite_literal
 	) {
 		this.data = {
-			spriteSize: glob.hexSize,
+			spriteSize: glob.hexsize,
 			spriteImage: 'hex/tile.png',
 			spriteColor: 'white',
 			...data,
@@ -40,7 +40,7 @@ export class sprite {
 		this.gobj = this.data.gobj;
 		this.gobj.sprite = this;
 		// this.data.spriteColor = this.gobj.data.colorOverride || 'white';
-		if (glob.randomSpriteColor)
+		if (glob.randomspritecolor)
 			this.data.spriteColor = glob.sample(['purple', 'magenta', 'cyan', 'wheat', 'pink', 'salmon']);
 		this.matrix = new THREE.Matrix3;
 		this.matrix.setUvTransform(0, 0, 1, 1, 0, 0, 1);
@@ -89,7 +89,7 @@ export class sprite {
 		let pos = pts.copy(gabe.rpos);
 		// Todo the problem here was that aligning the bottom
 		// resulted in impossible problems
-		const tileSize = glob.hexSize;
+		const tileSize = glob.hexsize;
 		// Todo omg
 		if (this.data.bottomSort)
 			pos[1] += this.data.spriteSize![1] / 2;

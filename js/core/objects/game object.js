@@ -12,7 +12,7 @@ export class game_object extends clod.obj {
     // Third axis
     z = 0;
     constructor(data) {
-        super(glob.gobjsCounter);
+        super(glob.gobjscount);
         this.data = data;
         this.data = {
             name: 'a game object',

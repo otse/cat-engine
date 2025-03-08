@@ -1,6 +1,6 @@
 import glob from "./glob.js";
 ;
-// glob.hexSize = [10, 10];
+// glob.hexsize = [10, 10];
 class pts {
     static pt(a) {
         return { x: a[0], y: a[1] };
@@ -41,7 +41,7 @@ class pts {
         }
     }
     // static readonly hexSize: vec2 = [17, 9];
-    static project(w, size = glob.hexSize) {
+    static project(w, size = glob.hexsize) {
         const tileWidth = size[0] - 1;
         const tileHeight = size[1] - 1;
         const x = w[0];
@@ -53,8 +53,8 @@ class pts {
         ];
     }
     static unproject(r) {
-        const tileWidth = glob.hexSize[0] - 1;
-        const tileHeight = glob.hexSize[1] - 1;
+        const tileWidth = glob.hexsize[0] - 1;
+        const tileHeight = glob.hexsize[1] - 1;
         // Reverse the Y-axis scaling, considering tileHeight
         const scaleFactor = tileWidth * 0.75; // This corresponds to the scaling factor in project function
         // Convert screen coordinates back to world coordinates

@@ -55,8 +55,8 @@ var tileform;
     }
     // This function does almost nothing! It doesn't matter where we project apparently
     function project_linear_space(w) {
-        const tileWidth = glob.hexSize[0] - 1;
-        const tileHeight = glob.hexSize[0] - 1;
+        const tileWidth = glob.hexsize[0] - 1;
+        const tileHeight = glob.hexsize[0] - 1;
         const x = w[0];
         const y = -w[1];
         const scaleFactor = tileWidth * 0.75;
@@ -75,7 +75,7 @@ var tileform;
             opkl();
             // Testing new lighting mode
             //glob.reprerender = true;
-            //glob.dirtyObjects = true;
+            //glob.dirtyobjects = true;
         }
         stage.step = step;
         async function init() {
@@ -149,7 +149,7 @@ var tileform;
                 // This math was a lot of trial and error
                 // But makes sunlight more 3d
                 glob.reprerender = true;
-                glob.dirtyObjects = true;
+                glob.dirtyobjects = true;
                 const pos3d = (pts.mult(sprite.shape.pos3d, glob.scale));
                 let offset = (pts.subtract(pan.rpos, pos3d));
                 stage.sun.position.set(offset[0], offset[1], sunDistance);
@@ -543,7 +543,7 @@ var tileform;
         _update() {
             // Dance the light source
             //glob.reprerender = true;
-            //glob.dirtyObjects = true;
+            //glob.dirtyobjects = true;
             //return;
             this.light.position.x = 3;
             this.light.updateMatrix();
@@ -553,7 +553,7 @@ var tileform;
             this.entityGroup.updateMatrix();
             this.light.updateMatrix();
             glob.reprerender = true;
-            glob.dirtyObjects = true;
+            glob.dirtyobjects = true;
         }
         _delete() {
             console.log('remove light');
@@ -575,7 +575,7 @@ var tileform;
             // this.entityGroup.updateMatrixWorld(true); // Bad
             stage.lightsGroup.add(this.entityGroup);
             glob.reprerender = true;
-            glob.dirtyObjects = true;
+            glob.dirtyobjects = true;
         }
     }
     tileform.light_source = light_source;
@@ -583,10 +583,10 @@ var tileform;
         if (app.key('f1') == 1) {
             tileform.TOGGLE_TOP_DOWN_MODE = !tileform.TOGGLE_TOP_DOWN_MODE;
             if (tileform.TOGGLE_TOP_DOWN_MODE) {
-                glob.cameraRotation = 0;
+                glob.camerarotationx = 0;
             }
             else {
-                glob.cameraRotation = 0.98;
+                glob.camerarotationx = 0.98;
             }
         }
         else if (app.key('f2') == 1) {
@@ -612,10 +612,10 @@ var tileform;
             stageCameraRotation += .01;
         }
         else if (app.key('q') == 1) {
-            glob.hexSize = pts.add(glob.hexSize, [0, 1]);
+            glob.hexsize = pts.add(glob.hexsize, [0, 1]);
         }
         else if (app.key('a') == 1) {
-            glob.hexSize = pts.add(glob.hexSize, [0, -1]);
+            glob.hexsize = pts.add(glob.hexsize, [0, -1]);
         }
         else {
             return;

@@ -76,19 +76,19 @@ export class pan {
     static arrows() {
         if (app.key('arrowright')) {
             rpos[0] += 1 * glob.scale;
-            glob.dirtyObjects = true;
+            glob.dirtyobjects = true;
         }
         if (app.key('arrowleft')) {
             rpos[0] -= 1 * glob.scale;
-            glob.dirtyObjects = true;
+            glob.dirtyobjects = true;
         }
         if (app.key('arrowup')) {
             rpos[1] += 1 * glob.scale;
-            glob.dirtyObjects = true;
+            glob.dirtyobjects = true;
         }
         if (app.key('arrowdown')) {
             rpos[1] -= 1 * glob.scale;
-            glob.dirtyObjects = true;
+            glob.dirtyobjects = true;
         }
     }
     static dragging = false;
@@ -106,7 +106,7 @@ export class pan {
         if (this.dragging == false)
             return;
         if (app.button(1) >= 1) {
-            glob.dirtyObjects = true;
+            glob.dirtyobjects = true;
             let mouse = app.mouse();
             mouse[1] = -mouse[1];
             let dif = (pts.subtract(begin, mouse));
@@ -133,9 +133,10 @@ export class pan {
         }
     }
     static set_camera() {
-        let rpos2 = rpos; //(pts.add(rpos, pts.divide([0, glob.hexSize[1]], 2)));
+        let rpos2 = rpos; //(pts.add(rpos, pts.divide([0, glob.hexsize[1]], 2)));
         if (pipeline.USE_SCENE3)
-            rpos2 = pts.make_even(rpos2, 1);
+            rpos2 = pts.make_uneven(rpos2, 1);
+        // rpos2 = pts.ceil(rpos2);
         pipeline.groups.camera.position.x = rpos2[0];
         pipeline.groups.camera.position.y = rpos2[1];
         pipeline.groups.camera.updateMatrix();

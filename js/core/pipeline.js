@@ -193,7 +193,7 @@ var pipeline;
             pipeline.material2.uniforms.compression.value = pipeline.compression = !pipeline.compression;
         if (app.key('d') == 1)
             pipeline.material2.uniforms.dithering.value = pipeline.dithering = !pipeline.dithering;
-        if (glob.dirtyObjects) {
+        if (glob.dirtyobjects) {
             //renderer.setRenderTarget(targetMask);
             //renderer.clear();
             //renderer.render(sceneMask, camera);
@@ -216,7 +216,7 @@ var pipeline;
             pipeline.renderer.clear();
             pipeline.renderer.render(pipeline.scene3, pipeline.camera3);
         }
-        glob.dirtyObjects = false;
+        glob.dirtyobjects = false;
     }
     pipeline.render = render;
     function purge() {
@@ -225,7 +225,7 @@ var pipeline;
     pipeline.purge = purge;
     function init() {
         console.log('pipeline init');
-        glob.dirtyObjects = true;
+        glob.dirtyobjects = true;
         THREE.ColorManagement.enabled = false;
         THREE.Object3D.DEFAULT_MATRIX_AUTO_UPDATE = true;
         THREE.Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
@@ -309,7 +309,7 @@ var pipeline;
         pipeline.targetMask.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.plane?.dispose();
         pipeline.plane = new THREE.PlaneGeometry(pipeline.targetSize[0], pipeline.targetSize[1]);
-        glob.dirtyObjects = true;
+        glob.dirtyobjects = true;
         pipeline.material2?.dispose();
         pipeline.material2 = new THREE.ShaderMaterial({
             uniforms: {
@@ -352,7 +352,7 @@ var pipeline;
             pipeline.camera = makeOrthographicCamera(pipeline.targetSize[0], pipeline.targetSize[1]);
             groups.camera.add(pipeline.camera);
             groups.camera.add(new THREE.AxesHelper(20));
-            groups.camera.rotation.x = glob.cameraRotation;
+            groups.camera.rotation.x = glob.camerarotationx;
         }
         pipeline.camera.updateMatrix();
         pipeline.camera.updateProjectionMatrix();

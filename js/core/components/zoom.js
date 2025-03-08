@@ -20,12 +20,12 @@ var zoom;
         if (wheelEnabled && app.wheel == -1 || app.key('f') == 1) {
             console.log('app wheel');
             zoom.level = (zoom.level > 0) ? zoom.level - 1 : zoom.level;
-            glob.dirtyObjects = true;
+            glob.dirtyobjects = true;
         }
         if (wheelEnabled && app.wheel == 1 || app.key('r') == 1) {
             console.log('app wheel');
             zoom.level = (zoom.level < zoom.zooms.length - 1) ? zoom.level + 1 : zoom.level;
-            glob.dirtyObjects = true;
+            glob.dirtyobjects = true;
         }
         const camera = pipeline.USE_SCENE3 ? pipeline.camera3 : pipeline.camera;
         const scale = zoom.zooms[zoom.level];
