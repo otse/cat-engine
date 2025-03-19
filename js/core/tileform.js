@@ -212,7 +212,8 @@ var tileform;
             pipeline.groups.monolith.add(this.entityGroup);
         }
         _monolithRemove() {
-            pipeline.groups.monolith.remove(this.entityGroup);
+            console.log('mono remove');
+            this.entityGroup.parent.remove(this.entityGroup);
         }
         create() {
             this._create();
@@ -580,6 +581,11 @@ var tileform;
         }
     }
     tileform.light_source = light_source;
+    function purge() {
+        pipeline.utilEraseChildren(pipeline.groups.monolith);
+        pipeline.utilEraseChildren(stage.lightsGroup);
+    }
+    tileform.purge = purge;
     function opkl() {
         if (app.key('f1') == 1) {
             tileform.TOGGLE_TOP_DOWN_MODE = !tileform.TOGGLE_TOP_DOWN_MODE;
@@ -623,9 +629,6 @@ var tileform;
         }
         rome.purgeRemake();
         console.log(wallRotationY);
-        console.log("glob.camerarotationx", glob.camerarotationx);
-        pipeline.camera.rotation.x = glob.camerarotationx;
-        pipeline.camera.updateMatrix();
     }
 })(tileform || (tileform = {}));
 export default tileform;

@@ -245,7 +245,8 @@ namespace tileform {
 			pipeline.groups.monolith.add(this.entityGroup);
 		}
 		private _monolithRemove() {
-			pipeline.groups.monolith.remove(this.entityGroup);
+			console.log('mono remove');
+			this.entityGroup.parent.remove(this.entityGroup);
 		}
 		create() {
 			this._create();
@@ -649,6 +650,11 @@ namespace tileform {
 		}
 	}
 
+	export function purge() {
+		pipeline.utilEraseChildren(pipeline.groups.monolith);
+		pipeline.utilEraseChildren(stage.lightsGroup);
+	}
+
 	function opkl() {
 		if (app.key('f1') == 1) {
 			TOGGLE_TOP_DOWN_MODE = !TOGGLE_TOP_DOWN_MODE;
@@ -691,9 +697,6 @@ namespace tileform {
 		}
 		rome.purgeRemake();
 		console.log(wallRotationY);
-		console.log("glob.camerarotationx", glob.camerarotationx);
-		pipeline.camera.rotation.x = glob.camerarotationx;
-		pipeline.camera.updateMatrix();
 	}
 }
 

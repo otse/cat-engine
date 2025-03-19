@@ -16,6 +16,9 @@ let rpos: vec2 = [0, 0];
 let begin: vec2 = [0, 0];
 let before: vec2 = [0, 0];
 
+// Todo haha
+const panPerspectiveWarp = [1, 2] as vec2;
+
 export class pan {
 
 	static register() {
@@ -141,6 +144,7 @@ export class pan {
 				// Scale
 				dif = (pts.mult(dif, glob.dotsPerInch));
 				dif = (pts.mult(dif, zoom.scale()));
+				dif = (pts.mult(dif, panPerspectiveWarp[0], panPerspectiveWarp[1]));
 				if (pipeline.USE_SCENE3)
 					dif = (pts.divide(dif, 2));
 				dif = (pts.subtract(dif, before));
@@ -156,15 +160,21 @@ export class pan {
 	}
 
 	static set_camera() {
-		let rpos2 = rpos;//(pts.add(rpos, pts.divide([0, glob.hexsize[1]], 2)));
+		let rpos2 = pan.rpos;//(pts.add(rpos, pts.divide([0, glob.hexsize[1]], 2)));
+		// The idea is to manage the increments of y of rpos2
+		// Such that tiles are displayed
+		// For isometric view, you just need to keep an even number 
 		if (pipeline.USE_SCENE3)
-			rpos2 = pts.make_even(rpos2, 1);
-		// Make uneven causes geometry errors below the equator
-		rpos2 = pts.round(rpos2);
+			// Critical evening
+			// Uneven causes geometry errors below the equator
+			rpos2[1] = pts.make_even(rpos2, 1)[1];
+		//rpos2 = pts.round(rpos2);
 		pipeline.groups.camera.position.x = rpos2[0];
 		pipeline.groups.camera.position.y = rpos2[1];
 		pipeline.groups.camera.position.z = 10;
 		pipeline.groups.camera.updateMatrix();
+		pipeline.camera.rotation.x = glob.camerarotationx;
+		pipeline.camera.updateMatrix();
 		pipeline.camera.updateProjectionMatrix();
 	}
 

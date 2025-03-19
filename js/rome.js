@@ -124,7 +124,10 @@ var rome;
 			<br />&#9;TOGGLE_NORMAL_MAPS (f3): ${tileform.TOGGLE_NORMAL_MAPS}
 			<br />&#9;TOGGLE_SUN_CAMERA (f4): ${tileform.TOGGLE_SUN_CAMERA}
 			<br />--
-			<br />&#9;randomSpriteColor (h): ${glob.randomspritecolor}
+			<br />"globs"
+			<br />&#9;randomspritecolor (h): ${glob.randomspritecolor}
+			<br />&#9;camerarotationx (v, b): ${glob.camerarotationx}
+			<br />--
 			<br />dither, color correction (d, z): ${pipeline.dithering}, ${pipeline.compression}
 			<br />render scale (-, =): ${glob.scale}
 			<br />zoom scale (r, f): ${zoom.scale()}
@@ -150,6 +153,7 @@ var rome;
         }
         glob.reprerender = true;
         glob.dirtyobjects = true;
+        tileform.purge();
         pipeline.purge();
         world_manager.init();
         world_manager.repopulate();
