@@ -47,12 +47,14 @@ export class sprite3d extends sprite {
 			this.shapedata_!.shapeType!,
 			this.shapedata_!);
 		this.shape?.create();
+		return;
 		this._make_target();
 		this.prerender();
 	}
 	protected override _step() {
 		super._step();
 		this.shape?.step();
+		return;
 		this.prerender();
 	}
 	prerender() {

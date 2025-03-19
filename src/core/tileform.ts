@@ -281,7 +281,8 @@ namespace tileform {
 		protected translate() {
 			// Useful for beautiful lighting
 			const { wpos } = this.gobj;
-			const pos = this.pos3d = pts.project(wpos);// (pts.mult(project_linear_space(wpos), stretchSpace));
+			let pos = this.pos3d = pts.project(wpos);// (pts.mult(project_linear_space(wpos), stretchSpace));
+			pos = pts.round(pos);
 			this.entityGroup.position.fromArray([...pos, 0]);
 			this.entityGroup.updateMatrix();
 		}
@@ -639,7 +640,7 @@ namespace tileform {
 			this.entityGroup.add(this.light);
 			// Translate
 			this.translate();
-			this.entityGroup.position.z = 10;
+			this.entityGroup.position.z = 7;
 			this.entityGroup.updateMatrix();
 			// this.entityGroup.updateMatrixWorld(true); // Bad
 			stage.lightsGroup.add(this.entityGroup);
@@ -654,7 +655,7 @@ namespace tileform {
 			if (TOGGLE_TOP_DOWN_MODE) {
 				glob.camerarotationx = 0;
 			} else {
-				glob.camerarotationx = 0.98;
+				glob.camerarotationx = Math.PI / 3;
 			}
 		}
 		else if (app.key('f2') == 1) {
@@ -673,11 +674,11 @@ namespace tileform {
 			wallRotationY += 1;
 		}
 		else if (app.key('v') == 1) {
-			if (stageCameraRotation > 0)
-				stageCameraRotation -= .01;
+			if (glob.camerarotationx > 0)
+				glob.camerarotationx -= .01;
 		}
 		else if (app.key('b') == 1) {
-			stageCameraRotation += .01;
+			glob.camerarotationx += .01;
 		}
 		else if (app.key('q') == 1) {
 			glob.hexsize = pts.add(glob.hexsize, [0, 1]);
@@ -690,7 +691,9 @@ namespace tileform {
 		}
 		rome.purgeRemake();
 		console.log(wallRotationY);
-		console.log("stageCameraRotation", stageCameraRotation);
+		console.log("glob.camerarotationx", glob.camerarotationx);
+		pipeline.camera.rotation.x = glob.camerarotationx;
+		pipeline.camera.updateMatrix();
 	}
 }
 

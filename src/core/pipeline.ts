@@ -422,7 +422,8 @@ namespace pipeline {
 			camera = makeOrthographicCamera(targetSize[0], targetSize[1]);
 			groups.camera.add(camera);
 			groups.camera.add(new THREE.AxesHelper(20));
-			groups.camera.rotation.x = glob.camerarotationx;
+			//groups.camera.rotation.x = glob.camerarotationx;
+			camera.rotation.x = glob.camerarotationx;
 		}
 		camera.updateMatrix();
 		camera.updateProjectionMatrix();
@@ -467,7 +468,7 @@ namespace pipeline {
 	}
 
 	export function makeOrthographicCamera(w, h) {
-		let camera = new THREE.OrthographicCamera(w / - 2, w / 2, h / 2, h / - 2, -200, 100);
+		let camera = new THREE.OrthographicCamera(w / - 2, w / 2, h / 2, h / - 2, -200, 200);
 		camera.updateProjectionMatrix();
 		return camera;
 	}

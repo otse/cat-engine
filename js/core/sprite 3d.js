@@ -33,12 +33,14 @@ export class sprite3d extends sprite {
         //console.log(this);
         this.shape = tileform.shapeMaker(this.shapedata_.shapeType, this.shapedata_);
         this.shape?.create();
+        return;
         this._make_target();
         this.prerender();
     }
     _step() {
         super._step();
         this.shape?.step();
+        return;
         this.prerender();
     }
     prerender() {

@@ -30,7 +30,7 @@ var rome;
         glob.dirtyobjects = true;
         glob.randomspritecolor = false;
         glob.scale = 1;
-        glob.camerarotationx = 0.98;
+        glob.camerarotationx = Math.PI / 3;
         glob.hexsize = [17, 9];
         glob.hexsize = [17, 15]; // Monolith
         glob.camerarpos = [0, 0];
