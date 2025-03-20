@@ -305,8 +305,9 @@ var pipeline;
 		window inner ${pts.to_string(pipeline.screenSize)}\n
 		      new is ${pts.to_string(pipeline.targetSize)}`);
         pipeline.target.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
-        pipeline.target2?.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.targetMask.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
+        if (pipeline.USE_SCENE3)
+            pipeline.target2.setSize(pipeline.targetSize[0], pipeline.targetSize[1]);
         pipeline.plane?.dispose();
         pipeline.plane = new THREE.PlaneGeometry(pipeline.targetSize[0], pipeline.targetSize[1]);
         glob.dirtyobjects = true;
@@ -323,6 +324,8 @@ var pipeline;
             depthWrite: false
         });
         pipeline.quad2 = new THREE.Mesh(pipeline.plane, pipeline.material2);
+        while (pipeline.scene2.children.length > 0)
+            pipeline.scene2.remove(pipeline.scene2.children[0]);
         pipeline.scene2.add(pipeline.quad2);
         if (pipeline.USE_SCENE3) {
             pipeline.material3?.dispose();
@@ -336,6 +339,8 @@ var pipeline;
                 depthWrite: false
             });
             pipeline.quad3 = new THREE.Mesh(pipeline.plane, pipeline.material3);
+            while (pipeline.scene3.children.length > 0)
+                pipeline.scene3.remove(pipeline.scene3.children[0]);
             pipeline.scene3.add(pipeline.quad3);
         }
         while (groups.camera.children.length > 0)

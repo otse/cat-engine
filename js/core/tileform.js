@@ -69,7 +69,7 @@ var tileform;
     (function (stage) {
     })(stage = tileform.stage || (tileform.stage = {}));
     let stageCameraRotation = 0.98;
-    let wallRotationY = 6;
+    let wallRotation = 0.3218;
     (function (stage) {
         function step() {
             opkl();
@@ -212,7 +212,6 @@ var tileform;
             pipeline.groups.monolith.add(this.entityGroup);
         }
         _monolithRemove() {
-            console.log('mono remove');
             this.entityGroup.parent.remove(this.entityGroup);
         }
         create() {
@@ -400,7 +399,7 @@ var tileform;
             this.hexTile.free();
         }
         _step() {
-            this.rotationGroup.rotation.set(0, 0, Math.PI / wallRotationY);
+            this.rotationGroup.rotation.set(0, 0, wallRotation);
             this.rotationGroup.updateMatrix();
             this.entityGroup.updateMatrix();
         }
@@ -559,7 +558,7 @@ var tileform;
         }
         _delete() {
             console.log('remove light');
-            stage.lightsGroup.remove(this.entityGroup);
+            // super._delete();
         }
         _create() {
             console.log(' tf light source create ');
@@ -606,10 +605,10 @@ var tileform;
             tileform.TOGGLE_SUN_CAMERA = !tileform.TOGGLE_SUN_CAMERA;
         }
         else if (app.key('k') == 1) {
-            wallRotationY -= 1;
+            wallRotation -= .01;
         }
         else if (app.key('l') == 1) {
-            wallRotationY += 1;
+            wallRotation += .01;
         }
         else if (app.key('v') == 1) {
             if (glob.camerarotationx > 0)
@@ -628,7 +627,7 @@ var tileform;
             return;
         }
         rome.purgeRemake();
-        console.log(wallRotationY);
+        console.log(wallRotation);
     }
 })(tileform || (tileform = {}));
 export default tileform;

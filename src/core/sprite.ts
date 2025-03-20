@@ -56,12 +56,16 @@ export class sprite {
 	}
 	protected _step() { }
 	protected _delete() {
+		// Mono doesn't delete
+		return;
 		this.mesh.parent.remove(this.mesh);
 		this.gobj.sprite = undefined;
 	}
 	protected _create() {
 		let defines = {} as any;
 		// defines.MASKED = 1;
+		// Monolith uses real geometry
+		return;
 		this.material = SpriteMaterial({
 			map: pipeline.getTexture('./img/' + this.data.spriteImage),
 			color: this.data.spriteColor,
@@ -76,12 +80,13 @@ export class sprite {
 		}, defines);
 		let { spriteSize } = this.data;
 		spriteSize = (pts.mult(spriteSize!, glob.scale));
-		this.geometry = new THREE.PlaneGeometry(spriteSize[0], spriteSize[1], 1, 1);
+		this.geometry = new THREE.PlaneGeometry(spriteSize![0], spriteSize![1], 1, 1);
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
 		this.update();
 		pipeline.groups.sprites.add(this.mesh);
 	}
 	update() {
+		return;
 		const { gobj: gabe } = this;
 		this.material.color.set(this.data.spriteColor);
 		//console.log('no color?', this.data.color);

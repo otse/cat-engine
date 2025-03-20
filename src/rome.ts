@@ -63,14 +63,11 @@ namespace rome {
 		await pipeline.preloadTextureAsync('./img/hex/post.png', 'nearest');
 	}
 
-	let gameObjects: game_object[] = []
-
 	export function makeTestingChamber() {
 		let gobjs: game_object[] = [];
-		function collect(gobj: game_object) {
-			gobjs.push(gobj);
-			gameObjects.push(gobj);
-		}
+
+		const collect = (gobj: game_object) => gobjs.push(gobj);
+
 		collect(new tile3d({ _type: 'direct', colorOverride: 'pink', _wpos: [-1, 0, 0] }, 'cobblestone'));
 		collect(new tile3d({ _type: 'direct', colorOverride: 'salmon', _wpos: [-1, -1, 0] }));
 		collect(new tile3d({ _type: 'direct', colorOverride: 'cyan', _wpos: [0, -1, 0] }));

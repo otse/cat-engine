@@ -265,7 +265,7 @@ namespace pipeline {
 	export function purge() {
 		onWindowResize();
 	}
-	
+
 	export function init() {
 		console.log('pipeline init')
 
@@ -368,8 +368,9 @@ namespace pipeline {
 		      new is ${pts.to_string(targetSize)}`);
 
 		target.setSize(targetSize[0], targetSize[1]);
-		target2?.setSize(targetSize[0], targetSize[1]);
 		targetMask.setSize(targetSize[0], targetSize[1]);
+		if (USE_SCENE3)
+			target2.setSize(targetSize[0], targetSize[1]);
 
 		plane?.dispose();
 		plane = new THREE.PlaneGeometry(targetSize[0], targetSize[1]);
@@ -389,6 +390,8 @@ namespace pipeline {
 			depthWrite: false
 		});
 		quad2 = new THREE.Mesh(plane, material2);
+		while (scene2.children.length > 0)
+			scene2.remove(scene2.children[0]);
 		scene2.add(quad2);
 
 		if (USE_SCENE3) {
@@ -403,6 +406,8 @@ namespace pipeline {
 				depthWrite: false
 			});
 			quad3 = new THREE.Mesh(plane, material3);
+			while (scene3.children.length > 0)
+				scene3.remove(scene3.children[0]);
 			scene3.add(quad3);
 		}
 

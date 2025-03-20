@@ -44,7 +44,7 @@ class world_manager {
                 this.merge_ideally(gobj);
             else if (mode === mergeMode.replace)
                 this._replace(gobj);
-            else if (mode === mergeMode.dont)
+            else if (mode === mergeMode.dont) // stack
                 clod.addWait(world_manager.world, gobj);
         }
         // Now show

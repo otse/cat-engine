@@ -91,7 +91,7 @@ namespace tileform {
 
 	let stageCameraRotation = 0.98;
 
-	let wallRotationY = 6;
+	let wallRotation = 0.3218;
 
 	export namespace stage {
 
@@ -245,7 +245,6 @@ namespace tileform {
 			pipeline.groups.monolith.add(this.entityGroup);
 		}
 		private _monolithRemove() {
-			console.log('mono remove');
 			this.entityGroup.parent.remove(this.entityGroup);
 		}
 		create() {
@@ -450,7 +449,7 @@ namespace tileform {
 			this.hexTile.free();
 		}
 		protected override _step() {
-			this.rotationGroup.rotation.set(0, 0, Math.PI / wallRotationY);
+			this.rotationGroup.rotation.set(0, 0, wallRotation);
 			this.rotationGroup.updateMatrix();
 			this.entityGroup.updateMatrix();
 		}
@@ -628,7 +627,7 @@ namespace tileform {
 		}
 		protected override _delete() {
 			console.log('remove light');
-			stage.lightsGroup.remove(this.entityGroup);
+			// super._delete();
 		}
 		protected override _create() {
 			console.log(' tf light source create ');
@@ -674,10 +673,10 @@ namespace tileform {
 			TOGGLE_SUN_CAMERA = !TOGGLE_SUN_CAMERA;
 		}
 		else if (app.key('k') == 1) {
-			wallRotationY -= 1;
+			wallRotation -= .01;
 		}
 		else if (app.key('l') == 1) {
-			wallRotationY += 1;
+			wallRotation += .01;
 		}
 		else if (app.key('v') == 1) {
 			if (glob.camerarotationx > 0)
@@ -696,7 +695,7 @@ namespace tileform {
 			return;
 		}
 		rome.purgeRemake();
-		console.log(wallRotationY);
+		console.log(wallRotation);
 	}
 }
 

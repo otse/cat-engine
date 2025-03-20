@@ -55,13 +55,9 @@ var rome;
         await pipeline.preloadTextureAsync('./img/hex/wall.png', 'nearest');
         await pipeline.preloadTextureAsync('./img/hex/post.png', 'nearest');
     }
-    let gameObjects = [];
     function makeTestingChamber() {
         let gobjs = [];
-        function collect(gobj) {
-            gobjs.push(gobj);
-            gameObjects.push(gobj);
-        }
+        const collect = (gobj) => gobjs.push(gobj);
         collect(new tile3d({ _type: 'direct', colorOverride: 'pink', _wpos: [-1, 0, 0] }, 'cobblestone'));
         collect(new tile3d({ _type: 'direct', colorOverride: 'salmon', _wpos: [-1, -1, 0] }));
         collect(new tile3d({ _type: 'direct', colorOverride: 'cyan', _wpos: [0, -1, 0] }));

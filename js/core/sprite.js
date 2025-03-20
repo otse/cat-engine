@@ -41,12 +41,16 @@ export class sprite {
     }
     _step() { }
     _delete() {
+        // Mono doesn't delete
+        return;
         this.mesh.parent.remove(this.mesh);
         this.gobj.sprite = undefined;
     }
     _create() {
         let defines = {};
         // defines.MASKED = 1;
+        // Monolith uses real geometry
+        return;
         this.material = SpriteMaterial({
             map: pipeline.getTexture('./img/' + this.data.spriteImage),
             color: this.data.spriteColor,
@@ -67,6 +71,7 @@ export class sprite {
         pipeline.groups.sprites.add(this.mesh);
     }
     update() {
+        return;
         const { gobj: gabe } = this;
         this.material.color.set(this.data.spriteColor);
         //console.log('no color?', this.data.color);

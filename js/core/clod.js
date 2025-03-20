@@ -121,6 +121,7 @@ var clod;
                 obj.finalize();
             }
             this.objs.splice(0, this.objs.length);
+            this.objs.length = 0;
         }
         add(obj, show = true) {
             if (this.objs.includes(obj) == false) {

@@ -33,10 +33,6 @@ export class game_object extends clod.obj {
 		this.wtorpos();
 		this.rpos = (pts.floor(this.rpos));
 	}
-	purge() {
-		// console.log('purge');
-		this.finalize();
-	}
 	update() {
 		this.sprite?.update();
 	}
@@ -52,7 +48,7 @@ export class game_object extends clod.obj {
 	}
 }
 
-// Contains TypeScript stuff, beware!
+// Contains TypeScript, beware!
 export namespace game_object {
 	export namespace helpers {
 
