@@ -68,8 +68,8 @@ var tileform;
     let stage;
     (function (stage) {
     })(stage = tileform.stage || (tileform.stage = {}));
-    let stageCameraRotation = 0.98;
-    let wallRotation = 0.3218;
+    tileform.tfStageCameraRotation = 0.98;
+    let wallRotation = Math.PI / 6;
     (function (stage) {
         function step() {
             opkl();
@@ -81,6 +81,7 @@ var tileform;
         async function init() {
             await preload();
             await boot();
+            glob.camerarotationx = tileform.tfStageCameraRotation;
         }
         stage.init = init;
         async function preload() {
@@ -144,7 +145,7 @@ var tileform;
             size = (pts.mult(size, glob.scale));
             stage.camera = new THREE.OrthographicCamera(size[0] / -2, size[0] / 2, size[1] / 2, size[1] / -2, -100, 500);
             stage.camera.position.set(0, 0, 0);
-            stage.camera.rotation.set(stageCameraRotation, 0, 0);
+            stage.camera.rotation.set(tileform.tfStageCameraRotation, 0, 0);
             if (tileform.TOGGLE_SUN_CAMERA) {
                 // This math was a lot of trial and error
                 // But makes sunlight more 3d
@@ -623,11 +624,18 @@ var tileform;
         else if (app.key('a') == 1) {
             glob.hexsize = pts.add(glob.hexsize, [0, -1]);
         }
+        else if (app.key('1') == 1) {
+            glob.hexsize = pts.add(glob.hexsize, [1, 0]);
+        }
+        else if (app.key('2') == 1) {
+            glob.hexsize = pts.add(glob.hexsize, [-1, 0]);
+        }
         else {
             return;
         }
         rome.purgeRemake();
         console.log(wallRotation);
+        glob.wallrotation = wallRotation;
     }
 })(tileform || (tileform = {}));
 export default tileform;

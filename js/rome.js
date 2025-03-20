@@ -123,7 +123,9 @@ var rome;
 			<br />"globs"
 			<br />&#9;randomspritecolor (h): ${glob.randomspritecolor}
 			<br />&#9;camerarotationx (v, b): ${glob.camerarotationx}
+			<br />&#9;wallrotation (v, b): ${glob.wallrotation}
 			<br />--
+			<br />camera rotation x (v, b): ${glob.camerarotationx}
 			<br />dither, color correction (d, z): ${pipeline.dithering}, ${pipeline.compression}
 			<br />render scale (-, =): ${glob.scale}
 			<br />zoom scale (r, f): ${zoom.scale()}

@@ -135,6 +135,9 @@ export class pan {
             this.dragging = false;
         }
     }
+    static roundToNearest(value, nearest) {
+        return Math.round(value / nearest) * nearest;
+    }
     static set_camera() {
         let rpos2 = pan.rpos; //(pts.add(rpos, pts.divide([0, glob.hexsize[1]], 2)));
         // The idea is to manage the increments of y of rpos2
@@ -143,7 +146,8 @@ export class pan {
         if (pipeline.USE_SCENE3)
             // Critical evening
             // Uneven causes geometry errors below the equator
-            rpos2[1] = pts.make_even(rpos2, 1)[1];
+            rpos2[1] = this.roundToNearest(rpos2[1], 2);
+        //rpos2[1] = pts.make_even(rpos2, 1)[1];
         //rpos2 = pts.round(rpos2);
         pipeline.groups.camera.position.x = rpos2[0];
         pipeline.groups.camera.position.y = rpos2[1];

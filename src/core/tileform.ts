@@ -89,9 +89,9 @@ namespace tileform {
 		export let spotlight: sprite3d | undefined
 	}
 
-	let stageCameraRotation = 0.98;
+	export let tfStageCameraRotation = 0.98;
 
-	let wallRotation = 0.3218;
+	let wallRotation = Math.PI / 6;
 
 	export namespace stage {
 
@@ -105,6 +105,8 @@ namespace tileform {
 		export async function init() {
 			await preload();
 			await boot();
+
+			glob.camerarotationx = tfStageCameraRotation;
 		}
 
 		async function preload() {
@@ -178,7 +180,7 @@ namespace tileform {
 				size![1] / - 2,
 				-100, 500);
 			camera.position.set(0, 0, 0);
-			camera.rotation.set(stageCameraRotation, 0, 0);
+			camera.rotation.set(tfStageCameraRotation, 0, 0);
 			if (TOGGLE_SUN_CAMERA) {
 				// This math was a lot of trial and error
 				// But makes sunlight more 3d
@@ -691,11 +693,18 @@ namespace tileform {
 		else if (app.key('a') == 1) {
 			glob.hexsize = pts.add(glob.hexsize, [0, -1]);
 		}
+		else if (app.key('1') == 1) {
+			glob.hexsize = pts.add(glob.hexsize, [1, 0]);
+		}
+		else if (app.key('2') == 1) {
+			glob.hexsize = pts.add(glob.hexsize, [-1, 0]);
+		}
 		else {
 			return;
 		}
 		rome.purgeRemake();
 		console.log(wallRotation);
+		glob.wallrotation = wallRotation;
 	}
 }
 
