@@ -9,6 +9,7 @@ import game_object from "../objects/game object.js";
 import tile from "../objects/tile.js";
 import glob from "../../dep/glob.js";
 import world_manager from "../world manager.js";
+import rome from "../../rome.js";
 
 
 let wpos: vec2 = [0, 0];
@@ -162,10 +163,6 @@ export class pan {
 		}
 	}
 
-	static roundToNearest(value: number, nearest: number): number {
-		return Math.round(value / nearest) * nearest;
-	}
-
 	static set_camera() {
 		let rpos2 = pan.rpos;//(pts.add(rpos, pts.divide([0, glob.hexsize[1]], 2)));
 		// The idea is to manage the increments of y of rpos2
@@ -175,7 +172,7 @@ export class pan {
 		// Critical evening
 		// Uneven causes geometry errors below the equator
 		//rpos2[1] = pts.make_even(rpos2, 1)[1];
-		rpos2[1] = this.roundToNearest(rpos2[1], glob.pancompress);
+		rpos2[1] = rome.roundToNearest(rpos2[1], glob.pancompress);
 		//const nearestPoint = this.unproject_chunk_grid(rpos2);
 		//rpos2 = pts.round(rpos2);
 		pipeline.groups.camera.position.x = rpos2[0];

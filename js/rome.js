@@ -23,6 +23,10 @@ var rome;
         return val > max ? max : val < min ? min : val;
     }
     rome.clamp = clamp;
+    function roundToNearest(value, nearest) {
+        return Math.round(value / nearest) * nearest;
+    }
+    rome.roundToNearest = roundToNearest;
     async function init() {
         console.log(' init ');
         glob.rome = rome;
@@ -30,9 +34,10 @@ var rome;
         glob.dirtyobjects = true;
         glob.randomspritecolor = false;
         glob.scale = 1;
-        glob.camerarotationx = Math.PI / 3;
+        glob.camerarotationx = 0.9871975511965976;
+        glob.camerarotationx = 0.5635987755982989;
         glob.hexsize = [17, 9];
-        glob.hexsize = [17, 17]; // Monolith
+        glob.hexsize = [17, 15]; // Monolith
         glob.pancompress = 2; // Mono
         glob.camerarpos = [0, 0];
         glob.gobjscount = [0, 0];
@@ -125,7 +130,6 @@ var rome;
 			<br />&#9;randomspritecolor (h): ${glob.randomspritecolor}
 			<br />camerarotationx (v, b): ${glob.camerarotationx}
 			<br />wallrotation (v, b): ${glob.wallrotation}
-			<br />wallrotationstaggered (v, b): ${glob.wallrotationstaggered}
 			<br />pancompress (v, b): ${glob.pancompress}
 			<br />--
 			<br />camera rotation x (v, b): ${glob.camerarotationx}

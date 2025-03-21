@@ -240,7 +240,9 @@ var pipeline;
         pipeline.scene.add(groups.sprites);
         pipeline.scene.add(groups.monolith);
         // scene.add(new THREE.AxesHelper(100));
-        pipeline.scene.background = new THREE.Color('#ababab');
+        pipeline.scene.background = new THREE.Color('#333');
+        pipeline.ambientLight = new THREE.AmbientLight('white', Math.PI / 2);
+        pipeline.scene.add(pipeline.ambientLight);
         pipeline.scene2 = new THREE.Scene();
         pipeline.scene2.frustumCulled = false;
         pipeline.scene2.background = new THREE.Color('green');
@@ -251,8 +253,6 @@ var pipeline;
         pipeline.scene3.add(new THREE.AmbientLight('white', Math.PI / 1));
         pipeline.sceneMask = new THREE.Scene();
         pipeline.sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
-        pipeline.ambientLight = new THREE.AmbientLight('white', Math.PI / 1);
-        pipeline.scene.add(pipeline.ambientLight);
         if (pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
             pipeline.dotsPerInch = window.devicePixelRatio;
             if (pipeline.ROUND_UP_DOTS_PER_INCH)

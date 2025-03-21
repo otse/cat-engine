@@ -287,7 +287,10 @@ namespace pipeline {
 		scene.add(groups.sprites);
 		scene.add(groups.monolith);
 		// scene.add(new THREE.AxesHelper(100));
-		scene.background = new THREE.Color('#ababab');
+		scene.background = new THREE.Color('#333');
+
+		ambientLight = new THREE.AmbientLight('white', Math.PI / 2);
+		scene.add(ambientLight);
 
 		scene2 = new THREE.Scene();
 		scene2.frustumCulled = false;
@@ -302,8 +305,7 @@ namespace pipeline {
 		sceneMask = new THREE.Scene();
 		sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
 
-		ambientLight = new THREE.AmbientLight('white', Math.PI / 1);
-		scene.add(ambientLight);
+		
 
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
 			dotsPerInch = window.devicePixelRatio;

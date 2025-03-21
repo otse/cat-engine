@@ -60,7 +60,7 @@ namespace tileform {
 		await stage.init();
 		hooks.addListener('romeComponents', step);
 
-		glob.camerarotationx = Math.PI / 3;
+		glob.camerarotationx = 0.98;
 		glob.wallrotation = wallRotation;
 		glob.wallrotationstaggered = wallRotationStaggered;
 
@@ -398,6 +398,7 @@ namespace tileform {
 		}
 		step() {
 			this._step();
+			this.translate(); // Mono debug
 		}
 		update() {
 			this._update();
@@ -422,7 +423,8 @@ namespace tileform {
 			// Useful for beautiful lighting
 			const { wpos } = this.gobj;
 			let pos = this.pos3d = pts.project(wpos);// (pts.mult(project_linear_space(wpos), stretchSpace));
-			pos = pts.round(pos);
+			pos[1] = rome.roundToNearest(pos[1], glob.pancompress);
+			// pos = pts.round(pos);
 			this.entityGroup.position.fromArray([...pos, 0]);
 			this.entityGroup.updateMatrix();
 		}
@@ -741,9 +743,6 @@ namespace tileform {
 				...data
 			}
 			this.wpos2 = pts.copy(this.gobj.wpos);
-		}
-		step() {
-			this._step();
 		}
 		lyft(pos: vec2) {
 			// Experimental
