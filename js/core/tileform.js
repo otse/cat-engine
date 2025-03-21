@@ -6,6 +6,7 @@ import pts from "../dep/pts.js";
 import rome from "../rome.js";
 import pan from "./components/pan.js";
 import pipeline from "./pipeline.js";
+import clod from "./clod.js";
 var tileform;
 (function (tileform) {
     // right now, light is uniform and the camera sits right on top of the tile
@@ -30,21 +31,128 @@ var tileform;
     tileform.TOGGLE_RENDER_AXES = false;
     // i know directional lights are supposed to cast light uniformly
     // but they actually act more like giant point lights
-    // but this setting defines the size of the sun orb
+    // this setting defines the size of the sun orb
     const sunDistance = 20;
     // the idea was to create a spread between tiles
     // so that the lighting would behave better
     // don't use
     const stretchSpace = 1;
+    const wallRotation = Math.PI / 6;
+    const wallRotationStaggered = Math.PI / 6;
     async function init() {
         await stage.init();
         hooks.addListener('romeComponents', step);
+        glob.camerarotationx = Math.PI / 3;
+        glob.wallrotation = wallRotation;
+        glob.wallrotationstaggered = wallRotationStaggered;
+        make_rpos_grid();
+        //hooks.addListener('chunkShow', chunkShow);
         return;
     }
     tileform.init = init;
+    function purge() {
+        make_rpos_grid();
+        tenIn = 0;
+        checkedDistance = false;
+        pipeline.utilEraseChildren(pipeline.groups.monolith);
+        pipeline.utilEraseChildren(stage.lightsGroup);
+    }
+    tileform.purge = purge;
+    let tfGrid;
+    function make_rpos_grid() {
+        const sheer = pts.mult(glob.hexsize, clod.chunk_span);
+        const segments = pts.mult(glob.hexsize, clod.chunk_span);
+        const geometry = new THREE.PlaneGeometry(sheer[0], sheer[1], segments[0], segments[1]);
+        const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 'red', wireframe: true }));
+        pipeline.scene.add(mesh);
+        tfGrid = mesh;
+    }
+    let tenIn = 0;
+    let checkedDistance = false;
+    function get_grid_distance() {
+        // ostost
+        if (tenIn++ < 10)
+            return;
+        if (checkedDistance)
+            return;
+        checkedDistance = true;
+        const screenCoords = getVerticalScreenDifference(tfGrid.geometry, tfGrid, pipeline.camera, pipeline.renderer);
+        glob.pancompress = 1 / screenCoords.y;
+        console.log(glob.pancompress);
+    }
+    function worldToScreen(vertex, camera, renderer) {
+        const vector = vertex.clone().project(camera); // Project to NDC space
+        // Convert NDC to screen coordinates
+        const halfWidth = renderer.domElement.width / 2;
+        const halfHeight = renderer.domElement.height / 2;
+        return new THREE.Vector2((vector.x * halfWidth) + halfWidth, (-vector.y * halfHeight) + halfHeight // Flip Y for screen coordinates
+        );
+    }
+    // Get vertices in world space
+    function getScreenPositions(geometry, object, camera, renderer) {
+        const positions = geometry.attributes.position;
+        const screenPositions = [];
+        const worldMatrix = object.matrixWorld;
+        for (let i = 0; i < positions.count; i++) {
+            const vertex = new THREE.Vector3();
+            vertex.fromBufferAttribute(positions, i);
+            vertex.applyMatrix4(worldMatrix); // Convert to world space
+            screenPositions.push(worldToScreen(vertex, pipeline.camera, pipeline.renderer));
+        }
+        const segments = pts.mult(glob.hexsize, clod.chunk_span);
+        const verticesPerRow = segments[0] + 1;
+        let differences = [];
+        for (let i = 0; i < positions.count - verticesPerRow; i++) {
+            const belowIndex = i + verticesPerRow; // Get vertex directly below
+            if (belowIndex < positions.count) {
+                const diff = new THREE.Vector2().subVectors(screenPositions[belowIndex], screenPositions[i]);
+                differences.push(diff);
+            }
+        }
+        return differences;
+        return screenPositions;
+    }
+    function getVerticalScreenDifference(geometry, object, camera, renderer) {
+        const positions = geometry.attributes.position;
+        // Ensure we have at least 2 vertices
+        if (positions.count < 2) {
+            console.error("Geometry does not have enough vertices.");
+            return null;
+        }
+        // Get the world positions of the first two vertices
+        const vertex0 = new THREE.Vector3().fromBufferAttribute(positions, 0).applyMatrix4(object.matrixWorld);
+        const vertex1 = new THREE.Vector3().fromBufferAttribute(positions, glob.hexsize[0] * clod.chunk_span + 1).applyMatrix4(object.matrixWorld);
+        // Convert them to screen space
+        const screen0 = worldToScreen(vertex0, camera, renderer);
+        const screen1 = worldToScreen(vertex1, camera, renderer);
+        console.log(vertex0, vertex1, screen0, screen1);
+        // Compute difference
+        return new THREE.Vector2().subVectors(screen1, screen0);
+    }
+    // Example usage:
+    /*
+    async function chunkShow(chunk: clod.chunk) {
+
+        console.log('show chunk');
+
+        const sheer = pts.mult(glob.hexsize, clod.chunk_span);
+        const segments = pts.mult(glob.hexsize, clod.chunk_span);
+        const proj = pts.mult(pts.project(chunk.cpos), clod.chunk_span);
+        const geometry = new THREE.PlaneGeometry(sheer[0], sheer[1], segments[0], segments[1]);
+        geometry.translate(proj[0], proj[1], 0);
+
+        const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 'red', wireframe: true }));
+
+        pipeline.scene.add(mesh);
+
+        (chunk as any).tfGrid = mesh;
+        
+        return false;
+    }*/
     async function step() {
         stage.step();
         update_entities();
+        get_grid_distance();
         return false;
     }
     function update_entities() {
@@ -69,7 +177,6 @@ var tileform;
     (function (stage) {
     })(stage = tileform.stage || (tileform.stage = {}));
     tileform.tfStageCameraRotation = 0.98;
-    let wallRotation = Math.PI / 6;
     (function (stage) {
         function step() {
             opkl();
@@ -81,7 +188,7 @@ var tileform;
         async function init() {
             await preload();
             await boot();
-            glob.camerarotationx = tileform.tfStageCameraRotation;
+            // glob.camerarotationx = tfStageCameraRotation;
         }
         stage.init = init;
         async function preload() {
@@ -127,8 +234,8 @@ var tileform;
             stage.ambient = new THREE.AmbientLight('white', Math.PI / 2);
             stage.scene.add(stage.ambient);
             stage.sun = new THREE.DirectionalLight('lavender', Math.PI / 3);
-            stage.scene.add(stage.sun);
-            stage.scene.add(stage.sun.target);
+            pipeline.scene.add(stage.sun);
+            pipeline.scene.add(stage.sun.target);
             //scene.add(camera);
             stage.scene.updateMatrix();
             // todo create a second renderer that has shadows enabled
@@ -189,7 +296,6 @@ var tileform;
         function render() {
             // Monolith doesn't render objects to textures
             return;
-            // Todo: stage renderer doesn't render anything so use default
             glob.renderer.setRenderTarget(stage.spotlight.target);
             glob.renderer.clear();
             glob.renderer.render(stage.scene, stage.camera);
@@ -288,7 +394,7 @@ var tileform;
         }
     }
     tileform.shape_hex_wrapper = shape_hex_wrapper;
-    tileform.hex_size = 7.9;
+    tileform.hex_size = 7.8;
     class hex_tile {
         data;
         scalar;
@@ -357,6 +463,7 @@ var tileform;
     tileform.shapeMaker = shapeMaker;
     // boring wall geometries
     class shape_wall extends shape3d {
+        stagger = false;
         hexTile;
         rotationGroup;
         wallGroup;
@@ -400,7 +507,7 @@ var tileform;
             this.hexTile.free();
         }
         _step() {
-            this.rotationGroup.rotation.set(0, 0, wallRotation);
+            this.rotationGroup.rotation.set(0, 0, glob.wallrotation);
             this.rotationGroup.updateMatrix();
             this.entityGroup.updateMatrix();
         }
@@ -581,11 +688,6 @@ var tileform;
         }
     }
     tileform.light_source = light_source;
-    function purge() {
-        pipeline.utilEraseChildren(pipeline.groups.monolith);
-        pipeline.utilEraseChildren(stage.lightsGroup);
-    }
-    tileform.purge = purge;
     function opkl() {
         if (app.key('f1') == 1) {
             tileform.TOGGLE_TOP_DOWN_MODE = !tileform.TOGGLE_TOP_DOWN_MODE;
@@ -606,10 +708,10 @@ var tileform;
             tileform.TOGGLE_SUN_CAMERA = !tileform.TOGGLE_SUN_CAMERA;
         }
         else if (app.key('k') == 1) {
-            wallRotation -= .01;
+            glob.wallrotation -= .01;
         }
         else if (app.key('l') == 1) {
-            wallRotation += .01;
+            glob.wallrotation += .01;
         }
         else if (app.key('v') == 1) {
             if (glob.camerarotationx > 0)
@@ -625,17 +727,15 @@ var tileform;
             glob.hexsize = pts.add(glob.hexsize, [0, -1]);
         }
         else if (app.key('1') == 1) {
-            glob.hexsize = pts.add(glob.hexsize, [1, 0]);
+            glob.hexsize = pts.add(glob.hexsize, [-1, 0]);
         }
         else if (app.key('2') == 1) {
-            glob.hexsize = pts.add(glob.hexsize, [-1, 0]);
+            glob.hexsize = pts.add(glob.hexsize, [1, 0]);
         }
         else {
             return;
         }
         rome.purgeRemake();
-        console.log(wallRotation);
-        glob.wallrotation = wallRotation;
     }
 })(tileform || (tileform = {}));
 export default tileform;

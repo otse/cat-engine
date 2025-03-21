@@ -240,7 +240,7 @@ var pipeline;
         pipeline.scene.add(groups.sprites);
         pipeline.scene.add(groups.monolith);
         // scene.add(new THREE.AxesHelper(100));
-        pipeline.scene.background = new THREE.Color('#333');
+        pipeline.scene.background = new THREE.Color('#ababab');
         pipeline.scene2 = new THREE.Scene();
         pipeline.scene2.frustumCulled = false;
         pipeline.scene2.background = new THREE.Color('green');
@@ -399,7 +399,7 @@ var pipeline;
     }
     pipeline.makeRenderTarget = makeRenderTarget;
     function makeOrthographicCamera(w, h) {
-        let camera = new THREE.OrthographicCamera(w / -2, w / 2, h / 2, h / -2, -200, 200);
+        let camera = new THREE.OrthographicCamera(w / -2, w / 2, h / 2, h / -2, -500, 500);
         camera.updateProjectionMatrix();
         return camera;
     }

@@ -6,6 +6,7 @@ import zoom from "./zoom.js";
 import clod from "../clod.js";
 import tile from "../objects/tile.js";
 import glob from "../../dep/glob.js";
+import world_manager from "../world manager.js";
 let wpos = [0, 0];
 let rpos = [0, 0];
 let begin = [0, 0];
@@ -13,6 +14,7 @@ let before = [0, 0];
 // Todo haha
 const panPerspectiveWarp = [1, 2];
 export class pan {
+    static panCompress = 2;
     static register() {
         hooks.addListener('romeComponents', this.step);
         this.startup();
@@ -143,11 +145,12 @@ export class pan {
         // The idea is to manage the increments of y of rpos2
         // Such that tiles are displayed
         // For isometric view, you just need to keep an even number 
-        if (pipeline.USE_SCENE3)
-            // Critical evening
-            // Uneven causes geometry errors below the equator
-            rpos2[1] = this.roundToNearest(rpos2[1], 2);
+        //if (pipeline.USE_SCENE3)
+        // Critical evening
+        // Uneven causes geometry errors below the equator
         //rpos2[1] = pts.make_even(rpos2, 1)[1];
+        rpos2[1] = this.roundToNearest(rpos2[1], glob.pancompress);
+        //const nearestPoint = this.unproject_chunk_grid(rpos2);
         //rpos2 = pts.round(rpos2);
         pipeline.groups.camera.position.x = rpos2[0];
         pipeline.groups.camera.position.y = rpos2[1];
@@ -156,6 +159,20 @@ export class pan {
         pipeline.camera.rotation.x = glob.camerarotationx;
         pipeline.camera.updateMatrix();
         pipeline.camera.updateProjectionMatrix();
+    }
+    static unproject_chunk_grid(rpos) {
+        // This function should pretend there is a grid
+        // laid out over the arena (pipeline.scene)
+        // at every render position in that arena, 
+        let point = [0, 0];
+        const chunks = clod.helpers.get_every_chunk(world_manager.world);
+        for (const chunk of chunks) {
+            // unproject all points within chunk.tfGrid and find the one
+            // closest to our rpos
+            // const tfGrid = chunk.tfGrid;
+        }
+        //geometry.attributes.position.array.forEach((pos, i) => {
+        // });
     }
 }
 export default pan;

@@ -39,7 +39,8 @@ namespace rome {
 		glob.scale = 1;
 		glob.camerarotationx = Math.PI / 3;
 		glob.hexsize = [17, 9];
-		glob.hexsize = [17, 15]; // Monolith
+		glob.hexsize = [17, 17]; // Monolith
+		glob.pancompress = 2; // Mono
 		glob.camerarpos = [0, 0];
 		glob.gobjscount = [0, 0];
 		glob.sample = rome.sample;
@@ -122,18 +123,20 @@ namespace rome {
 		document.querySelector('rome-stats')!.innerHTML = `
 			rogue - monolith git branch
 			<br />DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
-			<br />&#9;ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
-			<br />&#9;USE_SCENE3: ${pipeline.USE_SCENE3}
+			<br />ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
+			<br />USE_SCENE3: ${pipeline.USE_SCENE3}
 			<br />--
-			<br />&#9;TOGGLE_TOP_DOWN_MODE (f1): ${tileform.TOGGLE_TOP_DOWN_MODE}
-			<br />&#9;TOGGLE_RENDER_AXES (f2): ${tileform.TOGGLE_RENDER_AXES}
-			<br />&#9;TOGGLE_NORMAL_MAPS (f3): ${tileform.TOGGLE_NORMAL_MAPS}
-			<br />&#9;TOGGLE_SUN_CAMERA (f4): ${tileform.TOGGLE_SUN_CAMERA}
+			<br />TOGGLE_TOP_DOWN_MODE (f1): ${tileform.TOGGLE_TOP_DOWN_MODE}
+			<br />TOGGLE_RENDER_AXES (f2): ${tileform.TOGGLE_RENDER_AXES}
+			<br />TOGGLE_NORMAL_MAPS (f3): ${tileform.TOGGLE_NORMAL_MAPS}
+			<br />TOGGLE_SUN_CAMERA (f4): ${tileform.TOGGLE_SUN_CAMERA}
 			<br />--
 			<br />"globs"
 			<br />&#9;randomspritecolor (h): ${glob.randomspritecolor}
-			<br />&#9;camerarotationx (v, b): ${glob.camerarotationx}
-			<br />&#9;wallrotation (v, b): ${glob.wallrotation}
+			<br />camerarotationx (v, b): ${glob.camerarotationx}
+			<br />wallrotation (v, b): ${glob.wallrotation}
+			<br />wallrotationstaggered (v, b): ${glob.wallrotationstaggered}
+			<br />pancompress (v, b): ${glob.pancompress}
 			<br />--
 			<br />camera rotation x (v, b): ${glob.camerarotationx}
 			<br />dither, color correction (d, z): ${pipeline.dithering}, ${pipeline.compression}
@@ -145,7 +148,7 @@ namespace rome {
 			<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
 			<br />reprerender: ${glob.reprerender}
 			<br />dirtyObjects: ${glob.dirtyobjects}
-			<br />&#9;hex size (q, a): ${pts.to_string_fixed(glob.hexsize)}
+			<br />hex size (q, a): ${pts.to_string_fixed(glob.hexsize)}
 			<!--<br />cameraMode: ${pipeline.cameraMode}-->
 			<br />chunk span size: ${clod.chunk_span} x ${clod.chunk_span}
 			<br />gobjs: ${glob.gobjscount[0]} / ${glob.gobjscount[1]}
