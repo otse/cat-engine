@@ -307,8 +307,8 @@ var tileform;
         translate() {
             const { wpos } = this.gobj;
             let pos = this.pos3d = pts.project(wpos);
-            // pos = pts.round(pos);
-            // pos[1] = rome.roundToNearest(pos[1], glob.pancompress);
+            pos[1] = rome.roundToNearest(pos[1], glob.pancompress);
+            // pos = pts.ceil(pos);
             this.entityGroup.position.fromArray([...pos, this.z]);
             this.entityGroup.updateMatrix();
         }

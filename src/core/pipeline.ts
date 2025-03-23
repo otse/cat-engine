@@ -240,7 +240,7 @@ namespace pipeline {
 		}
 
 		if (USE_SCENE3) {
-			camera2.scale.set(0.5, 0.5, 0.5);
+			camera2.scale.set(1 / 2, 1 / 2, 1 / 3);
 			camera2.updateMatrix();
 
 			renderer.setRenderTarget(target2);
@@ -293,7 +293,7 @@ namespace pipeline {
 		scene.add(ambientLight);
 
 		scene2 = new THREE.Scene();
-		scene2.frustumCulled = false;1
+		scene2.frustumCulled = false; 1
 		scene2.background = new THREE.Color('green');
 		scene2.add(new THREE.AmbientLight('white', Math.PI / 1));
 
@@ -305,7 +305,7 @@ namespace pipeline {
 		sceneMask = new THREE.Scene();
 		sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
 
-		
+
 
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
 			dotsPerInch = window.devicePixelRatio;
@@ -475,7 +475,7 @@ namespace pipeline {
 	}
 
 	export function makeOrthographicCamera(w, h) {
-		let camera = new THREE.OrthographicCamera(w / - 2, w / 2, h / 2, h / - 2, -200, 200);
+		let camera = new THREE.OrthographicCamera(w / - 2, w / 2, h / 2, h / - 2, -500, 500);
 		camera.updateProjectionMatrix();
 		return camera;
 	}

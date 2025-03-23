@@ -202,7 +202,7 @@ var pipeline;
             pipeline.renderer.render(pipeline.scene, pipeline.camera);
         }
         if (pipeline.USE_SCENE3) {
-            pipeline.camera2.scale.set(0.5, 0.5, 0.5);
+            pipeline.camera2.scale.set(1 / 2, 1 / 2, 1 / 3);
             pipeline.camera2.updateMatrix();
             pipeline.renderer.setRenderTarget(pipeline.target2);
         }
@@ -400,7 +400,7 @@ var pipeline;
     }
     pipeline.makeRenderTarget = makeRenderTarget;
     function makeOrthographicCamera(w, h) {
-        let camera = new THREE.OrthographicCamera(w / -2, w / 2, h / 2, h / -2, -200, 200);
+        let camera = new THREE.OrthographicCamera(w / -2, w / 2, h / 2, h / -2, -500, 500);
         camera.updateProjectionMatrix();
         return camera;
     }
