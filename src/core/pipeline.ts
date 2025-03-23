@@ -239,7 +239,8 @@ namespace pipeline {
 		}
 
 		if (USE_SCENE3) {
-			camera2.scale.set(0.5, 0.5, 0.5);
+			const scale = 1 / 2;
+			camera2.scale.set(scale, scale, scale);
 			camera2.updateMatrix();
 
 			renderer.setRenderTarget(target2);

@@ -304,9 +304,9 @@ var tileform;
             geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
             const material = new THREE.MeshPhongMaterial({
                 color: 'white',
-                specular: 'lavender',
+                specular: 'red',
                 shininess: 7,
-                normalScale: new THREE.Vector2(1, 1),
+                normalScale: new THREE.Vector2(0.4, 0.4),
                 map: pipeline.getTexture(this.data.shapeGroundTexture),
                 normalMap: pipeline.getTexture(this.data.shapeGroundTextureNormal),
                 // side: THREE.DoubleSide

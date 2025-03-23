@@ -202,7 +202,8 @@ var pipeline;
             pipeline.renderer.render(pipeline.scene, pipeline.camera);
         }
         if (pipeline.USE_SCENE3) {
-            pipeline.camera2.scale.set(0.5, 0.5, 0.5);
+            const scale = 1 / 2;
+            pipeline.camera2.scale.set(scale, scale, scale);
             pipeline.camera2.updateMatrix();
             pipeline.renderer.setRenderTarget(pipeline.target2);
         }
