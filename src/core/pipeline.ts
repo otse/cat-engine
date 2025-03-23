@@ -287,13 +287,13 @@ namespace pipeline {
 		scene.add(groups.sprites);
 		scene.add(groups.monolith);
 		// scene.add(new THREE.AxesHelper(100));
-		scene.background = new THREE.Color('#333');
+		scene.background = new THREE.Color('#999');
 
-		ambientLight = new THREE.AmbientLight('white', Math.PI / 2);
+		ambientLight = new THREE.AmbientLight('white', Math.PI / 1);
 		scene.add(ambientLight);
 
 		scene2 = new THREE.Scene();
-		scene2.frustumCulled = false;
+		scene2.frustumCulled = false;1
 		scene2.background = new THREE.Color('green');
 		scene2.add(new THREE.AmbientLight('white', Math.PI / 1));
 
@@ -475,7 +475,7 @@ namespace pipeline {
 	}
 
 	export function makeOrthographicCamera(w, h) {
-		let camera = new THREE.OrthographicCamera(w / - 2, w / 2, h / 2, h / - 2, -500, 500);
+		let camera = new THREE.OrthographicCamera(w / - 2, w / 2, h / 2, h / - 2, -200, 200);
 		camera.updateProjectionMatrix();
 		return camera;
 	}

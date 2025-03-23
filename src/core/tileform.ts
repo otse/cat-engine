@@ -60,49 +60,47 @@ namespace tileform {
 		await stage.init();
 		hooks.addListener('romeComponents', step);
 
-		glob.camerarotationx = 0.98;
 		glob.wallrotation = wallRotation;
 		glob.wallrotationstaggered = wallRotationStaggered;
 
-		make_rpos_grid();
+		make_pan_compressor_line();
 		//hooks.addListener('chunkShow', chunkShow);
 
 		return;
 	}
 
 	export function purge() {
-		make_rpos_grid();
-		tenIn = 0;
-		checkedDistance = false;
+		make_pan_compressor_line();
 		pipeline.utilEraseChildren(pipeline.groups.monolith);
 		pipeline.utilEraseChildren(stage.lightsGroup);
 	}
 
-	let tfGrid;
+	let tfCompressor;
 
-	function make_rpos_grid() {
-		const sheer = pts.mult(glob.hexsize, clod.chunk_span);
-		const segments = pts.mult(glob.hexsize, clod.chunk_span);
-		const geometry = new THREE.PlaneGeometry(sheer[0], sheer[1], segments[0], segments[1]);
-		const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 'red', wireframe: true }));
-		pipeline.scene.add(mesh);
-		tfGrid = mesh;
+	function make_pan_compressor_line() {
+		// Create a simple geometry with two points
+		const geometry = new THREE.BufferGeometry();
+		const vertices = new Float32Array([
+			0, 0, 0,
+			0, 1, 0
+		]);
+		geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+
+		// Create a line material
+		const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+
+		// Create the line
+		const line = new THREE.Line(geometry, material);
+		tfCompressor = line;
+
+		// Add to scene
+		// pipeline.scene.add(line);
 	}
 
-	let tenIn = 0;
-	let checkedDistance = false;
-	function get_grid_distance() {
-		// ostost
-		if (tenIn++ < 10)
-			return;
-		if (checkedDistance)
-			return;
-		checkedDistance = true;
+	function get_compressor_distance() {
 		const screenCoords = getVerticalScreenDifference(
-			tfGrid.geometry, tfGrid, pipeline.camera, pipeline.renderer);
-		glob.pancompress = 1 / screenCoords.y;
-		console.log(glob.pancompress);
-		
+			tfCompressor.geometry, tfCompressor, pipeline.camera, pipeline.renderer);
+		glob.pancompress = -1 / screenCoords.y;
 	}
 
 	function worldToScreen(vertex, camera, renderer) {
@@ -118,39 +116,6 @@ namespace tileform {
 		);
 	}
 
-	// Get vertices in world space
-	function getScreenPositions(geometry, object, camera, renderer) {
-		const positions = geometry.attributes.position;
-		const screenPositions: any[] = [];
-
-		const worldMatrix = object.matrixWorld;
-
-		for (let i = 0; i < positions.count; i++) {
-			const vertex = new THREE.Vector3();
-			vertex.fromBufferAttribute(positions, i);
-			vertex.applyMatrix4(worldMatrix); // Convert to world space
-			screenPositions.push(worldToScreen(vertex, pipeline.camera, pipeline.renderer));
-		}
-
-		const segments = pts.mult(glob.hexsize, clod.chunk_span);
-
-		const verticesPerRow = segments[0] + 1;
-
-		let differences: any[] = [];
-
-		for (let i = 0; i < positions.count - verticesPerRow; i++) {
-			const belowIndex = i + verticesPerRow;  // Get vertex directly below
-			if (belowIndex < positions.count) {
-				const diff = new THREE.Vector2().subVectors(screenPositions[belowIndex], screenPositions[i]);
-				differences.push(diff);
-			}
-		}
-
-		return differences;
-
-		return screenPositions;
-	}
-
 	function getVerticalScreenDifference(geometry, object, camera, renderer) {
 		const positions = geometry.attributes.position;
 
@@ -162,45 +127,19 @@ namespace tileform {
 
 		// Get the world positions of the first two vertices
 		const vertex0 = new THREE.Vector3().fromBufferAttribute(positions, 0).applyMatrix4(object.matrixWorld);
-		const vertex1 = new THREE.Vector3().fromBufferAttribute(positions, glob.hexsize[0] * clod.chunk_span + 1).applyMatrix4(object.matrixWorld);
+		const vertex1 = new THREE.Vector3().fromBufferAttribute(positions, 1).applyMatrix4(object.matrixWorld);
 
 		// Convert them to screen space
 		const screen0 = worldToScreen(vertex0, camera, renderer);
 		const screen1 = worldToScreen(vertex1, camera, renderer);
 
-		console.log(vertex0, vertex1, screen0, screen1);
-
-
 		// Compute difference
 		return new THREE.Vector2().subVectors(screen1, screen0);
 	}
-
-	// Example usage:
-
-	/*
-	async function chunkShow(chunk: clod.chunk) {
-
-		console.log('show chunk');
-
-		const sheer = pts.mult(glob.hexsize, clod.chunk_span);
-		const segments = pts.mult(glob.hexsize, clod.chunk_span);
-		const proj = pts.mult(pts.project(chunk.cpos), clod.chunk_span);
-		const geometry = new THREE.PlaneGeometry(sheer[0], sheer[1], segments[0], segments[1]);
-		geometry.translate(proj[0], proj[1], 0);
-
-		const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 'red', wireframe: true }));
-
-		pipeline.scene.add(mesh);
-
-		(chunk as any).tfGrid = mesh;
-		
-		return false;
-	}*/
-
 	async function step() {
 		stage.step();
 		update_entities();
-		get_grid_distance();
+		get_compressor_distance();
 		return false;
 	}
 
@@ -377,6 +316,7 @@ namespace tileform {
 	abstract class entity3d {
 		entityGroup
 		pos3d: vec2 = [0, 0]
+		z = 0
 		constructor(readonly gobj: game_object) {
 			this.entityGroup = new THREE.Group();
 			entities.push(this);
@@ -420,12 +360,11 @@ namespace tileform {
 		protected _update() {
 		}
 		protected translate() {
-			// Useful for beautiful lighting
 			const { wpos } = this.gobj;
-			let pos = this.pos3d = pts.project(wpos);// (pts.mult(project_linear_space(wpos), stretchSpace));
-			pos[1] = rome.roundToNearest(pos[1], glob.pancompress);
+			let pos = this.pos3d = pts.project(wpos);
 			// pos = pts.round(pos);
-			this.entityGroup.position.fromArray([...pos, 0]);
+			// pos[1] = rome.roundToNearest(pos[1], glob.pancompress);
+			this.entityGroup.position.fromArray([...pos, this.z]);
 			this.entityGroup.updateMatrix();
 		}
 	}
@@ -474,14 +413,14 @@ namespace tileform {
 		}
 	}
 
-	export let hex_size = 7.8;
+	export let hexscalar = 7.4;
 
 	class hex_tile {
 		scalar
 		group
 		protected mesh
 		constructor(readonly data: shape_literal) {
-			this.scalar = hex_size;
+			this.scalar = hexscalar;
 			this.make();
 		}
 		make() {
@@ -502,17 +441,15 @@ namespace tileform {
 			geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
 			const material = new THREE.MeshPhongMaterial({
 				color: 'white',
-				specular: 'lavender',
+				// specular: 'lavender',
 				shininess: 7,
 				normalScale: new THREE.Vector2(1, 1),
 				map: pipeline.getTexture(this.data.shapeGroundTexture!),
 				normalMap: pipeline.getTexture(this.data.shapeGroundTextureNormal!),
-				// side: THREE.DoubleSide
 			});
 			if (!TOGGLE_NORMAL_MAPS)
 				material.normalMap = null;
 			// geometry = new THREE.PlaneGeometry(10, 10);
-			// Now do the grouping
 			this.group = new THREE.Group();
 			// this.group.rotation.set(HexRotationX, HexRotationY, 0);
 			this.mesh = new THREE.Mesh(geometry, material);
@@ -779,8 +716,8 @@ namespace tileform {
 			this.light.updateMatrix();
 			this.entityGroup.add(this.light);
 			// Translate
+			this.z = 4;
 			this.translate();
-			this.entityGroup.position.z = 7;
 			this.entityGroup.updateMatrix();
 			// this.entityGroup.updateMatrixWorld(true); // Bad
 			stage.lightsGroup.add(this.entityGroup);

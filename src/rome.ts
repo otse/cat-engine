@@ -41,8 +41,7 @@ namespace rome {
 		glob.dirtyobjects = true;
 		glob.randomspritecolor = false;
 		glob.scale = 1;
-		glob.camerarotationx = 0.9871975511965976;
-		glob.camerarotationx = 0.5635987755982989;
+		glob.camerarotationx = 0.955;
 		glob.hexsize = [17, 9];
 		glob.hexsize = [17, 15]; // Monolith
 		glob.pancompress = 2; // Mono
@@ -142,13 +141,13 @@ namespace rome {
 			<br />camerarotationx (v, b): ${glob.camerarotationx}
 			<br />wallrotation (v, b): ${glob.wallrotation}
 			<br />pancompress (v, b): ${glob.pancompress}
+			<br />hexscalar ([, ]): ${tileform.hexscalar}
 			<br />--
 			<br />camera rotation x (v, b): ${glob.camerarotationx}
 			<br />dither, color correction (d, z): ${pipeline.dithering}, ${pipeline.compression}
 			<br />render scale (-, =): ${glob.scale}
 			<br />zoom scale (r, f): ${zoom.scale()}
 			<br />grid (t, g): ${world_manager.world.grid.spread} / ${world_manager.world.grid.outside}
-			<br />hex size ([, ]): ${tileform.hex_size}
 			<br />--
 			<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
 			<br />reprerender: ${glob.reprerender}
@@ -226,13 +225,13 @@ namespace rome {
 			glob.dirtyobjects = true;
 		}
 		if (app.key('[') == 1) {
-			tileform.hex_size -= .1;
-			console.log(tileform.hex_size);
+			tileform.hexscalar -= .1;
+			console.log(tileform.hexscalar);
 			purgeRemake();
 		}
 		if (app.key(']') == 1) {
-			tileform.hex_size += .1;
-			console.log(tileform.hex_size);
+			tileform.hexscalar += .1;
+			console.log(tileform.hexscalar);
 			purgeRemake();
 		}
 

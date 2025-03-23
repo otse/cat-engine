@@ -240,11 +240,12 @@ var pipeline;
         pipeline.scene.add(groups.sprites);
         pipeline.scene.add(groups.monolith);
         // scene.add(new THREE.AxesHelper(100));
-        pipeline.scene.background = new THREE.Color('#333');
-        pipeline.ambientLight = new THREE.AmbientLight('white', Math.PI / 2);
+        pipeline.scene.background = new THREE.Color('#999');
+        pipeline.ambientLight = new THREE.AmbientLight('white', Math.PI / 1);
         pipeline.scene.add(pipeline.ambientLight);
         pipeline.scene2 = new THREE.Scene();
         pipeline.scene2.frustumCulled = false;
+        1;
         pipeline.scene2.background = new THREE.Color('green');
         pipeline.scene2.add(new THREE.AmbientLight('white', Math.PI / 1));
         pipeline.scene3 = new THREE.Scene();
@@ -399,7 +400,7 @@ var pipeline;
     }
     pipeline.makeRenderTarget = makeRenderTarget;
     function makeOrthographicCamera(w, h) {
-        let camera = new THREE.OrthographicCamera(w / -2, w / 2, h / 2, h / -2, -500, 500);
+        let camera = new THREE.OrthographicCamera(w / -2, w / 2, h / 2, h / -2, -200, 200);
         camera.updateProjectionMatrix();
         return camera;
     }
