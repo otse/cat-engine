@@ -202,7 +202,7 @@ var pipeline;
             pipeline.renderer.render(pipeline.scene, pipeline.camera);
         }
         if (pipeline.USE_SCENE3) {
-            pipeline.camera2.scale.set(1 / 2, 1 / 2, 1 / 3);
+            pipeline.camera2.scale.set(1 / 2, 1 / 2, 1 / 2);
             pipeline.camera2.updateMatrix();
             pipeline.renderer.setRenderTarget(pipeline.target2);
         }
@@ -240,12 +240,11 @@ var pipeline;
         pipeline.scene.add(groups.sprites);
         pipeline.scene.add(groups.monolith);
         // scene.add(new THREE.AxesHelper(100));
-        pipeline.scene.background = new THREE.Color('#999');
-        pipeline.ambientLight = new THREE.AmbientLight('white', Math.PI / 1);
+        pipeline.scene.background = new THREE.Color('#333');
+        pipeline.ambientLight = new THREE.AmbientLight('white', Math.PI / 2);
         pipeline.scene.add(pipeline.ambientLight);
         pipeline.scene2 = new THREE.Scene();
         pipeline.scene2.frustumCulled = false;
-        1;
         pipeline.scene2.background = new THREE.Color('green');
         pipeline.scene2.add(new THREE.AmbientLight('white', Math.PI / 1));
         pipeline.scene3 = new THREE.Scene();

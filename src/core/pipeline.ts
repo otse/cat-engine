@@ -240,7 +240,7 @@ namespace pipeline {
 		}
 
 		if (USE_SCENE3) {
-			camera2.scale.set(1 / 2, 1 / 2, 1 / 3);
+			camera2.scale.set(1 / 2, 1 / 2, 1 / 2);
 			camera2.updateMatrix();
 
 			renderer.setRenderTarget(target2);
@@ -287,13 +287,13 @@ namespace pipeline {
 		scene.add(groups.sprites);
 		scene.add(groups.monolith);
 		// scene.add(new THREE.AxesHelper(100));
-		scene.background = new THREE.Color('#999');
+		scene.background = new THREE.Color('#333');
 
-		ambientLight = new THREE.AmbientLight('white', Math.PI / 1);
+		ambientLight = new THREE.AmbientLight('white', Math.PI / 2);
 		scene.add(ambientLight);
 
 		scene2 = new THREE.Scene();
-		scene2.frustumCulled = false; 1
+		scene2.frustumCulled = false;
 		scene2.background = new THREE.Color('green');
 		scene2.add(new THREE.AmbientLight('white', Math.PI / 1));
 
@@ -304,8 +304,6 @@ namespace pipeline {
 
 		sceneMask = new THREE.Scene();
 		sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
-
-
 
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
 			dotsPerInch = window.devicePixelRatio;

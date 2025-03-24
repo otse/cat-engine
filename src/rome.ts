@@ -41,7 +41,7 @@ namespace rome {
 		glob.dirtyobjects = true;
 		glob.randomspritecolor = false;
 		glob.scale = 1;
-		glob.camerarotationx = 0.952;
+		glob.camerarotationx = 0.962;
 		glob.hexsize = [17, 9];
 		glob.hexsize = [17, 15]; // Monolith
 		glob.pancompress = 2; // Mono
@@ -141,13 +141,13 @@ namespace rome {
 			<br />camerarotationx (v, b): ${glob.camerarotationx}
 			<br />wallrotation (v, b): ${glob.wallrotation}
 			<br />pancompress (v, b): ${glob.pancompress}
-			<br />hexscalar ([, ]): ${tileform.hexscalar}
 			<br />--
 			<br />camera rotation x (v, b): ${glob.camerarotationx}
 			<br />dither, color correction (d, z): ${pipeline.dithering}, ${pipeline.compression}
 			<br />render scale (-, =): ${glob.scale}
 			<br />zoom scale (r, f): ${zoom.scale()}
 			<br />grid (t, g): ${world_manager.world.grid.spread} / ${world_manager.world.grid.outside}
+			<br />hexscalar ([, ]): ${tileform.hexscalar}
 			<br />--
 			<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
 			<br />reprerender: ${glob.reprerender}

@@ -190,7 +190,6 @@ var tileform;
             stage.scene.updateMatrix();
             // todo create a second renderer that has shadows enabled
         }
-        // aka stage
         function prepare(sprite) {
             stage.scene.scale.set(glob.scale, glob.scale, glob.scale);
             // Monolith doesn't add shapes to its stage renderer
@@ -346,7 +345,7 @@ var tileform;
         }
     }
     tileform.shape_hex_wrapper = shape_hex_wrapper;
-    tileform.hexscalar = 7.4;
+    tileform.hexscalar = 7.1;
     class hex_tile {
         data;
         scalar;
@@ -375,9 +374,9 @@ var tileform;
             geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
             const material = new THREE.MeshPhongMaterial({
                 color: 'white',
-                // specular: 'lavender',
+                specular: 'red',
                 shininess: 7,
-                normalScale: new THREE.Vector2(1, 1),
+                normalScale: new THREE.Vector2(.5, .5),
                 map: pipeline.getTexture(this.data.shapeGroundTexture),
                 normalMap: pipeline.getTexture(this.data.shapeGroundTextureNormal),
             });
@@ -385,6 +384,7 @@ var tileform;
                 material.normalMap = null;
             // geometry = new THREE.PlaneGeometry(10, 10);
             this.group = new THREE.Group();
+            this.group.scale.set(1, 1, 1);
             // this.group.rotation.set(HexRotationX, HexRotationY, 0);
             this.mesh = new THREE.Mesh(geometry, material);
             this.group.add(this.mesh);
