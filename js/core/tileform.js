@@ -100,6 +100,7 @@ var tileform;
         return new THREE.Vector2().subVectors(screen1, screen0);
     }
     async function step() {
+        pipeline.scene.scale.set(glob.scale, glob.scale, glob.scale);
         stage.step();
         update_entities();
         get_compressor_distance();
@@ -191,7 +192,7 @@ var tileform;
             // todo create a second renderer that has shadows enabled
         }
         function prepare(sprite) {
-            stage.scene.scale.set(glob.scale, glob.scale, glob.scale);
+            pipeline.scene.scale.set(glob.scale, glob.scale, glob.scale);
             // Monolith doesn't add shapes to its stage renderer
             return;
             //scene.updateMatrix();
@@ -374,7 +375,7 @@ var tileform;
             geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
             const material = new THREE.MeshPhongMaterial({
                 color: 'white',
-                specular: 'red',
+                specular: 'green',
                 shininess: 7,
                 normalScale: new THREE.Vector2(.5, .5),
                 map: pipeline.getTexture(this.data.shapeGroundTexture),
@@ -617,11 +618,11 @@ var tileform;
         }
         _create() {
             console.log(' tf light source create ');
-            this.light = new THREE.PointLight('cyan', 1, 5);
+            this.light = new THREE.PointLight('gold', 1, 5);
             // this.light.decay = 2.4;
-            this.light.intensity = 1000 * (glob.scale * 2);
+            this.light.intensity = 700 * (glob.scale * 2);
             this.light.distance = 600 * (glob.scale * 2);
-            this.light.decay = 1.8;
+            this.light.decay = 2.3;
             this.light.updateMatrix();
             this.entityGroup.add(this.light);
             // Translate

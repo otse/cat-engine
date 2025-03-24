@@ -146,8 +146,8 @@ export class pan {
         //if (pipeline.USE_SCENE3)
         // Critical evening
         // Uneven causes geometry errors below the equator
-        rpos2[1] = rome.roundToNearest(rpos2[1], glob.pancompress);
-        // rpos2 = pts.make_even(rpos2, 1);
+        rpos2 = pts.make_even(rpos2, 1);
+        rpos2[1] = rome.roundToNearest(rpos2[1], glob.pancompress * 2);
         //const nearestPoint = this.unproject_chunk_grid(rpos2);
         //rpos2 = pts.round(rpos2);
         pipeline.groups.camera.position.x = rpos2[0];
