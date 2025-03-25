@@ -193,7 +193,7 @@ namespace pipeline {
 	export var dotsPerInch = 1;
 
 	export var dithering = false;
-	export var compression = true;
+	export var compression = false;
 
 	export namespace groups {
 		export var camera

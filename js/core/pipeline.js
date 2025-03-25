@@ -184,7 +184,7 @@ var pipeline;
     pipeline.USE_SCENE3 = true;
     pipeline.dotsPerInch = 1;
     pipeline.dithering = false;
-    pipeline.compression = true;
+    pipeline.compression = false;
     let groups;
     (function (groups) {
     })(groups = pipeline.groups || (pipeline.groups = {}));
