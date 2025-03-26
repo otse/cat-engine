@@ -1,7 +1,7 @@
 import pan from "./components/pan.js";
 import clod from "./clod.js";
 import game_object from "./objects/game object.js";
-import sprite3d from "./sprite 3d.js";
+import object3d from "./object 3d.js";
 import glob from "./../dep/glob.js";
 
 /// 🌍 WorldManager (clean and direct)
@@ -86,9 +86,9 @@ class world_manager {
 				target.data._type == 'tile 3d' &&
 				object.data._type == 'wall 3d'
 			) {
-				object.sprite3dliteral = {
-					...object.sprite3dliteral!,
-					groundPreset: target.sprite3dliteral?.groundPreset,
+				object.object3dliteral = {
+					...object.object3dliteral!,
+					groundPreset: target.object3dliteral?.groundPreset,
 				};
 				console.log(' water! ', object.data._type, target.data._type);
 				needsAdding = false;
@@ -99,8 +99,8 @@ class world_manager {
 				target.data._type == 'wall 3d' &&
 				object.data._type == 'tile 3d'
 			) {
-				target.sprite3dliteral = {
-					...target.sprite3dliteral!,
+				target.object3dliteral = {
+					...target.object3dliteral!,
 					groundPreset: 'water' // object.sprite3dliteral?.groundPreset,
 				};
 				console.log('replace respect');

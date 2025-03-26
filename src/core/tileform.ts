@@ -10,7 +10,7 @@ import direction_adapter from "./direction adapter.js";
 import game_object from "./objects/game object.js";
 import wall3d from "./objects/wall 3d.js";
 import pipeline from "./pipeline.js";
-import sprite3d from "./sprite 3d.js";
+import object3d from "./object 3d.js";
 import sprite from "./sprite.js";
 import staggered_area from "./staggered area.js";
 import clod from "./clod.js";
@@ -167,7 +167,7 @@ namespace tileform {
 
 	export namespace stage {
 		export let scene, soleGroup, lightsGroup, camera, stageRenderer, ambient, sun
-		export let spotlight: sprite3d | undefined
+		export let spotlight: object3d | undefined
 	}
 
 	export let tfStageCameraRotation = 0.98;
@@ -212,102 +212,9 @@ namespace tileform {
 		}
 
 		async function boot() {
-			//const testLight = new THREE.PointLight('red', 100000, 0);
-			//testLight.distance = 0;
-			//testLight.position.set(0, 100, 0);
-			//const helper = new THREE.PointLightHelper(testLight, 30);
-			scene = new THREE.Scene();
-			// scene.fog = new THREE.Fog( 0xcccccc, 0, 5 );
-			scene.matrixWorldAutoUpdate = true;
-			//scene.add(new THREE.AxesHelper(8));
-
-			//scene.add(testLight);
-			//scene.add(helper);
-			// scene.background = new THREE.Color('purple');
-			camera = new THREE.OrthographicCamera(100 / - 2, 100 / 2, 100 / 2, 100 / - 2, -100, 100);
-			soleGroup = new THREE.Group();
-			//soleGroup.rotation.y = Math.PI / 2;
-			lightsGroup = new THREE.Group();
-			scene.add(soleGroup);
-			scene.add(lightsGroup);
-			scene.updateMatrix();
-			ambient = new THREE.AmbientLight('white', Math.PI / 2);
-			scene.add(ambient);
 			sun = new THREE.DirectionalLight('lavender', Math.PI / 3);
 			pipeline.scene.add(sun);
 			pipeline.scene.add(sun.target);
-
-			//scene.add(camera);
-			scene.updateMatrix();
-			// todo create a second renderer that has shadows enabled
-
-		}
-
-		export function prepare(sprite: sprite3d) {
-			pipeline.scene.scale.set(glob.scale, glob.scale, glob.scale);
-			// Monolith doesn't add shapes to its stage renderer
-			return;
-			//scene.updateMatrix();
-			//scene.updateMatrixWorld(true); // Wonky
-			spotlight = sprite;
-			let { spriteSize: size } = sprite.data;
-			size = (pts.mult(size!, glob.scale));
-			camera = new THREE.OrthographicCamera(
-				size![0] / - 2,
-				size![0] / 2,
-				size![1] / 2,
-				size![1] / - 2,
-				-100, 500);
-			camera.position.set(0, 0, 0);
-			camera.rotation.set(tfStageCameraRotation, 0, 0);
-			if (TOGGLE_SUN_CAMERA) {
-				// This math was a lot of trial and error
-				// But makes sunlight more 3d
-				glob.reprerender = true;
-				glob.dirtyobjects = true;
-				const pos3d = (pts.mult(sprite.shape!.pos3d, glob.scale));
-				let offset = (pts.subtract(pan.rpos, pos3d));
-				sun.position.set(offset[0], offset[1], sunDistance);
-				sun.target.position.set(0, -pan.rpos[1], 0);
-				sun.updateMatrix();
-				sun.target.updateMatrix();
-			}
-			else {
-				sun.position.set(-sunDistance, -sunDistance * 2, sunDistance);
-				sun.target.position.set(0, 0, 0);
-				sun.updateMatrix();
-				sun.target.updateMatrix();
-			}
-			if (PUT_CAMERA_ON_TILE) {
-				const pos3d = (pts.mult(sprite.shape!.pos3d, glob.scale));
-				camera.position.set(pos3d[0], pos3d[1], 0);
-				camera.updateMatrix();
-			}
-			else {
-				// 3d lighting mode "experimental"
-				camera.position.set(pan.rpos[0], pan.rpos[1], 0);
-				camera.updateMatrix();
-				const pos3d = pts.copy(sprite.shape!.pos3d);
-				let offset = (pts.subtract(pan.rpos, pos3d));
-				scene.position.set(offset[0], offset[1], 0);
-				scene.updateMatrix()
-			}
-			while (soleGroup.children.length > 0)
-				soleGroup.remove(soleGroup.children[0]);
-			soleGroup.add(sprite.shape!.entityGroup);
-			soleGroup.updateMatrix();
-			scene.updateMatrix();
-			scene.updateMatrixWorld(true);
-		}
-
-		export function render() {
-			// Monolith doesn't render objects to textures
-			return;
-			glob.renderer.setRenderTarget(spotlight!.target);
-			glob.renderer.clear();
-			glob.renderer.render(scene, camera);
-			glob.renderer.setRenderTarget(null);
-			// console.log("Lights:", scene.children.filter(obj => obj.isLight));
 		}
 	}
 	// end of stage
@@ -722,7 +629,7 @@ namespace tileform {
 			this.translate();
 			this.entityGroup.updateMatrix();
 			// this.entityGroup.updateMatrixWorld(true); // Bad
-			stage.lightsGroup.add(this.entityGroup);
+			pipeline.groups.monolith.add(this.entityGroup);
 			glob.reprerender = true;
 			glob.dirtyobjects = true;
 		}

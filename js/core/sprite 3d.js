@@ -5,7 +5,7 @@ import pipeline from "./pipeline.js";
 import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 ;
-export class sprite3d extends sprite {
+export class object3d extends sprite {
     reprerender;
     target;
     shape;
@@ -64,4 +64,4 @@ export class sprite3d extends sprite {
 }
 // this data should be owned by the game
 // and maybe attached to glob. or us a hooks?
-export default sprite3d;
+export default object3d;

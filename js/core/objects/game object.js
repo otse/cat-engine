@@ -5,8 +5,9 @@ export class game_object extends clod.obj {
     data;
     // A lot(!) of game objects are represented by an image or sprite
     sprite;
+    object3d;
     // Lots of game objects make sprite3ds so here's an initialization object
-    sprite3dliteral = { gobj: this };
+    object3dliteral = { gobj: this };
     // Rotation
     r = 0;
     // Third axis

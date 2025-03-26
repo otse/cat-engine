@@ -3,7 +3,7 @@ import glob from "./../../dep/glob.js";
 import pts from "../../dep/pts.js";
 import clod from "../clod.js";
 import sprite from "../sprite.js";
-import sprite3d from "../sprite 3d.js";
+import object3d from "../object 3d.js";
 
 export namespace game_object {
 	export type literal = game_object_literal;
@@ -12,8 +12,9 @@ export namespace game_object {
 export class game_object extends clod.obj {
 	// A lot(!) of game objects are represented by an image or sprite
 	sprite?: sprite
+	object3d?: object3d
 	// Lots of game objects make sprite3ds so here's an initialization object
-	sprite3dliteral: sprite3d.literal = { gobj: this }
+	object3dliteral: object3d.literal = { gobj: this }
 
 	// Rotation
 	r = 0

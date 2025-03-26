@@ -69,9 +69,9 @@ class world_manager {
             // Rare situation where we want to adapt a wall 3d to a tile 3d
             if (target.data._type == 'tile 3d' &&
                 object.data._type == 'wall 3d') {
-                object.sprite3dliteral = {
-                    ...object.sprite3dliteral,
-                    groundPreset: target.sprite3dliteral?.groundPreset,
+                object.object3dliteral = {
+                    ...object.object3dliteral,
+                    groundPreset: target.object3dliteral?.groundPreset,
                 };
                 console.log(' water! ', object.data._type, target.data._type);
                 needsAdding = false;
@@ -80,8 +80,8 @@ class world_manager {
             // but want to keep the ground
             else if (target.data._type == 'wall 3d' &&
                 object.data._type == 'tile 3d') {
-                target.sprite3dliteral = {
-                    ...target.sprite3dliteral,
+                target.object3dliteral = {
+                    ...target.object3dliteral,
                     groundPreset: 'water' // object.sprite3dliteral?.groundPreset,
                 };
                 console.log('replace respect');

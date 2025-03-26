@@ -1,7 +1,7 @@
 import glob from "./../../dep/glob.js";
 
 import game_object from "./game object.js";
-import sprite3d from "../sprite 3d.js";
+import object3d from "../object 3d.js";
 import game from "../../eye/game.js";
 
 export class tile3d extends game_object {
@@ -10,17 +10,17 @@ export class tile3d extends game_object {
 			name: 'a tile 3d',
 			...data
 		});
-		this.sprite3dliteral.groundPreset = preset;
+		this.object3dliteral.groundPreset = preset;
 		this.data._type = 'tile 3d';
 	}
 	protected override _create() {
-		new sprite3d({
+		new object3d({
 			gobj: this,
-			spriteSize: glob.hexsize,
 			shapeSize: [1, 1, 1],
 			shapeType: 'hex',
 		});
-		this.sprite?.create();
+		// this.sprite?.create();
+		this.object3d?.create();
 	}
 }
 
