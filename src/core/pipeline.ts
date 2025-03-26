@@ -427,8 +427,8 @@ namespace pipeline {
 			camera = makeOrthographicCamera(targetSize[0], targetSize[1]);
 			groups.camera.add(camera);
 			groups.camera.add(new THREE.AxesHelper(20));
-			//groups.camera.rotation.x = glob.camerarotationx;
-			camera.rotation.x = glob.camerarotationx;
+			//groups.camera.rotation.x = glob.magiccamerarotation;
+			camera.rotation.x = glob.magiccamerarotation;
 		}
 		camera.updateMatrix();
 		camera.updateProjectionMatrix();

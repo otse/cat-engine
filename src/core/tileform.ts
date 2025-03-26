@@ -17,20 +17,6 @@ import clod from "./clod.js";
 
 namespace tileform {
 
-	// right now, light is uniform and the camera sits right on top of the tile
-	// instead of putting the camera at pan.rpos then offsetting the scene
-	// just leave to true
-	export const PUT_CAMERA_ON_TILE = true;
-
-	// using math based entirely on trial and error
-	// i managed to create a sun that doesn't render uniformly
-	// setting this is nice but requires reprerenders
-	export let TOGGLE_SUN_CAMERA = false;
-
-	// this switch enables lights to "act more 3d"
-	// by raising individual lights the further they are from the camera
-	// this is just an idea and doesn't work yet
-	export const lyftLightSourcesFromCamera = false;
 
 	// like it says this toggles the beau ti ful relief maps
 	export let TOGGLE_NORMAL_MAPS = true;
@@ -42,16 +28,6 @@ namespace tileform {
 
 	// beautiful red green blues
 	export var TOGGLE_RENDER_AXES = false;
-
-	// i know directional lights are supposed to cast light uniformly
-	// but they actually act more like giant point lights
-	// this setting defines the size of the sun orb
-	const sunDistance = 20;
-
-	// the idea was to create a spread between tiles
-	// so that the lighting would behave better
-	// don't use
-	const stretchSpace = 1;
 
 	const wallRotation = Math.PI / 6;
 	const wallRotationStaggered = Math.PI / 6;
@@ -72,7 +48,6 @@ namespace tileform {
 	export function purge() {
 		make_pan_compressor_line();
 		pipeline.utilEraseChildren(pipeline.groups.monolith);
-		pipeline.utilEraseChildren(stage.lightsGroup);
 	}
 
 	let tfCompressor;
@@ -138,7 +113,6 @@ namespace tileform {
 	}
 	async function step() {
 		pipeline.scene.scale.set(glob.scale, glob.scale, glob.scale);
-
 		stage.step();
 		update_entities();
 		get_compressor_distance();
@@ -151,27 +125,6 @@ namespace tileform {
 			entity.update();
 		}
 	}
-
-	// This function does almost nothing! It doesn't matter where we project apparently
-	function project_linear_space(w: vec2): vec2 {
-		const tileWidth = glob.hexsize[0] - 1;
-		const tileHeight = glob.hexsize[0] - 1;
-		const x = w[0];
-		const y = -w[1];
-		const scaleFactor = tileWidth * 0.75;
-		return [
-			(x - y) * ((scaleFactor)),
-			(x + y) * ((-tileHeight) / 2)
-		];
-	}
-
-	export namespace stage {
-		export let scene, soleGroup, lightsGroup, camera, stageRenderer, ambient, sun
-		export let spotlight: object3d | undefined
-	}
-
-	export let tfStageCameraRotation = 0.98;
-
 
 	export namespace stage {
 
@@ -186,7 +139,7 @@ namespace tileform {
 			await preload();
 			await boot();
 
-			// glob.camerarotationx = tfStageCameraRotation;
+			// glob.magiccamerarotation = tfStageCameraRotation;
 		}
 
 		async function preload() {
@@ -212,7 +165,7 @@ namespace tileform {
 		}
 
 		async function boot() {
-			sun = new THREE.DirectionalLight('lavender', Math.PI / 3);
+			const sun = new THREE.DirectionalLight('lavender', Math.PI / 3);
 			pipeline.scene.add(sun);
 			pipeline.scene.add(sun.target);
 		}
@@ -466,10 +419,10 @@ namespace tileform {
 			const fromObject = fromObjects![0];
 			const toObject = toObjects![0];
 
-			const ourPosition = project_linear_space(gobj.wpos);
+			const ourPosition = pts.project(gobj.wpos);
 
-			const fromPosition = project_linear_space(fromObject.wpos);
-			const toPosition = project_linear_space(toObject.wpos);
+			const fromPosition = pts.project(fromObject.wpos);
+			const toPosition = pts.project(toObject.wpos);
 
 			let midX = ((fromPosition[0] + toPosition[0]) / 2) - ourPosition[0];
 			let midY = ((fromPosition[1] + toPosition[1]) / 2) - ourPosition[1];
@@ -639,9 +592,9 @@ namespace tileform {
 		if (app.key('f1') == 1) {
 			TOGGLE_TOP_DOWN_MODE = !TOGGLE_TOP_DOWN_MODE;
 			if (TOGGLE_TOP_DOWN_MODE) {
-				glob.camerarotationx = 0;
+				glob.magiccamerarotation = 0;
 			} else {
-				glob.camerarotationx = Math.PI / 3;
+				glob.magiccamerarotation = glob.constantmagiccamerarotation;
 			}
 		}
 		else if (app.key('f2') == 1) {
@@ -650,9 +603,6 @@ namespace tileform {
 		else if (app.key('f3') == 1) {
 			TOGGLE_NORMAL_MAPS = !TOGGLE_NORMAL_MAPS;
 		}
-		else if (app.key('f4') == 1) {
-			TOGGLE_SUN_CAMERA = !TOGGLE_SUN_CAMERA;
-		}
 		else if (app.key('k') == 1) {
 			glob.wallrotation -= .01;
 		}
@@ -660,11 +610,11 @@ namespace tileform {
 			glob.wallrotation += .01;
 		}
 		else if (app.key('v') == 1) {
-			if (glob.camerarotationx > 0)
-				glob.camerarotationx -= .01;
+			if (glob.magiccamerarotation > 0)
+				glob.magiccamerarotation -= .01;
 		}
 		else if (app.key('b') == 1) {
-			glob.camerarotationx += .01;
+			glob.magiccamerarotation += .01;
 		}
 		else if (app.key('q') == 1) {
 			glob.hexsize = pts.add(glob.hexsize, [0, 1]);

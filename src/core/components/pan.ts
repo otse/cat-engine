@@ -179,7 +179,7 @@ export class pan {
 		pipeline.groups.camera.position.y = rpos2[1];
 		pipeline.groups.camera.position.z = 10;
 		pipeline.groups.camera.updateMatrix();
-		pipeline.camera.rotation.x = glob.camerarotationx;
+		pipeline.camera.rotation.x = glob.magiccamerarotation;
 		pipeline.camera.updateMatrix();
 		pipeline.camera.updateProjectionMatrix();
 	}

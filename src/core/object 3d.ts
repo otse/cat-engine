@@ -17,27 +17,23 @@ export namespace object3d {
 
 export class object3d {
 	gobj: game_object
-	reprerender
-	target
 	shape?: tileform.shape3d
 	data_: object3d.literal
 	constructor(
 		readonly data: object3dliteral
 	) {
 		let groundData = game.groundPresets[
-			data.gobj.object3dliteral?.groundPreset || data.groundPreset!];
+			data.gobj.object3dmerge?.groundPreset || data.groundPreset!];
 		this.data = {
 			...data,
 			...groundData,
-			...data.gobj.object3dliteral
+			...data.gobj.object3dmerge
 		}
-		this.reprerender = true;
 		this.gobj = this.data.gobj;
 		this.gobj.object3d = this;
 	}
 	delete() {
 		this.shape?.delete();
-		this.target?.dispose();
 	}
 	create() {
 		this.shape = tileform.shapeMaker(

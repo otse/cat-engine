@@ -4,25 +4,21 @@ import tileform from "./tileform.js";
 export class object3d {
     data;
     gobj;
-    reprerender;
-    target;
     shape;
     data_;
     constructor(data) {
         this.data = data;
-        let groundData = game.groundPresets[data.gobj.object3dliteral?.groundPreset || data.groundPreset];
+        let groundData = game.groundPresets[data.gobj.object3dmerge?.groundPreset || data.groundPreset];
         this.data = {
             ...data,
             ...groundData,
-            ...data.gobj.object3dliteral
+            ...data.gobj.object3dmerge
         };
-        this.reprerender = true;
         this.gobj = this.data.gobj;
         this.gobj.object3d = this;
     }
     delete() {
         this.shape?.delete();
-        this.target?.dispose();
     }
     create() {
         this.shape = tileform.shapeMaker(this.data.shapeType, this.data);

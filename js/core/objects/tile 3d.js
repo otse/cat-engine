@@ -8,7 +8,7 @@ export class tile3d extends game_object {
             ...data
         });
         this.preset = preset;
-        this.object3dliteral.groundPreset = preset;
+        this.object3dmerge.groundPreset = preset;
         this.data._type = 'tile 3d';
     }
     _create() {
@@ -17,7 +17,6 @@ export class tile3d extends game_object {
             shapeSize: [1, 1, 1],
             shapeType: 'hex',
         });
-        // this.sprite?.create();
         this.object3d?.create();
     }
 }

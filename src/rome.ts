@@ -41,7 +41,8 @@ namespace rome {
 		glob.dirtyobjects = true;
 		glob.randomspritecolor = false;
 		glob.scale = 1;
-		glob.camerarotationx = 0.962;
+		glob.constantmagiccamerarotation = 0.962;
+		glob.magiccamerarotation = glob.constantmagiccamerarotation;
 		glob.hexsize = [17, 9];
 		glob.hexsize = [17, 15]; // Monolith
 		glob.pancompress = 2; // Mono
@@ -134,15 +135,14 @@ namespace rome {
 			<br />TOGGLE_TOP_DOWN_MODE (f1): ${tileform.TOGGLE_TOP_DOWN_MODE}
 			<br />TOGGLE_RENDER_AXES (f2): ${tileform.TOGGLE_RENDER_AXES}
 			<br />TOGGLE_NORMAL_MAPS (f3): ${tileform.TOGGLE_NORMAL_MAPS}
-			<br />TOGGLE_SUN_CAMERA (f4): ${tileform.TOGGLE_SUN_CAMERA}
 			<br />--
 			<br />"globs"
 			<br />&#9;randomspritecolor (h): ${glob.randomspritecolor}
-			<br />camerarotationx (v, b): ${glob.camerarotationx}
+			<br />magiccamerarotation (v, b): ${glob.magiccamerarotation}
 			<br />wallrotation (v, b): ${glob.wallrotation}
 			<br />pancompress (v, b): ${glob.pancompress}
 			<br />--
-			<br />camera rotation x (v, b): ${glob.camerarotationx}
+			<br />camera rotation x (v, b): ${glob.magiccamerarotation}
 			<br />dither, color correction (d, z): ${pipeline.dithering}, ${pipeline.compression}
 			<br />render scale (-, =): ${glob.scale}
 			<br />zoom scale (r, f): ${zoom.scale()}

@@ -357,8 +357,8 @@ var pipeline;
             pipeline.camera = makeOrthographicCamera(pipeline.targetSize[0], pipeline.targetSize[1]);
             groups.camera.add(pipeline.camera);
             groups.camera.add(new THREE.AxesHelper(20));
-            //groups.camera.rotation.x = glob.camerarotationx;
-            pipeline.camera.rotation.x = glob.camerarotationx;
+            //groups.camera.rotation.x = glob.magiccamerarotation;
+            pipeline.camera.rotation.x = glob.magiccamerarotation;
         }
         pipeline.camera.updateMatrix();
         pipeline.camera.updateProjectionMatrix();

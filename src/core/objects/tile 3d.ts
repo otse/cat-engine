@@ -10,7 +10,7 @@ export class tile3d extends game_object {
 			name: 'a tile 3d',
 			...data
 		});
-		this.object3dliteral.groundPreset = preset;
+		this.object3dmerge.groundPreset = preset;
 		this.data._type = 'tile 3d';
 	}
 	protected override _create() {
@@ -19,7 +19,6 @@ export class tile3d extends game_object {
 			shapeSize: [1, 1, 1],
 			shapeType: 'hex',
 		});
-		// this.sprite?.create();
 		this.object3d?.create();
 	}
 }

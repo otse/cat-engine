@@ -12,7 +12,7 @@ export class wall3d extends game_object {
 			...data,
 		});
 		this.data._type = 'wall 3d';
-		this.object3dliteral.groundPreset = 'water';
+		this.object3dmerge.groundPreset = 'water';
 		this.wallAdapter = new direction_adapter(this);
 	}
 	protected override _create() {
@@ -22,7 +22,6 @@ export class wall3d extends game_object {
 			shapeType: 'wall'
 		});
 		this.wallAdapter.search(['wall 3d']);
-		// this.sprite?.create();
 		this.object3d?.create();
 	}
 }
