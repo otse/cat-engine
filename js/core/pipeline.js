@@ -368,7 +368,7 @@ var pipeline;
         pipeline.camera3.updateProjectionMatrix();
     }
     let mem = [];
-    async function preloadTextureAsync(file, mode = 'linear') {
+    async function preloadTextureAsync(file, mode = 'nearest') {
         let texture = await new THREE.TextureLoader().loadAsync(file + `?v=${app.feed}`);
         mem[file] = texture;
         texture.generateMipmaps = false;

@@ -71,50 +71,20 @@ class world_manager {
 	// or a tile on a wall
 	static merge_ideally(target: game_object) {
 		let objects = this.getObjectsAt(target);
-		let needsAdding = true;
-		for (let object of objects) {
+		let addTarget = true;
+		for (let present of objects) {
 			if (
-				object.data._type == 'tile 3d' &&
+				present.data._type == 'tile 3d' &&
 				target.data._type == 'tile 3d'
 			) {
-				needsAdding = false;
-				// Ideally just ignore our newly tiles
-				// object.sprite3dliteral!.groundPreset = 'water';
-			}
-			// Rare situation where we want to adapt a wall 3d to a tile 3d
-			if (
-				target.data._type == 'tile 3d' &&
-				object.data._type == 'wall 3d'
-			) {
-				object.object3dmerge = {
-					...object.object3dmerge!,
+				addTarget = false;
+				present.object3dmerge = {
+					...present.object3dmerge!,
 					groundPreset: target.object3dmerge?.groundPreset,
 				};
-				console.log(' water! ', object.data._type, target.data._type);
-				needsAdding = false;
-			}
-			// When we put a wall 3d onto a tile 3d
-			// but want to keep the ground
-			else if (
-				target.data._type == 'wall 3d' &&
-				object.data._type == 'tile 3d'
-			) {
-				target.object3dmerge = {
-					...target.object3dmerge!,
-					groundPreset: 'water' // object.sprite3dliteral?.groundPreset,
-				};
-				console.log('replace respect');
-				clod.remove(object);
-				needsAdding = true;
-			}
-			else if (
-				object.data._type == 'wall' ||
-				object.data._type == 'tile'
-			) {
-				needsAdding = true;
 			}
 		}
-		if (needsAdding) {
+		if (addTarget) {
 			clod.addWait(world_manager.world, target);
 		}
 	}

@@ -17,6 +17,24 @@ export var game;
         water: {
             shapeGroundTexture: './img/textures/water.jpg',
             shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
+        },
+        star: {
+            shapeGroundTexture: './img/textures/star.jpg',
+            shapeGroundTextureNormal: './img/textures/starnormal.jpg',
+        }
+    };
+    game.shapePresets = {
+        default: {
+            shapeTexture: './img/textures/wall2.jpg',
+            shapeTextureNormal: './img/textures/wall2normal.jpg',
+        },
+        elven: {
+            shapeTexture: './img/textures/japanese3.jpg',
+            shapeTextureNormal: './img/textures/cobblestone2normal.jpg',
+        },
+        basalt: {
+            shapeTexture: './img/textures/basaltcliffs.jpg',
+            shapeTextureNormal: './img/textures/basalt.jpg',
         }
     };
     function init() {

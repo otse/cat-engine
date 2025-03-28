@@ -442,7 +442,7 @@ namespace pipeline {
 
 	let mem = []
 
-	export async function preloadTextureAsync(file: string, mode: 'nearest' | 'linear' = 'linear') {
+	export async function preloadTextureAsync(file: string, mode: 'nearest' | 'linear' = 'nearest') {
 		let texture = await new THREE.TextureLoader().loadAsync(file + `?v=${app.feed}`);
 		mem[file] = texture;
 		texture.generateMipmaps = false;

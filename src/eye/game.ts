@@ -9,6 +9,8 @@ import land from "./land.js";
 
 export namespace game {
 	export type groundPreset = keyof typeof groundPresets;
+	export type shapePreset = keyof typeof shapePresets;
+
 	export const groundPresets = {
 		default: {
 			shapeGroundTexture: './img/textures/beach.jpg',
@@ -25,6 +27,25 @@ export namespace game {
 		water: {
 			shapeGroundTexture: './img/textures/water.jpg',
 			shapeGroundTextureNormal: './img/textures/beachnormal.jpg',
+		} as tileform.shape3d.literal,
+		star: {
+			shapeGroundTexture: './img/textures/star.jpg',
+			shapeGroundTextureNormal: './img/textures/starnormal.jpg',
+		} as tileform.shape3d.literal
+	} as const;
+
+	export const shapePresets = {
+		default: {
+			shapeTexture: './img/textures/wall2.jpg',
+			shapeTextureNormal: './img/textures/wall2normal.jpg',
+		} as tileform.shape3d.literal,
+		elven: {
+			shapeTexture: './img/textures/japanese3.jpg',
+			shapeTextureNormal: './img/textures/cobblestone2normal.jpg',
+		} as tileform.shape3d.literal,
+		basalt: {
+			shapeTexture: './img/textures/basaltcliffs.jpg',
+			shapeTextureNormal: './img/textures/basalt.jpg',
 		} as tileform.shape3d.literal
 	} as const;
 

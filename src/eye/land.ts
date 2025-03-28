@@ -82,14 +82,19 @@ namespace land {
 					_wpos: [point.pos[0], point.pos[1], 0],
 					extra: { staggerData: point },
 					// colorOverride: 'green'
-				});
+				}, 'elven');
+				const tile = new tile3d({
+					_type: 'direct',
+					_wpos: [point.pos[0], point.pos[1], 0]
+				}, 'star');
 				objects.push(wall);
+				objects.push(tile);
 			}
 			else {
 				const tile = new tile3d({
 					_type: 'direct',
 					_wpos: [point.pos[0], point.pos[1], 0]
-				}, 'default');
+				}, 'star');
 				objects.push(tile);
 			}
 		});
@@ -108,7 +113,7 @@ namespace land {
 					_type: 'direct',
 					_wpos: [point.pos[0], point.pos[1], 0]
 					// colorOverride: 'green'
-				});
+				}, 'basalt');
 				objects.push(wall);
 			}
 			else {

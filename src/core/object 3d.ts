@@ -8,7 +8,8 @@ import tileform from "./tileform.js";
 import game_object from "./objects/game object.js";
 
 export interface object3dliteral extends tileform.shape3d.literal {
-	groundPreset?: game.groundPreset
+	groundPreset?: game.groundPreset,
+	shapePreset?: game.shapePreset
 }
 
 export namespace object3d {
@@ -23,12 +24,15 @@ export class object3d {
 		readonly data: object3dliteral
 	) {
 		let groundData = game.groundPresets[
-			data.gobj.object3dmerge?.groundPreset || data.groundPreset!];
+			data.gobj.object3dmerge?.groundPreset ?? data.groundPreset!];
+		let shapeData = game.shapePresets[
+			data.gobj.object3dmerge?.shapePreset ?? data.shapePreset!];
 		this.data = {
 			...data,
 			...groundData,
+			...shapeData,
 			...data.gobj.object3dmerge
-		}
+		};
 		this.gobj = this.data.gobj;
 		this.gobj.object3d = this;
 	}

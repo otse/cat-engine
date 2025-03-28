@@ -106,6 +106,15 @@ var tileform;
         }
         stage.init = init;
         async function preload() {
+            await pipeline.preloadTextureAsync('./img/textures/star.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/starnormal.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/japanese2.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/japanese3.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/japanese4.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/wall1.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/wall1normal.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/wall2.jpg');
+            await pipeline.preloadTextureAsync('./img/textures/wall2normal.jpg');
             await pipeline.preloadTextureAsync('./img/textures/water.jpg');
             await pipeline.preloadTextureAsync('./img/textures/overgrown_x.jpg');
             await pipeline.preloadTextureAsync('./img/textures/stonemixed.jpg');
@@ -255,7 +264,7 @@ var tileform;
                 color: 'white',
                 specular: 'green',
                 shininess: 7,
-                normalScale: new THREE.Vector2(.5, .5),
+                normalScale: new THREE.Vector2(1, 1),
                 map: pipeline.getTexture(this.data.shapeGroundTexture),
                 normalMap: pipeline.getTexture(this.data.shapeGroundTextureNormal),
             });
@@ -293,7 +302,6 @@ var tileform;
     // boring wall geometries
     class shape_wall extends shape3d {
         stagger = false;
-        hexTile;
         rotationGroup;
         wallGroup;
         wallMaterial;
@@ -309,7 +317,6 @@ var tileform;
             });
             if (!tileform.TOGGLE_NORMAL_MAPS)
                 material.normalMap = null;
-            this.hexTile = new hex_tile(this.data);
             this.wallGroup = wallMaker(this, material);
             this.wallGroup.position.set(5, 4, 0); // Push it up
             this.wallGroup.updateMatrix();
@@ -317,13 +324,9 @@ var tileform;
             this.rotationGroup.add(this.wallGroup);
             this.rotationGroup.position.z = shapeSize[2] / 2;
             this.entityGroup.add(this.rotationGroup);
-            this.entityGroup.add(this.hexTile.group);
             if (tileform.TOGGLE_RENDER_AXES)
                 this.entityGroup.add(new THREE.AxesHelper(12));
-            // Translate so we can take lighting sources
             this.translate();
-            //this.hexTile.rotationGroup.position.set(0, 0, 0);
-            //this.hexTile.rotationGroup.updateMatrix();
             this._step();
             this.wallMaterial = material;
         }
@@ -333,7 +336,6 @@ var tileform;
         }
         _delete() {
             this.dispose();
-            this.hexTile.free();
         }
         _step() {
             this.rotationGroup.rotation.set(0, 0, glob.wallrotation);
@@ -496,7 +498,7 @@ var tileform;
         }
         _create() {
             console.log(' tf light source create ');
-            this.light = new THREE.PointLight('gold', 1, 5);
+            this.light = new THREE.PointLight('white', 1, 5);
             // this.light.decay = 2.4;
             this.light.intensity = 700 * (glob.scale * 2);
             this.light.distance = 600 * (glob.scale * 2);
