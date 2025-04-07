@@ -8,7 +8,7 @@ export class tile3d extends game_object {
             ...data
         });
         this.preset = preset;
-        this.object3dmerge.groundPreset = preset;
+        this.object3dmerge_.groundPreset = preset;
         this.data._type = 'tile 3d';
     }
     _create() {

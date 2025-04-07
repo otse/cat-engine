@@ -14,7 +14,7 @@ export class game_object extends clod.obj {
 	sprite?: sprite
 	object3d?: object3d
 	// Lots of game objects make sprite3ds so here's an initialization object
-	object3dmerge: object3d.literal = { gobj: this }
+	object3dmerge_: object3d.literal = { gobj: this }
 
 	// Rotation
 	r = 0

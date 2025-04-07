@@ -66,8 +66,9 @@ export class pan {
 	}
 
 	static startup() {
+		this.wpos = [10, 1];
 		this.marker = new tile({
-			_wpos: [0, 0, 0],
+			_wpos: [...wpos, 0],
 			colorOverride: 'purple',
 			lonely: true,
 		});

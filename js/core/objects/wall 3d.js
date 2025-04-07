@@ -11,7 +11,7 @@ export class wall3d extends game_object {
         });
         this.preset = preset;
         this.data._type = 'wall 3d';
-        this.object3dmerge.shapePreset = preset;
+        this.object3dmerge_.shapePreset = preset;
         this.wallAdapter = new direction_adapter(this);
     }
     _create() {

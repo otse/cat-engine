@@ -78,9 +78,9 @@ class world_manager {
 				target.data._type == 'tile 3d'
 			) {
 				addTarget = false;
-				present.object3dmerge = {
-					...present.object3dmerge!,
-					groundPreset: target.object3dmerge?.groundPreset,
+				present.object3dmerge_ = {
+					...present.object3dmerge_!,
+					groundPreset: target.object3dmerge_?.groundPreset,
 				};
 			}
 		}

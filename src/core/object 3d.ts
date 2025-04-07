@@ -24,14 +24,14 @@ export class object3d {
 		readonly data: object3dliteral
 	) {
 		let groundData = game.groundPresets[
-			data.gobj.object3dmerge?.groundPreset ?? data.groundPreset!];
+			data.gobj.object3dmerge_?.groundPreset ?? data.groundPreset!];
 		let shapeData = game.shapePresets[
-			data.gobj.object3dmerge?.shapePreset ?? data.shapePreset!];
+			data.gobj.object3dmerge_?.shapePreset ?? data.shapePreset!];
 		this.data = {
 			...data,
 			...groundData,
 			...shapeData,
-			...data.gobj.object3dmerge
+			...data.gobj.object3dmerge_
 		};
 		this.gobj = this.data.gobj;
 		this.gobj.object3d = this;

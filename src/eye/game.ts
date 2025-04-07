@@ -31,6 +31,7 @@ export namespace game {
 		star: {
 			shapeGroundTexture: './img/textures/star.jpg',
 			shapeGroundTextureNormal: './img/textures/starnormal.jpg',
+			shapeGroundSpecular: 'cyan',
 		} as tileform.shape3d.literal
 	} as const;
 

@@ -63,9 +63,9 @@ class world_manager {
             if (present.data._type == 'tile 3d' &&
                 target.data._type == 'tile 3d') {
                 addTarget = false;
-                present.object3dmerge = {
-                    ...present.object3dmerge,
-                    groundPreset: target.object3dmerge?.groundPreset,
+                present.object3dmerge_ = {
+                    ...present.object3dmerge_,
+                    groundPreset: target.object3dmerge_?.groundPreset,
                 };
             }
         }

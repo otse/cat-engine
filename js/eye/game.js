@@ -21,6 +21,7 @@ export var game;
         star: {
             shapeGroundTexture: './img/textures/star.jpg',
             shapeGroundTextureNormal: './img/textures/starnormal.jpg',
+            shapeGroundSpecular: 'cyan',
         }
     };
     game.shapePresets = {

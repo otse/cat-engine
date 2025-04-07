@@ -131,6 +131,7 @@ namespace rome {
 			<br />DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${pipeline.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
 			<br />ROUND_UP_DOTS_PER_INCH: ${pipeline.ROUND_UP_DOTS_PER_INCH}
 			<br />USE_SCENE3: ${pipeline.USE_SCENE3}
+			<br />DITHERING (d): ${pipeline.dithering}
 			<br />--
 			<br />TOGGLE_TOP_DOWN_MODE (f1): ${tileform.TOGGLE_TOP_DOWN_MODE}
 			<br />TOGGLE_RENDER_AXES (f2): ${tileform.TOGGLE_RENDER_AXES}
@@ -143,7 +144,7 @@ namespace rome {
 			<br />pancompress (v, b): ${glob.pancompress}
 			<br />--
 			<br />camera rotation x (v, b): ${glob.magiccamerarotation}
-			<br />dither, color correction (d, z): ${pipeline.dithering}, ${pipeline.compression}
+			<br />color correction (z): ${pipeline.compression}
 			<br />render scale (-, =): ${glob.scale}
 			<br />zoom scale (r, f): ${zoom.scale()}
 			<br />grid (t, g): ${world_manager.world.grid.spread} / ${world_manager.world.grid.outside}

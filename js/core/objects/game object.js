@@ -7,7 +7,7 @@ export class game_object extends clod.obj {
     sprite;
     object3d;
     // Lots of game objects make sprite3ds so here's an initialization object
-    object3dmerge = { gobj: this };
+    object3dmerge_ = { gobj: this };
     // Rotation
     r = 0;
     // Third axis

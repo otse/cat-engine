@@ -247,6 +247,7 @@ namespace tileform {
 				shapeTextureNormal: './img/textures/stonemixednormal.jpg',
 				shapeGroundTexture: './img/textures/stonemixed2.jpg',
 				shapeGroundTextureNormal: './img/textures/stonemixed2normal.jpg',
+				shapeGroundSpecular: 'lavender',
 				...data
 			}
 		}
@@ -263,6 +264,7 @@ namespace tileform {
 		shapeTextureNormal?: string,
 		shapeGroundTexture?: string,
 		shapeGroundTextureNormal?: string,
+		shapeGroundSpecular?: string,
 		shapeSize?: vec3,
 	}
 
@@ -311,7 +313,7 @@ namespace tileform {
 			geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
 			const material = new THREE.MeshPhongMaterial({
 				color: 'white',
-				specular: 'green',
+				specular: this.data.shapeGroundSpecular!,
 				shininess: 7,
 				normalScale: new THREE.Vector2(1, 1),
 				map: pipeline.getTexture(this.data.shapeGroundTexture!),
