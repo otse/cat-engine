@@ -11,15 +11,19 @@ export class wall3d extends game_object {
         });
         this.preset = preset;
         this.data._type = 'wall 3d';
-        this.object3dmerge_.shapePreset = preset;
         this.wallAdapter = new direction_adapter(this);
     }
     _create() {
         new object3d({
             gobj: this,
             shapeSize: [16, 8, 11],
-            shapeType: 'wall'
+            shapeType: 'wall',
+            shapePreset: this.preset
         });
+        if (!this._first)
+            this.object3d?.create();
+    }
+    _first_create() {
         this.wallAdapter.search(['wall 3d']);
         this.object3d?.create();
     }

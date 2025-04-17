@@ -1,8 +1,8 @@
 import pts from "../dep/pts.js";
 import game_object from "./objects/game object.js";
-import clod from "./clod.js";
-import pipeline from "./pipeline.js";
+import renderer from "./renderer.js";
 import glob from "./../dep/glob.js";
+import clod from "./clod.js";
 
 interface sprite_literal {
 	gobj: game_object,
@@ -67,7 +67,7 @@ export class sprite {
 		// Monolith uses real geometry
 		return;
 		this.material = SpriteMaterial({
-			map: pipeline.getTexture('./img/' + this.data.spriteImage),
+			map: renderer.getTexture('./img/' + this.data.spriteImage),
 			color: this.data.spriteColor,
 			transparent: true,
 			depthTest: false,
@@ -83,7 +83,7 @@ export class sprite {
 		this.geometry = new THREE.PlaneGeometry(spriteSize![0], spriteSize![1], 1, 1);
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
 		this.update();
-		pipeline.groups.sprites.add(this.mesh);
+		renderer.groups.sprites.add(this.mesh);
 	}
 	update() {
 		return;
@@ -115,7 +115,7 @@ export function SpriteMaterial(parameters, uniforms: any, defines: any = {}) {
 		shader.uniforms.matrix = { value: uniforms.matrix };
 		shader.uniforms.bool = { value: uniforms.bool };
 		if (uniforms.masked) {
-			shader.uniforms.tMask = { value: pipeline.targetMask.texture };
+			shader.uniforms.tMask = { value: renderer.targetMask.texture };
 			shader.uniforms.maskColor = { value: uniforms.maskColor };
 			console.log('add tmask');
 		}

@@ -1,11 +1,10 @@
 import tile from "./tile.js";
 import wall from "./wall.js";
+// Ex:
 // Objects come in as data from the network
-// It is friendlier to use string types than import a large number of class files
-export function gameObjectMaker(data) {
+export function game_object_factory(data) {
     let gobj;
     switch (data._type) {
-        case 'dud':
         case 'direct':
             console.warn(' unset type passed to factory ');
             break;
@@ -18,4 +17,4 @@ export function gameObjectMaker(data) {
     }
     return gobj;
 }
-export default gameObjectMaker;
+export default game_object_factory;

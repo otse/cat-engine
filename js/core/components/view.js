@@ -1,7 +1,7 @@
 import hooks from "../../dep/hooks";
 export class view {
     static register() {
-        hooks.addListener('romeComponents', this.step);
+        hooks.addListener('worldetchComponents', this.step);
         this.startup();
     }
     static async step() {

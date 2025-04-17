@@ -1,4 +1,4 @@
-/// 
+///  Used internally by the LOD
 export class toggle {
     _active = false;
     get active() {

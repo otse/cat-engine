@@ -3,11 +3,9 @@ import pts from "../../dep/pts.js";
 import clod from "../clod.js";
 export class game_object extends clod.obj {
     data;
-    // A lot(!) of game objects are represented by an image or sprite
-    sprite;
+    // Most game objects represent a single object3d or sprite
     object3d;
-    // Lots of game objects make sprite3ds so here's an initialization object
-    object3dmerge_ = { gobj: this };
+    sprite;
     // Rotation
     r = 0;
     // Third axis
@@ -37,7 +35,13 @@ export class game_object extends clod.obj {
         this.sprite?.delete();
         this.object3d?.delete();
     }
+    _first = true;
+    _first_create() { }
     _step() {
+        if (this._first) {
+            this._first_create();
+            this._first = false;
+        }
         super._step();
         this.sprite?.step();
         this.object3d?.step();

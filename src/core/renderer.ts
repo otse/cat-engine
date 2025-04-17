@@ -1,5 +1,5 @@
 import app from '../app.js';
-import glob from './../dep/glob.js';
+import glob from '../dep/glob.js';
 import pts from '../dep/pts.js';
 
 const fragmentBackdrop = `
@@ -181,7 +181,7 @@ void main() {
 	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }`
 
-namespace pipeline {
+namespace renderer {
 
 	export const cameraMode: 'ortho' | 'perspective' = 'ortho';
 
@@ -341,7 +341,7 @@ namespace pipeline {
 		document.body.appendChild(renderer.domElement);
 
 		window.addEventListener('resize', onWindowResize, false);
-		(window as any).pipeline = pipeline;
+		(window as any).pipeline = renderer;
 
 
 		onWindowResize();
@@ -484,4 +484,4 @@ namespace pipeline {
 	}
 }
 
-export default pipeline;
+export default renderer;

@@ -58,7 +58,7 @@ var land;
                 }
             }
         }
-        world_manager.addMergeLot(objects, 1);
+        world_manager.add_multiple(objects, 1);
     }
     function make_staggered_building() {
         const objects = [];
@@ -90,7 +90,7 @@ var land;
                 objects.push(tile);
             }
         });
-        world_manager.addMergeLot(objects, 1);
+        world_manager.add_multiple(objects, 1);
     }
     function make_non_staggered_lake() {
         const objects = [];
@@ -115,7 +115,7 @@ var land;
                 objects.push(tile);
             }
         });
-        world_manager.addMergeLot(objects, 2);
+        world_manager.add_multiple(objects, 2);
     }
     function test_fill() {
         const gobjs = [];
@@ -133,7 +133,7 @@ var land;
                 gobjs.push(tile);
             }
         }
-        world_manager.addMergeLot(gobjs, 1);
+        world_manager.add_multiple(gobjs, 1);
     }
     land.test_fill = test_fill;
     function make_bodies_of_water() {

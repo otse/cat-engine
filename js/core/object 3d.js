@@ -8,13 +8,12 @@ export class object3d {
     data_;
     constructor(data) {
         this.data = data;
-        let groundData = game.groundPresets[data.gobj.object3dmerge_?.groundPreset ?? data.groundPreset];
-        let shapeData = game.shapePresets[data.gobj.object3dmerge_?.shapePreset ?? data.shapePreset];
+        let groundData = game.groundPresets[data.groundPreset];
+        let shapeData = game.shapePresets[data.shapePreset];
         this.data = {
             ...data,
             ...groundData,
-            ...shapeData,
-            ...data.gobj.object3dmerge_
+            ...shapeData
         };
         this.gobj = this.data.gobj;
         this.gobj.object3d = this;

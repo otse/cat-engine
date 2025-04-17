@@ -1,4 +1,6 @@
-// a global object
+// A global object
+
+// Useful against import hell
 
 var glob: any = window['glob'] || {}
 

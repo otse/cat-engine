@@ -1,0 +1,3 @@
+making games should be simple
+
+engines shouldn't bog you down with strange type systems and unclear instructions

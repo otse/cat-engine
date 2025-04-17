@@ -1,15 +1,15 @@
-import { hooks } from "../../dep/hooks.js";
+import hooks from "../../dep/hooks.js";
 import app from "../../app.js";
 import pts from "../../dep/pts.js";
 
-import pipeline from "../pipeline.js";
+import renderer from "../renderer.js";
 import zoom from "./zoom.js";
 import clod from "../clod.js";
 import game_object from "../objects/game object.js";
 import tile from "../objects/tile.js";
 import glob from "../../dep/glob.js";
 import world_manager from "../world manager.js";
-import rome from "../../rome.js";
+import worldetch from "../../worldetch.js";
 
 
 let wpos: vec2 = [0, 0];
@@ -26,7 +26,7 @@ export class pan {
 	static panCompress = 2;
 
 	static register() {
-		hooks.addListener('romeComponents', this.step);
+		hooks.addListener('worldetchComponents', this.step);
 		this.startup();
 	}
 
@@ -150,7 +150,7 @@ export class pan {
 				dif = (pts.mult(dif, glob.dotsPerInch));
 				dif = (pts.mult(dif, zoom.scale()));
 				dif = (pts.mult(dif, panPerspectiveWarp[0], panPerspectiveWarp[1]));
-				if (pipeline.USE_SCENE3)
+				if (renderer.USE_SCENE3)
 					dif = (pts.divide(dif, 2));
 				dif = (pts.subtract(dif, before));
 				rpos = (pts.inv(dif));
@@ -173,16 +173,16 @@ export class pan {
 		// Critical evening
 		// Uneven causes geometry errors below the equator
 		rpos2 = pts.make_even(rpos2, 1);
-		rpos2[1] = rome.roundToNearest(rpos2[1], glob.pancompress * 2);
+		rpos2[1] = worldetch.roundToNearest(rpos2[1], glob.pancompress * 2);
 		//const nearestPoint = this.unproject_chunk_grid(rpos2);
 		//rpos2 = pts.round(rpos2);
-		pipeline.groups.camera.position.x = rpos2[0];
-		pipeline.groups.camera.position.y = rpos2[1];
-		pipeline.groups.camera.position.z = 10;
-		pipeline.groups.camera.updateMatrix();
-		pipeline.camera.rotation.x = glob.magiccamerarotation;
-		pipeline.camera.updateMatrix();
-		pipeline.camera.updateProjectionMatrix();
+		renderer.groups.camera.position.x = rpos2[0];
+		renderer.groups.camera.position.y = rpos2[1];
+		renderer.groups.camera.position.z = 10;
+		renderer.groups.camera.updateMatrix();
+		renderer.camera.rotation.x = glob.magiccamerarotation;
+		renderer.camera.updateMatrix();
+		renderer.camera.updateProjectionMatrix();
 	}
 
 	static unproject_chunk_grid(rpos: vec2) {

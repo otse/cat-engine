@@ -1,6 +1,6 @@
-import { hooks } from "../../dep/hooks.js";
+import hooks from "../../dep/hooks.js";
 import app from "../../app.js";
-import pipeline from "../pipeline.js";
+import renderer from "../renderer.js";
 import glob from "../../dep/glob.js";
 var zoom;
 (function (zoom) {
@@ -8,7 +8,7 @@ var zoom;
     const wheelEnabled = false;
     zoom.zooms = [1, 0.5, 0.33, 0.2, 0.1, 0.05];
     function register() {
-        hooks.addListener('romeComponents', step);
+        hooks.addListener('worldetchComponents', step);
     }
     zoom.register = register;
     function scale() {
@@ -27,10 +27,10 @@ var zoom;
             zoom.level = (zoom.level < zoom.zooms.length - 1) ? zoom.level + 1 : zoom.level;
             glob.dirtyobjects = true;
         }
-        const camera = pipeline.USE_SCENE3 ? pipeline.camera3 : pipeline.camera;
+        const camera = renderer.USE_SCENE3 ? renderer.camera3 : renderer.camera;
         const scale = zoom.zooms[zoom.level];
-        if (pipeline.cameraMode == 'perspective') {
-            pipeline.camera.position.z = (5 - zoom.level) * 40 || 10;
+        if (renderer.cameraMode == 'perspective') {
+            renderer.camera.position.z = (5 - zoom.level) * 40 || 10;
         }
         else {
             camera.scale.set(scale, scale, scale);

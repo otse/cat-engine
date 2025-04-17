@@ -4,8 +4,6 @@ import game_object from "./game object.js";
 import tileform from "../tileform.js";
 import sprite from "../sprite.js";
 
-// I think it's better to make a tileform.light entity
-// Rather than overload a sprite3d to become anything you want it to
 
 export class light extends game_object {
 	light_source: tileform.light_source
@@ -17,7 +15,6 @@ export class light extends game_object {
 		this.data._type = 'light';
 	}
 	protected override _create() {
-		// Create a tileform.light here
 		console.log(' create light ');
 		this.light_source = new tileform.light_source({
 			gobj: this,

@@ -1,0 +1,1 @@
+components are things like camera panning and zooming

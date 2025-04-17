@@ -12,15 +12,15 @@ export namespace direction_adapter {
 	
 };
 
-/// the DA is used for creating cascading geometries
+/// The DA is used for creating cascading geometries
 
-// it doesn't adapt to directions but helps with adapting to directions
+// It doesn't adapt to directions but helps with adapting to directions
 
 export class direction_adapter {
 	target
 	readonly shape3d?: tileform.shape3d
-	matrix: game_object[][]
-	directions: game_object.helpers.directions
+	matrix: game_object[][] = [[]]
+	directions: game_object.helpers.directions = []
 	constructor(readonly gobj: game_object) {
 		// []
 	}

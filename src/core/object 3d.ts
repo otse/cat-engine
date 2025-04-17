@@ -2,7 +2,7 @@ import glob from "../dep/glob.js";
 import pts from "../dep/pts.js";
 import game from "../eye/game.js";
 
-import pipeline from "./pipeline.js";
+import renderer from "./renderer.js";
 import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 import game_object from "./objects/game object.js";
@@ -23,15 +23,12 @@ export class object3d {
 	constructor(
 		readonly data: object3dliteral
 	) {
-		let groundData = game.groundPresets[
-			data.gobj.object3dmerge_?.groundPreset ?? data.groundPreset!];
-		let shapeData = game.shapePresets[
-			data.gobj.object3dmerge_?.shapePreset ?? data.shapePreset!];
+		let groundData = game.groundPresets[data.groundPreset!];
+		let shapeData = game.shapePresets[data.shapePreset!];
 		this.data = {
 			...data,
 			...groundData,
-			...shapeData,
-			...data.gobj.object3dmerge_
+			...shapeData
 		};
 		this.gobj = this.data.gobj;
 		this.gobj.object3d = this;

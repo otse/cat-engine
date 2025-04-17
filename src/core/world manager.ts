@@ -1,8 +1,8 @@
 import pan from "./components/pan.js";
 import clod from "./clod.js";
 import game_object from "./objects/game object.js";
-import object3d from "./object 3d.js";
 import glob from "./../dep/glob.js";
+import tile3d from "./objects/tile 3d.js";
 
 /// 🌍 WorldManager (clean and direct)
 
@@ -43,21 +43,17 @@ class world_manager {
 		for (const gobj of objects) {
 			clod.remove(gobj);
 		}
-		clod.addWait(world_manager.world, target);
+		clod.add_not_yet_create(world_manager.world, target);
 	}
 
-	// To merge means to respect what's already there
-
-	static addMergeLot(gobjs: game_object[], mode: mergeMode | number) {
-		// wall3ds render both walls and hex tiles at the same time
-		// this saves a render but requires this merge function
-		for (const gobj of gobjs) {
+	static add_multiple(gobjs: game_object[], mode: mergeMode | number) {
+		for (let gobj of gobjs) {
 			if (mode === mergeMode.merge)
-				this.merge_ideally(gobj);
+				this.merge(gobj);
 			else if (mode === mergeMode.replace)
 				this._replace(gobj);
 			else if (mode === mergeMode.dont) // stack
-				clod.addWait(world_manager.world, gobj);
+				clod.add_not_yet_create(world_manager.world, gobj);
 		}
 		// Now show
 		for (const gobj of gobjs) {
@@ -69,7 +65,7 @@ class world_manager {
 	// These are the most normal mergers,
 	// like when you put a wall on a tile,
 	// or a tile on a wall
-	static merge_ideally(target: game_object) {
+	static merge(target: game_object) {
 		let objects = this.getObjectsAt(target);
 		let addTarget = true;
 		for (let present of objects) {
@@ -78,14 +74,11 @@ class world_manager {
 				target.data._type == 'tile 3d'
 			) {
 				addTarget = false;
-				present.object3dmerge_ = {
-					...present.object3dmerge_!,
-					groundPreset: target.object3dmerge_?.groundPreset,
-				};
+				(present as tile3d).preset = (target as tile3d).preset;
 			}
 		}
 		if (addTarget) {
-			clod.addWait(world_manager.world, target);
+			clod.add_not_yet_create(world_manager.world, target);
 		}
 	}
 

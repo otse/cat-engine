@@ -3,7 +3,7 @@ import glob from "./../dep/glob.js";
 import pts from "../dep/pts.js";
 import { hooks } from "../dep/hooks.js";
 
-import pipeline from "./pipeline.js"; // Begone!
+import renderer from "./renderer.js"; // Begone!
 import toggle from "../dep/toggle.js";
 
 
@@ -51,7 +51,7 @@ namespace clod {
 		world.chunkatwpos(obj.wpos).add(obj);
 	}
 
-	export function addWait(world: world, obj?: obj) {
+	export function add_not_yet_create(world: world, obj?: obj) {
 		// So we wait til all objs are lodded
 		if (!obj)
 			return;
@@ -77,7 +77,7 @@ namespace clod {
 			this.grid.cpos = clod.world.wtocpos(wpos);
 			this.grid.ons();
 			this.grid.offs();
-			this.grid.ticks();
+			this.grid.runs();
 		}
 		lookup(big: vec2): chunk | undefined {
 			if (this.arrays[big[1]] == undefined)
@@ -187,7 +187,7 @@ namespace clod {
 			numbers.chunks[0]++;
 			for (const obj of this.objs)
 				obj.show();
-			pipeline.scene.add(this.group);
+			renderer.scene.add(this.group);
 			hooks.emit('chunkShow', this);
 		}
 		hide() {
@@ -196,7 +196,7 @@ namespace clod {
 			numbers.chunks[0]--;
 			for (const obj of this.objs)
 				obj.hide();
-			pipeline.scene.remove(this.group);
+			renderer.scene.remove(this.group);
 			hooks.emit('chunkHide', this);
 		}
 		dist() {
@@ -279,9 +279,9 @@ namespace clod {
 				}
 			}
 		}
-		ticks() {
-			for (const chunk of this.shown)
-				for (const obj of chunk.objs)
+		runs() {
+			for (let chunk of this.shown)
+				for (let obj of chunk.objs)
 					obj.step();
 		}
 	}
@@ -316,8 +316,8 @@ namespace clod {
 				return;
 			this.counts[0]++;
 			this._create();
-			this.step();
-			//this.shape?.show();
+			// this.step();
+			// this.shape?.show();
 		}
 		hide() {
 			if (this.off())

@@ -33,19 +33,16 @@ class world_manager {
         for (const gobj of objects) {
             clod.remove(gobj);
         }
-        clod.addWait(world_manager.world, target);
+        clod.add_not_yet_create(world_manager.world, target);
     }
-    // To merge means to respect what's already there
-    static addMergeLot(gobjs, mode) {
-        // wall3ds render both walls and hex tiles at the same time
-        // this saves a render but requires this merge function
-        for (const gobj of gobjs) {
+    static add_multiple(gobjs, mode) {
+        for (let gobj of gobjs) {
             if (mode === mergeMode.merge)
-                this.merge_ideally(gobj);
+                this.merge(gobj);
             else if (mode === mergeMode.replace)
                 this._replace(gobj);
             else if (mode === mergeMode.dont) // stack
-                clod.addWait(world_manager.world, gobj);
+                clod.add_not_yet_create(world_manager.world, gobj);
         }
         // Now show
         for (const gobj of gobjs) {
@@ -56,21 +53,18 @@ class world_manager {
     // These are the most normal mergers,
     // like when you put a wall on a tile,
     // or a tile on a wall
-    static merge_ideally(target) {
+    static merge(target) {
         let objects = this.getObjectsAt(target);
         let addTarget = true;
         for (let present of objects) {
             if (present.data._type == 'tile 3d' &&
                 target.data._type == 'tile 3d') {
                 addTarget = false;
-                present.object3dmerge_ = {
-                    ...present.object3dmerge_,
-                    groundPreset: target.object3dmerge_?.groundPreset,
-                };
+                present.preset = target.preset;
             }
         }
         if (addTarget) {
-            clod.addWait(world_manager.world, target);
+            clod.add_not_yet_create(world_manager.world, target);
         }
     }
 }

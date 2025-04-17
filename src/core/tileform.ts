@@ -2,21 +2,16 @@
 
 import app from "../app.js";
 import glob from "./../dep/glob.js";
-import { hooks } from "../dep/hooks.js";
+import hooks from "../dep/hooks.js";
+
 import pts from "../dep/pts.js";
-import rome from "../rome.js";
-import pan from "./components/pan.js";
-import direction_adapter from "./direction adapter.js";
+import worldetch from "../worldetch.js";
 import game_object from "./objects/game object.js";
 import wall3d from "./objects/wall 3d.js";
-import pipeline from "./pipeline.js";
-import object3d from "./object 3d.js";
-import sprite from "./sprite.js";
+import renderer from "./renderer.js";
 import staggered_area from "./staggered area.js";
-import clod from "./clod.js";
 
 namespace tileform {
-
 
 	// like it says this toggles the beau ti ful relief maps
 	export let TOGGLE_NORMAL_MAPS = true;
@@ -34,7 +29,7 @@ namespace tileform {
 
 	export async function init() {
 		await stage.init();
-		hooks.addListener('romeComponents', step);
+		hooks.addListener('worldetchComponents', step);
 
 		glob.wallrotation = wallRotation;
 		glob.wallrotationstaggered = wallRotationStaggered;
@@ -47,7 +42,7 @@ namespace tileform {
 
 	export function purge() {
 		make_pan_compressor_line();
-		pipeline.utilEraseChildren(pipeline.groups.monolith);
+		renderer.utilEraseChildren(renderer.groups.monolith);
 	}
 
 	let tfCompressor;
@@ -74,7 +69,7 @@ namespace tileform {
 
 	function get_compressor_distance() {
 		const screenCoords = getVerticalScreenDifference(
-			tfCompressor.geometry, tfCompressor, pipeline.camera, pipeline.renderer);
+			tfCompressor.geometry, tfCompressor, renderer.camera, renderer.renderer);
 		glob.pancompress = -1 / screenCoords.y;
 	}
 
@@ -112,7 +107,7 @@ namespace tileform {
 		return new THREE.Vector2().subVectors(screen1, screen0);
 	}
 	async function step() {
-		pipeline.scene.scale.set(glob.scale, glob.scale, glob.scale);
+		renderer.scene.scale.set(glob.scale, glob.scale, glob.scale);
 		stage.step();
 		update_entities();
 		get_compressor_distance();
@@ -143,40 +138,40 @@ namespace tileform {
 		}
 
 		async function preload() {
-			await pipeline.preloadTextureAsync('./img/textures/star.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/starnormal.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/japanese2.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/japanese3.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/japanese4.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/wall1.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/wall1normal.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/wall2.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/wall2normal.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/water.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/overgrown_x.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/stonemixed.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/stonemixednormal.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/stonemixed2.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/stonemixed2normal.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/cobblestone3.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/cobblestone3normal.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/beach.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/beachnormal.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/sand.jpg');
+			await renderer.preloadTextureAsync('./img/textures/star.jpg');
+			await renderer.preloadTextureAsync('./img/textures/starnormal.jpg');
+			await renderer.preloadTextureAsync('./img/textures/japanese2.jpg');
+			await renderer.preloadTextureAsync('./img/textures/japanese3.jpg');
+			await renderer.preloadTextureAsync('./img/textures/japanese4.jpg');
+			await renderer.preloadTextureAsync('./img/textures/wall1.jpg');
+			await renderer.preloadTextureAsync('./img/textures/wall1normal.jpg');
+			await renderer.preloadTextureAsync('./img/textures/wall2.jpg');
+			await renderer.preloadTextureAsync('./img/textures/wall2normal.jpg');
+			await renderer.preloadTextureAsync('./img/textures/water.jpg');
+			await renderer.preloadTextureAsync('./img/textures/overgrown_x.jpg');
+			await renderer.preloadTextureAsync('./img/textures/stonemixed.jpg');
+			await renderer.preloadTextureAsync('./img/textures/stonemixednormal.jpg');
+			await renderer.preloadTextureAsync('./img/textures/stonemixed2.jpg');
+			await renderer.preloadTextureAsync('./img/textures/stonemixed2normal.jpg');
+			await renderer.preloadTextureAsync('./img/textures/cobblestone3.jpg');
+			await renderer.preloadTextureAsync('./img/textures/cobblestone3normal.jpg');
+			await renderer.preloadTextureAsync('./img/textures/beach.jpg');
+			await renderer.preloadTextureAsync('./img/textures/beachnormal.jpg');
+			await renderer.preloadTextureAsync('./img/textures/sand.jpg');
 			//await pipeline.loadTextureAsync('./img/textures/sandnormal.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/oop.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/cobblestone.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/cobblestone2.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/basaltcliffs.jpg');
-			await pipeline.preloadTextureAsync('./img/textures/cliffs.jpg');
+			await renderer.preloadTextureAsync('./img/textures/oop.jpg');
+			await renderer.preloadTextureAsync('./img/textures/cobblestone.jpg');
+			await renderer.preloadTextureAsync('./img/textures/cobblestone2.jpg');
+			await renderer.preloadTextureAsync('./img/textures/basaltcliffs.jpg');
+			await renderer.preloadTextureAsync('./img/textures/cliffs.jpg');
 			// await pipeline.preloadTextureAsync('./img/textures/overgrown.jpg');
 			//await pipeline.loadTextureAsync('./img/textures/bricks.jpg');
 		}
 
 		async function boot() {
 			const sun = new THREE.DirectionalLight('lavender', Math.PI / 3);
-			pipeline.scene.add(sun);
-			pipeline.scene.add(sun.target);
+			renderer.scene.add(sun);
+			renderer.scene.add(sun.target);
 		}
 	}
 	// end of stage
@@ -192,7 +187,7 @@ namespace tileform {
 			entities.push(this);
 		}
 		private _monolithAdd() {
-			pipeline.groups.monolith.add(this.entityGroup);
+			renderer.groups.monolith.add(this.entityGroup);
 		}
 		private _monolithRemove() {
 			this.entityGroup.parent.remove(this.entityGroup);
@@ -232,7 +227,7 @@ namespace tileform {
 		protected translate() {
 			const { wpos } = this.gobj;
 			let pos = this.pos3d = pts.project(wpos);
-			pos[1] = rome.roundToNearest(pos[1], glob.pancompress);
+			pos[1] = worldetch.roundToNearest(pos[1], glob.pancompress);
 			// pos = pts.ceil(pos);
 			this.entityGroup.position.fromArray([...pos, this.z]);
 			this.entityGroup.updateMatrix();
@@ -316,8 +311,8 @@ namespace tileform {
 				specular: this.data.shapeGroundSpecular!,
 				shininess: 7,
 				normalScale: new THREE.Vector2(1, 1),
-				map: pipeline.getTexture(this.data.shapeGroundTexture!),
-				normalMap: pipeline.getTexture(this.data.shapeGroundTextureNormal!),
+				map: renderer.getTexture(this.data.shapeGroundTexture!),
+				normalMap: renderer.getTexture(this.data.shapeGroundTextureNormal!),
 			});
 			if (!TOGGLE_NORMAL_MAPS)
 				material.normalMap = null;
@@ -369,8 +364,8 @@ namespace tileform {
 			const { shapeSize } = this.data;
 			const material = new THREE.MeshPhongMaterial({
 				// color: 'red',
-				map: pipeline.getTexture(this.data.shapeTexture!),
-				normalMap: pipeline.getTexture(this.data.shapeTextureNormal!)
+				map: renderer.getTexture(this.data.shapeTexture!),
+				normalMap: renderer.getTexture(this.data.shapeTextureNormal!)
 			});
 			if (!TOGGLE_NORMAL_MAPS)
 				material.normalMap = null;
@@ -586,7 +581,7 @@ namespace tileform {
 			this.translate();
 			this.entityGroup.updateMatrix();
 			// this.entityGroup.updateMatrixWorld(true); // Bad
-			pipeline.groups.monolith.add(this.entityGroup);
+			renderer.groups.monolith.add(this.entityGroup);
 			glob.reprerender = true;
 			glob.dirtyobjects = true;
 		}
@@ -635,7 +630,7 @@ namespace tileform {
 		else {
 			return;
 		}
-		rome.purgeRemake();
+		worldetch.purgeRemake();
 	}
 }
 

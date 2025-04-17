@@ -65,7 +65,7 @@ namespace land {
 				}
 			}
 		}
-		world_manager.addMergeLot(objects, 1);
+		world_manager.add_multiple(objects, 1);
 	}
 
 	function make_staggered_building() {
@@ -98,7 +98,7 @@ namespace land {
 				objects.push(tile);
 			}
 		});
-		world_manager.addMergeLot(objects, 1);
+		world_manager.add_multiple(objects, 1);
 	}
 
 	function make_non_staggered_lake() {
@@ -124,7 +124,7 @@ namespace land {
 				objects.push(tile);
 			}
 		});
-		world_manager.addMergeLot(objects, 2);
+		world_manager.add_multiple(objects, 2);
 	}
 
 	export function test_fill() {
@@ -143,7 +143,7 @@ namespace land {
 				gobjs.push(tile);
 			}
 		}
-		world_manager.addMergeLot(gobjs, 1);
+		world_manager.add_multiple(gobjs, 1);
 	}
 
 	export function make_bodies_of_water() {

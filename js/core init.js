@@ -1,5 +1,5 @@
 import app from "./app.js";
-import { hooks } from "./dep/hooks.js";
+import hooks from "./dep/hooks.js";
 import pipeline from "./core/pipeline.js";
 import tileform from "./core/tileform.js";
 import tile3d from "./core/objects/tile 3d.js";
@@ -13,23 +13,23 @@ import light from "./core/objects/light.js";
 import pts from "./dep/pts.js";
 import game from "./eye/game.js";
 import world_manager from "./core/world manager.js";
-var rome;
-(function (rome) {
+var hex_engine;
+(function (hex_engine) {
     function sample(a) {
         return a[Math.floor(Math.random() * a.length)];
     }
-    rome.sample = sample;
+    hex_engine.sample = sample;
     function clamp(val, min, max) {
         return val > max ? max : val < min ? min : val;
     }
-    rome.clamp = clamp;
+    hex_engine.clamp = clamp;
     function roundToNearest(value, nearest) {
         return Math.round(value / nearest) * nearest;
     }
-    rome.roundToNearest = roundToNearest;
+    hex_engine.roundToNearest = roundToNearest;
     async function init() {
         console.log(' init ');
-        glob.rome = rome;
+        glob.rome = hex_engine;
         glob.reprerender = true;
         glob.dirtyobjects = true;
         glob.randomspritecolor = false;
@@ -41,7 +41,7 @@ var rome;
         glob.pancompress = 2; // Mono
         glob.camerarpos = [0, 0];
         glob.gobjscount = [0, 0];
-        glob.sample = rome.sample;
+        glob.sample = hex_engine.sample;
         await preload_basic_textures();
         await pipeline.init();
         await tileform.init();
@@ -55,7 +55,7 @@ var rome;
         // new sprite({ size: [12, 8] });
         // What might this do
     }
-    rome.init = init;
+    hex_engine.init = init;
     async function preload_basic_textures() {
         await pipeline.preloadTextureAsync('./img/hex/tile.png', 'nearest');
         await pipeline.preloadTextureAsync('./img/hex/wall.png', 'nearest');
@@ -64,56 +64,56 @@ var rome;
     function makeTestingChamber() {
         let gobjs = [];
         const collect = (gobj) => gobjs.push(gobj);
-        collect(new tile3d({ _type: 'direct', colorOverride: 'pink', _wpos: [-1, 0, 0] }, 'cobblestone'));
-        collect(new tile3d({ _type: 'direct', colorOverride: 'salmon', _wpos: [-1, -1, 0] }));
-        collect(new tile3d({ _type: 'direct', colorOverride: 'cyan', _wpos: [0, -1, 0] }));
-        collect(new tile3d({ _type: 'direct', colorOverride: 'yellow', _wpos: [-1, 1, 0] }));
-        collect(new tile3d({ _type: 'direct', colorOverride: 'yellow', _wpos: [0, 1, 0] }));
-        collect(new tile3d({ _type: 'direct', colorOverride: 'salmon', _wpos: [0, 2, 0] }));
-        collect(new tile3d({ _type: 'direct', colorOverride: 'yellow', _wpos: [0, 3, 0] }));
-        collect(new tile3d({ _type: 'direct', colorOverride: 'orange', _wpos: [0, 4, 0] }));
-        collect(new tile3d({ _type: 'direct', colorOverride: 'red', _wpos: [0, 5, 0] }));
-        collect(new tile3d({ _type: 'direct', colorOverride: 'blue', _wpos: [0, 6, 0] }));
-        collect(new tile3d({ _type: 'direct', colorOverride: 'wheat', _wpos: [0, 7, 0] }));
-        collect(new tile3d({ _type: 'direct', colorOverride: 'lavender', _wpos: [0, 8, 0] }));
-        collect(new tile3d({ _type: 'direct', colorOverride: 'cyan', _wpos: [0, 9, 0] }));
-        /*collect(new tile({ _type: 'direct', colorOverride: 'orange', _wpos: [1, -1, 0] }));
-        collect(new tile({ _type: 'direct', colorOverride: 'red', _wpos: [0, 0, 0] }));
-        collect(new tile({ _type: 'direct', colorOverride: 'pink', _wpos: [1, 0, 0] }));
-        collect(new tile({ _type: 'direct', colorOverride: 'blue', _wpos: [0, 1, 0] }));
-        collect(new tile({ _type: 'direct', _wpos: [1, 1, 0] }));
-        collect(new tile({ _type: 'direct', _wpos: [0, 2, 0] }));
-        collect(new tile({ _type: 'direct', _wpos: [1, 0, 0] }));
-        collect(new tile({ _type: 'direct', _wpos: [2, 0, 0] }));
-        collect(new tile({ _type: 'direct', _wpos: [3, 0, 0] }));
-        collect(new tile({ _type: 'direct', _wpos: [4, 0, 0] }));
-        collect(new tile({ _type: 'direct', _wpos: [5, 0, 0] }));
-        collect(new tile({ _type: 'direct', _wpos: [6, 0, 0] }));
-        collect(new tile({ _type: 'direct', _wpos: [7, 0, 0] }));*/
-        collect(new wall3d({ _type: 'direct', colorOverride: 'green', _wpos: [2, 1, 0] }));
-        collect(new wall3d({ _type: 'direct', colorOverride: 'lavender', _wpos: [2, 3, 0] }));
-        collect(new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [3, 1, 0] }));
-        collect(new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [3, 2, 0] }));
-        collect(new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [3, 3, 0] }));
-        collect(new wall3d({ _type: 'direct', colorOverride: 'red', _wpos: [4, 3, 0] }));
-        collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [5, 3, 0] }));
-        // collect(new tile({ _type: 'direct', _wpos: [4, 2, 0] }));
-        collect(new light({ _type: 'direct', _wpos: [2, 2, 0] }));
-        collect(new light({ _type: 'direct', _wpos: [-11, 6, 0] }));
-        collect(new light({ _type: 'direct', _wpos: [9, 2, 0] }));
-        collect(new wall3d({ _type: 'direct', colorOverride: 'magenta', _wpos: [1, 2, 0] }));
-        collect(new wall3d({ _type: 'direct', colorOverride: 'pink', _wpos: [1, 3, 0] }));
-        collect(new wall3d({ _type: 'direct', colorOverride: 'blue', _wpos: [1, 4, 0] }));
-        collect(new wall3d({ _type: 'direct', colorOverride: 'red', _wpos: [1, 5, 0] }));
-        collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [1, 6, 0] }));
-        collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [1, 7, 0] }));
-        collect(new wall3d({ _type: 'direct', colorOverride: 'purple', _wpos: [1, 8, 0] }));
-        // collect(new wall({ _type: 'direct', _wpos: [4, 1, 0] }));
-        // collect(new wall({ _type: 'direct', _wpos: [5, 1, 0] }));
+        collect(new tile3d({ colorOverride: 'pink', _wpos: [-1, 0, 0] }, 'cobblestone'));
+        collect(new tile3d({ colorOverride: 'salmon', _wpos: [-1, -1, 0] }));
+        collect(new tile3d({ colorOverride: 'cyan', _wpos: [0, -1, 0] }));
+        collect(new tile3d({ colorOverride: 'yellow', _wpos: [-1, 1, 0] }));
+        collect(new tile3d({ colorOverride: 'yellow', _wpos: [0, 1, 0] }));
+        collect(new tile3d({ colorOverride: 'salmon', _wpos: [0, 2, 0] }));
+        collect(new tile3d({ colorOverride: 'yellow', _wpos: [0, 3, 0] }));
+        collect(new tile3d({ colorOverride: 'orange', _wpos: [0, 4, 0] }));
+        collect(new tile3d({ colorOverride: 'red', _wpos: [0, 5, 0] }));
+        collect(new tile3d({ colorOverride: 'blue', _wpos: [0, 6, 0] }));
+        collect(new tile3d({ colorOverride: 'wheat', _wpos: [0, 7, 0] }));
+        collect(new tile3d({ colorOverride: 'lavender', _wpos: [0, 8, 0] }));
+        collect(new tile3d({ colorOverride: 'cyan', _wpos: [0, 9, 0] }));
+        /*collect(new tile({ colorOverride: 'orange', _wpos: [1, -1, 0] }));
+        collect(new tile({ colorOverride: 'red', _wpos: [0, 0, 0] }));
+        collect(new tile({ colorOverride: 'pink', _wpos: [1, 0, 0] }));
+        collect(new tile({ colorOverride: 'blue', _wpos: [0, 1, 0] }));
+        collect(new tile({ _wpos: [1, 1, 0] }));
+        collect(new tile({ _wpos: [0, 2, 0] }));
+        collect(new tile({ _wpos: [1, 0, 0] }));
+        collect(new tile({ _wpos: [2, 0, 0] }));
+        collect(new tile({ _wpos: [3, 0, 0] }));
+        collect(new tile({ _wpos: [4, 0, 0] }));
+        collect(new tile({ _wpos: [5, 0, 0] }));
+        collect(new tile({ _wpos: [6, 0, 0] }));
+        collect(new tile({ _wpos: [7, 0, 0] }));*/
+        collect(new wall3d({ colorOverride: 'green', _wpos: [2, 1, 0] }));
+        collect(new wall3d({ colorOverride: 'lavender', _wpos: [2, 3, 0] }));
+        collect(new wall3d({ colorOverride: 'magenta', _wpos: [3, 1, 0] }));
+        collect(new wall3d({ colorOverride: 'pink', _wpos: [3, 2, 0] }));
+        collect(new wall3d({ colorOverride: 'blue', _wpos: [3, 3, 0] }));
+        collect(new wall3d({ colorOverride: 'red', _wpos: [4, 3, 0] }));
+        collect(new wall3d({ colorOverride: 'purple', _wpos: [5, 3, 0] }));
+        // collect(new tile({ _wpos: [4, 2, 0] }));
+        collect(new light({ _wpos: [2, 2, 0] }));
+        collect(new light({ _wpos: [-11, 6, 0] }));
+        collect(new light({ _wpos: [9, 2, 0] }));
+        collect(new wall3d({ colorOverride: 'magenta', _wpos: [1, 2, 0] }));
+        collect(new wall3d({ colorOverride: 'pink', _wpos: [1, 3, 0] }));
+        collect(new wall3d({ colorOverride: 'blue', _wpos: [1, 4, 0] }));
+        collect(new wall3d({ colorOverride: 'red', _wpos: [1, 5, 0] }));
+        collect(new wall3d({ colorOverride: 'purple', _wpos: [1, 6, 0] }));
+        collect(new wall3d({ colorOverride: 'purple', _wpos: [1, 7, 0] }));
+        collect(new wall3d({ colorOverride: 'purple', _wpos: [1, 8, 0] }));
+        // collect(new wall({ _wpos: [4, 1, 0] }));
+        // collect(new wall({ _wpos: [5, 1, 0] }));
         world_manager.addMergeLot(gobjs, 1);
         // land.fill();
     }
-    rome.makeTestingChamber = makeTestingChamber;
+    hex_engine.makeTestingChamber = makeTestingChamber;
     function build_then_output_stats() {
         document.querySelector('rome-stats').innerHTML = `
 			rogue - monolith git branch
@@ -165,7 +165,7 @@ var rome;
         game.repopulate();
         makeTestingChamber();
     }
-    rome.purgeRemake = purgeRemake;
+    hex_engine.purgeRemake = purgeRemake;
     function step() {
         hooks.emit('romeComponents', 1);
         hooks.emit('romeStep', 0);
@@ -175,7 +175,7 @@ var rome;
         game.update();
         glob.reprerender = false;
     }
-    rome.step = step;
+    hex_engine.step = step;
     function keys() {
         if (app.key('h') == 1) {
             glob.randomspritecolor = !glob.randomspritecolor;
@@ -224,5 +224,5 @@ var rome;
             purgeRemake();
         }
     }
-})(rome || (rome = {}));
-export default rome;
+})(hex_engine || (hex_engine = {}));
+export default hex_engine;

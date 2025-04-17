@@ -1,4 +1,4 @@
-/// inspired by gmod lua
+/// Hooks run front to back latest to last
 export class hooks {
     static hooks = {};
     static create(name) {

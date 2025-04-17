@@ -5,12 +5,11 @@ import object3d from "../object 3d.js";
 import game from "../../eye/game.js";
 
 export class tile3d extends game_object {
-	constructor(data: game_object_literal, readonly preset: game.groundPreset = 'default') {
+	constructor(data: game_object_literal, public preset: game.groundPreset = 'default') {
 		super({
 			name: 'a tile 3d',
 			...data
 		});
-		this.object3dmerge_.groundPreset = preset;
 		this.data._type = 'tile 3d';
 	}
 	protected override _create() {
@@ -18,6 +17,7 @@ export class tile3d extends game_object {
 			gobj: this,
 			shapeSize: [1, 1, 1],
 			shapeType: 'hex',
+			groundPreset: this.preset
 		});
 		this.object3d?.create();
 	}

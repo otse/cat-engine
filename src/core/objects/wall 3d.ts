@@ -7,21 +7,25 @@ import game from "../../eye/game.js";
 
 export class wall3d extends game_object {
 	wallAdapter: direction_adapter
-	constructor(data: game_object_literal, readonly preset: game.shapePreset = 'default') {
+	constructor(data: game_object_literal, public preset: game.shapePreset = 'default') {
 		super({
 			name: 'a wall 3d',
 			...data,
 		});
 		this.data._type = 'wall 3d';
-		this.object3dmerge_.shapePreset = preset;
 		this.wallAdapter = new direction_adapter(this);
 	}
 	protected override _create() {
 		new object3d({
 			gobj: this,
 			shapeSize: [16, 8, 11],
-			shapeType: 'wall'
+			shapeType: 'wall',
+			shapePreset: this.preset
 		});
+		if (!this._first)
+			this.object3d?.create();
+	}
+	protected override _first_create() {
 		this.wallAdapter.search(['wall 3d']);
 		this.object3d?.create();
 	}

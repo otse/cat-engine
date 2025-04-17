@@ -1,14 +1,14 @@
 import game_object from "./objects/game object.js";
 import world_manager from "./world manager.js";
 ;
-/// the DA is used for creating cascading geometries
-// it doesn't adapt to directions but helps with adapting to directions
+/// The DA is used for creating cascading geometries
+// It doesn't adapt to directions but helps with adapting to directions
 export class direction_adapter {
     gobj;
     target;
     shape3d;
-    matrix;
-    directions;
+    matrix = [[]];
+    directions = [];
     constructor(gobj) {
         this.gobj = gobj;
         // []

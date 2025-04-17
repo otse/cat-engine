@@ -2,7 +2,7 @@ import aabb2 from "../dep/aabb2.js";
 import glob from "./../dep/glob.js";
 import pts from "../dep/pts.js";
 import { hooks } from "../dep/hooks.js";
-import pipeline from "./pipeline.js"; // Begone!
+import renderer from "./renderer.js"; // Begone!
 import toggle from "../dep/toggle.js";
 var clod;
 (function (clod) {
@@ -39,13 +39,13 @@ var clod;
         world.chunkatwpos(obj.wpos).add(obj);
     }
     clod.add = add;
-    function addWait(world, obj) {
+    function add_not_yet_create(world, obj) {
         // So we wait til all objs are lodded
         if (!obj)
             return;
         world.chunkatwpos(obj.wpos).add(obj, false);
     }
-    clod.addWait = addWait;
+    clod.add_not_yet_create = add_not_yet_create;
     function remove(obj) {
         obj.chunk?.remove(obj);
     }
@@ -65,7 +65,7 @@ var clod;
             this.grid.cpos = clod.world.wtocpos(wpos);
             this.grid.ons();
             this.grid.offs();
-            this.grid.ticks();
+            this.grid.runs();
         }
         lookup(big) {
             if (this.arrays[big[1]] == undefined)
@@ -169,7 +169,7 @@ var clod;
             numbers.chunks[0]++;
             for (const obj of this.objs)
                 obj.show();
-            pipeline.scene.add(this.group);
+            renderer.scene.add(this.group);
             hooks.emit('chunkShow', this);
         }
         hide() {
@@ -178,7 +178,7 @@ var clod;
             numbers.chunks[0]--;
             for (const obj of this.objs)
                 obj.hide();
-            pipeline.scene.remove(this.group);
+            renderer.scene.remove(this.group);
             hooks.emit('chunkHide', this);
         }
         dist() {
@@ -262,9 +262,9 @@ var clod;
                 }
             }
         }
-        ticks() {
-            for (const chunk of this.shown)
-                for (const obj of chunk.objs)
+        runs() {
+            for (let chunk of this.shown)
+                for (let obj of chunk.objs)
                     obj.step();
         }
     }
@@ -296,8 +296,8 @@ var clod;
                 return;
             this.counts[0]++;
             this._create();
-            this.step();
-            //this.shape?.show();
+            // this.step();
+            // this.shape?.show();
         }
         hide() {
             if (this.off())

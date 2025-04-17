@@ -1,11 +1,8 @@
-import { hooks } from "./dep/hooks.js";
+import hooks from "./dep/hooks.js";
 import pts from "./dep/pts.js";
-import rome from "./rome.js";
-import pipeline from "./core/pipeline.js";
+import worldetch from "./worldetch.js";
+import renderer from "./core/renderer.js";
 import glob from "./dep/glob.js";
-import zoom from "./core/components/zoom.js";
-import tileform from "./core/tileform.js";
-import clod from "./core/clod.js";
 
 namespace app {
 	window['App'] = app;
@@ -134,7 +131,7 @@ namespace app {
 			document.onmouseup = onmouseup;
 			document.onwheel = onwheel;
 		}
-		await rome.init();
+		await worldetch.init();
 		const blockable = trick_animation_frame(base_loop);
 	}
 	function process_keys() {
@@ -180,10 +177,10 @@ namespace app {
 	export async function base_loop() {
 		take_time();
 		take_delta();
-		await rome.step();
+		await worldetch.step();
 		await hooks.emit('animationFrame', 1);
 		// await hooks.emit('animationFrame', false);
-		pipeline.render();
+		renderer.render();
 		wheel = 0;
 		process_keys();
 		process_mouse_buttons();

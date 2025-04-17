@@ -1,4 +1,3 @@
-
 import glob from "./../../dep/glob.js";
 import pts from "../../dep/pts.js";
 import clod from "../clod.js";
@@ -10,11 +9,9 @@ export namespace game_object {
 }
 
 export class game_object extends clod.obj {
-	// A lot(!) of game objects are represented by an image or sprite
-	sprite?: sprite
+	// Most game objects represent a single object3d or sprite
 	object3d?: object3d
-	// Lots of game objects make sprite3ds so here's an initialization object
-	object3dmerge_: object3d.literal = { gobj: this }
+	sprite?: sprite
 
 	// Rotation
 	r = 0
@@ -44,7 +41,13 @@ export class game_object extends clod.obj {
 		this.sprite?.delete();
 		this.object3d?.delete();
 	}
+	_first = true
+	protected _first_create() {}
 	protected override _step() {
+		if (this._first) {
+			this._first_create();
+			this._first = false;
+		}
 		super._step();
 		this.sprite?.step();
 		this.object3d?.step();

@@ -15,7 +15,7 @@
 		"strictNullChecks": true
 	},
 	"files": [
-		"src/rome.d.ts"
+		"src/worldetch.d.ts"
 	],
 	"include": [
 		"./src"
