@@ -1,17 +1,11 @@
 import pan from "./components/pan.js";
-import clod from "./clod.js";
+import Loom from "./loom.js";
 import glob from "./../dep/glob.js";
 /// 🌍 WorldManager (clean and direct)
-var mergeMode;
-(function (mergeMode) {
-    mergeMode[mergeMode["dont"] = 0] = "dont";
-    mergeMode[mergeMode["merge"] = 1] = "merge";
-    mergeMode[mergeMode["replace"] = 2] = "replace";
-})(mergeMode || (mergeMode = {}));
-class world_manager {
+export class WorldManager {
     static world;
     static init() {
-        this.world = glob.world = clod.init();
+        this.world = glob.world = Loom.init();
     }
     static update() {
         this.world.update(pan.wpos);
@@ -20,32 +14,32 @@ class world_manager {
     }
     static getObjectsAt(target) {
         const { wpos: pos } = target;
-        return world_manager.world.chunkatwpos(pos).objsatwpos(pos);
+        return this.world.chunkAtWpos(pos).ObjsAtWpos(pos);
     }
-    static addGobj(gobj) {
-        clod.add(world_manager.world, gobj);
+    static addGameObject(gobj) {
+        Loom.add(this.world, gobj);
     }
-    static removeGobj(gobj) {
-        clod.remove(gobj);
+    static removeGameObject(gobj) {
+        Loom.remove(gobj);
     }
     static _replace(target) {
         const objects = this.getObjectsAt(target);
         for (const gobj of objects) {
-            clod.remove(gobj);
+            Loom.remove(gobj);
         }
-        clod.add_not_yet_create(world_manager.world, target);
+        Loom.addDontYetShow(this.world, target);
     }
-    static add_multiple(gobjs, mode) {
+    static addMultiple(gobjs, mode) {
         for (let gobj of gobjs) {
-            if (mode === mergeMode.merge)
-                this.merge(gobj);
-            else if (mode === mergeMode.replace)
+            if (mode === this.merge_mode.merge)
+                this._merge(gobj);
+            else if (mode === this.merge_mode.replace)
                 this._replace(gobj);
-            else if (mode === mergeMode.dont) // stack
-                clod.add_not_yet_create(world_manager.world, gobj);
+            else if (mode === this.merge_mode.dont)
+                Loom.addDontYetShow(this.world, gobj);
         }
         // Now show
-        for (const gobj of gobjs) {
+        for (let gobj of gobjs) {
             if (gobj.chunk?.active)
                 gobj.show();
         }
@@ -53,7 +47,7 @@ class world_manager {
     // These are the most normal mergers,
     // like when you put a wall on a tile,
     // or a tile on a wall
-    static merge(target) {
+    static _merge(target) {
         let objects = this.getObjectsAt(target);
         let addTarget = true;
         for (let present of objects) {
@@ -64,8 +58,17 @@ class world_manager {
             }
         }
         if (addTarget) {
-            clod.add_not_yet_create(world_manager.world, target);
+            Loom.addDontYetShow(this.world, target);
         }
     }
 }
-export default world_manager;
+(function (WorldManager) {
+    let merge_mode;
+    (function (merge_mode) {
+        merge_mode[merge_mode["dont"] = 0] = "dont";
+        merge_mode[merge_mode["merge"] = 1] = "merge";
+        merge_mode[merge_mode["replace"] = 2] = "replace";
+    })(merge_mode = WorldManager.merge_mode || (WorldManager.merge_mode = {}));
+})(WorldManager || (WorldManager = {}));
+;
+export default WorldManager;

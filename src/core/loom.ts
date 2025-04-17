@@ -1,5 +1,5 @@
 import aabb2 from "../dep/aabb2.js";
-import glob from "./../dep/glob.js";
+import glob from "../dep/glob.js";
 import pts from "../dep/pts.js";
 import { hooks } from "../dep/hooks.js";
 
@@ -7,8 +7,9 @@ import renderer from "./renderer.js"; // Begone!
 import toggle from "../dep/toggle.js";
 
 
+// The LOD
 
-namespace clod {
+namespace Loom {
 
 	type tally = [active: number, total: number]
 
@@ -26,7 +27,7 @@ namespace clod {
 	export function init() {
 		console.log('init');
 
-		const world = new clod.world(10);
+		const world = new Loom.World(10);
 		return world;
 	}
 
@@ -45,56 +46,55 @@ namespace clod {
 		return (pts.divide(pts.unproject(pixel), glob.scale));
 	}
 
-	export function add(world: world, obj?: obj) {
+	export function add(world: World, obj?: Obj) {
 		if (!obj)
 			return;
-		world.chunkatwpos(obj.wpos).add(obj);
+		world.chunkAtWpos(obj.wpos).add(obj);
 	}
 
-	export function add_not_yet_create(world: world, obj?: obj) {
-		// So we wait til all objs are lodded
+	export function addDontYetShow(world: World, obj?: Obj) {
 		if (!obj)
 			return;
-		world.chunkatwpos(obj.wpos).add(obj, false);
+		world.chunkAtWpos(obj.wpos).add(obj, false);
 	}
 
-	export function remove(obj: obj) {
+	export function remove(obj: Obj) {
 		obj.chunk?.remove(obj);
 	}
 
-	export class world {
+	export class World {
 		// By design the c lod only has a single observer
 		// If you need more grids, for filtering purposes
 		// or for creating larger or smaller skirts,
 		// decouple the grid from the world here
 		// then make sure the optional grids don't hide or show chunks 
-		grid: grid
-		readonly arrays: chunk[][] = []
+		grid: Grid
+		readonly arrays: Chunk[][] = []
 		constructor(useless_value) { // Useless value
-			this.grid = new grid(this, 2, 2);
+			this.grid = new Grid(this, 2, 2);
 		}
 		update(wpos: vec2) {
-			this.grid.cpos = clod.world.wtocpos(wpos);
+			this.grid.cpos = Loom.World.wtocpos(wpos);
 			this.grid.ons();
 			this.grid.offs();
 			this.grid.runs();
 		}
-		lookup(big: vec2): chunk | undefined {
+		lookup(big: vec2): Chunk | undefined {
 			if (this.arrays[big[1]] == undefined)
 				this.arrays[big[1]] = [];
 			return this.arrays[big[1]][big[0]];
 		}
-		at(cpos: vec2): chunk {
+		at(cpos: vec2): Chunk {
 			return this.lookup(cpos) || this._make(cpos);
 		}
-		chunkatwpos(wpos: vec2 | vec3): chunk {
-			return this.at(world.wtocpos(wpos));
+		chunkAtWpos(wpos: vec2 | vec3): Chunk {
+			return this.at(World.wtocpos(wpos));
 		}
-		protected _make(cpos): chunk {
+		protected _make(cpos): Chunk {
 			let ch = this.lookup(cpos);
 			if (ch)
 				return ch;
-			return this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
+			return this.arrays[cpos[1]][cpos[0]] = new Chunk(cpos, this);
 		}
 		static wtocpos(w: vec2 | vec3): vec2 {
 			return (pts.floor(pts.divide(w, chunk_span)));
@@ -103,15 +103,15 @@ namespace clod {
 		// todo remove(obj) {}
 	}
 
-	export class chunk extends toggle {
+	export class Chunk extends toggle {
 		group
 		color?
 		fog_of_war = false
 		readonly small: aabb2
-		readonly objs: obj[] = []
+		readonly objs: Obj[] = []
 		constructor(
 			public readonly cpos: vec2,
-			readonly world: world
+			readonly world: World
 		) {
 			super();
 			if (chunk_coloration)
@@ -138,7 +138,7 @@ namespace clod {
 			this.objs.splice(0, this.objs.length);
 			this.objs.length = 0;
 		}
-		add(obj: obj, show = true) {
+		add(obj: Obj, show = true) {
 			if (this.objs.includes(obj) == false) {
 				this.objs.push(obj);
 				obj.chunk = this;
@@ -146,7 +146,7 @@ namespace clod {
 					obj.show();
 			}
 		}
-		remove(obj: obj): boolean | undefined {
+		remove(obj: Obj): boolean | undefined {
 			let i = this.objs.indexOf(obj);
 			if (i > -1) {
 				obj.chunk = null;
@@ -154,8 +154,8 @@ namespace clod {
 			}
 		}
 		// Get all things at one point
-		objsatwpos(wpos: vec2) {
-			const stack: obj[] = [];
+		ObjsAtWpos(wpos: vec2) {
+			const stack: Obj[] = [];
 			for (const obj of this.objs)
 				if (pts.equals(
 					pts.round(wpos),
@@ -164,10 +164,10 @@ namespace clod {
 			return stack;
 		}
 
-		static swap(obj: obj) {
+		static swap(obj: Obj) {
 			// Call me whenever you move
 			let oldChunk = obj.chunk!;
-			let newChunk = oldChunk.world.chunkatwpos(/*pts.round(*/obj.wpos/*)*/);
+			let newChunk = oldChunk.world.chunkAtWpos(/*pts.round(*/obj.wpos/*)*/);
 			// the pts.round causes an impossible to find bug
 			if (oldChunk != newChunk) {
 				oldChunk.remove(obj);
@@ -207,12 +207,12 @@ namespace clod {
 		}
 	}
 
-	export class grid { // the observer
+	export class Grid { // the observer
 		cpos: vec2 = [0, 0];
-		public shown: chunk[] = [];
-		visibleObjs: obj[] = []
+		public shown: Chunk[] = [];
+		visibleObjs: Obj[] = []
 		constructor(
-			readonly world: world,
+			readonly world: World,
 			public spread: number,
 			public outside: number
 		) {
@@ -229,7 +229,7 @@ namespace clod {
 			this.spread--;
 			this.outside--;
 		}
-		visible(chunk: chunk) {
+		visible(chunk: Chunk) {
 			return chunk.dist() < this.spread;
 		}
 		ons() {
@@ -256,7 +256,7 @@ namespace clod {
 			this.visibleObjs = [];
 			let i = this.shown.length;
 			while (i--) {
-				let chunk: chunk;
+				let chunk: Chunk;
 				chunk = this.shown[i];
 				if (chunk.dist() > this.outside) {
 					chunk.hide();
@@ -290,13 +290,13 @@ namespace clod {
 
 	};
 
-	export class obj extends toggle {
+	export class Obj extends toggle {
 		static ids = 0
 		id = -1
 		wpos: vec2 = [0, 0]
 		rpos: vec2 = [0, 0]
 		size: vec2 = [64, 64]
-		chunk: chunk | null
+		chunk: Chunk | null
 		bound: aabb2
 		expand = .5
 		constructor(
@@ -304,7 +304,7 @@ namespace clod {
 		) {
 			super();
 			this.counts[1]++;
-			this.id = obj.ids++;
+			this.id = Obj.ids++;
 		}
 		finalize() {
 			// this.hide();
@@ -331,12 +331,12 @@ namespace clod {
 			this.bound = new aabb2([-this.expand, -this.expand], [this.expand, this.expand]);
 			this.bound.translate(this.wpos);
 		}
-		wtorpos() {
-			this.rpos = (clod.project(this.wpos));
+		_wtorpos() {
+			this.rpos = (Loom.project(this.wpos));
 			this.rpos = pts.floor(this.rpos);
 		}
-		rtospos() {
-			this.wtorpos();
+		_rtospos() {
+			this._wtorpos();
 			return pts.copy(this.rpos);
 		}
 		//create() { // Use show() instead!
@@ -357,14 +357,14 @@ namespace clod {
 		// Flag the Rpos as unclean when the Wpos is changed
 		// using getters and setters?
 		protected _step() {
-			this.wtorpos();
+			this._wtorpos();
 			this.rebound();
 		}
 	}
 
 	export namespace helpers {
-		export function get_every_chunk(world: world) {
-			let chunks: chunk[] = [];
+		export function getEveryChunk(world: World) {
+			let chunks: Chunk[] = [];
 			for (const i in world.arrays) {
 				for (const j in world.arrays[i]) {
 					chunks.push(world.arrays[i][j]);
@@ -374,7 +374,7 @@ namespace clod {
 		}
 
 		// Build a directional "matrix" of game objects
-		export function get_matrix<Type>(world: world, center: vec2) {
+		export function getMatrix<Type>(world: World, center: vec2) {
 			const directions: vec2[] = [
 				[-1, 1], [0, 1], [1, 1],
 				[-1, 0], [0, 0], [1, 0],
@@ -383,7 +383,7 @@ namespace clod {
 			let matrix: Type[][] = [];
 			directions.forEach((pos, index) => {
 				pos = (pts.add(pos, center));
-				matrix[index] = world.chunkatwpos(pos).objsatwpos(pos) as Type[];
+				matrix[index] = world.chunkAtWpos(pos).ObjsAtWpos(pos) as Type[];
 			});
 			return matrix;
 		}
@@ -392,7 +392,6 @@ namespace clod {
 	}
 
 	export namespace numbers {
-
 		export var chunks: tally = [0, 0]
 		export var objs: tally = [0, 0]
 
@@ -402,4 +401,4 @@ namespace clod {
 	};
 }
 
-export default clod;
+export default Loom;

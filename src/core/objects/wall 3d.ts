@@ -22,10 +22,6 @@ export class wall3d extends game_object {
 			shapeType: 'wall',
 			shapePreset: this.preset
 		});
-		if (!this._first)
-			this.object3d?.create();
-	}
-	protected override _first_create() {
 		this.wallAdapter.search(['wall 3d']);
 		this.object3d?.create();
 	}

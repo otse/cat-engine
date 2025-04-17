@@ -1,5 +1,5 @@
 import tile3d from "../core/objects/tile 3d.js";
-import world_manager from "../core/world manager.js";
+import WorldManager from "../core/world manager.js";
 import aabb2 from "../dep/aabb2.js";
 import pts from "../dep/pts.js";
 import staggered_area from "../core/staggered area.js";
@@ -58,7 +58,7 @@ var land;
                 }
             }
         }
-        world_manager.add_multiple(objects, 1);
+        WorldManager.addMultiple(objects, WorldManager.merge_mode.merge);
     }
     function make_staggered_building() {
         const objects = [];
@@ -90,7 +90,7 @@ var land;
                 objects.push(tile);
             }
         });
-        world_manager.add_multiple(objects, 1);
+        WorldManager.addMultiple(objects, WorldManager.merge_mode.merge);
     }
     function make_non_staggered_lake() {
         const objects = [];
@@ -115,7 +115,7 @@ var land;
                 objects.push(tile);
             }
         });
-        world_manager.add_multiple(objects, 2);
+        WorldManager.addMultiple(objects, WorldManager.merge_mode.merge);
     }
     function test_fill() {
         const gobjs = [];
@@ -133,7 +133,7 @@ var land;
                 gobjs.push(tile);
             }
         }
-        world_manager.add_multiple(gobjs, 1);
+        WorldManager.addMultiple(gobjs, WorldManager.merge_mode.replace);
     }
     land.test_fill = test_fill;
     function make_bodies_of_water() {

@@ -10,13 +10,13 @@ import pan from "./core/components/pan.js";
 import debug_screen from "./core/components/debug screen.js";
 
 import game_object from "./core/objects/game object.js";
-import clod from "./core/clod.js";
+import Loom from "./core/loom.js";
 import glob from "./dep/glob.js";
 import romanlike from "./eye/romanlike.js";
 import light from "./core/objects/light.js";
 import pts from "./dep/pts.js";
 import game from "./eye/game.js";
-import world_manager from "./core/world manager.js";
+import WorldManager from "./core/world manager.js";
 
 namespace worldetch {
 
@@ -53,7 +53,7 @@ namespace worldetch {
 		await renderer.init();
 		await tileform.init();
 		romanlike.init();
-		world_manager.init();
+		WorldManager.init();
 		game.init();
 		app;
 		makeTestingChamber();
@@ -121,12 +121,12 @@ namespace worldetch {
 		collect(new wall3d({ colorOverride: 'purple', _wpos: [1, 8, 0] }));
 		// collect(new wall({ _wpos: [4, 1, 0] }));
 		// collect(new wall({ _wpos: [5, 1, 0] }));
-		world_manager.add_multiple(gobjs, 1);
+		WorldManager.addMultiple(gobjs, WorldManager.merge_mode.merge);
 		// land.fill();
 	}
 	export function purgeRemake() {
 		console.warn(' purgeRemake ');
-		const chunks = clod.helpers.get_every_chunk(world_manager.world);
+		const chunks = Loom.helpers.getEveryChunk(WorldManager.world);
 		for (const chunk of chunks) {
 			chunk.nuke();
 		}
@@ -134,8 +134,8 @@ namespace worldetch {
 		glob.dirtyobjects = true;
 		tileform.purge();
 		renderer.purge();
-		world_manager.init();
-		world_manager.repopulate();
+		WorldManager.init();
+		WorldManager.repopulate();
 		game.repopulate();
 		makeTestingChamber();
 	}
@@ -144,7 +144,7 @@ namespace worldetch {
 		hooks.emit('worldetchComponents', 1);
 		hooks.emit('worldetchStep', 0);
 		keys();
-		world_manager.update();
+		WorldManager.update();
 		game.update();
 		glob.reprerender = false;
 	}
@@ -170,19 +170,19 @@ namespace worldetch {
 			purgeRemake();
 		}
 		if (app.key('c') == 1) {
-			const chunks = clod.helpers.get_every_chunk(world_manager.world);
+			const chunks = Loom.helpers.getEveryChunk(WorldManager.world);
 			console.log('chunks', chunks);
 		}
 		if (app.key('a') == 1) {
-			console.log('arrays', world_manager.world.arrays);
+			console.log('arrays', WorldManager.world.arrays);
 		}
 		if (app.key('t') == 1) {
-			world_manager.world.grid.shrink();
+			WorldManager.world.grid.shrink();
 			glob.reprerender = true;
 			glob.dirtyobjects = true;
 		}
 		if (app.key('g') == 1) {
-			world_manager.world.grid.grow();
+			WorldManager.world.grid.grow();
 			glob.reprerender = true;
 			glob.dirtyobjects = true;
 		}

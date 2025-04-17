@@ -1,4 +1,4 @@
-import clod from "../clod.js";
+import Loom from "../loom.js";
 import game_object from "./game object.js";
 import sprite from "../sprite.js";
 import glob from "./../../dep/glob.js";

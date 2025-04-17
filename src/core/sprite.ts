@@ -2,7 +2,7 @@ import pts from "../dep/pts.js";
 import game_object from "./objects/game object.js";
 import renderer from "./renderer.js";
 import glob from "./../dep/glob.js";
-import clod from "./clod.js";
+import Loom from "./loom.js";
 
 interface sprite_literal {
 	gobj: game_object,

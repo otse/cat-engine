@@ -1,10 +1,10 @@
 import glob from "../../dep/glob.js";
 import hooks from "../../dep/hooks.js";
 import pts from "../../dep/pts.js";
-import clod from "../clod.js";
+import Loom from "../loom.js";
 import renderer from "../renderer.js";
 import tileform from "../tileform.js";
-import world_manager from "../world manager.js";
+import WorldManager from "../world manager.js";
 import pan from "./pan.js";
 import zoom from "./zoom.js";
 
@@ -48,7 +48,7 @@ function step() {
 		<br />color correction (z): ${renderer.compression}
 		<br />render scale (-, =): ${glob.scale}
 		<br />zoom scale (r, f): ${zoom.scale()}
-		<br />grid (t, g): ${world_manager.world.grid.spread} / ${world_manager.world.grid.outside}
+		<br />grid (t, g): ${WorldManager.world.grid.spread} / ${WorldManager.world.grid.outside}
 		<br />hexscalar ([, ]): ${tileform.hexscalar}
 		<br />--
 		<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
@@ -56,9 +56,9 @@ function step() {
 		<br />dirtyObjects: ${glob.dirtyobjects}
 		<br />hex size (q, a): ${pts.to_string_fixed(glob.hexsize)}
 		<!--<br />cameraMode: ${renderer.cameraMode}-->
-		<br />chunk span size: ${clod.chunk_span} x ${clod.chunk_span}
+		<br />chunk span size: ${Loom.chunk_span} x ${Loom.chunk_span}
 		<br />gobjs: ${glob.gobjscount[0]} / ${glob.gobjscount[1]}
-		<br />chunks: ${clod.numbers.chunks[0]} / ${clod.numbers.chunks[1]}
+		<br />chunks: ${Loom.numbers.chunks[0]} / ${Loom.numbers.chunks[1]}
 		<br />pan wpos, rpos: ${pts.to_string_fixed(pan.wpos)} (${pts.to_string_fixed(pan.rpos)})
 		`;
 }

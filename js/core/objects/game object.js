@@ -1,7 +1,7 @@
 import glob from "./../../dep/glob.js";
 import pts from "../../dep/pts.js";
-import clod from "../clod.js";
-export class game_object extends clod.obj {
+import Loom from "../loom.js";
+export class game_object extends Loom.Obj {
     data;
     // Most game objects represent a single object3d or sprite
     object3d;
@@ -22,7 +22,7 @@ export class game_object extends clod.obj {
         this.wpos = pts.copy(data._wpos);
         this.z = data._wpos[2];
         this.r = data._r || 0;
-        this.wtorpos();
+        this._wtorpos();
         this.rpos = (pts.floor(this.rpos));
     }
     update() {
@@ -35,13 +35,7 @@ export class game_object extends clod.obj {
         this.sprite?.delete();
         this.object3d?.delete();
     }
-    _first = true;
-    _first_create() { }
     _step() {
-        if (this._first) {
-            this._first_create();
-            this._first = false;
-        }
         super._step();
         this.sprite?.step();
         this.object3d?.step();
@@ -52,7 +46,7 @@ export class game_object extends clod.obj {
     let helpers;
     (function (helpers) {
         function get_matrix(world, wpos) {
-            return clod.helpers.get_matrix(world, wpos);
+            return Loom.helpers.getMatrix(world, wpos);
         }
         helpers.get_matrix = get_matrix;
         function sort_matrix(world, wpos, types) {

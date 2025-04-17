@@ -4,11 +4,11 @@ import pts from "../../dep/pts.js";
 
 import renderer from "../renderer.js";
 import zoom from "./zoom.js";
-import clod from "../clod.js";
+import Loom from "../loom.js";
 import game_object from "../objects/game object.js";
 import tile from "../objects/tile.js";
 import glob from "../../dep/glob.js";
-import world_manager from "../world manager.js";
+import WorldManager from "../world manager.js";
 import worldetch from "../../worldetch.js";
 
 
@@ -53,7 +53,7 @@ export class pan {
 
 	static set wpos(w: vec2) {
 		wpos = w;
-		rpos = clod.project(wpos);
+		rpos = Loom.project(wpos);
 	}
 
 	static get rpos(): vec2 {
@@ -62,7 +62,7 @@ export class pan {
 
 	static set rpos(r: vec2) {
 		rpos = r;
-		wpos = clod.unproject(rpos);
+		wpos = Loom.unproject(rpos);
 	}
 
 	static startup() {
@@ -80,13 +80,13 @@ export class pan {
 		this.follow();
 		this.pan();
 		this.arrows();
-		wpos = (clod.unproject(rpos));
+		wpos = (Loom.unproject(rpos));
 		if (this.roundRpos)
 			rpos = (pts.floor(rpos));
 		this.marker.wpos = wpos;
 		if (this.noHalfMeasures)
 			this.marker.wpos = (pts.round(this.marker.wpos));
-		this.marker.wtorpos();
+		this.marker._wtorpos();
 		this.marker.update();
 		this.set_camera();
 		// Archaic code from wastes
@@ -97,7 +97,7 @@ export class pan {
 		if (this.follower) {
 			let wpos = this.follower.wpos;
 			wpos = (pts.add(wpos, [.5, .5])); // ?
-			rpos = (clod.project(wpos));
+			rpos = (Loom.project(wpos));
 		}
 	}
 
@@ -191,7 +191,7 @@ export class pan {
 		// laid out over the arena (pipeline.scene)
 		// at every render position in that arena, 
 		let point = [0, 0] as vec2;
-		const chunks = clod.helpers.get_every_chunk(world_manager.world);
+		const chunks = Loom.helpers.getEveryChunk(WorldManager.world);
 		for (const chunk of chunks) {
 			// unproject all points within chunk.tfGrid and find the one
 			// closest to our rpos

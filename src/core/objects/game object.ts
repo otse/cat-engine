@@ -1,6 +1,6 @@
 import glob from "./../../dep/glob.js";
 import pts from "../../dep/pts.js";
-import clod from "../clod.js";
+import Loom from "../loom.js";
 import sprite from "../sprite.js";
 import object3d from "../object 3d.js";
 
@@ -8,7 +8,7 @@ export namespace game_object {
 	export type literal = game_object_literal;
 }
 
-export class game_object extends clod.obj {
+export class game_object extends Loom.Obj {
 	// Most game objects represent a single object3d or sprite
 	object3d?: object3d
 	sprite?: sprite
@@ -28,7 +28,7 @@ export class game_object extends clod.obj {
 		this.wpos = pts.copy(data._wpos);
 		this.z = data._wpos[2];
 		this.r = data._r || 0;
-		this.wtorpos();
+		this._wtorpos();
 		this.rpos = (pts.floor(this.rpos));
 	}
 	update() {
@@ -41,13 +41,7 @@ export class game_object extends clod.obj {
 		this.sprite?.delete();
 		this.object3d?.delete();
 	}
-	_first = true
-	protected _first_create() {}
 	protected override _step() {
-		if (this._first) {
-			this._first_create();
-			this._first = false;
-		}
 		super._step();
 		this.sprite?.step();
 		this.object3d?.step();
@@ -58,11 +52,11 @@ export class game_object extends clod.obj {
 export namespace game_object {
 	export namespace helpers {
 
-		export function get_matrix(world: clod.world, wpos: vec2) {
-			return clod.helpers.get_matrix<game_object>(world, wpos);
+		export function get_matrix(world: Loom.World, wpos: vec2) {
+			return Loom.helpers.getMatrix<game_object>(world, wpos);
 		}
 
-		export function sort_matrix(world: clod.world, wpos: vec2, types: string[]) {
+		export function sort_matrix(world: Loom.World, wpos: vec2, types: string[]) {
 			return get_matrix(world, wpos).map(column => column.filter(obj => types.includes(obj.data._type!)));
 		}
 

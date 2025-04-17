@@ -1,5 +1,5 @@
 import game_object from "./objects/game object.js";
-import world_manager from "./world manager.js";
+import WorldManager from "./world manager.js";
 ;
 /// The DA is used for creating cascading geometries
 // It doesn't adapt to directions but helps with adapting to directions
@@ -14,7 +14,7 @@ export class direction_adapter {
         // []
     }
     search(types) {
-        this.matrix = game_object.helpers.sort_matrix(world_manager.world, this.gobj.wpos, types);
+        this.matrix = game_object.helpers.sort_matrix(WorldManager.world, this.gobj.wpos, types);
         this.directions = game_object.helpers.get_directions(this.matrix);
         // console.log('pos', this.gobj.wpos, this.matrix);
     }

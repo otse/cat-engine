@@ -1,10 +1,10 @@
-import clod from "../core/clod.js";
+import Loom from "../core/loom.js";
 import pan from "../core/components/pan.js";
 import game_object from "../core/objects/game object.js";
 import wall3d from "../core/objects/wall 3d.js";
 import object3d from "../core/object 3d.js";
 import tileform from "../core/tileform.js";
-import world_manager from "../core/world manager.js";
+import WorldManager from "../core/world manager.js";
 import land from "./land.js";
 
 export namespace game {

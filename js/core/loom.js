@@ -1,56 +1,56 @@
 import aabb2 from "../dep/aabb2.js";
-import glob from "./../dep/glob.js";
+import glob from "../dep/glob.js";
 import pts from "../dep/pts.js";
 import { hooks } from "../dep/hooks.js";
 import renderer from "./renderer.js"; // Begone!
 import toggle from "../dep/toggle.js";
-var clod;
-(function (clod) {
+// The LOD
+var Loom;
+(function (Loom) {
     const chunk_coloration = false;
     const fog_of_war = false;
     const grid_crawl_makes_chunks = false;
-    clod.chunk_span = 3;
+    Loom.chunk_span = 3;
     // For slod
     // export var stamp = 0;
     function init() {
         console.log('init');
-        const world = new clod.world(10);
+        const world = new Loom.World(10);
         return world;
     }
-    clod.init = init;
+    Loom.init = init;
     function register() {
         // hooks.create('sectorCreate')
         // hooks.create('sectorShow')
         // hooks.create('sectorHide')
         // hooks.register('sectorHide', () => { console.log('~'); return false; } );
     }
-    clod.register = register;
+    Loom.register = register;
     function project(unit) {
         return (pts.mult(pts.project(unit), glob.scale));
     }
-    clod.project = project;
+    Loom.project = project;
     function unproject(pixel) {
         return (pts.divide(pts.unproject(pixel), glob.scale));
     }
-    clod.unproject = unproject;
+    Loom.unproject = unproject;
     function add(world, obj) {
         if (!obj)
             return;
-        world.chunkatwpos(obj.wpos).add(obj);
+        world.chunkAtWpos(obj.wpos).add(obj);
     }
-    clod.add = add;
-    function add_not_yet_create(world, obj) {
-        // So we wait til all objs are lodded
+    Loom.add = add;
+    function addDontYetShow(world, obj) {
         if (!obj)
             return;
-        world.chunkatwpos(obj.wpos).add(obj, false);
+        world.chunkAtWpos(obj.wpos).add(obj, false);
     }
-    clod.add_not_yet_create = add_not_yet_create;
+    Loom.addDontYetShow = addDontYetShow;
     function remove(obj) {
         obj.chunk?.remove(obj);
     }
-    clod.remove = remove;
-    class world {
+    Loom.remove = remove;
+    class World {
         // By design the c lod only has a single observer
         // If you need more grids, for filtering purposes
         // or for creating larger or smaller skirts,
@@ -59,10 +59,10 @@ var clod;
         grid;
         arrays = [];
         constructor(useless_value) {
-            this.grid = new grid(this, 2, 2);
+            this.grid = new Grid(this, 2, 2);
         }
         update(wpos) {
-            this.grid.cpos = clod.world.wtocpos(wpos);
+            this.grid.cpos = Loom.World.wtocpos(wpos);
             this.grid.ons();
             this.grid.offs();
             this.grid.runs();
@@ -75,21 +75,21 @@ var clod;
         at(cpos) {
             return this.lookup(cpos) || this._make(cpos);
         }
-        chunkatwpos(wpos) {
-            return this.at(world.wtocpos(wpos));
+        chunkAtWpos(wpos) {
+            return this.at(World.wtocpos(wpos));
         }
         _make(cpos) {
             let ch = this.lookup(cpos);
             if (ch)
                 return ch;
-            return this.arrays[cpos[1]][cpos[0]] = new chunk(cpos, this);
+            return this.arrays[cpos[1]][cpos[0]] = new Chunk(cpos, this);
         }
         static wtocpos(w) {
-            return (pts.floor(pts.divide(w, clod.chunk_span)));
+            return (pts.floor(pts.divide(w, Loom.chunk_span)));
         }
     }
-    clod.world = world;
-    class chunk extends toggle {
+    Loom.World = World;
+    class Chunk extends toggle {
         cpos;
         world;
         group;
@@ -103,8 +103,8 @@ var clod;
             this.world = world;
             if (chunk_coloration)
                 this.color = (['lightsalmon', 'lightblue', 'beige', 'pink'])[Math.floor(Math.random() * 4)];
-            let min = (pts.mult(this.cpos, clod.chunk_span));
-            let max = (pts.add(min, [clod.chunk_span - 1, clod.chunk_span - 1]));
+            let min = (pts.mult(this.cpos, Loom.chunk_span));
+            let max = (pts.add(min, [Loom.chunk_span - 1, Loom.chunk_span - 1]));
             this.small = new aabb2(max, min);
             this.group = new THREE.Group;
             this.group.frustumCulled = false;
@@ -139,7 +139,7 @@ var clod;
             }
         }
         // Get all things at one point
-        objsatwpos(wpos) {
+        ObjsAtWpos(wpos) {
             const stack = [];
             for (const obj of this.objs)
                 if (pts.equals(pts.round(wpos), pts.round(obj.wpos)))
@@ -149,7 +149,7 @@ var clod;
         static swap(obj) {
             // Call me whenever you move
             let oldChunk = obj.chunk;
-            let newChunk = oldChunk.world.chunkatwpos(/*pts.round(*/ obj.wpos /*)*/);
+            let newChunk = oldChunk.world.chunkAtWpos(/*pts.round(*/ obj.wpos /*)*/);
             // the pts.round causes an impossible to find bug
             if (oldChunk != newChunk) {
                 oldChunk.remove(obj);
@@ -188,8 +188,8 @@ var clod;
             this.color = 'gray';
         }
     }
-    clod.chunk = chunk;
-    class grid {
+    Loom.Chunk = Chunk;
+    class Grid {
         world;
         spread;
         outside;
@@ -268,9 +268,9 @@ var clod;
                     obj.step();
         }
     }
-    clod.grid = grid;
+    Loom.Grid = Grid;
     ;
-    class obj extends toggle {
+    class Obj extends toggle {
         counts;
         static ids = 0;
         id = -1;
@@ -284,7 +284,7 @@ var clod;
             super();
             this.counts = counts;
             this.counts[1]++;
-            this.id = obj.ids++;
+            this.id = Obj.ids++;
         }
         finalize() {
             // this.hide();
@@ -311,12 +311,12 @@ var clod;
             this.bound = new aabb2([-this.expand, -this.expand], [this.expand, this.expand]);
             this.bound.translate(this.wpos);
         }
-        wtorpos() {
-            this.rpos = (clod.project(this.wpos));
+        _wtorpos() {
+            this.rpos = (Loom.project(this.wpos));
             this.rpos = pts.floor(this.rpos);
         }
-        rtospos() {
-            this.wtorpos();
+        _rtospos() {
+            this._wtorpos();
             return pts.copy(this.rpos);
         }
         //create() { // Use show() instead!
@@ -337,14 +337,14 @@ var clod;
         // Flag the Rpos as unclean when the Wpos is changed
         // using getters and setters?
         _step() {
-            this.wtorpos();
+            this._wtorpos();
             this.rebound();
         }
     }
-    clod.obj = obj;
+    Loom.Obj = Obj;
     let helpers;
     (function (helpers) {
-        function get_every_chunk(world) {
+        function getEveryChunk(world) {
             let chunks = [];
             for (const i in world.arrays) {
                 for (const j in world.arrays[i]) {
@@ -353,9 +353,9 @@ var clod;
             }
             return chunks;
         }
-        helpers.get_every_chunk = get_every_chunk;
+        helpers.getEveryChunk = getEveryChunk;
         // Build a directional "matrix" of game objects
-        function get_matrix(world, center) {
+        function getMatrix(world, center) {
             const directions = [
                 [-1, 1], [0, 1], [1, 1],
                 [-1, 0], [0, 0], [1, 0],
@@ -364,12 +364,12 @@ var clod;
             let matrix = [];
             directions.forEach((pos, index) => {
                 pos = (pts.add(pos, center));
-                matrix[index] = world.chunkatwpos(pos).objsatwpos(pos);
+                matrix[index] = world.chunkAtWpos(pos).ObjsAtWpos(pos);
             });
             return matrix;
         }
-        helpers.get_matrix = get_matrix;
-    })(helpers = clod.helpers || (clod.helpers = {}));
+        helpers.getMatrix = getMatrix;
+    })(helpers = Loom.helpers || (Loom.helpers = {}));
     let numbers;
     (function (numbers) {
         numbers.chunks = [0, 0];
@@ -377,7 +377,7 @@ var clod;
         numbers.sprites = [0, 0];
         numbers.tiles = [0, 0];
         numbers.walls = [0, 0];
-    })(numbers = clod.numbers || (clod.numbers = {}));
+    })(numbers = Loom.numbers || (Loom.numbers = {}));
     ;
-})(clod || (clod = {}));
-export default clod;
+})(Loom || (Loom = {}));
+export default Loom;

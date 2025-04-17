@@ -1,12 +1,12 @@
 
-import clod from "./core/clod";
+import Loom from "./core/loom";
 import direction_adapter from "./core/direction adapter";
 import object3d from "./core/object 3d";
 import renderer from "./core/renderer";
 import sprite from "./core/sprite";
 import staggered_area from "./core/staggered area";
 import tileform from "./core/tileform";
-import world_manager from "./core/world manager";
+import WorldManager from "./core/world manager";
 
 import game_object_factory from "./core/objects/factory motivation";
 import game_object from "./core/objects/game object";
@@ -21,14 +21,14 @@ import pts from "./dep/pts";
 import glob from "./dep/glob";
 
 export const worldetch = {
-	clod,
+	Loom,
 	direction_adapter,
 	object3d,
-	pipeline: renderer,
+	renderer,
 	sprite,
 	staggered_area,
 	tileform,
-	world_manager,
+	WorldManager,
 
 	objects: {
 		game_object_factory,
