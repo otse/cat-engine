@@ -4,6 +4,7 @@ import glob from "./../dep/glob.js";
 import pts from "../dep/pts.js";
 import worldetch from "../worldetch.js";
 import renderer from "./renderer.js";
+import worldetch__ from "./worldetch.js";
 var tileform;
 (function (tileform) {
     tileform.TOGGLE_NORMAL_MAPS = true;
@@ -18,12 +19,11 @@ var tileform;
         glob.wallrotationstaggered = wallRotationStaggered;
         make_pan_compressor_line();
         //hooks.addListener('chunkShow', chunkShow);
-        return;
     }
     tileform.init = init;
     function purge() {
-        make_pan_compressor_line();
         renderer.utilEraseChildren(renderer.groups.monolith);
+        make_pan_compressor_line();
     }
     tileform.purge = purge;
     let tfCompressor;
@@ -41,11 +41,12 @@ var tileform;
         const line = new THREE.Line(geometry, material);
         tfCompressor = line;
         // Add to scene
-        // pipeline.scene.add(line);
+        // renderer.scene.add(line);
     }
     function get_compressor_distance() {
         const screenCoords = getVerticalScreenDifference(tfCompressor.geometry, tfCompressor, renderer.camera, renderer.renderer);
         glob.pan_compress = -1 / screenCoords.y;
+        console.log(screenCoords, glob.pan_compress);
     }
     function worldToScreen(vertex, camera, renderer) {
         const vector = vertex.clone().project(camera); // Project to NDC space
@@ -489,7 +490,7 @@ var tileform;
                 glob.camera_rotation = 0;
             }
             else {
-                glob.camera_rotation = glob.constantmagiccamerarotation;
+                glob.camera_rotation = worldetch__.three_to_one_camera_rotation;
             }
         }
         else if (app.key('f2') == 1) {

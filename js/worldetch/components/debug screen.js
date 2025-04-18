@@ -34,11 +34,10 @@ function step() {
 		<br />--
 		<br />"globs"
 		<br />&#9;randomspritecolor (h): ${glob.randomspritecolor}
-		<br />magiccamerarotation (v, b): ${glob.camera_rotation}
 		<br />wallrotation (v, b): ${glob.wallrotation}
-		<br />pancompress (v, b): ${glob.pan_compress}
-		<br />--
+		<br />pan compress (v, b): ${glob.pan_compress}
 		<br />camera rotation x (v, b): ${glob.camera_rotation}
+		<br />--
 		<br />color correction (z): ${renderer.compression}
 		<br />render scale (-, =): ${glob.scale}
 		<br />zoom scale (r, f): ${zoom.scale()}

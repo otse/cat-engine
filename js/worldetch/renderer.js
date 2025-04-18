@@ -355,8 +355,7 @@ var renderer;
             renderer_1.camera = makeOrthographicCamera(renderer_1.targetSize[0], renderer_1.targetSize[1]);
             groups.camera.add(renderer_1.camera);
             groups.camera.add(new THREE.AxesHelper(20));
-            //groups.camera.rotation.x = glob.magiccamerarotation;
-            renderer_1.camera.rotation.x = glob.magiccamerarotation;
+            renderer_1.camera.rotation.x = glob.camera_rotation;
         }
         renderer_1.camera.updateMatrix();
         renderer_1.camera.updateProjectionMatrix();

@@ -10,6 +10,8 @@ import game_object from "./objects/game object.js";
 import wall3d from "./objects/wall 3d.js";
 import renderer from "./renderer.js";
 import staggered_area from "./staggered area.js";
+import worldetch__ from "./worldetch.js";
+import { log } from "console";
 
 namespace tileform {
 
@@ -31,13 +33,11 @@ namespace tileform {
 
 		make_pan_compressor_line();
 		//hooks.addListener('chunkShow', chunkShow);
-
-		return;
 	}
 
 	export function purge() {
-		make_pan_compressor_line();
 		renderer.utilEraseChildren(renderer.groups.monolith);
+		make_pan_compressor_line();
 	}
 
 	let tfCompressor;
@@ -59,13 +59,14 @@ namespace tileform {
 		tfCompressor = line;
 
 		// Add to scene
-		// pipeline.scene.add(line);
+		// renderer.scene.add(line);
 	}
 
 	function get_compressor_distance() {
 		const screenCoords = getVerticalScreenDifference(
 			tfCompressor.geometry, tfCompressor, renderer.camera, renderer.renderer);
 		glob.pan_compress = -1 / screenCoords.y;
+		console.log(screenCoords, glob.pan_compress);
 	}
 
 	function worldToScreen(vertex, camera, renderer) {
@@ -557,7 +558,7 @@ namespace tileform {
 			if (TOGGLE_TOP_DOWN_MODE) {
 				glob.camera_rotation = 0;
 			} else {
-				glob.camera_rotation = glob.constantmagiccamerarotation;
+				glob.camera_rotation = worldetch__.three_to_one_camera_rotation;
 			}
 		}
 		else if (app.key('f2') == 1) {

@@ -421,8 +421,7 @@ namespace renderer {
 			camera = makeOrthographicCamera(targetSize[0], targetSize[1]);
 			groups.camera.add(camera);
 			groups.camera.add(new THREE.AxesHelper(20));
-			//groups.camera.rotation.x = glob.magiccamerarotation;
-			camera.rotation.x = glob.magiccamerarotation;
+			camera.rotation.x = glob.camera_rotation;
 		}
 		camera.updateMatrix();
 		camera.updateProjectionMatrix();
