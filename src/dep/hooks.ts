@@ -1,7 +1,7 @@
 /// Hooks run front to back latest to last
 
 export namespace hooks {
-	export type func = (any) => Promise<boolean>
+	export type func = (any) => boolean;//Promise<boolean>
 }
 
 export class hooks<T = never> {

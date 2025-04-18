@@ -1,1 +1,0 @@
-/core contains all things worldetch!

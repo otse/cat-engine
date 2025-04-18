@@ -1,9 +1,9 @@
-import tile3d from "../core/objects/tile 3d.js";
-import WorldManager from "../core/world manager.js";
+import tile3d from "../worldetch/objects/tile 3d.js";
+import world from "../worldetch/world.js";
 import aabb2 from "../dep/aabb2.js";
 import pts from "../dep/pts.js";
-import staggered_area from "../core/staggered area.js";
-import wall3d from "../core/objects/wall 3d.js";
+import staggered_area from "../worldetch/staggered area.js";
+import wall3d from "../worldetch/objects/wall 3d.js";
 /// generates land
 // https://github.com/josephg/noisejs
 var land;
@@ -58,7 +58,7 @@ var land;
                 }
             }
         }
-        WorldManager.addMultiple(objects, WorldManager.merge_mode.merge);
+        world.default_world.add_multiple_with_rule(objects, world.merge_rule.merge);
     }
     function make_staggered_building() {
         const objects = [];
@@ -90,7 +90,7 @@ var land;
                 objects.push(tile);
             }
         });
-        WorldManager.addMultiple(objects, WorldManager.merge_mode.merge);
+        world.default_world.add_multiple_with_rule(objects, world.merge_rule.merge);
     }
     function make_non_staggered_lake() {
         const objects = [];
@@ -115,7 +115,7 @@ var land;
                 objects.push(tile);
             }
         });
-        WorldManager.addMultiple(objects, WorldManager.merge_mode.merge);
+        world.default_world.add_multiple_with_rule(objects, world.merge_rule.merge);
     }
     function test_fill() {
         const gobjs = [];
@@ -133,7 +133,7 @@ var land;
                 gobjs.push(tile);
             }
         }
-        WorldManager.addMultiple(gobjs, WorldManager.merge_mode.replace);
+        world.default_world.add_multiple_with_rule(gobjs, world.merge_rule.replace);
     }
     land.test_fill = test_fill;
     function make_bodies_of_water() {

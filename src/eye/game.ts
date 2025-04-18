@@ -1,10 +1,10 @@
-import Loom from "../core/loom.js";
-import pan from "../core/components/pan.js";
-import game_object from "../core/objects/game object.js";
-import wall3d from "../core/objects/wall 3d.js";
-import object3d from "../core/object 3d.js";
-import tileform from "../core/tileform.js";
-import WorldManager from "../core/world manager.js";
+import lod from "../worldetch/lod.js";
+import pan from "../worldetch/components/pan.js";
+import game_object from "../worldetch/objects/game object.js";
+import wall3d from "../worldetch/objects/wall 3d.js";
+import object3d from "../worldetch/object 3d.js";
+import tileform from "../worldetch/tileform.js";
+import world from "../worldetch/world.js";
 import land from "./land.js";
 
 export namespace game {

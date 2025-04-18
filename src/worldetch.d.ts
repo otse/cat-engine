@@ -8,7 +8,7 @@ declare var perlin: any;
 declare var noise: any;
 declare var BufferGeometryUtils: any;
 
-declare class world_manager {}
+declare class world {}
 declare class game_object {}
 
 type typez = 'direct' | 'tile' | 'tile 3d' | 'wall' | 'wall 3d' | 'ply' | 'light'

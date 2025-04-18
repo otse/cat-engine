@@ -1,56 +1,43 @@
 import app from "./app.js";
 import hooks from "./dep/hooks.js";
-import renderer from "./core/renderer.js";
-import tileform from "./core/tileform.js";
-import tile3d from "./core/objects/tile 3d.js";
-import wall3d from "./core/objects/wall 3d.js";
-import zoom from "./core/components/zoom.js";
-import pan from "./core/components/pan.js";
-import debug_screen from "./core/components/debug screen.js";
-import Loom from "./core/loom.js";
+import renderer from "./worldetch/renderer.js";
+import tileform from "./worldetch/tileform.js";
+import tile3d from "./worldetch/objects/tile 3d.js";
+import wall3d from "./worldetch/objects/wall 3d.js";
+import zoom from "./worldetch/components/zoom.js";
+import pan from "./worldetch/components/pan.js";
+import debug_screen from "./worldetch/components/debug screen.js";
+import lod from "./worldetch/lod.js";
 import glob from "./dep/glob.js";
 import romanlike from "./eye/romanlike.js";
-import light from "./core/objects/light.js";
+import light from "./worldetch/objects/light.js";
 import pts from "./dep/pts.js";
 import game from "./eye/game.js";
-import WorldManager from "./core/world manager.js";
+import world from "./worldetch/world.js";
 var worldetch;
 (function (worldetch) {
-    function sample(a) {
-        return a[Math.floor(Math.random() * a.length)];
-    }
-    worldetch.sample = sample;
-    function clamp(val, min, max) {
-        return val > max ? max : val < min ? min : val;
-    }
-    worldetch.clamp = clamp;
-    function roundToNearest(value, nearest) {
-        return Math.round(value / nearest) * nearest;
-    }
-    worldetch.roundToNearest = roundToNearest;
     async function init() {
         console.log(' init ');
-        glob.rome = worldetch;
-        glob.reprerender = true;
-        glob.dirtyobjects = true;
-        glob.randomspritecolor = false;
         glob.scale = 1;
         glob.constantmagiccamerarotation = 0.962;
         glob.magiccamerarotation = glob.constantmagiccamerarotation;
-        glob.hexsize = [17, 9];
-        glob.hexsize = [17, 15]; // Monolith
-        glob.pancompress = 2; // Mono
+        glob.hexsize = [17, 15];
+        glob.pan_compress = 2;
         glob.camerarpos = [0, 0];
         glob.gobjscount = [0, 0];
-        glob.sample = worldetch.sample;
+        glob.sample =
+            (a) => a[Math.floor(Math.random() * a.length)];
+        glob.round_to_nearest =
+            (value, nearest) => Math.round(value / nearest) * nearest;
         await preload_basic_textures();
         await renderer.init();
         await tileform.init();
         romanlike.init();
-        WorldManager.init();
+        world.init();
         game.init();
         app;
-        makeTestingChamber();
+        make_testing_chamber();
+        // Uncomment them if you don't need it
         debug_screen.register();
         zoom.register();
         pan.register();
@@ -63,7 +50,7 @@ var worldetch;
         await renderer.preloadTextureAsync('./img/hex/wall.png', 'nearest');
         await renderer.preloadTextureAsync('./img/hex/post.png', 'nearest');
     }
-    function makeTestingChamber() {
+    function make_testing_chamber() {
         let gobjs = [];
         const collect = (gobj) => gobjs.push(gobj);
         collect(new tile3d({ colorOverride: 'pink', _wpos: [-1, 0, 0] }, 'cobblestone'));
@@ -112,81 +99,70 @@ var worldetch;
         collect(new wall3d({ colorOverride: 'purple', _wpos: [1, 8, 0] }));
         // collect(new wall({ _wpos: [4, 1, 0] }));
         // collect(new wall({ _wpos: [5, 1, 0] }));
-        WorldManager.addMultiple(gobjs, WorldManager.merge_mode.merge);
+        world.default_world.add_multiple_with_rule(gobjs, world.merge_rule.merge);
         // land.fill();
     }
-    worldetch.makeTestingChamber = makeTestingChamber;
-    function purgeRemake() {
+    worldetch.make_testing_chamber = make_testing_chamber;
+    function purge_remake() {
         console.warn(' purgeRemake ');
-        const chunks = Loom.helpers.getEveryChunk(WorldManager.world);
+        const chunks = lod.helpers.get_every_chunk(world.default_world.world);
         for (const chunk of chunks) {
             chunk.nuke();
         }
-        glob.reprerender = true;
-        glob.dirtyobjects = true;
         tileform.purge();
         renderer.purge();
-        WorldManager.init();
-        WorldManager.repopulate();
+        world.init();
+        // world_manager.repopulate();
         game.repopulate();
-        makeTestingChamber();
+        make_testing_chamber();
     }
-    worldetch.purgeRemake = purgeRemake;
+    worldetch.purge_remake = purge_remake;
     function step() {
         hooks.emit('worldetchComponents', 1);
         hooks.emit('worldetchStep', 0);
         keys();
-        WorldManager.update();
+        world.default_world.update();
         game.update();
-        glob.reprerender = false;
     }
     worldetch.step = step;
     function keys() {
-        if (app.key('h') == 1) {
-            glob.randomspritecolor = !glob.randomspritecolor;
-            purgeRemake();
-        }
         if (app.key('-') == 1) {
             if (glob.scale > 1)
                 glob.scale -= 1;
             // Our wpos is still correct, but our rpos is now outdated
             pan.rpos = pts.mult(pts.project(pan.wpos), glob.scale);
             console.log(glob.scale);
-            purgeRemake();
+            purge_remake();
         }
         if (app.key('=') == 1) {
             glob.scale += 1;
             // Our wpos is still correct, but our rpos is now outdated
             pan.rpos = pts.mult(pts.project(pan.wpos), glob.scale);
             console.log(glob.scale);
-            purgeRemake();
+            purge_remake();
         }
         if (app.key('c') == 1) {
-            const chunks = Loom.helpers.getEveryChunk(WorldManager.world);
+            const chunks = lod.helpers.get_every_chunk(world.default_world.world);
             console.log('chunks', chunks);
         }
         if (app.key('a') == 1) {
-            console.log('arrays', WorldManager.world.arrays);
+            console.log('arrays', world.default_world.world.arrays);
         }
         if (app.key('t') == 1) {
-            WorldManager.world.grid.shrink();
-            glob.reprerender = true;
-            glob.dirtyobjects = true;
+            world.default_world.world.grid.shrink();
         }
         if (app.key('g') == 1) {
-            WorldManager.world.grid.grow();
-            glob.reprerender = true;
-            glob.dirtyobjects = true;
+            world.default_world.world.grid.grow();
         }
         if (app.key('[') == 1) {
             tileform.hexscalar -= .1;
             console.log(tileform.hexscalar);
-            purgeRemake();
+            purge_remake();
         }
         if (app.key(']') == 1) {
             tileform.hexscalar += .1;
             console.log(tileform.hexscalar);
-            purgeRemake();
+            purge_remake();
         }
     }
 })(worldetch || (worldetch = {}));

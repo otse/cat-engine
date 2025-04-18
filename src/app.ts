@@ -1,7 +1,7 @@
 import hooks from "./dep/hooks.js";
 import pts from "./dep/pts.js";
 import worldetch from "./worldetch.js";
-import renderer from "./core/renderer.js";
+import renderer from "./worldetch/renderer.js";
 import glob from "./dep/glob.js";
 
 namespace app {

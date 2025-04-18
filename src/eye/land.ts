@@ -1,11 +1,11 @@
-import game_object from "../core/objects/game object.js";
-import tile3d from "../core/objects/tile 3d.js";
+import game_object from "../worldetch/objects/game object.js";
+import tile3d from "../worldetch/objects/tile 3d.js";
 import game from "./game.js";
-import WorldManager from "../core/world manager.js";
+import world from "../worldetch/world.js";
 import aabb2 from "../dep/aabb2.js";
 import pts from "../dep/pts.js";
-import staggered_area from "../core/staggered area.js";
-import wall3d from "../core/objects/wall 3d.js";
+import staggered_area from "../worldetch/staggered area.js";
+import wall3d from "../worldetch/objects/wall 3d.js";
 import area2 from "../dep/area2.js";
 
 /// generates land
@@ -65,7 +65,7 @@ namespace land {
 				}
 			}
 		}
-		WorldManager.addMultiple(objects, WorldManager.merge_mode.merge);
+		world.default_world.add_multiple_with_rule(objects, world.merge_rule.merge);
 	}
 
 	function make_staggered_building() {
@@ -98,7 +98,7 @@ namespace land {
 				objects.push(tile);
 			}
 		});
-		WorldManager.addMultiple(objects, WorldManager.merge_mode.merge);
+		world.default_world.add_multiple_with_rule(objects, world.merge_rule.merge);
 	}
 
 	function make_non_staggered_lake() {
@@ -124,7 +124,7 @@ namespace land {
 				objects.push(tile);
 			}
 		});
-		WorldManager.addMultiple(objects, WorldManager.merge_mode.merge);
+		world.default_world.add_multiple_with_rule(objects, world.merge_rule.merge);
 	}
 
 	export function test_fill() {
@@ -143,7 +143,7 @@ namespace land {
 				gobjs.push(tile);
 			}
 		}
-		WorldManager.addMultiple(gobjs, WorldManager.merge_mode.replace);
+		world.default_world.add_multiple_with_rule(gobjs, world.merge_rule.replace);
 	}
 
 	export function make_bodies_of_water() {
