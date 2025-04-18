@@ -4,6 +4,7 @@ import renderer from "./renderer.js";
 import glob from "./../dep/glob.js";
 import lod from "./lod.js";
 import worldetch from "../worldetch.js";
+import worldetch__ from "./worldetch.js";
 
 interface sprite_literal {
 	gobj: game_object,
@@ -31,7 +32,7 @@ export class sprite {
 		public readonly data: sprite_literal
 	) {
 		this.data = {
-			spriteSize: glob.hex_size,
+			spriteSize: worldetch__.hex_size,
 			spriteImage: 'hex/tile.png',
 			spriteColor: 'white',
 			...data,
@@ -80,7 +81,7 @@ export class sprite {
 			bool: true
 		}, defines);
 		let { spriteSize } = this.data;
-		spriteSize = (pts.mult(spriteSize!, glob.scale));
+		spriteSize = (pts.mult(spriteSize!, worldetch__.scale));
 		this.geometry = new THREE.PlaneGeometry(spriteSize![0], spriteSize![1], 1, 1);
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
 		this.update();
@@ -95,7 +96,7 @@ export class sprite {
 		let pos = pts.copy(gabe.rpos);
 		// Todo the problem here was that aligning the bottom
 		// resulted in impossible problems
-		const tileSize = glob.hex_size;
+		const tileSize = worldetch__.hex_size;
 		// Todo omg
 		if (this.data.bottomSort)
 			pos[1] += this.data.spriteSize![1] / 2;

@@ -1,6 +1,7 @@
 import app from '../app.js';
 import glob from '../dep/glob.js';
 import pts from '../dep/pts.js';
+import worldetch__ from './worldetch.js';
 const fragmentBackdrop = `
 varying vec2 vUv;
 //uniform float time;
@@ -254,9 +255,9 @@ var renderer;
         renderer_1.sceneMask = new THREE.Scene();
         renderer_1.sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
         if (renderer_1.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-            glob.dots_per_inch = window.devicePixelRatio;
+            worldetch__.dots_per_inch = window.devicePixelRatio;
             if (renderer_1.ROUND_UP_DOTS_PER_INCH)
-                glob.dots_per_inch = Math.ceil(glob.dots_per_inch);
+                worldetch__.dots_per_inch = Math.ceil(worldetch__.dots_per_inch);
         }
         renderer_1.target = new THREE.WebGLRenderTarget(1024, 1024, {
             minFilter: THREE.NearestFilter,
@@ -274,7 +275,7 @@ var renderer;
             // premultipliedAlpha: false
         });
         glob.renderer = renderer_1.renderer;
-        renderer_1.renderer.setPixelRatio(glob.dots_per_inch);
+        renderer_1.renderer.setPixelRatio(worldetch__.dots_per_inch);
         renderer_1.renderer.setSize(100, 100);
         renderer_1.renderer.setClearColor(0xffffff, 0);
         renderer_1.renderer.autoClear = true;
@@ -295,7 +296,7 @@ var renderer;
         //screenSize = pts.even(screenSize, -1);
         renderer_1.targetSize = (pts.copy(renderer_1.screenSize));
         if (renderer_1.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-            renderer_1.targetSize = (pts.mult(renderer_1.screenSize, glob.dots_per_inch));
+            renderer_1.targetSize = (pts.mult(renderer_1.screenSize, worldetch__.dots_per_inch));
             renderer_1.targetSize = (pts.floor(renderer_1.targetSize));
             // targetSize = pts.make_uneven(targetSize, -1);
         }
@@ -355,7 +356,7 @@ var renderer;
             renderer_1.camera = makeOrthographicCamera(renderer_1.targetSize[0], renderer_1.targetSize[1]);
             groups.camera.add(renderer_1.camera);
             groups.camera.add(new THREE.AxesHelper(20));
-            renderer_1.camera.rotation.x = glob.camera_rotation;
+            renderer_1.camera.rotation.x = worldetch__.camera_rotation;
         }
         renderer_1.camera.updateMatrix();
         renderer_1.camera.updateProjectionMatrix();

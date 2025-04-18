@@ -1,6 +1,6 @@
-import glob from "./../../dep/glob.js";
 import pts from "../../dep/pts.js";
 import lod from "../lod.js";
+import worldetch__ from "../worldetch.js";
 export class game_object extends lod.obj {
     data;
     // Most game objects represent a single object3d or sprite
@@ -11,7 +11,7 @@ export class game_object extends lod.obj {
     // Third axis
     z = 0;
     constructor(data) {
-        super(glob.gobjs_tally);
+        super(worldetch__.gobjs_tally);
         this.data = data;
         this.data = {
             name: 'a game object',

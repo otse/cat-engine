@@ -11,7 +11,6 @@ import wall3d from "./objects/wall 3d.js";
 import renderer from "./renderer.js";
 import staggered_area from "./staggered area.js";
 import worldetch__ from "./worldetch.js";
-import { log } from "console";
 
 namespace tileform {
 
@@ -65,8 +64,8 @@ namespace tileform {
 	function get_compressor_distance() {
 		const screenCoords = getVerticalScreenDifference(
 			tfCompressor.geometry, tfCompressor, renderer.camera, renderer.renderer);
-		glob.pan_compress = -1 / screenCoords.y;
-		console.log(screenCoords, glob.pan_compress);
+		worldetch__.pan_compress = -1 / screenCoords.y;
+		console.log(screenCoords, worldetch__.pan_compress);
 	}
 
 	function worldToScreen(vertex, camera, renderer) {
@@ -104,7 +103,7 @@ namespace tileform {
 	}
 	 
 	export function step() {
-		renderer.scene.scale.set(glob.scale, glob.scale, glob.scale);
+		renderer.scene.scale.set(worldetch__.scale, worldetch__.scale, worldetch__.scale);
 		get_compressor_distance();
 		opkl();
 		// Testing new lighting mode
@@ -197,8 +196,8 @@ namespace tileform {
 		//}
 		protected translate() {
 			const { wpos } = this.gobj;
-			let pos = this.pos3d = pts.project(wpos);
-			pos[1] = glob.round_to_nearest(pos[1], glob.pan_compress);
+			let pos = this.pos3d = pts.project(wpos, worldetch__.hex_size);
+			pos[1] = glob.round_to_nearest(pos[1], worldetch__.pan_compress);
 			// pos = pts.ceil(pos);
 			this.entityGroup.position.fromArray([...pos, this.z]);
 			this.entityGroup.updateMatrix();
@@ -389,10 +388,10 @@ namespace tileform {
 			const fromObject = fromObjects![0];
 			const toObject = toObjects![0];
 
-			const ourPosition = pts.project(gobj.wpos);
+			const ourPosition = pts.project(gobj.wpos, worldetch__.hex_size);
 
-			const fromPosition = pts.project(fromObject.wpos);
-			const toPosition = pts.project(toObject.wpos);
+			const fromPosition = pts.project(fromObject.wpos, worldetch__.hex_size);
+			const toPosition = pts.project(toObject.wpos, worldetch__.hex_size);
 
 			let midX = ((fromPosition[0] + toPosition[0]) / 2) - ourPosition[0];
 			let midY = ((fromPosition[1] + toPosition[1]) / 2) - ourPosition[1];
@@ -538,8 +537,8 @@ namespace tileform {
 			console.log(' tf light source create ');
 			this.light = new THREE.PointLight('white', 1, 5);
 			// this.light.decay = 2.4;
-			this.light.intensity = 700 * (glob.scale * 2);
-			this.light.distance = 600 * (glob.scale * 2);
+			this.light.intensity = 700 * (worldetch__.scale * 2);
+			this.light.distance = 600 * (worldetch__.scale * 2);
 			this.light.decay = 2.3;
 			this.light.updateMatrix();
 			this.entityGroup.add(this.light);
@@ -556,9 +555,9 @@ namespace tileform {
 		if (app.key('f1') == 1) {
 			TOGGLE_TOP_DOWN_MODE = !TOGGLE_TOP_DOWN_MODE;
 			if (TOGGLE_TOP_DOWN_MODE) {
-				glob.camera_rotation = 0;
+				worldetch__.camera_rotation = 0;
 			} else {
-				glob.camera_rotation = worldetch__.three_to_one_camera_rotation;
+				worldetch__.camera_rotation = worldetch__.three_to_one_camera_rotation;
 			}
 		}
 		else if (app.key('f2') == 1) {
@@ -574,23 +573,23 @@ namespace tileform {
 			glob.wallrotation += .01;
 		}
 		else if (app.key('v') == 1) {
-			if (glob.camera_rotation > 0)
-				glob.camera_rotation -= .01;
+			if (worldetch__.camera_rotation > 0)
+				worldetch__.camera_rotation -= .01;
 		}
 		else if (app.key('b') == 1) {
-			glob.camera_rotation += .01;
+			worldetch__.camera_rotation += .01;
 		}
 		else if (app.key('q') == 1) {
-			glob.hex_size = pts.add(glob.hex_size, [0, 1]);
+			worldetch__.hex_size = pts.add(worldetch__.hex_size, [0, 1]);
 		}
 		else if (app.key('a') == 1) {
-			glob.hex_size = pts.add(glob.hex_size, [0, -1]);
+			worldetch__.hex_size = pts.add(worldetch__.hex_size, [0, -1]);
 		}
 		else if (app.key('1') == 1) {
-			glob.hex_size = pts.add(glob.hex_size, [-1, 0]);
+			worldetch__.hex_size = pts.add(worldetch__.hex_size, [-1, 0]);
 		}
 		else if (app.key('2') == 1) {
-			glob.hex_size = pts.add(glob.hex_size, [1, 0]);
+			worldetch__.hex_size = pts.add(worldetch__.hex_size, [1, 0]);
 		}
 		else {
 			return;

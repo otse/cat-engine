@@ -1,9 +1,9 @@
 import aabb2 from "../dep/aabb2.js";
-import glob from "../dep/glob.js";
 import pts from "../dep/pts.js";
 import { hooks } from "../dep/hooks.js";
 import renderer from "./renderer.js"; // Begone!
 import toggle from "../dep/toggle.js";
+import worldetch__ from "./worldetch.js";
 // The LOD 👑
 // Coordinate systems:
 // The xtoypos-functions are used to convert between chunk space, world space, 
@@ -27,11 +27,11 @@ var lod;
     }
     lod.register = register;
     function project(unit) {
-        return (pts.mult(pts.project(unit), glob.scale));
+        return (pts.mult(pts.project(unit, worldetch__.hex_size), worldetch__.scale));
     }
     lod.project = project;
     function unproject(pixel) {
-        return (pts.divide(pts.unproject(pixel), glob.scale));
+        return (pts.divide(pts.unproject(pixel, worldetch__.hex_size), worldetch__.scale));
     }
     lod.unproject = unproject;
     function add(world, obj, show = true) {

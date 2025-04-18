@@ -1,6 +1,7 @@
 import app from '../app.js';
 import glob from '../dep/glob.js';
 import pts from '../dep/pts.js';
+import worldetch__ from './worldetch.js';
 
 const fragmentBackdrop = `
 varying vec2 vUv;
@@ -304,9 +305,9 @@ namespace renderer {
 		sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
 
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-			glob.dots_per_inch = window.devicePixelRatio;
+			worldetch__.dots_per_inch = window.devicePixelRatio;
 			if (ROUND_UP_DOTS_PER_INCH)
-				glob.dots_per_inch = Math.ceil(glob.dots_per_inch);
+				worldetch__.dots_per_inch = Math.ceil(worldetch__.dots_per_inch);
 		}
 
 		target = new THREE.WebGLRenderTarget(1024, 1024, {
@@ -326,7 +327,7 @@ namespace renderer {
 			// premultipliedAlpha: false
 		});
 		glob.renderer = renderer;
-		renderer.setPixelRatio(glob.dots_per_inch);
+		renderer.setPixelRatio(worldetch__.dots_per_inch);
 		renderer.setSize(100, 100);
 		renderer.setClearColor(0xffffff, 0);
 		renderer.autoClear = true;
@@ -353,7 +354,7 @@ namespace renderer {
 		targetSize = (pts.copy(screenSize));
 
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-			targetSize = (pts.mult(screenSize, glob.dots_per_inch));
+			targetSize = (pts.mult(screenSize, worldetch__.dots_per_inch));
 			targetSize = (pts.floor(targetSize));
 			// targetSize = pts.make_uneven(targetSize, -1);
 		}
@@ -421,7 +422,7 @@ namespace renderer {
 			camera = makeOrthographicCamera(targetSize[0], targetSize[1]);
 			groups.camera.add(camera);
 			groups.camera.add(new THREE.AxesHelper(20));
-			camera.rotation.x = glob.camera_rotation;
+			camera.rotation.x = worldetch__.camera_rotation;
 		}
 		camera.updateMatrix();
 		camera.updateProjectionMatrix();

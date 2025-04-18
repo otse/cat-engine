@@ -5,6 +5,7 @@ import lod from "../lod.js";
 import renderer from "../renderer.js";
 import tileform from "../tileform.js";
 import world from "../world.js";
+import worldetch__ from "../worldetch.js";
 import pan from "./pan.js";
 import zoom from "./zoom.js";
 // Components can be turned off by not registering them. 🛠️
@@ -35,17 +36,17 @@ function step() {
 		<br />"globs"
 		<br />&#9;randomspritecolor (h): ${glob.randomspritecolor}
 		<br />wallrotation (v, b): ${glob.wallrotation}
-		<br />pan compress (v, b): ${glob.pan_compress}
-		<br />camera rotation x (v, b): ${glob.camera_rotation}
+		<br />pan compress (v, b): ${worldetch__.pan_compress}
+		<br />camera rotation x (v, b): ${worldetch__.camera_rotation}
 		<br />--
 		<br />color correction (z): ${renderer.compression}
-		<br />render scale (-, =): ${glob.scale}
+		<br />render scale (-, =): ${worldetch__.scale}
 		<br />zoom scale (r, f): ${zoom.scale()}
 		<br />grid (t, g): ${world.default_world.world.grid.spread} / ${world.default_world.world.grid.outside}
 		<br />hexscalar ([, ]): ${tileform.hexscalar}
 		<br />--
 		<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
-		<br />hex size (q, a): ${pts.to_string_fixed(glob.hex_size)}
+		<br />hex size (q, a): ${pts.to_string_fixed(worldetch__.hex_size)}
 		<!--<br />cameraMode: ${renderer.cameraMode}-->
 		<br />chunk span size: ${lod.chunk_span} x ${lod.chunk_span}
 		<br />gobjs: ${glob.gobjs_tally[0]} / ${glob.gobjs_tally[1]}

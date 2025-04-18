@@ -1,7 +1,7 @@
-import glob from "./../../dep/glob.js";
 import game_object from "./game object.js";
 import tileform from "../tileform.js";
 import sprite from "../sprite.js";
+import worldetch__ from "../worldetch.js";
 export class light extends game_object {
     light_source;
     constructor(data) {
@@ -22,7 +22,7 @@ export class light extends game_object {
         new sprite({
             gobj: this,
             spriteImage: 'hex/post.png',
-            spriteSize: [glob.hex_size[0], 30],
+            spriteSize: [worldetch__.hex_size[0], 30],
             bottomSort: true,
         });
         this.sprite?.create();

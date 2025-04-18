@@ -5,6 +5,7 @@ import { hooks } from "../dep/hooks.js";
 
 import renderer from "./renderer.js"; // Begone!
 import toggle from "../dep/toggle.js";
+import worldetch__ from "./worldetch.js";
 
 // The LOD 👑
 
@@ -37,11 +38,11 @@ namespace lod {
 	}
 
 	export function project(unit: vec2): vec2 {
-		return (pts.mult(pts.project(unit), glob.scale));
+		return (pts.mult(pts.project(unit, worldetch__.hex_size), worldetch__.scale));
 	}
 
 	export function unproject(pixel: vec2): vec2 {
-		return (pts.divide(pts.unproject(pixel), glob.scale));
+		return (pts.divide(pts.unproject(pixel, worldetch__.hex_size), worldetch__.scale));
 	}
 
 	export function add(world: world, obj?: obj, show = true) {

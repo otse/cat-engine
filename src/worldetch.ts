@@ -133,18 +133,18 @@ namespace worldetch {
 
 	function keys() {
 		if (app.key('-') == 1) {
-			if (glob.scale > 1)
-				glob.scale -= 1;
+			if (worldetch__.scale > 1)
+				worldetch__.scale -= 1;
 			// Our wpos is still correct, but our rpos is now outdated
-			pan.rpos = pts.mult(pts.project(pan.wpos), glob.scale);
-			console.log(glob.scale);
+			pan.rpos = pts.mult(pts.project(pan.wpos, worldetch__.hex_size), worldetch__.scale);
+			console.log(worldetch__.scale);
 			purge_remake();
 		}
 		if (app.key('=') == 1) {
-			glob.scale += 1;
+			worldetch__.scale += 1;
 			// Our wpos is still correct, but our rpos is now outdated
-			pan.rpos = pts.mult(pts.project(pan.wpos), glob.scale);
-			console.log(glob.scale);
+			pan.rpos = pts.mult(pts.project(pan.wpos, worldetch__.hex_size), worldetch__.scale);
+			console.log(worldetch__.scale);
 			purge_remake();
 		}
 		if (app.key('c') == 1) {

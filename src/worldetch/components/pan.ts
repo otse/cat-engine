@@ -10,6 +10,7 @@ import tile from "../objects/tile.js";
 import glob from "../../dep/glob.js";
 import world from "../world.js";
 import worldetch from "../../worldetch.js";
+import worldetch__ from "../worldetch.js";
 
 
 let wpos: vec2 = [0, 0];
@@ -104,16 +105,16 @@ export class pan {
 
 	static arrows() {
 		if (app.key('arrowright')) {
-			rpos[0] += 1 * glob.scale;
+			rpos[0] += 1 * worldetch__.scale;
 		}
 		if (app.key('arrowleft')) {
-			rpos[0] -= 1 * glob.scale;
+			rpos[0] -= 1 * worldetch__.scale;
 		}
 		if (app.key('arrowup')) {
-			rpos[1] += 1 * glob.scale;
+			rpos[1] += 1 * worldetch__.scale;
 		}
 		if (app.key('arrowdown')) {
-			rpos[1] -= 1 * glob.scale;
+			rpos[1] -= 1 * worldetch__.scale;
 		}
 	}
 
@@ -143,9 +144,9 @@ export class pan {
 			else {
 				dif = (pts.divide(dif, panDirection));
 				// Scale
-				dif = (pts.mult(dif, glob.dots_per_inch));
 				dif = (pts.mult(dif, zoom.scale()));
-				dif = (pts.mult(dif, 1, glob.pan_compress));
+				dif = (pts.mult(dif, worldetch__.dots_per_inch));
+				dif = (pts.mult(dif, 1, worldetch__.pan_compress));
 				if (renderer.USE_EXTRA_RENDER_TARGET)
 					dif = (pts.divide(dif, 2));
 				dif = (pts.subtract(dif, before));
@@ -169,7 +170,7 @@ export class pan {
 		// Critical evening
 		// Uneven causes geometry errors below the equator
 		rpos2 = pts.make_even(rpos2, 1);
-		let pan_compress = glob.pan_compress;
+		let pan_compress = worldetch__.pan_compress;
 		if (renderer.dithering)
 			pan_compress = pan_compress * 2;
 		rpos2[1] = glob.round_to_nearest(rpos2[1], pan_compress);
@@ -179,7 +180,7 @@ export class pan {
 		renderer.groups.camera.position.y = rpos2[1];
 		renderer.groups.camera.position.z = 10;
 		renderer.groups.camera.updateMatrix();
-		renderer.camera.rotation.x = glob.camera_rotation;
+		renderer.camera.rotation.x = worldetch__.camera_rotation;
 		renderer.camera.updateMatrix();
 		renderer.camera.updateProjectionMatrix();
 	}
