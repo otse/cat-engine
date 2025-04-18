@@ -43,13 +43,9 @@ export class world {
 	}
 
 	add_multiple_with_rule(gobjs: game_object[], rule: world.merge_rule) {
-		// For every object in the array,
-		// If the rule is merge, merge it with the existing objects
-		// If the rule is replace, remove the existing objects and add the new one
-		// If the rule is dont, just add it to the world
 		for (let gobj of gobjs) {
 			switch (rule) {
-				case world.merge_rule.merge:
+				case world.merge_rule.soft:
 					this._merge(gobj);
 					break;
 				case world.merge_rule.replace:
@@ -95,7 +91,7 @@ export class world {
 
 export namespace world {
 	export enum merge_rule {
-		dont = 0, merge, replace
+		dont = 0, soft, replace
 	}
 };
 

@@ -15,7 +15,7 @@ namespace staggered_area {
 class staggered_area extends area2 {
 	points: point[] = []
 	constructor(area: area2) {
-		super(area.base); // calls unnecessary extract
+		super(area.base); // Calls unnecessary extract
 		this._stagger();
 	}
 	// do(func: (pos: point) => void) 

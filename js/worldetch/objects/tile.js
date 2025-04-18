@@ -15,7 +15,7 @@ export class tile extends game_object {
     _create() {
         new sprite({
             gobj: this,
-            spriteSize: glob.hexsize,
+            spriteSize: glob.hex_size,
         });
         this.sprite?.create();
     }

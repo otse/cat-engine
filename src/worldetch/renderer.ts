@@ -185,12 +185,14 @@ namespace renderer {
 
 	export const cameraMode: 'ortho' | 'perspective' = 'ortho';
 
+	// Used for render target size
 	export const DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
+	
+	// Superior 
 	export const ROUND_UP_DOTS_PER_INCH = true;
 
-	export const USE_SCENE3 = true;
-
-	export var dotsPerInch = 1;
+	// Used for dithering
+	export const USE_EXTRA_RENDER_TARGET = true;
 
 	export var dithering = true;
 	export var compression = false;
@@ -237,7 +239,8 @@ namespace renderer {
 		renderer.clear();
 		renderer.render(scene, camera);
 
-		if (USE_SCENE3) {
+		// Again, used by dither
+		if (USE_EXTRA_RENDER_TARGET) {
 			camera2.scale.set(1 / 2, 1 / 2, 1 / 2);
 			camera2.updateMatrix();
 
@@ -249,7 +252,8 @@ namespace renderer {
 		renderer.clear();
 		renderer.render(scene2, camera2);
 
-		if (USE_SCENE3) {
+		if (USE_EXTRA_RENDER_TARGET) {
+			// Great, for dither
 			renderer.setRenderTarget(null);
 			renderer.clear();
 			renderer.render(scene3, camera3);
@@ -300,12 +304,10 @@ namespace renderer {
 		sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
 
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-			dotsPerInch = window.devicePixelRatio;
+			glob.dots_per_inch = window.devicePixelRatio;
 			if (ROUND_UP_DOTS_PER_INCH)
-				dotsPerInch = Math.ceil(dotsPerInch);
+				glob.dots_per_inch = Math.ceil(glob.dots_per_inch);
 		}
-
-		glob.dotsPerInch = dotsPerInch;
 
 		target = new THREE.WebGLRenderTarget(1024, 1024, {
 			minFilter: THREE.NearestFilter,
@@ -314,7 +316,7 @@ namespace renderer {
 			colorSpace: THREE.NoColorSpace,
 			generateMipmaps: false,
 		});
-		if (USE_SCENE3) {
+		if (USE_EXTRA_RENDER_TARGET) {
 			target2 = target.clone();
 		}
 		targetMask = target.clone();
@@ -324,7 +326,7 @@ namespace renderer {
 			// premultipliedAlpha: false
 		});
 		glob.renderer = renderer;
-		renderer.setPixelRatio(dotsPerInch);
+		renderer.setPixelRatio(glob.dots_per_inch);
 		renderer.setSize(100, 100);
 		renderer.setClearColor(0xffffff, 0);
 		renderer.autoClear = true;
@@ -351,7 +353,7 @@ namespace renderer {
 		targetSize = (pts.copy(screenSize));
 
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-			targetSize = (pts.mult(screenSize, dotsPerInch));
+			targetSize = (pts.mult(screenSize, glob.dots_per_inch));
 			targetSize = (pts.floor(targetSize));
 			// targetSize = pts.make_uneven(targetSize, -1);
 		}
@@ -363,7 +365,7 @@ namespace renderer {
 
 		target.setSize(targetSize[0], targetSize[1]);
 		targetMask.setSize(targetSize[0], targetSize[1]);
-		if (USE_SCENE3)
+		if (USE_EXTRA_RENDER_TARGET)
 			target2.setSize(targetSize[0], targetSize[1]);
 
 		plane?.dispose();
@@ -386,7 +388,7 @@ namespace renderer {
 			scene2.remove(scene2.children[0]);
 		scene2.add(quad2);
 
-		if (USE_SCENE3) {
+		if (USE_EXTRA_RENDER_TARGET) {
 			material3?.dispose();
 			material3 = new THREE.ShaderMaterial({
 				uniforms: {

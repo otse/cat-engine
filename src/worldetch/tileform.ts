@@ -23,8 +23,8 @@ namespace tileform {
 	const wallRotationStaggered = Math.PI / 6;
 
 	export async function init() {
-		await stage.init();
-		hooks.addListener('worldetchComponents', step);
+		await preload();
+		await boot();
 
 		glob.wallrotation = wallRotation;
 		glob.wallrotationstaggered = wallRotationStaggered;
@@ -101,73 +101,50 @@ namespace tileform {
 		// Compute difference
 		return new THREE.Vector2().subVectors(screen1, screen0);
 	}
-	function step() {
+	 
+	export function step() {
 		renderer.scene.scale.set(glob.scale, glob.scale, glob.scale);
-		stage.step();
-		update_entities();
 		get_compressor_distance();
-		return false;
+		opkl();
+		// Testing new lighting mode
 	}
 
-	function update_entities() {
-		// Updating is different from object-stepping
-		for (const entity of entities) {
-			entity.update();
-		}
+	async function preload() {
+		await renderer.preloadTextureAsync('./img/textures/star.jpg');
+		await renderer.preloadTextureAsync('./img/textures/starnormal.jpg');
+		await renderer.preloadTextureAsync('./img/textures/japanese2.jpg');
+		await renderer.preloadTextureAsync('./img/textures/japanese3.jpg');
+		await renderer.preloadTextureAsync('./img/textures/japanese4.jpg');
+		await renderer.preloadTextureAsync('./img/textures/wall1.jpg');
+		await renderer.preloadTextureAsync('./img/textures/wall1normal.jpg');
+		await renderer.preloadTextureAsync('./img/textures/wall2.jpg');
+		await renderer.preloadTextureAsync('./img/textures/wall2normal.jpg');
+		await renderer.preloadTextureAsync('./img/textures/water.jpg');
+		await renderer.preloadTextureAsync('./img/textures/overgrown_x.jpg');
+		await renderer.preloadTextureAsync('./img/textures/stonemixed.jpg');
+		await renderer.preloadTextureAsync('./img/textures/stonemixednormal.jpg');
+		await renderer.preloadTextureAsync('./img/textures/stonemixed2.jpg');
+		await renderer.preloadTextureAsync('./img/textures/stonemixed2normal.jpg');
+		await renderer.preloadTextureAsync('./img/textures/cobblestone3.jpg');
+		await renderer.preloadTextureAsync('./img/textures/cobblestone3normal.jpg');
+		await renderer.preloadTextureAsync('./img/textures/beach.jpg');
+		await renderer.preloadTextureAsync('./img/textures/beachnormal.jpg');
+		await renderer.preloadTextureAsync('./img/textures/sand.jpg');
+		//await pipeline.loadTextureAsync('./img/textures/sandnormal.jpg');
+		await renderer.preloadTextureAsync('./img/textures/oop.jpg');
+		await renderer.preloadTextureAsync('./img/textures/cobblestone.jpg');
+		await renderer.preloadTextureAsync('./img/textures/cobblestone2.jpg');
+		await renderer.preloadTextureAsync('./img/textures/basaltcliffs.jpg');
+		await renderer.preloadTextureAsync('./img/textures/cliffs.jpg');
+		// await pipeline.preloadTextureAsync('./img/textures/overgrown.jpg');
+		//await pipeline.loadTextureAsync('./img/textures/bricks.jpg');
 	}
 
-	export namespace stage {
-
-		export function step() {
-			opkl();
-			// Testing new lighting mode
-		}
-
-		export async function init() {
-			await preload();
-			await boot();
-
-			// glob.magiccamerarotation = tfStageCameraRotation;
-		}
-
-		async function preload() {
-			await renderer.preloadTextureAsync('./img/textures/star.jpg');
-			await renderer.preloadTextureAsync('./img/textures/starnormal.jpg');
-			await renderer.preloadTextureAsync('./img/textures/japanese2.jpg');
-			await renderer.preloadTextureAsync('./img/textures/japanese3.jpg');
-			await renderer.preloadTextureAsync('./img/textures/japanese4.jpg');
-			await renderer.preloadTextureAsync('./img/textures/wall1.jpg');
-			await renderer.preloadTextureAsync('./img/textures/wall1normal.jpg');
-			await renderer.preloadTextureAsync('./img/textures/wall2.jpg');
-			await renderer.preloadTextureAsync('./img/textures/wall2normal.jpg');
-			await renderer.preloadTextureAsync('./img/textures/water.jpg');
-			await renderer.preloadTextureAsync('./img/textures/overgrown_x.jpg');
-			await renderer.preloadTextureAsync('./img/textures/stonemixed.jpg');
-			await renderer.preloadTextureAsync('./img/textures/stonemixednormal.jpg');
-			await renderer.preloadTextureAsync('./img/textures/stonemixed2.jpg');
-			await renderer.preloadTextureAsync('./img/textures/stonemixed2normal.jpg');
-			await renderer.preloadTextureAsync('./img/textures/cobblestone3.jpg');
-			await renderer.preloadTextureAsync('./img/textures/cobblestone3normal.jpg');
-			await renderer.preloadTextureAsync('./img/textures/beach.jpg');
-			await renderer.preloadTextureAsync('./img/textures/beachnormal.jpg');
-			await renderer.preloadTextureAsync('./img/textures/sand.jpg');
-			//await pipeline.loadTextureAsync('./img/textures/sandnormal.jpg');
-			await renderer.preloadTextureAsync('./img/textures/oop.jpg');
-			await renderer.preloadTextureAsync('./img/textures/cobblestone.jpg');
-			await renderer.preloadTextureAsync('./img/textures/cobblestone2.jpg');
-			await renderer.preloadTextureAsync('./img/textures/basaltcliffs.jpg');
-			await renderer.preloadTextureAsync('./img/textures/cliffs.jpg');
-			// await pipeline.preloadTextureAsync('./img/textures/overgrown.jpg');
-			//await pipeline.loadTextureAsync('./img/textures/bricks.jpg');
-		}
-
-		async function boot() {
-			const sun = new THREE.DirectionalLight('lavender', Math.PI / 3);
-			renderer.scene.add(sun);
-			renderer.scene.add(sun.target);
-		}
+	async function boot() {
+		const sun = new THREE.DirectionalLight('lavender', Math.PI / 3);
+		renderer.scene.add(sun);
+		renderer.scene.add(sun.target);
 	}
-	// end of stage
 
 	const entities: entity3d[] = []
 
@@ -198,9 +175,9 @@ namespace tileform {
 			this._step();
 			this.translate(); // Mono debug
 		}
-		update() {
-			this._update();
-		}
+		//update() {
+		//	this._update();
+		//}
 		private free() {
 			const index = entities.indexOf(this);
 			if (index !== -1) {
@@ -215,8 +192,8 @@ namespace tileform {
 		}
 		protected _step() {
 		}
-		protected _update() {
-		}
+		//protected _update() {
+		//}
 		protected translate() {
 			const { wpos } = this.gobj;
 			let pos = this.pos3d = pts.project(wpos);
@@ -540,8 +517,6 @@ namespace tileform {
 			this.entityGroup.position.z += 1;
 		}
 		protected override _step() {
-		}
-		protected override _update() {
 			// Dance the light source
 			//return;
 			this.light.position.x = 3;
@@ -552,6 +527,8 @@ namespace tileform {
 			this.entityGroup.updateMatrix();
 			this.light.updateMatrix();
 		}
+		//protected override _update() {
+		//}
 		protected override _delete() {
 			console.log('remove light');
 			// super._delete();
@@ -578,9 +555,9 @@ namespace tileform {
 		if (app.key('f1') == 1) {
 			TOGGLE_TOP_DOWN_MODE = !TOGGLE_TOP_DOWN_MODE;
 			if (TOGGLE_TOP_DOWN_MODE) {
-				glob.magiccamerarotation = 0;
+				glob.camera_rotation = 0;
 			} else {
-				glob.magiccamerarotation = glob.constantmagiccamerarotation;
+				glob.camera_rotation = glob.constantmagiccamerarotation;
 			}
 		}
 		else if (app.key('f2') == 1) {
@@ -596,23 +573,23 @@ namespace tileform {
 			glob.wallrotation += .01;
 		}
 		else if (app.key('v') == 1) {
-			if (glob.magiccamerarotation > 0)
-				glob.magiccamerarotation -= .01;
+			if (glob.camera_rotation > 0)
+				glob.camera_rotation -= .01;
 		}
 		else if (app.key('b') == 1) {
-			glob.magiccamerarotation += .01;
+			glob.camera_rotation += .01;
 		}
 		else if (app.key('q') == 1) {
-			glob.hexsize = pts.add(glob.hexsize, [0, 1]);
+			glob.hex_size = pts.add(glob.hex_size, [0, 1]);
 		}
 		else if (app.key('a') == 1) {
-			glob.hexsize = pts.add(glob.hexsize, [0, -1]);
+			glob.hex_size = pts.add(glob.hex_size, [0, -1]);
 		}
 		else if (app.key('1') == 1) {
-			glob.hexsize = pts.add(glob.hexsize, [-1, 0]);
+			glob.hex_size = pts.add(glob.hex_size, [-1, 0]);
 		}
 		else if (app.key('2') == 1) {
-			glob.hexsize = pts.add(glob.hexsize, [1, 0]);
+			glob.hex_size = pts.add(glob.hex_size, [1, 0]);
 		}
 		else {
 			return;

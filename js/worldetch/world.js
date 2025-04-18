@@ -29,13 +29,9 @@ export class world {
         lod.remove(gobj);
     }
     add_multiple_with_rule(gobjs, rule) {
-        // For every object in the array,
-        // If the rule is merge, merge it with the existing objects
-        // If the rule is replace, remove the existing objects and add the new one
-        // If the rule is dont, just add it to the world
         for (let gobj of gobjs) {
             switch (rule) {
-                case world.merge_rule.merge:
+                case world.merge_rule.soft:
                     this._merge(gobj);
                     break;
                 case world.merge_rule.replace:
@@ -78,7 +74,7 @@ export class world {
     let merge_rule;
     (function (merge_rule) {
         merge_rule[merge_rule["dont"] = 0] = "dont";
-        merge_rule[merge_rule["merge"] = 1] = "merge";
+        merge_rule[merge_rule["soft"] = 1] = "soft";
         merge_rule[merge_rule["replace"] = 2] = "replace";
     })(merge_rule = world.merge_rule || (world.merge_rule = {}));
 })(world || (world = {}));

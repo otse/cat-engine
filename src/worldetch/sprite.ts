@@ -31,7 +31,7 @@ export class sprite {
 		public readonly data: sprite_literal
 	) {
 		this.data = {
-			spriteSize: glob.hexsize,
+			spriteSize: glob.hex_size,
 			spriteImage: 'hex/tile.png',
 			spriteColor: 'white',
 			...data,
@@ -95,7 +95,7 @@ export class sprite {
 		let pos = pts.copy(gabe.rpos);
 		// Todo the problem here was that aligning the bottom
 		// resulted in impossible problems
-		const tileSize = glob.hexsize;
+		const tileSize = glob.hex_size;
 		// Todo omg
 		if (this.data.bottomSort)
 			pos[1] += this.data.spriteSize![1] / 2;

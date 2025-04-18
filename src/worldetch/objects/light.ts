@@ -25,7 +25,7 @@ export class light extends game_object {
 		new sprite({
 			gobj: this,
 			spriteImage: 'hex/post.png',
-			spriteSize: [glob.hexsize[0], 30],
+			spriteSize: [glob.hex_size[0], 30],
 			bottomSort: true,
 		});
 		this.sprite?.create();

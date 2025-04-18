@@ -58,7 +58,7 @@ var land;
                 }
             }
         }
-        world.default_world.add_multiple_with_rule(objects, world.merge_rule.merge);
+        world.default_world.add_multiple_with_rule(objects, world.merge_rule.soft);
     }
     function make_staggered_building() {
         const objects = [];
@@ -90,7 +90,7 @@ var land;
                 objects.push(tile);
             }
         });
-        world.default_world.add_multiple_with_rule(objects, world.merge_rule.merge);
+        world.default_world.add_multiple_with_rule(objects, world.merge_rule.soft);
     }
     function make_non_staggered_lake() {
         const objects = [];
@@ -115,7 +115,7 @@ var land;
                 objects.push(tile);
             }
         });
-        world.default_world.add_multiple_with_rule(objects, world.merge_rule.merge);
+        world.default_world.add_multiple_with_rule(objects, world.merge_rule.soft);
     }
     function test_fill() {
         const gobjs = [];

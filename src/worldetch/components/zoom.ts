@@ -32,7 +32,7 @@ class zoom {
             console.log('app wheel');
             this.level = (this.level < this.zooms.length - 1) ? this.level + 1 : this.level;
         }
-        const camera = renderer.USE_SCENE3 ? renderer.camera3 : renderer.camera;
+        const camera = renderer.USE_EXTRA_RENDER_TARGET ? renderer.camera3 : renderer.camera;
         const scale = this.zooms[this.level];
         if (renderer.cameraMode == 'perspective') {
             renderer.camera.position.z = (5 - this.level) * 40 || 10;

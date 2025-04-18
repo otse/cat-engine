@@ -5,7 +5,7 @@ export interface Pt { x: number; y: number };
 
 type both = vec2 | vec3;
 
-// glob.hexsize = [10, 10];
+// glob.hex_size = [10, 10];
 
 class pts {
 	static pt(a: vec2): Pt {
@@ -58,7 +58,7 @@ class pts {
 
 	// static readonly hexSize: vec2 = [17, 9];
 
-	static project(w: vec2, size = glob.hexsize): vec2 {
+	static project(w: vec2, size = glob.hex_size): vec2 {
 		const tileWidth = size[0] - 1;
 		const tileHeight = size[1] - 1;
 		const x = w[0];
@@ -71,8 +71,8 @@ class pts {
 	}
 
 	static unproject(r: vec2): vec2 {
-		const tileWidth = glob.hexsize[0] - 1;
-		const tileHeight = glob.hexsize[1] - 1;
+		const tileWidth = glob.hex_size[0] - 1;
+		const tileHeight = glob.hex_size[1] - 1;
 
 		// Reverse the Y-axis scaling, considering tileHeight
 		const scaleFactor = tileWidth * 0.75;  // This corresponds to the scaling factor in project function

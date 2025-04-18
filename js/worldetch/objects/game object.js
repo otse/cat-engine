@@ -11,7 +11,7 @@ export class game_object extends lod.obj {
     // Third axis
     z = 0;
     constructor(data) {
-        super(glob.gobjscount);
+        super(glob.gobjs_tally);
         this.data = data;
         this.data = {
             name: 'a game object',

@@ -179,10 +179,12 @@ void main() {
 var renderer;
 (function (renderer_1) {
     renderer_1.cameraMode = 'ortho';
+    // Used for render target size
     renderer_1.DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
+    // Superior 
     renderer_1.ROUND_UP_DOTS_PER_INCH = true;
-    renderer_1.USE_SCENE3 = true;
-    renderer_1.dotsPerInch = 1;
+    // Used for dithering
+    renderer_1.USE_EXTRA_RENDER_TARGET = true;
     renderer_1.dithering = true;
     renderer_1.compression = false;
     let groups;
@@ -199,7 +201,8 @@ var renderer;
         renderer_1.renderer.setRenderTarget(renderer_1.target);
         renderer_1.renderer.clear();
         renderer_1.renderer.render(renderer_1.scene, renderer_1.camera);
-        if (renderer_1.USE_SCENE3) {
+        // Again, used by dither
+        if (renderer_1.USE_EXTRA_RENDER_TARGET) {
             renderer_1.camera2.scale.set(1 / 2, 1 / 2, 1 / 2);
             renderer_1.camera2.updateMatrix();
             renderer_1.renderer.setRenderTarget(renderer_1.target2);
@@ -209,7 +212,8 @@ var renderer;
         }
         renderer_1.renderer.clear();
         renderer_1.renderer.render(renderer_1.scene2, renderer_1.camera2);
-        if (renderer_1.USE_SCENE3) {
+        if (renderer_1.USE_EXTRA_RENDER_TARGET) {
+            // Great, for dither
             renderer_1.renderer.setRenderTarget(null);
             renderer_1.renderer.clear();
             renderer_1.renderer.render(renderer_1.scene3, renderer_1.camera3);
@@ -250,11 +254,10 @@ var renderer;
         renderer_1.sceneMask = new THREE.Scene();
         renderer_1.sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
         if (renderer_1.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-            renderer_1.dotsPerInch = window.devicePixelRatio;
+            glob.dots_per_inch = window.devicePixelRatio;
             if (renderer_1.ROUND_UP_DOTS_PER_INCH)
-                renderer_1.dotsPerInch = Math.ceil(renderer_1.dotsPerInch);
+                glob.dots_per_inch = Math.ceil(glob.dots_per_inch);
         }
-        glob.dotsPerInch = renderer_1.dotsPerInch;
         renderer_1.target = new THREE.WebGLRenderTarget(1024, 1024, {
             minFilter: THREE.NearestFilter,
             magFilter: THREE.NearestFilter,
@@ -262,7 +265,7 @@ var renderer;
             colorSpace: THREE.NoColorSpace,
             generateMipmaps: false,
         });
-        if (renderer_1.USE_SCENE3) {
+        if (renderer_1.USE_EXTRA_RENDER_TARGET) {
             renderer_1.target2 = renderer_1.target.clone();
         }
         renderer_1.targetMask = renderer_1.target.clone();
@@ -271,7 +274,7 @@ var renderer;
             // premultipliedAlpha: false
         });
         glob.renderer = renderer_1.renderer;
-        renderer_1.renderer.setPixelRatio(renderer_1.dotsPerInch);
+        renderer_1.renderer.setPixelRatio(glob.dots_per_inch);
         renderer_1.renderer.setSize(100, 100);
         renderer_1.renderer.setClearColor(0xffffff, 0);
         renderer_1.renderer.autoClear = true;
@@ -292,7 +295,7 @@ var renderer;
         //screenSize = pts.even(screenSize, -1);
         renderer_1.targetSize = (pts.copy(renderer_1.screenSize));
         if (renderer_1.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-            renderer_1.targetSize = (pts.mult(renderer_1.screenSize, renderer_1.dotsPerInch));
+            renderer_1.targetSize = (pts.mult(renderer_1.screenSize, glob.dots_per_inch));
             renderer_1.targetSize = (pts.floor(renderer_1.targetSize));
             // targetSize = pts.make_uneven(targetSize, -1);
         }
@@ -302,7 +305,7 @@ var renderer;
 		      new is ${pts.to_string(renderer_1.targetSize)}`);
         renderer_1.target.setSize(renderer_1.targetSize[0], renderer_1.targetSize[1]);
         renderer_1.targetMask.setSize(renderer_1.targetSize[0], renderer_1.targetSize[1]);
-        if (renderer_1.USE_SCENE3)
+        if (renderer_1.USE_EXTRA_RENDER_TARGET)
             renderer_1.target2.setSize(renderer_1.targetSize[0], renderer_1.targetSize[1]);
         renderer_1.plane?.dispose();
         renderer_1.plane = new THREE.PlaneGeometry(renderer_1.targetSize[0], renderer_1.targetSize[1]);
@@ -322,7 +325,7 @@ var renderer;
         while (renderer_1.scene2.children.length > 0)
             renderer_1.scene2.remove(renderer_1.scene2.children[0]);
         renderer_1.scene2.add(renderer_1.quad2);
-        if (renderer_1.USE_SCENE3) {
+        if (renderer_1.USE_EXTRA_RENDER_TARGET) {
             renderer_1.material3?.dispose();
             renderer_1.material3 = new THREE.ShaderMaterial({
                 uniforms: {

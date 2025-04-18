@@ -1,7 +1,7 @@
 import hooks from "../../dep/hooks.js";
 import app from "../../app.js";
 import renderer from "../renderer.js";
-// Components can be turned off by not registering them. 🛠️
+// Components can be excluded by not registering them. 🛠️
 class zoom {
     static level = 3;
     static wheelEnabled = true;

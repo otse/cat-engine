@@ -17,19 +17,14 @@ import light from "./worldetch/objects/light.js";
 import pts from "./dep/pts.js";
 import game from "./eye/game.js";
 import world from "./worldetch/world.js";
+import worldetch__ from "./worldetch/worldetch.js";
 
 namespace worldetch {
 
 	export async function init() {
 		console.log(' init ');
 
-		glob.scale = 1;
-		glob.constantmagiccamerarotation = 0.962;
-		glob.magiccamerarotation = glob.constantmagiccamerarotation;
-		glob.hexsize = [17, 15];
-		glob.pan_compress = 2;
-		glob.camerarpos = [0, 0];
-		glob.gobjscount = [0, 0];
+		worldetch__.init({});
 
 		glob.sample =
 			(a) => a[Math.floor(Math.random() * a.length)];
@@ -110,7 +105,7 @@ namespace worldetch {
 		collect(new wall3d({ colorOverride: 'purple', _wpos: [1, 8, 0] }));
 		// collect(new wall({ _wpos: [4, 1, 0] }));
 		// collect(new wall({ _wpos: [5, 1, 0] }));
-		world.default_world.add_multiple_with_rule(gobjs, world.merge_rule.merge);
+		world.default_world.add_multiple_with_rule(gobjs, world.merge_rule.soft);
 		// land.fill();
 	}
 	export function purge_remake() {
@@ -130,6 +125,7 @@ namespace worldetch {
 	export function step() {
 		hooks.emit('worldetchComponents', 1);
 		hooks.emit('worldetchStep', 0);
+		tileform.step();
 		keys();
 		world.default_world.update();
 		game.update();

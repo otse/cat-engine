@@ -33,7 +33,7 @@ function step() {
 		worldetch - monolith git branch (debug screen)
 		<br />DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${renderer.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
 		<br />ROUND_UP_DOTS_PER_INCH: ${renderer.ROUND_UP_DOTS_PER_INCH}
-		<br />USE_SCENE3: ${renderer.USE_SCENE3}
+		<br />USE_SCENE3: ${renderer.USE_EXTRA_RENDER_TARGET}
 		<br />DITHERING (d): ${renderer.dithering}
 		<br />--
 		<br />TOGGLE_TOP_DOWN_MODE (f1): ${tileform.TOGGLE_TOP_DOWN_MODE}
@@ -42,11 +42,11 @@ function step() {
 		<br />--
 		<br />"globs"
 		<br />&#9;randomspritecolor (h): ${glob.randomspritecolor}
-		<br />magiccamerarotation (v, b): ${glob.magiccamerarotation}
+		<br />magiccamerarotation (v, b): ${glob.camera_rotation}
 		<br />wallrotation (v, b): ${glob.wallrotation}
 		<br />pancompress (v, b): ${glob.pan_compress}
 		<br />--
-		<br />camera rotation x (v, b): ${glob.magiccamerarotation}
+		<br />camera rotation x (v, b): ${glob.camera_rotation}
 		<br />color correction (z): ${renderer.compression}
 		<br />render scale (-, =): ${glob.scale}
 		<br />zoom scale (r, f): ${zoom.scale()}
@@ -54,10 +54,10 @@ function step() {
 		<br />hexscalar ([, ]): ${tileform.hexscalar}
 		<br />--
 		<br />fps: ${glob.fps?.toFixed(2)} ${glob.delta?.toFixed(3)}
-		<br />hex size (q, a): ${pts.to_string_fixed(glob.hexsize)}
+		<br />hex size (q, a): ${pts.to_string_fixed(glob.hex_size)}
 		<!--<br />cameraMode: ${renderer.cameraMode}-->
 		<br />chunk span size: ${lod.chunk_span} x ${lod.chunk_span}
-		<br />gobjs: ${glob.gobjscount[0]} / ${glob.gobjscount[1]}
+		<br />gobjs: ${glob.gobjs_tally[0]} / ${glob.gobjs_tally[1]}
 		<br />chunks: ${lod.numbers.chunks[0]} / ${lod.numbers.chunks[1]}
 		<br />pan wpos, rpos: ${pts.to_string_fixed(pan.wpos)} (${pts.to_string_fixed(pan.rpos)})
 		`;

@@ -1,7 +1,6 @@
 /// This poorly named component turns basic 3d shapes into sprites
 import app from "../app.js";
 import glob from "./../dep/glob.js";
-import hooks from "../dep/hooks.js";
 import pts from "../dep/pts.js";
 import worldetch from "../worldetch.js";
 import renderer from "./renderer.js";
@@ -13,8 +12,8 @@ var tileform;
     const wallRotation = Math.PI / 6;
     const wallRotationStaggered = Math.PI / 6;
     async function init() {
-        await stage.init();
-        hooks.addListener('worldetchComponents', step);
+        await preload();
+        await boot();
         glob.wallrotation = wallRotation;
         glob.wallrotationstaggered = wallRotationStaggered;
         make_pan_compressor_line();
@@ -74,67 +73,46 @@ var tileform;
     }
     function step() {
         renderer.scene.scale.set(glob.scale, glob.scale, glob.scale);
-        stage.step();
-        update_entities();
         get_compressor_distance();
-        return false;
+        opkl();
+        // Testing new lighting mode
     }
-    function update_entities() {
-        // Updating is different from object-stepping
-        for (const entity of entities) {
-            entity.update();
-        }
+    tileform.step = step;
+    async function preload() {
+        await renderer.preloadTextureAsync('./img/textures/star.jpg');
+        await renderer.preloadTextureAsync('./img/textures/starnormal.jpg');
+        await renderer.preloadTextureAsync('./img/textures/japanese2.jpg');
+        await renderer.preloadTextureAsync('./img/textures/japanese3.jpg');
+        await renderer.preloadTextureAsync('./img/textures/japanese4.jpg');
+        await renderer.preloadTextureAsync('./img/textures/wall1.jpg');
+        await renderer.preloadTextureAsync('./img/textures/wall1normal.jpg');
+        await renderer.preloadTextureAsync('./img/textures/wall2.jpg');
+        await renderer.preloadTextureAsync('./img/textures/wall2normal.jpg');
+        await renderer.preloadTextureAsync('./img/textures/water.jpg');
+        await renderer.preloadTextureAsync('./img/textures/overgrown_x.jpg');
+        await renderer.preloadTextureAsync('./img/textures/stonemixed.jpg');
+        await renderer.preloadTextureAsync('./img/textures/stonemixednormal.jpg');
+        await renderer.preloadTextureAsync('./img/textures/stonemixed2.jpg');
+        await renderer.preloadTextureAsync('./img/textures/stonemixed2normal.jpg');
+        await renderer.preloadTextureAsync('./img/textures/cobblestone3.jpg');
+        await renderer.preloadTextureAsync('./img/textures/cobblestone3normal.jpg');
+        await renderer.preloadTextureAsync('./img/textures/beach.jpg');
+        await renderer.preloadTextureAsync('./img/textures/beachnormal.jpg');
+        await renderer.preloadTextureAsync('./img/textures/sand.jpg');
+        //await pipeline.loadTextureAsync('./img/textures/sandnormal.jpg');
+        await renderer.preloadTextureAsync('./img/textures/oop.jpg');
+        await renderer.preloadTextureAsync('./img/textures/cobblestone.jpg');
+        await renderer.preloadTextureAsync('./img/textures/cobblestone2.jpg');
+        await renderer.preloadTextureAsync('./img/textures/basaltcliffs.jpg');
+        await renderer.preloadTextureAsync('./img/textures/cliffs.jpg');
+        // await pipeline.preloadTextureAsync('./img/textures/overgrown.jpg');
+        //await pipeline.loadTextureAsync('./img/textures/bricks.jpg');
     }
-    let stage;
-    (function (stage) {
-        function step() {
-            opkl();
-            // Testing new lighting mode
-        }
-        stage.step = step;
-        async function init() {
-            await preload();
-            await boot();
-            // glob.magiccamerarotation = tfStageCameraRotation;
-        }
-        stage.init = init;
-        async function preload() {
-            await renderer.preloadTextureAsync('./img/textures/star.jpg');
-            await renderer.preloadTextureAsync('./img/textures/starnormal.jpg');
-            await renderer.preloadTextureAsync('./img/textures/japanese2.jpg');
-            await renderer.preloadTextureAsync('./img/textures/japanese3.jpg');
-            await renderer.preloadTextureAsync('./img/textures/japanese4.jpg');
-            await renderer.preloadTextureAsync('./img/textures/wall1.jpg');
-            await renderer.preloadTextureAsync('./img/textures/wall1normal.jpg');
-            await renderer.preloadTextureAsync('./img/textures/wall2.jpg');
-            await renderer.preloadTextureAsync('./img/textures/wall2normal.jpg');
-            await renderer.preloadTextureAsync('./img/textures/water.jpg');
-            await renderer.preloadTextureAsync('./img/textures/overgrown_x.jpg');
-            await renderer.preloadTextureAsync('./img/textures/stonemixed.jpg');
-            await renderer.preloadTextureAsync('./img/textures/stonemixednormal.jpg');
-            await renderer.preloadTextureAsync('./img/textures/stonemixed2.jpg');
-            await renderer.preloadTextureAsync('./img/textures/stonemixed2normal.jpg');
-            await renderer.preloadTextureAsync('./img/textures/cobblestone3.jpg');
-            await renderer.preloadTextureAsync('./img/textures/cobblestone3normal.jpg');
-            await renderer.preloadTextureAsync('./img/textures/beach.jpg');
-            await renderer.preloadTextureAsync('./img/textures/beachnormal.jpg');
-            await renderer.preloadTextureAsync('./img/textures/sand.jpg');
-            //await pipeline.loadTextureAsync('./img/textures/sandnormal.jpg');
-            await renderer.preloadTextureAsync('./img/textures/oop.jpg');
-            await renderer.preloadTextureAsync('./img/textures/cobblestone.jpg');
-            await renderer.preloadTextureAsync('./img/textures/cobblestone2.jpg');
-            await renderer.preloadTextureAsync('./img/textures/basaltcliffs.jpg');
-            await renderer.preloadTextureAsync('./img/textures/cliffs.jpg');
-            // await pipeline.preloadTextureAsync('./img/textures/overgrown.jpg');
-            //await pipeline.loadTextureAsync('./img/textures/bricks.jpg');
-        }
-        async function boot() {
-            const sun = new THREE.DirectionalLight('lavender', Math.PI / 3);
-            renderer.scene.add(sun);
-            renderer.scene.add(sun.target);
-        }
-    })(stage = tileform.stage || (tileform.stage = {}));
-    // end of stage
+    async function boot() {
+        const sun = new THREE.DirectionalLight('lavender', Math.PI / 3);
+        renderer.scene.add(sun);
+        renderer.scene.add(sun.target);
+    }
     const entities = [];
     class entity3d {
         gobj;
@@ -165,9 +143,9 @@ var tileform;
             this._step();
             this.translate(); // Mono debug
         }
-        update() {
-            this._update();
-        }
+        //update() {
+        //	this._update();
+        //}
         free() {
             const index = entities.indexOf(this);
             if (index !== -1) {
@@ -182,8 +160,8 @@ var tileform;
         }
         _step() {
         }
-        _update() {
-        }
+        //protected _update() {
+        //}
         translate() {
             const { wpos } = this.gobj;
             let pos = this.pos3d = pts.project(wpos);
@@ -470,8 +448,6 @@ var tileform;
             this.entityGroup.position.z += 1;
         }
         _step() {
-        }
-        _update() {
             // Dance the light source
             //return;
             this.light.position.x = 3;
@@ -482,6 +458,8 @@ var tileform;
             this.entityGroup.updateMatrix();
             this.light.updateMatrix();
         }
+        //protected override _update() {
+        //}
         _delete() {
             console.log('remove light');
             // super._delete();
@@ -508,10 +486,10 @@ var tileform;
         if (app.key('f1') == 1) {
             tileform.TOGGLE_TOP_DOWN_MODE = !tileform.TOGGLE_TOP_DOWN_MODE;
             if (tileform.TOGGLE_TOP_DOWN_MODE) {
-                glob.magiccamerarotation = 0;
+                glob.camera_rotation = 0;
             }
             else {
-                glob.magiccamerarotation = glob.constantmagiccamerarotation;
+                glob.camera_rotation = glob.constantmagiccamerarotation;
             }
         }
         else if (app.key('f2') == 1) {
@@ -527,23 +505,23 @@ var tileform;
             glob.wallrotation += .01;
         }
         else if (app.key('v') == 1) {
-            if (glob.magiccamerarotation > 0)
-                glob.magiccamerarotation -= .01;
+            if (glob.camera_rotation > 0)
+                glob.camera_rotation -= .01;
         }
         else if (app.key('b') == 1) {
-            glob.magiccamerarotation += .01;
+            glob.camera_rotation += .01;
         }
         else if (app.key('q') == 1) {
-            glob.hexsize = pts.add(glob.hexsize, [0, 1]);
+            glob.hex_size = pts.add(glob.hex_size, [0, 1]);
         }
         else if (app.key('a') == 1) {
-            glob.hexsize = pts.add(glob.hexsize, [0, -1]);
+            glob.hex_size = pts.add(glob.hex_size, [0, -1]);
         }
         else if (app.key('1') == 1) {
-            glob.hexsize = pts.add(glob.hexsize, [-1, 0]);
+            glob.hex_size = pts.add(glob.hex_size, [-1, 0]);
         }
         else if (app.key('2') == 1) {
-            glob.hexsize = pts.add(glob.hexsize, [1, 0]);
+            glob.hex_size = pts.add(glob.hex_size, [1, 0]);
         }
         else {
             return;

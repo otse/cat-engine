@@ -3,7 +3,7 @@ import area2 from "../dep/area2.js";
 class staggered_area extends area2 {
     points = [];
     constructor(area) {
-        super(area.base); // calls unnecessary extract
+        super(area.base); // Calls unnecessary extract
         this._stagger();
     }
     // do(func: (pos: point) => void) 

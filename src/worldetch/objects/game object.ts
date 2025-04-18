@@ -18,7 +18,7 @@ export class game_object extends lod.obj {
 	// Third axis
 	z = 0
 	constructor(public data: game_object.literal) {
-		super(glob.gobjscount);
+		super(glob.gobjs_tally);
 		this.data = {
 			name: 'a game object',
 			// _wpos: [0, 0, 0],
