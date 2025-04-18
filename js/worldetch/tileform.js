@@ -5,6 +5,7 @@ import pts from "../dep/pts.js";
 import worldetch from "../worldetch.js";
 import renderer from "./renderer.js";
 import worldetch__ from "./worldetch.js";
+// Welcome to the chaos of worldetch! 🌍🔥
 var tileform;
 (function (tileform) {
     tileform.TOGGLE_NORMAL_MAPS = true;

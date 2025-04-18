@@ -4,6 +4,8 @@ import game_object from "./objects/game object.js";
 import glob from "../dep/glob.js";
 import tile3d from "./objects/tile 3d.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 // 🌍 World Class
 
 // This is a wrapper around /lod.ts lod.world

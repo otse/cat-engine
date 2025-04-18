@@ -4,6 +4,7 @@ import { hooks } from "../dep/hooks.js";
 import renderer from "./renderer.js"; // Begone!
 import toggle from "../dep/toggle.js";
 import worldetch__ from "./worldetch.js";
+// Welcome to the chaos of worldetch! 🌍🔥
 // The LOD 👑
 // Coordinate systems:
 // The xtoypos-functions are used to convert between chunk space, world space, 

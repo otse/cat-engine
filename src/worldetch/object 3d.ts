@@ -7,6 +7,8 @@ import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 import game_object from "./objects/game object.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 export interface object3dliteral extends tileform.shape3d.literal {
 	groundPreset?: game.groundPreset,
 	shapePreset?: game.shapePreset

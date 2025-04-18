@@ -1,6 +1,8 @@
 // A global object
 
-// Useful against import hell
+// Prevent import hell
+
+// Don't know where to put something?
 
 var glob: any = window['glob'] || {}
 

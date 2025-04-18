@@ -12,6 +12,7 @@ import world from "../world.js";
 import worldetch from "../../worldetch.js";
 import worldetch__ from "../worldetch.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
 
 let wpos: vec2 = [0, 0];
 let rpos: vec2 = [0, 0];

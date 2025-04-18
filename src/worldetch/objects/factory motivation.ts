@@ -2,6 +2,8 @@ import game_object from "./game object.js";
 import tile from "./tile.js";
 import wall from "./wall.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 // Ex:
 // Objects come in as data from the network
 

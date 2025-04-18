@@ -3,6 +3,8 @@ import glob from '../dep/glob.js';
 import pts from '../dep/pts.js';
 import worldetch__ from './worldetch.js';
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 const fragmentBackdrop = `
 varying vec2 vUv;
 //uniform float time;

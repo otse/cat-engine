@@ -6,6 +6,8 @@ import lod from "./lod.js";
 import worldetch from "../worldetch.js";
 import worldetch__ from "./worldetch.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 interface sprite_literal {
 	gobj: game_object,
 	spriteSize?: vec2;

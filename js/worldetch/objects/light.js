@@ -2,6 +2,7 @@ import game_object from "./game object.js";
 import tileform from "../tileform.js";
 import sprite from "../sprite.js";
 import worldetch__ from "../worldetch.js";
+// Welcome to the chaos of worldetch! 🌍🔥
 export class light extends game_object {
     light_source;
     constructor(data) {

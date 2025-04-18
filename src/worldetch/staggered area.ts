@@ -2,6 +2,8 @@
 
 import area2 from "../dep/area2.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 interface point extends area2.areaPoint {
 	isXUneven
 	isYUneven

@@ -5,6 +5,8 @@ import glob from "./../../dep/glob.js";
 import pts from "../../dep/pts.js";
 import worldetch__ from "../worldetch.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 // Legacy just use tile 3d
 
 export class tile extends game_object {

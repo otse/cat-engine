@@ -9,6 +9,8 @@ import worldetch__ from "../worldetch.js";
 import pan from "./pan.js";
 import zoom from "./zoom.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 // Components can be turned off by not registering them. 🛠️
 
 export class debug_screen {

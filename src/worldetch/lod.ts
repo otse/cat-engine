@@ -7,6 +7,8 @@ import renderer from "./renderer.js"; // Begone!
 import toggle from "../dep/toggle.js";
 import worldetch__ from "./worldetch.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 // The LOD 👑
 
 // Coordinate systems:

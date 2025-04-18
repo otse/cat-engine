@@ -3,6 +3,8 @@ import sprite from "./sprite.js";
 import tileform from "./tileform.js";
 import world from "./world.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 interface sprite3dliteral extends sprite.literal {
 	shapeType: tileform.shape_types,
 	shapeLiteral: tileform.shape_literal

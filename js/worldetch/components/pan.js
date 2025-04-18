@@ -7,6 +7,7 @@ import lod from "../lod.js";
 import tile from "../objects/tile.js";
 import glob from "../../dep/glob.js";
 import worldetch__ from "../worldetch.js";
+// Welcome to the chaos of worldetch! 🌍🔥
 let wpos = [0, 0];
 let rpos = [0, 0];
 let begin = [0, 0];

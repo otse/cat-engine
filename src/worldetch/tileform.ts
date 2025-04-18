@@ -12,6 +12,8 @@ import renderer from "./renderer.js";
 import staggered_area from "./staggered area.js";
 import worldetch__ from "./worldetch.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 namespace tileform {
 
 	export let TOGGLE_NORMAL_MAPS = true;

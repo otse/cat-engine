@@ -3,6 +3,8 @@ import app from "../../app.js";
 import renderer from "../renderer.js";
 import glob from "../../dep/glob.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 // Components can be turned off by not registering them. 🛠️
 
 class zoom {

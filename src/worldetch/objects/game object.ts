@@ -6,6 +6,8 @@ import object3d from "../object 3d.js";
 import tileform from "../tileform.js";
 import worldetch__ from "../worldetch.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 export namespace game_object {
 	export type literal = game_object_literal;
 }

@@ -4,6 +4,8 @@ import sprite from "../sprite.js";
 import glob from "./../../dep/glob.js";
 import worldetch__ from "../worldetch.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 // Legacy just use wall 3d
 
 export class wall extends game_object {

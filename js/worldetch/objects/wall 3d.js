@@ -1,6 +1,7 @@
 import game_object from "./game object.js";
 import object3d from "../object 3d.js";
 import direction_adapter from "../direction adapter.js";
+// Welcome to the chaos of worldetch! 🌍🔥
 export class wall3d extends game_object {
     preset;
     wallAdapter;

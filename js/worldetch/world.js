@@ -1,6 +1,7 @@
 import pan from "./components/pan.js";
 import lod from "./lod.js";
 import glob from "../dep/glob.js";
+// Welcome to the chaos of worldetch! 🌍🔥
 // 🌍 World Class
 // This is a wrapper around /lod.ts lod.world
 // It has a powerful function to add multiple objects using a simple merge rule!
