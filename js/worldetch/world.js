@@ -3,8 +3,8 @@ import lod from "./lod.js";
 import glob from "../dep/glob.js";
 // Welcome to the chaos of worldetch! 🌍🔥
 // 🌍 World Class
-// This is a wrapper around /lod.ts lod.world
-// It has a powerful function to add multiple objects using a simple merge rule!
+// Wrapper for the `lod.world` provided in `/lod.ts`.
+// Adds objects with a configurable merge rule.
 // Ex:
 // const den_of_evil = new worldetch.world()
 export class world {

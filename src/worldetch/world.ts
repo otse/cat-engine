@@ -8,8 +8,9 @@ import tile3d from "./objects/tile 3d.js";
 
 // 🌍 World Class
 
-// This is a wrapper around /lod.ts lod.world
-// It has a powerful function to add multiple objects using a simple merge rule!
+// Wrapper for the `lod.world` provided in `/lod.ts`.
+
+// Adds objects with a configurable merge rule.
 
 // Ex:
 // const den_of_evil = new worldetch.world()

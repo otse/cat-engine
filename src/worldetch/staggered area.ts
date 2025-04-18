@@ -4,6 +4,8 @@ import area2 from "../dep/area2.js";
 
 // Welcome to the chaos of worldetch! 🌍🔥
 
+// A staggered area is an area where every alternate row is horizontally shifted.
+
 interface point extends area2.areaPoint {
 	isXUneven
 	isYUneven

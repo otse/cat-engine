@@ -1,4 +1,4 @@
-// this is the dumb fucking problem i have
+// this is the dumb problem i have
 
 // the way walls work is that they merge geometries
 

@@ -1,4 +1,3 @@
-/// This poorly named component turns basic 3d shapes into sprites
 import app from "../app.js";
 import glob from "./../dep/glob.js";
 import pts from "../dep/pts.js";
