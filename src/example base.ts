@@ -19,7 +19,7 @@ import game from "./eye/game.js";
 import world from "./worldetch/world.js";
 import worldetch__ from "./worldetch/worldetch.js";
 
-namespace worldetch {
+namespace worldetch_example_base {
 
 	export async function init() {
 		console.log(' init ');
@@ -176,4 +176,4 @@ namespace worldetch {
 
 }
 
-export default worldetch;
+export default worldetch_example_base;

@@ -1,5 +1,7 @@
 ;
-// 🚀 Welcome to engine config! Fine-tune here.
+// 🚀 Welcome to engine config!
+// 
+// Fine-tune with an object literal
 export class worldetch__ {
     static three_to_one_camera_rotation = 0.962;
     static scale;

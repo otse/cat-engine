@@ -27,16 +27,14 @@ function step() {
 		worldetch - monolith git branch (debug screen)
 		<br />DOTS_PER_INCH_CORRECTED_RENDER_TARGET: ${renderer.DOTS_PER_INCH_CORRECTED_RENDER_TARGET}
 		<br />ROUND_UP_DOTS_PER_INCH: ${renderer.ROUND_UP_DOTS_PER_INCH}
-		<br />USE_SCENE3: ${renderer.USE_EXTRA_RENDER_TARGET}
+		<br />USE_EXTRA_RENDER_TARGET: ${renderer.USE_EXTRA_RENDER_TARGET}
 		<br />DITHERING (d): ${renderer.dithering}
 		<br />--
 		<br />TOGGLE_TOP_DOWN_MODE (f1): ${tileform.TOGGLE_TOP_DOWN_MODE}
 		<br />TOGGLE_RENDER_AXES (f2): ${tileform.TOGGLE_RENDER_AXES}
 		<br />TOGGLE_NORMAL_MAPS (f3): ${tileform.TOGGLE_NORMAL_MAPS}
 		<br />--
-		<br />"globs"
-		<br />&#9;randomspritecolor (h): ${glob.randomspritecolor}
-		<br />wallrotation (v, b): ${glob.wallrotation}
+		<br />wall rotation (v, b): ${glob.wallrotation}
 		<br />pan compress (v, b): ${worldetch__.pan_compress}
 		<br />camera rotation x (v, b): ${worldetch__.camera_rotation}
 		<br />--
@@ -50,7 +48,7 @@ function step() {
 		<br />hex size (q, a): ${pts.to_string_fixed(worldetch__.hex_size)}
 		<!--<br />cameraMode: ${renderer.cameraMode}-->
 		<br />chunk span size: ${lod.chunk_span} x ${lod.chunk_span}
-		<br />gobjs: ${glob.gobjs_tally[0]} / ${glob.gobjs_tally[1]}
+		<br />gobjs: ${worldetch__.gobjs_tally[0]} / ${worldetch__.gobjs_tally[1]}
 		<br />chunks: ${lod.numbers.chunks[0]} / ${lod.numbers.chunks[1]}
 		<br />pan wpos, rpos: ${pts.to_string_fixed(pan.wpos)} (${pts.to_string_fixed(pan.rpos)})
 		`;

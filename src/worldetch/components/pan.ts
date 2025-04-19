@@ -9,7 +9,7 @@ import game_object from "../objects/game object.js";
 import tile from "../objects/tile.js";
 import glob from "../../dep/glob.js";
 import world from "../world.js";
-import worldetch from "../../worldetch.js";
+import worldetch_example_base from "../../example base.js";
 import worldetch__ from "../worldetch.js";
 
 // Welcome to the chaos of worldetch! 🌍🔥
@@ -24,7 +24,7 @@ let before: vec2 = [0, 0];
 
 // This component does a lot! It can likely do what you want it to do...
 
-// LOTS of settings
+// Check the settings.
 
 export class pan {
 
@@ -41,14 +41,14 @@ export class pan {
 	static marker: game_object;
 	static follower: game_object | undefined = undefined
 
-	// Make the marker move in full tiles?
+	// Make the "center marker" move in full tiles?
 	static readonly noHalfMeasures = false;
 
 	// Rpos be pixel-based?
 	static readonly roundRpos = true;
 
 	// Punish the player after dragging the camera?
-	static readonly dragReleaseRoundsToNearestFullPixel = false;
+	static readonly dragReleaseRoundsToNearestFullPixel = true;
 
 	static get wpos(): vec2 {
 		return pts.copy(wpos);
@@ -99,7 +99,7 @@ export class pan {
 	static follow() {
 		if (this.follower) {
 			let wpos = this.follower.wpos;
-			wpos = (pts.add(wpos, [.5, .5])); // ?
+			wpos = (pts.add(wpos, [.5, .5])); // What
 			rpos = (lod.project(wpos));
 		}
 	}
@@ -156,24 +156,17 @@ export class pan {
 		}
 		else if (app.button(1) == -1) {
 			console.log('release');
-			if (this.dragReleaseRoundsToNearestFullPixel)
-				rpos = (pts.round(rpos));
 			this.dragging = false;
 		}
 	}
 
 	static set_camera() {
-		let rpos2 = pan.rpos;//(pts.add(rpos, pts.divide([0, glob.hex_size[1]], 2)));
-		// The idea is to manage the increments of y of rpos2
-		// Such that tiles are displayed
-		// For isometric view, you just need to keep an even number 
-		//if (pipeline.USE_SCENE3)
-		// Critical evening
-		// Uneven causes geometry errors below the equator
-		rpos2 = pts.make_even(rpos2, 1);
+		let rpos2 = pan.rpos;
+		// Uneven can cause geometry errors below the equator
+		// rpos2 = pts.make_even(rpos2, 1);
 		let pan_compress = worldetch__.pan_compress;
 		if (renderer.dithering)
-			pan_compress = pan_compress * 2;
+			pan_compress *= 2;
 		rpos2[1] = glob.round_to_nearest(rpos2[1], pan_compress);
 		//const nearestPoint = this.unproject_chunk_grid(rpos2);
 		//rpos2 = pts.round(rpos2);

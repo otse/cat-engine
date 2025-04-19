@@ -1,6 +1,6 @@
 import hooks from "./dep/hooks.js";
 import pts from "./dep/pts.js";
-import worldetch from "./worldetch.js";
+import worldetch_example_base from "./example base.js";
 import renderer from "./worldetch/renderer.js";
 import glob from "./dep/glob.js";
 var app;
@@ -133,7 +133,7 @@ var app;
             document.onmouseup = onmouseup;
             document.onwheel = onwheel;
         }
-        await worldetch.init();
+        await worldetch_example_base.init();
         const blockable = trick_animation_frame(base_loop);
     }
     app.boot = boot;
@@ -177,7 +177,7 @@ var app;
     async function base_loop() {
         take_time();
         take_delta();
-        await worldetch.step();
+        await worldetch_example_base.step();
         await hooks.emit('animationFrame', 1);
         // await hooks.emit('animationFrame', false);
         renderer.render();

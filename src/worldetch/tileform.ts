@@ -3,7 +3,7 @@ import glob from "./../dep/glob.js";
 import hooks from "../dep/hooks.js";
 
 import pts from "../dep/pts.js";
-import worldetch from "../worldetch.js";
+import worldetch_example_base from "../example base.js";
 import game_object from "./objects/game object.js";
 import wall3d from "./objects/wall 3d.js";
 import renderer from "./renderer.js";
@@ -65,7 +65,6 @@ namespace tileform {
 		const screenCoords = getVerticalScreenDifference(
 			tfCompressor.geometry, tfCompressor, renderer.camera, renderer.renderer);
 		worldetch__.pan_compress = -1 / screenCoords.y;
-		console.log(screenCoords, worldetch__.pan_compress);
 	}
 
 	function worldToScreen(vertex, camera, renderer) {
@@ -537,8 +536,8 @@ namespace tileform {
 			console.log(' tf light source create ');
 			this.light = new THREE.PointLight('white', 1, 5);
 			// this.light.decay = 2.4;
-			this.light.intensity = 700 * (worldetch__.scale * 2);
-			this.light.distance = 600 * (worldetch__.scale * 2);
+			this.light.intensity = 2000 * (worldetch__.scale * 2);
+			this.light.distance = 4000 * (worldetch__.scale * 2);
 			this.light.decay = 2.3;
 			this.light.updateMatrix();
 			this.entityGroup.add(this.light);
@@ -594,7 +593,7 @@ namespace tileform {
 		else {
 			return;
 		}
-		worldetch.purge_remake();
+		worldetch_example_base.purge_remake();
 	}
 }
 

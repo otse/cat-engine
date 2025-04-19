@@ -1,5 +1,7 @@
 import glob from "../dep/glob.js";
 
+// Welcome to the chaos of worldetch! 🌍🔥
+
 interface config_t {
     scale?: number
     hexsize?: number[]
@@ -7,7 +9,9 @@ interface config_t {
     camerarpos?: number[]
 };
 
-// 🚀 Welcome to engine config! Fine-tune here.
+// 🚀 Welcome to engine config!
+// 
+// Fine-tune with an object literal
 
 export class worldetch__ {
     static readonly three_to_one_camera_rotation = 0.962;

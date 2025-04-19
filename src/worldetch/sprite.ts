@@ -3,7 +3,7 @@ import game_object from "./objects/game object.js";
 import renderer from "./renderer.js";
 import glob from "./../dep/glob.js";
 import lod from "./lod.js";
-import worldetch from "../worldetch.js";
+import worldetch_example_base from "../example base.js";
 import worldetch__ from "./worldetch.js";
 
 // Welcome to the chaos of worldetch! 🌍🔥

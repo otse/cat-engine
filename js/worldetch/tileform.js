@@ -1,7 +1,7 @@
 import app from "../app.js";
 import glob from "./../dep/glob.js";
 import pts from "../dep/pts.js";
-import worldetch from "../worldetch.js";
+import worldetch_example_base from "../example base.js";
 import renderer from "./renderer.js";
 import worldetch__ from "./worldetch.js";
 // Welcome to the chaos of worldetch! 🌍🔥
@@ -46,7 +46,6 @@ var tileform;
     function get_compressor_distance() {
         const screenCoords = getVerticalScreenDifference(tfCompressor.geometry, tfCompressor, renderer.camera, renderer.renderer);
         worldetch__.pan_compress = -1 / screenCoords.y;
-        console.log(screenCoords, worldetch__.pan_compress);
     }
     function worldToScreen(vertex, camera, renderer) {
         const vector = vertex.clone().project(camera); // Project to NDC space
@@ -469,8 +468,8 @@ var tileform;
             console.log(' tf light source create ');
             this.light = new THREE.PointLight('white', 1, 5);
             // this.light.decay = 2.4;
-            this.light.intensity = 700 * (worldetch__.scale * 2);
-            this.light.distance = 600 * (worldetch__.scale * 2);
+            this.light.intensity = 2000 * (worldetch__.scale * 2);
+            this.light.distance = 4000 * (worldetch__.scale * 2);
             this.light.decay = 2.3;
             this.light.updateMatrix();
             this.entityGroup.add(this.light);
@@ -527,7 +526,7 @@ var tileform;
         else {
             return;
         }
-        worldetch.purge_remake();
+        worldetch_example_base.purge_remake();
     }
 })(tileform || (tileform = {}));
 export default tileform;
