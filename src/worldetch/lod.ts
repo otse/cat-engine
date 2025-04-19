@@ -15,6 +15,10 @@ import worldetch__ from "./worldetch.js";
 // The xtoypos-functions are used to convert between chunk space, world space, 
 // and render or pixel space (wpos, cpos and rpos)
 
+// The LOD is pretty simple. It has a world, a grid (the observer), chunks and objects.
+
+// A worldetch game object parents a lob.obj
+
 namespace lod {
 
 	type tally = [active: number, total: number]

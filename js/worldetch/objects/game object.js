@@ -4,6 +4,7 @@ import worldetch__ from "../worldetch.js";
 export class game_object extends lod.obj {
     data;
     // Most game objects represent a single object3d or sprite
+    // These are for convenience
     object3d;
     sprite;
     // Rotation
@@ -25,8 +26,10 @@ export class game_object extends lod.obj {
         this._wtorpos();
         this.rpos = (pts.floor(this.rpos));
     }
+    // Call when you change the object3d or sprite
     update() {
         this.sprite?.update();
+        // this.object3d?.update();
     }
     _create() {
         console.warn(' game object empty create ');

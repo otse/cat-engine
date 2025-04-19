@@ -17,7 +17,6 @@ export class worldetch__ {
     static readonly three_to_one_camera_rotation = 0.962;
 
     static scale: number;
-    static dots_per_inch: number;
     static camera_rotation: number;
     static pan_compress: number;
     static hex_size: vec2;
@@ -31,7 +30,6 @@ export class worldetch__ {
         this.config = config || {};
 
         worldetch__.scale = 1;
-        worldetch__.dots_per_inch = 1;
         worldetch__.camera_rotation = worldetch__.three_to_one_camera_rotation;
         worldetch__.pan_compress = 2;
         worldetch__.hex_size = [17, 15];

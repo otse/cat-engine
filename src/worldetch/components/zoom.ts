@@ -21,12 +21,12 @@ class zoom {
     }
 
     static step() {
-       zoom.zoom();
-       return false;
+        zoom.zoom();
+        return false;
     }
 
     static zoom() {
-         if (this.wheelEnabled && app.wheel == -1 || app.key('f') == 1) {
+        if (this.wheelEnabled && app.wheel == -1 || app.key('f') == 1) {
             console.log('app wheel');
             this.level = (this.level > 0) ? this.level - 1 : this.level;
         }
@@ -34,7 +34,8 @@ class zoom {
             console.log('app wheel');
             this.level = (this.level < this.zooms.length - 1) ? this.level + 1 : this.level;
         }
-        const camera = renderer.USE_EXTRA_RENDER_TARGET ? renderer.camera3 : renderer.camera;
+        const camera = renderer.USE_EXTRA_RENDER_TARGET ?
+            renderer.camera3 : renderer.camera2;
         const scale = this.zooms[this.level];
         if (renderer.cameraMode == 'perspective') {
             renderer.camera.position.z = (5 - this.level) * 40 || 10;

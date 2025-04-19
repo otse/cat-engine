@@ -9,6 +9,8 @@ import worldetch__ from "./worldetch.js";
 // Coordinate systems:
 // The xtoypos-functions are used to convert between chunk space, world space, 
 // and render or pixel space (wpos, cpos and rpos)
+// The LOD is pretty simple. It has a world, a grid (the observer), chunks and objects.
+// A worldetch game object parents a lob.obj
 var lod;
 (function (lod) {
     const chunk_coloration = false;

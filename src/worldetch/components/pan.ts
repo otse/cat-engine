@@ -146,7 +146,7 @@ export class pan {
 				dif = (pts.divide(dif, panDirection));
 				// Scale
 				dif = (pts.mult(dif, zoom.scale()));
-				dif = (pts.mult(dif, worldetch__.dots_per_inch));
+				dif = (pts.mult(dif, renderer.dots_per_inch));
 				dif = (pts.mult(dif, 1, worldetch__.pan_compress));
 				if (renderer.USE_EXTRA_RENDER_TARGET)
 					dif = (pts.divide(dif, 2));

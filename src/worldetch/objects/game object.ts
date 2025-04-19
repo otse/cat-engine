@@ -14,6 +14,7 @@ export namespace game_object {
 
 export class game_object extends lod.obj {
 	// Most game objects represent a single object3d or sprite
+	// These are for convenience
 	object3d?: object3d
 	sprite?: sprite
 
@@ -35,8 +36,10 @@ export class game_object extends lod.obj {
 		this._wtorpos();
 		this.rpos = (pts.floor(this.rpos));
 	}
+	// Call when you change the object3d or sprite
 	update() {
 		this.sprite?.update();
+		// this.object3d?.update();
 	}
 	protected override _create() {
 		console.warn(' game object empty create ');

@@ -182,13 +182,14 @@ var renderer;
 (function (renderer_1) {
     renderer_1.cameraMode = 'ortho';
     // Used for render target size
-    renderer_1.DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
+    renderer_1.DOTS_PER_INCH_CORRECTED_RENDER_TARGET = false;
     // Superior 
-    renderer_1.ROUND_UP_DOTS_PER_INCH = true;
+    renderer_1.ROUND_UP_DOTS_PER_INCH = false;
     // Used for dithering
-    renderer_1.USE_EXTRA_RENDER_TARGET = true;
+    renderer_1.USE_EXTRA_RENDER_TARGET = false;
     renderer_1.dithering = true;
     renderer_1.compression = false;
+    renderer_1.dots_per_inch = 1;
     let groups;
     (function (groups) {
     })(groups = renderer_1.groups || (renderer_1.groups = {}));
@@ -256,9 +257,9 @@ var renderer;
         renderer_1.sceneMask = new THREE.Scene();
         renderer_1.sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
         if (renderer_1.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-            worldetch__.dots_per_inch = window.devicePixelRatio;
+            renderer_1.dots_per_inch = window.devicePixelRatio;
             if (renderer_1.ROUND_UP_DOTS_PER_INCH)
-                worldetch__.dots_per_inch = Math.ceil(worldetch__.dots_per_inch);
+                renderer_1.dots_per_inch = Math.ceil(renderer_1.dots_per_inch);
         }
         renderer_1.target = new THREE.WebGLRenderTarget(1024, 1024, {
             minFilter: THREE.NearestFilter,
@@ -276,8 +277,8 @@ var renderer;
             // premultipliedAlpha: false
         });
         glob.renderer = renderer_1.renderer;
-        renderer_1.renderer.setPixelRatio(worldetch__.dots_per_inch);
-        renderer_1.renderer.setSize(100, 100);
+        renderer_1.renderer.setPixelRatio(renderer_1.dots_per_inch);
+        renderer_1.renderer.setSize(window.innerWidth, window.innerHeight);
         renderer_1.renderer.setClearColor(0xffffff, 0);
         renderer_1.renderer.autoClear = true;
         renderer_1.renderer.toneMapping = THREE.NoToneMapping;
@@ -291,26 +292,32 @@ var renderer;
     renderer_1.init = init;
     renderer_1.screenSize = [0, 0];
     renderer_1.targetSize = [0, 0];
+    renderer_1.canvasSize = [0, 0];
+    renderer_1.planeSize = [0, 0];
     function onWindowResize() {
+        const canvas = renderer_1.renderer.domElement;
         renderer_1.screenSize = [window.innerWidth, window.innerHeight];
-        renderer_1.screenSize = (pts.floor(renderer_1.screenSize));
-        //screenSize = pts.even(screenSize, -1);
-        renderer_1.targetSize = (pts.copy(renderer_1.screenSize));
-        if (renderer_1.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-            renderer_1.targetSize = (pts.mult(renderer_1.screenSize, worldetch__.dots_per_inch));
-            renderer_1.targetSize = (pts.floor(renderer_1.targetSize));
-            // targetSize = pts.make_uneven(targetSize, -1);
-        }
+        renderer_1.screenSize = (pts.make_even(renderer_1.screenSize, -1));
         renderer_1.renderer.setSize(renderer_1.screenSize[0], renderer_1.screenSize[1]);
-        console.log(`
-		window inner ${pts.to_string(renderer_1.screenSize)}\n
-		      new is ${pts.to_string(renderer_1.targetSize)}`);
+        renderer_1.canvasSize = [canvas.width, canvas.height];
+        renderer_1.targetSize = (pts.copy(renderer_1.canvasSize));
+        /*renderer.domElement.width = window.innerWidth;
+        renderer.domElement.height = window.innerHeight;
+        renderer.domElement.style.width = window.innerWidth;
+        renderer.domElement.style.height = window.innerHeight;*/
+        // targetSize = (pts.floor(targetSize));
+        // screenSize = (pts.make_even(screenSize, -1));
+        if (renderer_1.DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
+            //targetSize = (pts.mult(canvasSize, dots_per_inch));
+        }
         renderer_1.target.setSize(renderer_1.targetSize[0], renderer_1.targetSize[1]);
         renderer_1.targetMask.setSize(renderer_1.targetSize[0], renderer_1.targetSize[1]);
         if (renderer_1.USE_EXTRA_RENDER_TARGET)
             renderer_1.target2.setSize(renderer_1.targetSize[0], renderer_1.targetSize[1]);
+        renderer_1.planeSize = (pts.copy(renderer_1.canvasSize));
+        // planeSize = (pts.make_even(planeSize, -1));
         renderer_1.plane?.dispose();
-        renderer_1.plane = new THREE.PlaneGeometry(renderer_1.targetSize[0], renderer_1.targetSize[1]);
+        renderer_1.plane = new THREE.PlaneGeometry(renderer_1.planeSize[0], renderer_1.planeSize[1]);
         renderer_1.material2?.dispose();
         renderer_1.material2 = new THREE.ShaderMaterial({
             uniforms: {
@@ -365,6 +372,9 @@ var renderer;
         renderer_1.camera2.updateProjectionMatrix();
         renderer_1.camera3 = makeOrthographicCamera(renderer_1.targetSize[0], renderer_1.targetSize[1]);
         renderer_1.camera3.updateProjectionMatrix();
+        console.log(`
+			screenSize ${pts.to_string(renderer_1.screenSize)}\n
+	        targetSize ${pts.to_string(renderer_1.targetSize)}`);
     }
     let mem = [];
     async function preloadTextureAsync(file, mode = 'nearest') {

@@ -1,3 +1,4 @@
+import { log } from 'console';
 import app from '../app.js';
 import glob from '../dep/glob.js';
 import pts from '../dep/pts.js';
@@ -189,16 +190,17 @@ namespace renderer {
 	export const cameraMode: 'ortho' | 'perspective' = 'ortho';
 
 	// Used for render target size
-	export const DOTS_PER_INCH_CORRECTED_RENDER_TARGET = true;
-	
+	export const DOTS_PER_INCH_CORRECTED_RENDER_TARGET = false;
+
 	// Superior 
-	export const ROUND_UP_DOTS_PER_INCH = true;
+	export const ROUND_UP_DOTS_PER_INCH = false;
 
 	// Used for dithering
-	export const USE_EXTRA_RENDER_TARGET = true;
+	export const USE_EXTRA_RENDER_TARGET = false;
 
 	export var dithering = true;
 	export var compression = false;
+	export var dots_per_inch = 1;
 
 	export namespace groups {
 		export var camera
@@ -307,9 +309,9 @@ namespace renderer {
 		sceneMask.add(new THREE.AmbientLight('white', Math.PI / 1));
 
 		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-			worldetch__.dots_per_inch = window.devicePixelRatio;
+			dots_per_inch = window.devicePixelRatio;
 			if (ROUND_UP_DOTS_PER_INCH)
-				worldetch__.dots_per_inch = Math.ceil(worldetch__.dots_per_inch);
+				dots_per_inch = Math.ceil(dots_per_inch);
 		}
 
 		target = new THREE.WebGLRenderTarget(1024, 1024, {
@@ -329,8 +331,8 @@ namespace renderer {
 			// premultipliedAlpha: false
 		});
 		glob.renderer = renderer;
-		renderer.setPixelRatio(worldetch__.dots_per_inch);
-		renderer.setSize(100, 100);
+		renderer.setPixelRatio(dots_per_inch);
+		renderer.setSize(window.innerWidth, window.innerHeight);
 		renderer.setClearColor(0xffffff, 0);
 		renderer.autoClear = true;
 		renderer.toneMapping = THREE.NoToneMapping;
@@ -348,31 +350,36 @@ namespace renderer {
 
 	export var screenSize: vec2 = [0, 0];
 	export var targetSize: vec2 = [0, 0];
+	export var canvasSize: vec2 = [0, 0];
+	export var planeSize: vec2 = [0, 0];
 
 	function onWindowResize() {
+		const canvas = renderer.domElement;
 		screenSize = [window.innerWidth, window.innerHeight];
-		screenSize = (pts.floor(screenSize));
-		//screenSize = pts.even(screenSize, -1);
-		targetSize = (pts.copy(screenSize));
-
-		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
-			targetSize = (pts.mult(screenSize, worldetch__.dots_per_inch));
-			targetSize = (pts.floor(targetSize));
-			// targetSize = pts.make_uneven(targetSize, -1);
-		}
+		screenSize = (pts.make_even(screenSize, -1));
 		renderer.setSize(screenSize[0], screenSize[1]);
+		canvasSize = [canvas.width, canvas.height] as vec2;
+		targetSize = (pts.copy(canvasSize));
+		/*renderer.domElement.width = window.innerWidth;
+		renderer.domElement.height = window.innerHeight;
+		renderer.domElement.style.width = window.innerWidth;
+		renderer.domElement.style.height = window.innerHeight;*/
 
-		console.log(`
-		window inner ${pts.to_string(screenSize)}\n
-		      new is ${pts.to_string(targetSize)}`);
+		// targetSize = (pts.floor(targetSize));
+		// screenSize = (pts.make_even(screenSize, -1));
+		if (DOTS_PER_INCH_CORRECTED_RENDER_TARGET) {
+			//targetSize = (pts.mult(canvasSize, dots_per_inch));
+		}
 
 		target.setSize(targetSize[0], targetSize[1]);
 		targetMask.setSize(targetSize[0], targetSize[1]);
 		if (USE_EXTRA_RENDER_TARGET)
 			target2.setSize(targetSize[0], targetSize[1]);
 
+		planeSize = (pts.copy(canvasSize));
+		// planeSize = (pts.make_even(planeSize, -1));
 		plane?.dispose();
-		plane = new THREE.PlaneGeometry(targetSize[0], targetSize[1]);
+		plane = new THREE.PlaneGeometry(planeSize[0], planeSize[1]);
 
 		material2?.dispose();
 		material2 = new THREE.ShaderMaterial({
@@ -434,6 +441,10 @@ namespace renderer {
 
 		camera3 = makeOrthographicCamera(targetSize[0], targetSize[1]);
 		camera3.updateProjectionMatrix();
+
+		console.log(`
+			screenSize ${pts.to_string(screenSize)}\n
+	        targetSize ${pts.to_string(targetSize)}`);
 	}
 
 	let mem = []

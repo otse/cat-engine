@@ -38,6 +38,7 @@ function step() {
 		<br />ROUND_UP_DOTS_PER_INCH: ${renderer.ROUND_UP_DOTS_PER_INCH}
 		<br />USE_EXTRA_RENDER_TARGET: ${renderer.USE_EXTRA_RENDER_TARGET}
 		<br />DITHERING (d): ${renderer.dithering}
+		<br />dots per inch : ${renderer.dots_per_inch} / ${window.devicePixelRatio}
 		<br />--
 		<br />TOGGLE_TOP_DOWN_MODE (f1): ${tileform.TOGGLE_TOP_DOWN_MODE}
 		<br />TOGGLE_RENDER_AXES (f2): ${tileform.TOGGLE_RENDER_AXES}
